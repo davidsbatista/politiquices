@@ -54,12 +54,12 @@ def main():
     classified_titles = read_csv_data(sys.argv[1])
     g = Graph()
 
-    ns1 = Namespace('http://some.namespace/with/name#')
-    wikidata = Namespace('http://www.wikidata.org/wiki/')
-    g.bind('my_prefix', ns1)
-    g.bind('wd', wikidata)
-    wikidata_prop = Namespace("https://www.wikidata.org/wiki/Property")
-    g.bind('wdt', wikidata_prop)
+    # ns1 = Namespace('http://some.namespace/with/name#')
+    # g.bind('my_prefix', ns1)
+    wiki_prop = Namespace("http://www.wikidata.org/prop/direct/")
+    wiki_item = Namespace('http://www.wikidata.org/entity/')
+    g.bind('wd', wiki_item)
+    g.bind('wdt', wiki_prop)
 
     for title in classified_titles:
         if title[7] and title[8]:
@@ -70,37 +70,36 @@ def main():
                                rel_score=title[2], ent1=p1, ent2=p2)
 
             # Create Persons
-            g.add(
-                (URIRef(f'http://www.wikidata.org/wiki/{p1.wikidata_id}'),
-                 FOAF.name,
-                 Literal(p1.name, lang="pt"))
-            )
 
-            g.add(
-                (URIRef(f'http://www.wikidata.org/wiki/{p2.wikidata_id}'),
-                 FOAF.name,
-                 Literal(p2.name, lang="pt"))
-            )
+            g.add((URIRef(f'http://www.wikidata.org/entity/{p1.wikidata_id}'), FOAF.name, Literal(p1.name, lang="pt")))
+            g.add((URIRef(f'http://www.wikidata.org/entity/{p2.wikidata_id}'), FOAF.name, Literal(p2.name, lang="pt")))
+
+            # g.add((URIRef(f'http://www.wikidata.org/entity/{p1.wikidata_id}'), FOAF.a, FOAF.Person))
+            # g.add((URIRef(f'http://www.wikidata.org/entity/{p2.wikidata_id}'), FOAF.a, FOAF.Person))
 
             # Create ArquivoPT article
             g.add((URIRef(rel.url), DC.title, Literal(rel.sentence, lang="pt")))
             g.add((URIRef(rel.url), DC.date, Literal(rel.date, datatype=XSD.datetime)))
 
+            """
             # create relationships with: rel_type, score, article, ent1, ent2
             test = BNode()
-            ent1 = URIRef(f'http://www.wikidata.org/wiki/{p1.wikidata_id}')
-            ent2 = URIRef(f'http://www.wikidata.org/wiki/{p2.wikidata_id}')
+            ent1 = URIRef(f'wd:{p1.wikidata_id}')
+            ent2 = URIRef(f'wd:{p2.wikidata_id}')
 
             g.add((test, ns1.label, Literal(rel.rel_type)))
             g.add((test, ns1.score, Literal(rel.rel_score)))
             g.add((test, ns1.arquivo, URIRef(rel.url)))
             g.add((test, ns1.ent1, ent1))
             g.add((test, ns1.ent2, ent2))
+            """
 
     # print out the entire Graph in the RDF Turtle format
     # "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
     print(g.serialize(format="turtle").decode("utf-8"))
+    g.serialize(destination='sample.ttl', format="turtle")
     print("graph has {} statements.".format(len(g)))
+    exit(-1)
 
     # Titles and dates of all articles where the classification is 'ent1_supports_ent2' and 'ent2'
     # is Sócrates(Q182367)
@@ -118,12 +117,14 @@ def main():
 
     # SERVICE <http://www.wikidata.org/wiki/> { ?ent1 wdt:P102 ?party . }
 
+    """
     print(qres)
     print(len(qres))
 
     for row in qres:
         print(row)
         print(len(row))
+    """
 
 
 if __name__ == '__main__':
