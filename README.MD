@@ -46,11 +46,10 @@
       
          http://localhost:3030/manage.html
         
-        
-        
    3. Query the graph:
-     
-    
+
+##### List all the politicians in the graph and the party they belong through Wikidata endpoint     
+
     PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
     PREFIX        wd:  <http://www.wikidata.org/entity/>
     PREFIX        bd:  <http://www.bigdata.com/rdf#>
@@ -71,16 +70,78 @@
     LIMIT 10
     
 ---
+##### List of articles mentioning support/defense of José Sócrates  
     
     PREFIX ns2: <http://purl.org/dc/elements/1.1/>
-    
-    SELECT ?article ?title
+    PREFIX my_prefix: <http://some.namespace/with/name#>
+    PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+    SELECT DISTINCT ?rel_type ?score ?arquivo_doc ?title ?ent1 ?ent1_name ?ent2_name
     WHERE {
-        ?article ns2:title ?title .
+      ?rel my_prefix:label "ent1_supports_ent2" .
+      ?rel my_prefix:score ?score .
+      ?rel my_prefix:label ?rel_type .
+      ?rel my_prefix:ent1 ?ent1 .
+      ?rel my_prefix:ent2 wd:Q182367 .
+      wd:Q182367 ?x ?ent2_name .
+      ?ent1 ?o ?ent1_name .
+      ?rel my_prefix:arquivo ?arquivo_doc .
+      ?arquivo_doc dc:title ?title
     }
     LIMIT 25
 
 ---
+##### List all the politicians in the graph belonging to the 'PS' through Wikidata endpoint     
+
+    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
+    PREFIX        wd:  <http://www.wikidata.org/entity/>
+    PREFIX        bd:  <http://www.bigdata.com/rdf#>
+    PREFIX  wikibase:  <http://wikiba.se/ontology#>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
+    
+    SELECT DISTINCT ?person ?personLabel ?name {
+      ?person ns1:name ?name
+      SERVICE <https://query.wikidata.org/sparql> {
+        ?person wdt:P102 wd:Q847263.
+        ?person rdfs:label ?personLabel.
+        FILTER(LANG(?personLabel) = "pt")
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label }
+      }
+    }
+    LIMIT 10
+
+---
+##### List all the politicians in the graph belonging to the 'PS' through Wikidata endpoint
+
+    PREFIX ns2: <http://purl.org/dc/elements/1.1/>
+    PREFIX my_prefix: <http://some.namespace/with/name#>
+    PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
+    PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX   ns1: <http://xmlns.com/foaf/0.1/>
+    
+    SELECT DISTINCT ?arquivo_doc ?title ?ent1 ?ent1_name
+    WHERE {
+      ?rel my_prefix:label "ent1_supports_ent2" .
+      ?rel my_prefix:ent1 ?ent1 .
+      ?rel my_prefix:ent2 wd:Q182367 .
+      wd:Q182367 ?x ?ent2_name .
+      ?ent1 ?o ?ent1_name .
+      ?rel my_prefix:arquivo ?arquivo_doc .
+      ?arquivo_doc dc:title ?title 
+      SERVICE <https://query.wikidata.org/sparql> {
+        ?ent1 wdt:P102 wd:Q847263 .
+        ?ent1 rdfs:label ?personLabel.
+         FILTER(LANG(?personLabel) = "pt")
+         SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label }
+       }
+    }
+    LIMIT 25
 
    Federated queries: 
    

@@ -46,20 +46,18 @@ def read_csv_data(file_name):
 
 
 def main():
-    # download entities info:
-    # https://www.wikidata.org/wiki/Special:EntityData/Q42.rdf
-
-    # https://stackoverflow.com/questions/4841770/join-semantic-endpoints-in-sparql-query
-
     classified_titles = read_csv_data(sys.argv[1])
     g = Graph()
 
-    # ns1 = Namespace('http://some.namespace/with/name#')
-    # g.bind('my_prefix', ns1)
+    ns1 = Namespace('http://some.namespace/with/name#')
+    g.bind('my_prefix', ns1)
     wiki_prop = Namespace("http://www.wikidata.org/prop/direct/")
     wiki_item = Namespace('http://www.wikidata.org/entity/')
     g.bind('wd', wiki_item)
     g.bind('wdt', wiki_prop)
+
+    # linked-data vocabularies
+    # https://lov.linkeddata.es/dataset/lov/
 
     for title in classified_titles:
         if title[7] and title[8]:
@@ -70,6 +68,8 @@ def main():
                                rel_score=title[2], ent1=p1, ent2=p2)
 
             # Create Persons
+            # ToDo: set a unique name and a also-known-as
+            # see vocabulary in RDF
 
             g.add((URIRef(f'http://www.wikidata.org/entity/{p1.wikidata_id}'), FOAF.name, Literal(p1.name, lang="pt")))
             g.add((URIRef(f'http://www.wikidata.org/entity/{p2.wikidata_id}'), FOAF.name, Literal(p2.name, lang="pt")))
@@ -81,18 +81,16 @@ def main():
             g.add((URIRef(rel.url), DC.title, Literal(rel.sentence, lang="pt")))
             g.add((URIRef(rel.url), DC.date, Literal(rel.date, datatype=XSD.datetime)))
 
-            """
             # create relationships with: rel_type, score, article, ent1, ent2
             test = BNode()
-            ent1 = URIRef(f'wd:{p1.wikidata_id}')
-            ent2 = URIRef(f'wd:{p2.wikidata_id}')
+            ent1 = URIRef(f'http://www.wikidata.org/entity/{p1.wikidata_id}')
+            ent2 = URIRef(f'http://www.wikidata.org/entity/{p2.wikidata_id}')
 
             g.add((test, ns1.label, Literal(rel.rel_type)))
-            g.add((test, ns1.score, Literal(rel.rel_score)))
+            g.add((test, ns1.score, Literal(rel.rel_score, datatype=XSD.float)))
             g.add((test, ns1.arquivo, URIRef(rel.url)))
             g.add((test, ns1.ent1, ent1))
             g.add((test, ns1.ent2, ent2))
-            """
 
     # print out the entire Graph in the RDF Turtle format
     # "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
