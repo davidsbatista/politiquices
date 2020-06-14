@@ -40,6 +40,12 @@ http://markneumann.xyz/blog/dependency_matcher/
     https://www.wikidata.org/wiki/Q13576558
     ToDo: add everyone belonging to some portuguese party
 
+### Other sources
+
+    https://www.politicaparatodos.pt/
+    http://demo.cratica.org/deputados/
+
+
 ## Run Redis Graph
 
     docker run -p 6379:6379 -it --rm redislabs/redisgraph

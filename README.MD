@@ -76,17 +76,18 @@
     PREFIX my_prefix: <http://some.namespace/with/name#>
     PREFIX dc: <http://purl.org/dc/elements/1.1/>
     PREFIX wd: <http://www.wikidata.org/entity/>
-    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-
+    PREFIX ns2: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    
     SELECT DISTINCT ?rel_type ?score ?arquivo_doc ?title ?ent1 ?ent1_name ?ent2_name
     WHERE {
-      ?rel my_prefix:label "ent1_supports_ent2" .
+      ?rel my_prefix:type "ent1_supports_ent2" .
       ?rel my_prefix:score ?score .
-      ?rel my_prefix:label ?rel_type .
+      ?rel my_prefix:type ?rel_type .
       ?rel my_prefix:ent1 ?ent1 .
       ?rel my_prefix:ent2 wd:Q182367 .
-      wd:Q182367 ?x ?ent2_name .
-      ?ent1 ?o ?ent1_name .
+      wd:Q182367 rdfs:label ?ent2_name .
+      ?ent1 rdfs:label ?ent1_name .
       ?rel my_prefix:arquivo ?arquivo_doc .
       ?arquivo_doc dc:title ?title
     }
@@ -101,9 +102,11 @@
     PREFIX  wikibase:  <http://wikiba.se/ontology#>
     PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
+    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
     
-    SELECT DISTINCT ?person ?personLabel ?name {
-      ?person ns1:name ?name
+    SELECT DISTINCT ?person ?name ?personLabel {
+      ?person wdt:P31 wd:Q5 .
+      ?person ns2:prefLabel ?name
       SERVICE <https://query.wikidata.org/sparql> {
         ?person wdt:P102 wd:Q847263.
         ?person rdfs:label ?personLabel.
@@ -111,36 +114,38 @@
         SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label }
       }
     }
-    LIMIT 10
 
 ---
-##### List all the politicians in the graph belonging to the 'PS' through Wikidata endpoint
+##### List everyone belonging to 'PS' that have ever opposed 'José Sócrates'
 
-    PREFIX ns2: <http://purl.org/dc/elements/1.1/>
+    PREFIX       ns1: <http://purl.org/dc/elements/1.1/>
+    PREFIX       ns2: <http://www.w3.org/2004/02/skos/core#>
     PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX wd: <http://www.wikidata.org/entity/>
-    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-    PREFIX  wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX  rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX   ns1: <http://xmlns.com/foaf/0.1/>
+    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX        wd: <http://www.wikidata.org/entity/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX        bd: <http://www.bigdata.com/rdf#>
+    PREFIX       wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX  wikibase: <http://wikiba.se/ontology#>
     
-    SELECT DISTINCT ?arquivo_doc ?title ?ent1 ?ent1_name
+    SELECT DISTINCT ?rel_type ?score ?arquivo_doc ?title ?ent1 ?ent1_name ?ent2_name
     WHERE {
-      ?rel my_prefix:label "ent1_supports_ent2" .
+      ?rel my_prefix:type "ent1_opposes_ent2" .
+      ?rel my_prefix:score ?score .
+      ?rel my_prefix:type ?rel_type .
       ?rel my_prefix:ent1 ?ent1 .
       ?rel my_prefix:ent2 wd:Q182367 .
-      wd:Q182367 ?x ?ent2_name .
-      ?ent1 ?o ?ent1_name .
+      wd:Q182367 rdfs:label ?ent2_name .
+      ?ent1 rdfs:label ?ent1_name .
       ?rel my_prefix:arquivo ?arquivo_doc .
-      ?arquivo_doc dc:title ?title 
+      ?arquivo_doc dc:title ?title
       SERVICE <https://query.wikidata.org/sparql> {
         ?ent1 wdt:P102 wd:Q847263 .
         ?ent1 rdfs:label ?personLabel.
-         FILTER(LANG(?personLabel) = "pt")
-         SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label }
+        FILTER(LANG(?personLabel) = "pt")
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label }
+           }
        }
-    }
     LIMIT 25
 
    Federated queries: 

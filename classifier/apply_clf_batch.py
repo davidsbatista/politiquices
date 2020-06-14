@@ -62,7 +62,7 @@ def query_wikidata(name):
 
 
 def load_wrong_per():
-    with open("../open_ie/wrong_PER.txt", 'rt') as f_in:
+    with open("wrong_PER.txt", 'rt') as f_in:
         return [line.strip() for line in f_in]
 
 
