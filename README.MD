@@ -148,9 +148,80 @@
        }
     LIMIT 25
 
+##### 'José Sócrates' is ent2 in all type of relationships
+
+    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
+    PREFIX        wd:  <http://www.wikidata.org/entity/>
+    PREFIX        bd:  <http://www.bigdata.com/rdf#>
+    PREFIX  wikibase:  <http://wikiba.se/ontology#>
+    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX my_prefix: <http://some.namespace/with/name#>
+    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
+    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
+    
+    SELECT DISTINCT ?rel_type ?arquivo_doc ?title ?ent1 ?ent1_name
+    WHERE {
+      {
+        ?rel my_prefix:ent2 wd:Q182367 .
+        ?rel my_prefix:type ?rel_type .
+        ?rel my_prefix:ent1 ?ent1 .
+        ?ent1 rdfs:label ?ent1_name . 
+        ?rel my_prefix:arquivo ?arquivo_doc .
+        ?arquivo_doc dc:title ?title }
+    }
+
+
+##### 'José Sócrates' is ent1 in all type of relationships
+
+    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
+    PREFIX        wd:  <http://www.wikidata.org/entity/>
+    PREFIX        bd:  <http://www.bigdata.com/rdf#>
+    PREFIX  wikibase:  <http://wikiba.se/ontology#>
+    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX my_prefix: <http://some.namespace/with/name#>
+    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
+    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
+    
+    SELECT DISTINCT ?rel_type ?arquivo_doc ?title ?ent2 ?ent2_name
+    WHERE {
+      {
+        ?rel my_prefix:ent1 wd:Q182367 .
+        ?rel my_prefix:type ?rel_type .
+        ?rel my_prefix:ent2 ?ent2 .
+        ?ent2 rdfs:label ?ent2_name . 
+        ?rel my_prefix:arquivo ?arquivo_doc .
+        ?arquivo_doc dc:title ?title }
+        FILTER (?rel_type != "other")
+    }
+
+
+##### All office positions hold by 'José Sócrates'
+
+    SELECT DISTINCT ?officeLabel ?start ?end WHERE {
+      wd:Q182367 p:P39 ?officeStmnt.
+      ?officeStmnt ps:P39 ?office.
+      OPTIONAL { ?officeStmnt pq:P580 ?start. }
+      OPTIONAL { ?officeStmnt pq:P582 ?end. }
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
+    }
+
+
+SELECT DISTINCT ?image_url ?officeLabel ?education ?start ?end WHERE {
+  wd:Q182367 wdt:P18 ?image_url;
+             p:P39 ?officeStmnt.
+  ?officeStmnt ps:P39 ?office.
+  OPTIONAL { ?officeStmnt pq:P580 ?start. }
+  OPTIONAL { ?officeStmnt pq:P582 ?end. }  
+  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
+} ORDER BY ?start
+
+
+   Getting statments values
+   - https://stackoverflow.com/questions/54974504/sparql-question-how-to-return-property-labels-and-associated-date-qualifiers-fr
+
    Federated queries: 
-   
-   http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/
-   
-   https://stackoverflow.com/questions/53012303/using-wikidata-label-service-in-federated-queries
+   - http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/   
+   - https://stackoverflow.com/questions/53012303/using-wikidata-label-service-in-federated-queries
     

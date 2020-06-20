@@ -46,6 +46,7 @@ http://markneumann.xyz/blog/dependency_matcher/
     http://demo.cratica.org/deputados/
 
 
-## Run Redis Graph
+### Issues
 
-    docker run -p 6379:6379 -it --rm redislabs/redisgraph
+ - how to get SPARQL results with empty subject, i.e.: image + all offices
+ - set timeout query on Fuseki  
