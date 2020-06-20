@@ -20,7 +20,7 @@
 <table>
 {% for item in items %}
 <tr>
-    <td class="col-xs-2"><a href={{item.wikidata_id}}>(wikidata.org)</a></td>
+    <td class="col-xs-2"><a href=https://www.wikidata.org/wiki/{{item.wikidata_id}}>(wikidata.org)</a></td>
     <td class="col-xs-2"><a href=/entity?q={{item.wikidata_id}}>{{item.name}}</a></td>
     <td class="col-xs-2"><a href=/entity?q={{item.wikidata_id}}>
         <img src={{item.image_url}} width="240" height="200"></a>

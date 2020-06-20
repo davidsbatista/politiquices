@@ -111,9 +111,17 @@ def detail_entity():
     for e in results['results']['bindings']:
         if not image_url:
             image_url = e['image_url']['value']
+
+        start = None
+        end = None
+        if 'start' in e:
+            start = e['start']['value']
+        if 'end' in e:
+            end = e['end']['value']
+
         offices.append({'title': e['officeLabel']['value'],
-                        'start': e['start']['value'],
-                        'end': e['end']['value']})
+                        'start': start,
+                        'end': end})
 
     query = f"""
         PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>

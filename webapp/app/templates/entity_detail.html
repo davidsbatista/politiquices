@@ -17,40 +17,59 @@
 </head>
 <body>
 
-image:
-<p class="c2">{{items.image}}</p>
+<div class="media">
 
-office:
-{% for item in items.offices %}
-   <p class="c2">{{item}}</p>
-{% endfor %}
+  <img src={{items.image}} width="240" height="300">
 
-<br><br>
+    <div class="media-body">
 
-opposed:
+    <h5 class="mt-0">Cargos ocupados</h5>
+        {% for item in items.offices %}
+             <ul>{{item.start}} : {{item.end}} : {{item.title}}</ul>
+        {% endfor %}
+
+  </div>
+</div>
+
+
+<br><br><br>
+
+
+<p class="">opposed:</p>
 {% for item in items.opposed %}
-   <p class="c2">{{item}}</p>
+<ul>
+    <a href={{item.ent2_url}}> {{item.ent2_name}} </a> :- <a href={{item.url}}> {{item.title}} </a>
+</ul>
 {% endfor %}
 
 <br><br>
 
-supported:
+
+<p class="">supported:</p>
 {% for item in items.supported %}
-   <p class="c2">{{item}}</p>
+<ul>
+    <a href={{item.ent2_url}}> {{item.ent2_name}} </a> :- <a href={{item.url}}> {{item.title}} </a>
+</ul>
 {% endfor %}
 
 <br><br>
 
-opposed by:
+<p class="">opposed by:</p>
 {% for item in items.opposed_by %}
-   <p class="c2">{{item}}</p>
+<ul>
+    <a href={{item.ent1_url}}> {{item.ent1_name}} </a> :- <a href={{item.url}}> {{item.title}} </a>
+    </ul>
 {% endfor %}
+
+
 
 <br><br>
 
-supported by:
+<p class="">supported by:</p>
 {% for item in items.supported_by %}
-   <p class="c2">{{item}}</p>
+<ul>
+    <a href={{item.ent1_url}}> {{item.ent1_name}} </a> :- <a href={{item.url}}> {{item.title}} </a>
+    </ul>
 {% endfor %}
 
 
