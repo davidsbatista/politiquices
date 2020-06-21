@@ -39,6 +39,12 @@ def get_relevant_persons_based_on_positions():
     """
     Q19953703  member of the Portuguese parliament
     Q1723031   prime Minister of Portugal
+    Q7614320   minister of economy
+    Q4294919   Ministro dos Negócios Estrangeiros
+    Q43186728  Ministro da Administração Interna
+    Q25906445  Minister of National Defence
+    Q25448371  President of the Assembly of the Republic
+
     Q322459    president of Portugal
     Q1101237   president of the Regional Government of Madeira
     Q43185970  mayor of Lisbon
