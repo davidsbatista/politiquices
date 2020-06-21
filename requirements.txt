@@ -1,0 +1,8 @@
+Keras==2.3.1
+SPARQLWrapper==1.8.5
+joblib==0.15.1
+numpy==1.18.4
+pt-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/pt_core_news_sm-2.2.5/pt_core_news_sm-2.2.5.tar.gz
+scikit-learn==0.23.1
+spacy==2.2.4
+tensorflow==2.2.0
