@@ -1,3 +1,23 @@
+## Gold-Data annotations guidelines
+    ToDo
+
+## 0. Build a Knowledge Base for the news domain using the Wikidata annotated data
+
+   Read the annotated ground truth data and extract from each entity:
+     - the instance type
+     - all the occupations from 'occupation'
+     - all positions from 'position_held'
+     - all the political parties from 'member of political party'
+     
+   Then get all persons that have an occupation, a position or belong to any party from all the
+   info gathered before  
+   
+   # ToDo:
+    #  - add Madeira and Azores politicians
+    #  - add anyone that was/is member of portuguese political party
+    #  - add anyone that was/is member of portuguese public institutions, e.g.: CGD, Banco Portugal
+    #  - Zeinal Bava
+
 ## 1. Arquivo.pt data 
 
    Get news articles from arquivo.pt where politicians (`/wikidata/politicians_no_parties.json`) 
@@ -12,6 +32,15 @@
        
        
 ## 2. Relationship Classifier
+
+   - Relationship Classifier
+
+      - supports(ent1,ent2):    ent1 supports/agrees ent2 [on something]
+      - supports(ent2,ent1):    ent2 supports/agrees ent1 [on something]
+      - opposes(ent1,ent2) :    ent1 accuses/disagrenees/criticizes ent2 [of something]
+      - opposes(ent2,ent1) :    ent2 accuses/disagrees/criticizes ent1 [of something]
+      - other              :    not a relevant relationship 
+
 
    Applying classifier on arquivo.pt data:
 
@@ -208,18 +237,19 @@
     }
 
 
-SELECT DISTINCT ?image_url ?officeLabel ?education ?start ?end WHERE {
-  wd:Q182367 wdt:P18 ?image_url;
-             p:P39 ?officeStmnt.
-  ?officeStmnt ps:P39 ?office.
-  OPTIONAL { ?officeStmnt pq:P580 ?start. }
-  OPTIONAL { ?officeStmnt pq:P582 ?end. }  
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
-} ORDER BY ?start
+    SELECT DISTINCT ?image_url ?officeLabel ?education ?start ?end WHERE {
+      wd:Q182367 wdt:P18 ?image_url;
+                 p:P39 ?officeStmnt.
+      ?officeStmnt ps:P39 ?office.
+      OPTIONAL { ?officeStmnt pq:P580 ?start. }
+      OPTIONAL { ?officeStmnt pq:P582 ?end. }  
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
+    } ORDER BY ?start
 
 
    Getting statments values
    - https://stackoverflow.com/questions/54974504/sparql-question-how-to-return-property-labels-and-associated-date-qualifiers-fr
+   - https://stackoverflow.com/questions/36023098/querying-wikidata-difference-between-p-and-wdt-default-prefix
 
    Federated queries: 
    - http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/   
