@@ -236,6 +236,12 @@ def main():
     # WRONG: 157
     # accuracy: 0.8586439829872404
 
+    # + correcting contractions and adding more mappings
+    # CORRECT: 3514
+    # NOT FOUND: 329
+    # WRONG: 154
+    # accuracy: 0.8791593695271454
+
 
 if __name__ == '__main__':
     main()
