@@ -135,7 +135,7 @@ def main():
     print(g.serialize(format="turtle").decode("utf-8"))
     g.serialize(destination="sample.ttl", format="turtle")
     print("graph has {} statements.".format(len(g)))
-    exit(-1)
+    sys.exit()
 
     # Titles and dates of all articles where the classification is 'ent1_supports_ent2' and 'ent2'
     # is Sócrates(Q182367)

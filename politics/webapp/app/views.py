@@ -42,13 +42,13 @@ def detail_entity():
     print(wiki_id)
 
     # entity info
-    query = f"""SELECT DISTINCT ?image_url ?officeLabel ?education ?start ?end 
+    query = f"""SELECT DISTINCT ?image_url ?officeLabel ?education ?start ?end
                WHERE {{
                 wd:{wiki_id} wdt:P18 ?image_url;
                                  p:P39 ?officeStmnt.
                 ?officeStmnt ps:P39 ?office.
                 OPTIONAL {{ ?officeStmnt pq:P580 ?start. }}
-                OPTIONAL {{ ?officeStmnt pq:P582 ?end. }}  
+                OPTIONAL {{ ?officeStmnt pq:P582 ?end. }}
                 SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }}
                 }} ORDER BY ?start"""
 
@@ -80,13 +80,13 @@ def detail_entity():
     PREFIX my_prefix: <http://some.namespace/with/name#>
     PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
     PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
-    
+
             SELECT DISTINCT ?rel_type ?arquivo_doc ?title ?ent2 ?ent2_name
                WHERE {{
                 ?rel my_prefix:ent1 wd:{wiki_id} .
                 ?rel my_prefix:type ?rel_type .
                 ?rel my_prefix:ent2 ?ent2 .
-                ?ent2 rdfs:label ?ent2_name . 
+                ?ent2 rdfs:label ?ent2_name .
                 ?rel my_prefix:arquivo ?arquivo_doc .
                 ?arquivo_doc dc:title ?title .
                 FILTER (?rel_type != "other")}}
@@ -109,7 +109,7 @@ def detail_entity():
                 ?rel my_prefix:ent2 wd:{wiki_id} .
                 ?rel my_prefix:type ?rel_type .
                 ?rel my_prefix:ent1 ?ent1 .
-                ?ent1 rdfs:label ?ent1_name . 
+                ?ent1 rdfs:label ?ent1_name .
                 ?rel my_prefix:arquivo ?arquivo_doc .
                 ?arquivo_doc dc:title ?title .
                 FILTER (?rel_type != "other")}}
@@ -313,7 +313,7 @@ def query_wikidata(entity_name):
       OPTIONAL {{ ?subj wdt:P1448 ?official_name. }}
 
       FILTER(LANG(?subjLabel) = "pt")
-      FILTER regex(?subjLabel, "{entity_regex}", "i" ) 
+      FILTER regex(?subjLabel, "{entity_regex}", "i" )
 
       SERVICE wikibase:label {{ bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }}
     }} ORDER BY ?subjLabel

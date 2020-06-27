@@ -90,7 +90,7 @@ class ArquivoPT(BaseDataSource):
     DATETIME_FORMAT = "%Y%m%d%H%M%S"
 
     def __init__(
-        self, max_items_per_site=50, domains_by_request=1, processes=2, docs_per_query=3000
+        self, max_items_per_site=50, domains_by_request=1, processes=2, docs_per_query=2000
     ):
         BaseDataSource.__init__(self, "ArquivoPT")
         self.max_items_per_site = max_items_per_site
@@ -101,9 +101,9 @@ class ArquivoPT(BaseDataSource):
     def get_result(self, query, **kwargs):
         domains = kwargs["domains"]
 
-        if not (domains):
+        if not domains:
             raise ValueError(
-                "Empty domains list. You need to specify at least one site domain to restrict the search."
+                "Empty domains list. You need to specify at least one domain to restrict the search"
             )
 
         shuffle(domains)
@@ -117,6 +117,8 @@ class ArquivoPT(BaseDataSource):
             domains[i: i + min(self.domains_by_request, len(domains))]
             for i in range(0, len(domains), min(self.domains_by_request, len(domains)))
         ]
+
+        print(domains_chunks)
 
         # run requests in parallel
         with Pool(processes=self.processes) as pool:
@@ -138,7 +140,7 @@ class ArquivoPT(BaseDataSource):
 
         try:
             response = requests.get(ArquivoPT.URL_REQUEST, params=params, timeout=45)
-        except:
+        except Exception:
             print("Timeout domains =", domains)
             return
 
@@ -200,7 +202,7 @@ class ArquivoPT(BaseDataSource):
         try:
             response = requests.get(ArquivoPT.URL_REQUEST, params=params, timeout=45)
 
-        except:
+        except Exception:
             print("Timeout domains =", domains)
             return
 
@@ -300,8 +302,6 @@ def query_arquivo(name, domains):
     }
 
     query = '+'.join(name.split())
-    print(query)
-
     apt = ArquivoPT()
     search_result = apt.get_result(query=query, **params)
 

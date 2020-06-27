@@ -4,7 +4,7 @@ from keras.layers import Embedding
 
 def load_fasttext_embeddings(file, vocabulary=None):
     embeddings_index = {}
-    with open('resources/'+file) as f_in:
+    with open('resources/' + file) as f_in:
         for line in f_in:
             values = line.split()
             word = values[0]

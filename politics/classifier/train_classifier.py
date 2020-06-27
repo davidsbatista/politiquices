@@ -1,8 +1,16 @@
-import csv
-import numpy as np
-import joblib
-
 from collections import Counter
+from datetime import datetime
+
+import regex
+import joblib
+import numpy as np
+
+from keras import Input, Model
+from keras.layers import Bidirectional, Dense, LSTM
+from keras.losses import categorical_crossentropy
+from keras.utils import to_categorical
+from keras_preprocessing.sequence import pad_sequences
+from keras_preprocessing.text import Tokenizer
 
 from sklearn import preprocessing
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -11,19 +19,12 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
 
-from keras import Input, Model
-from keras.utils import to_categorical
-from keras_preprocessing.sequence import pad_sequences
-from keras_preprocessing.text import Tokenizer
-from keras.losses import categorical_crossentropy
-from keras.layers import Dense, Bidirectional, LSTM
-
-from politics.utils import print_cm, read_ground_truth
 from politics.classifier.embeddings_utils import (
-    load_fasttext_embeddings,
     create_embeddings_matrix,
     get_embeddings_layer,
+    load_fasttext_embeddings,
 )
+from politics.utils import print_cm, read_ground_truth
 
 
 def train_tfidf_logit_clf(data):
@@ -84,9 +85,8 @@ def train_lstm(x_train, y_train, x_test, y_test, directional=False):
 
     # Encode the labels, each must be a vector with dim = num. of possible labels
     if directional is False:
-        import regex
-        y_test = [regex.sub(r'_?ent[1-2]_?', '', y_sample) for y_sample in y_test]
-        y_train = [regex.sub(r'_?ent[1-2]_?', '', y_sample) for y_sample in y_train]
+        y_test = [regex.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_test]
+        y_train = [regex.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_train]
 
     le = LabelEncoder()
     y_train_encoded = le.fit_transform(y_train)
@@ -127,6 +127,10 @@ def train_lstm(x_train, y_train, x_test, y_test, directional=False):
 
     model.fit(x_train_vec_padded, y_train_vec, epochs=25)
 
+    # save model
+    date_time = datetime.now().strftime("%Y-%m-%d-%H:%m:%S")
+    model.save(f"rel_clf_{date_time}.h5")
+
     # ToDo: plot loss graphs on train and test
 
     # apply to test data
@@ -147,7 +151,7 @@ def train_lstm(x_train, y_train, x_test, y_test, directional=False):
 
     for sent, true_label, pred_label in zip(x_test, y_test, pred_labels):
 
-        if true_label == "other" and pred_label != "other":
+        if true_label != pred_label:
             print(sent, "\t\t", true_label, "\t\t", pred_label)
             print()
     print()
@@ -155,6 +159,11 @@ def train_lstm(x_train, y_train, x_test, y_test, directional=False):
 
 def main():
     data = read_ground_truth(only_label=True)
+
+    # filter out 'other' samples
+    ignore = ["other", "meet_together", "ent1_replaces_ent2", "ent2_replaces_ent1"]
+    data = [sample for sample in data if sample["label"] not in ignore]
+
     print("\nSamples per class:")
     for k, v in Counter(d["label"] for d in data).items():
         print(k, "\t", v)

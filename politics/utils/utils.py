@@ -11,4 +11,4 @@ def just_sleep():
 def write_iterator_to_file(iter_struct, filename):
     with open(filename, 'wt') as f_out:
         for el in iter_struct:
-            f_out.write(str(el)+'\n')
+            f_out.write(str(el) + '\n')

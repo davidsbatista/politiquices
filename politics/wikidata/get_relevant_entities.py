@@ -22,6 +22,8 @@ def get_portuguese_political_parties():
     } ORDER BY ?partyLabel
     """
 
+    return query
+
 
 def get_people_that_are_members_of_a_portuguese_political_parties():
     query = """"
@@ -33,6 +35,8 @@ def get_people_that_are_members_of_a_portuguese_political_parties():
       SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". }
     } ORDER BY ?personLabel
     """
+
+    return query
 
 
 def get_relevant_persons_based_on_positions():
@@ -50,8 +54,6 @@ def get_relevant_persons_based_on_positions():
     Q43185970  mayor of Lisbon
 
     Q82560916  president of the Social Democratic Party
-
-    :return:
     """
 
     query = """
@@ -64,6 +66,8 @@ def get_relevant_persons_based_on_positions():
       FILTER(LANG(?personLabel) = "pt")
     } ORDER BY ?personLabel
     """
+
+    return query
 
 
 def get_relevant_persons_based_on_occupation():
@@ -88,6 +92,8 @@ def get_relevant_persons_based_on_occupation():
       }
     ORDER BY ?personLabel
     """
+
+    return query
 
 
 def get_relevant_political_persons():
@@ -115,6 +121,8 @@ def get_relevant_political_persons():
 
     :return:
     """
+
+    return query
 
 
 def get_results(query):
@@ -146,7 +154,7 @@ def query_member_political_party():
            }
           FILTER(LANG(?personLabel) = "pt")
           SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
-        } 
+        }
     ORDER BY ?personLabel
     """
 
