@@ -58,7 +58,7 @@ def train_tfidf_logit_clf(data):
     return clf, vectorizer, le
 
 
-def train_lstm(x_train, y_train, x_test, y_test):
+def train_lstm(x_train, y_train, x_test, y_test, directional=False):
 
     # vectorize: convert list of tokens/words to indexes
     tokenizer = Tokenizer()
@@ -83,6 +83,11 @@ def train_lstm(x_train, y_train, x_test, y_test):
     )
 
     # Encode the labels, each must be a vector with dim = num. of possible labels
+    if directional is False:
+        import regex
+        y_test = [regex.sub(r'_?ent[1-2]_?', '', y_sample) for y_sample in y_test]
+        y_train = [regex.sub(r'_?ent[1-2]_?', '', y_sample) for y_sample in y_train]
+
     le = LabelEncoder()
     y_train_encoded = le.fit_transform(y_train)
     y_train_vec = to_categorical(y_train_encoded, num_classes=None)
@@ -142,10 +147,9 @@ def train_lstm(x_train, y_train, x_test, y_test):
 
     for sent, true_label, pred_label in zip(x_test, y_test, pred_labels):
 
-        if true_label == "ent1_opposes_ent2" and pred_label == "ent1_supports_ent2":
+        if true_label == "other" and pred_label != "other":
             print(sent, "\t\t", true_label, "\t\t", pred_label)
             print()
-
     print()
 
 
@@ -169,7 +173,8 @@ def main():
         x_test = [doc for idx, doc in enumerate(docs) if idx in test_index]
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
-        train_lstm(x_train, y_train, x_test, y_test)
+
+    train_lstm(x_train, y_train, x_test, y_test)
 
 
 if __name__ == "__main__":
