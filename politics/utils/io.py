@@ -19,7 +19,8 @@ def read_ground_truth(only_label=False):
                 "ent2_id": row[7],
             }
             if only_label:
-                data.append(sample) if row[1] else None
+                if row[1]:
+                    data.append(sample)
             else:
                 data.append(sample)
     return data

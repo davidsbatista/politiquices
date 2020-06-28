@@ -19,7 +19,15 @@
 
 <div class="media">
 
-  <img src={{items.image}} width="240" height="300">
+
+    <figure class="figure">
+        <a href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">
+        <img src={{items.image}} class="figure-img img-fluid rounded" width="240" height="300">
+    </a>
+        <figcaption class="figure-caption">
+            <a href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">Editar na Wikidata</a>
+        </figcaption>
+    </figure>
 
     <div class="media-body">
 
@@ -42,6 +50,7 @@
           {% endfor %}
           </tbody>
         </table>
+
   </div>
 </div>
 

@@ -156,7 +156,8 @@ def detail_entity():
     print(supported_by)
     """
 
-    items = {'image': image_url,
+    items = {'wiki_id': wiki_id,
+             'image': image_url,
              'offices': offices,
              'opposed': opposed,
              'supported': supported,

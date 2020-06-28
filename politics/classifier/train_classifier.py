@@ -120,7 +120,7 @@ def get_model(embedding_layer, max_input_length, num_classes):
     return model
 
 
-def train_lstm(x_train, y_train, word2index, word2embedding, directional=False):
+def train_lstm(x_train, y_train, word2index, word2embedding, directional=False, save=False):
 
     x_train_vec = vectorize_titles(word2index, x_train)
 
@@ -144,12 +144,10 @@ def train_lstm(x_train, y_train, word2index, word2embedding, directional=False):
     print("Shape of train label tensor:", y_train_vec.shape)
     num_classes = y_train_vec.shape[1]
 
-    embeddings_matrix = create_embeddings_matrix(word2embedding, word2index)
-
     # create the embedding layer
-    print("\n")
-    print("embeddings_matrix: ", embeddings_matrix.shape)
+    embeddings_matrix = create_embeddings_matrix(word2embedding, word2index)
     embedding_layer = get_embeddings_layer(embeddings_matrix, max_input_length, trainable=True)
+    print("embeddings_matrix: ", embeddings_matrix.shape)
 
     model = get_model(embedding_layer, max_input_length, num_classes)
 
@@ -157,12 +155,13 @@ def train_lstm(x_train, y_train, word2index, word2embedding, directional=False):
     model.fit(x_train_vec_padded, y_train_vec, epochs=20)
 
     # save model
-    date_time = datetime.now().strftime("%Y-%m-%d-%H:%m:%S")
-    model.save(f'rel_clf_{date_time}.h5')
-    joblib.dump(word2index, f'word2index_{date_time}.joblib')
-    joblib.dump(le, f'label_encoder_{date_time}.joblib')
-    with open('max_input_length', 'wt') as f_out:
-        f_out.write(str(max_input_length)+"\n")
+    if save:
+        date_time = datetime.now().strftime("%Y-%m-%d-%H:%m:%S")
+        model.save(f'trained_models/rel_clf_{date_time}.h5')
+        joblib.dump(word2index, f'trained_models/word2index_{date_time}.joblib')
+        joblib.dump(le, f'trained_models/label_encoder_{date_time}.joblib')
+        with open('trained_models/max_input_length', 'wt') as f_out:
+            f_out.write(str(max_input_length)+"\n")
 
     return model, le, word2index, max_input_length
 
@@ -211,8 +210,10 @@ def main():
         model, le, word2index, max_input_length = train_lstm(
             x_train, y_train, word2index, word2embedding
         )
-
         test_model(model, le, word2index, max_input_length, x_test, y_test)
+
+    # train with all data
+    train_lstm(docs, labels, word2index, word2embedding, save=True)
 
 
 if __name__ == "__main__":
