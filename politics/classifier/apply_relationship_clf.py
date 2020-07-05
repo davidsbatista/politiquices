@@ -6,7 +6,6 @@ from functools import lru_cache, reduce
 from random import randint
 from time import sleep
 
-
 import joblib
 import numpy as np
 import pt_core_news_sm
@@ -14,49 +13,11 @@ import requests
 from keras.models import load_model
 from keras_preprocessing.sequence import pad_sequences
 
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+from politics.utils import clean_sentence
+
 MODELS = "trained_models/"
 
 nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
-
-
-def clean_sentences(text):
-
-    to_clean = [
-        "Visão |",
-        "Expresso |",
-        "SIC Notícias |",
-        "- Política - PUBLICO.PT",
-        " – Observador",
-        " – Obser",
-        " - RTP Noticias",
-        " - Renascença",
-        " - Expresso.pt",
-        " - JN",
-        " > TVI24",
-        " > Política",
-        "VIDEO -",
-        " > Geral",
-        " > TV",
-        " (C/ VIDEO)",
-        " - Opinião - DN",
-        "i:",
-        "DNOTICIAS.PT",
-        " - Lusa - SA",
-        " | Económico",
-        " - Sol",
-        " | Diário Económico.com",
-        " - PÚBLICO",
-        " – O Jornal Económico",
-        " – O Jornal Eco",
-        " – O Jornal",
-        "DN Online:",
-        " - dn - DN",
-        " - Portugal - DN",
-        " - Galerias - DN",
-    ]
-
-    return reduce(lambda a, v: a.replace(v, ""), to_clean, text)
 
 
 def load_sentences(filename):
@@ -80,10 +41,10 @@ def load_wrong_per():
 
 
 def load_models():
-    clf = load_model(MODELS + "rel_clf_2020-06-28-01:06:44.h5")
-    word2index = joblib.load(MODELS + "word2index_2020-06-28-01:06:44.joblib")
-    le = joblib.load(MODELS + "label_encoder_2020-06-28-01:06:44.joblib")
-    with open(MODELS + 'max_input_length', 'rt') as f_in:
+    clf = load_model(MODELS + "rel_clf_2020-07-04-00:07:51.h5")
+    word2index = joblib.load(MODELS + "word2index_2020-07-04-00:07:51.joblib")
+    le = joblib.load(MODELS + "label_encoder_2020-07-04-00:07:51.joblib")
+    with open(MODELS + "max_input_length", "rt") as f_in:
         max_input_length = int(f_in.read().strip())
 
     return clf, le, word2index, max_input_length
@@ -102,14 +63,21 @@ def filter_sentences_persons(titles):
         persons = [ent.text for ent in title[1].ents if ent.label_ == "PER"]
         if len(persons) == 2:
             if not set(persons).intersection(set(wrong_PER)):
-                titles_per.append(title)
+                titles_per.append((title, persons))
+
     return titles_per
 
 
 def classify_sentences(per_titles, word2index, max_input_length, clf, le):
+
+    # ToDo: if no context or context = 1 char return None
+
+    # replace entity name by 'PER'
+    docs = [d[0][1].text.replace(d[1][0], "PER").replace(d[1][1], "PER") for d in per_titles]
+
     word_no_vectors = set()
     all_sent_tokens = []
-    for doc in per_titles:
+    for doc in docs:
         all_sent_tokens.append([str(t).lower() for t in doc])
     x_vec = []
     for sent in all_sent_tokens:
@@ -130,17 +98,25 @@ def classify_sentences(per_titles, word2index, max_input_length, clf, le):
     labels_idx = np.argmax(predicted_probs, axis=1)
     pred_labels = le.inverse_transform(labels_idx)
 
-    return pred_labels
+    return pred_labels, predicted_probs
 
 
 def main():
     clf, le, word2index, max_input_length = load_models()
     sentences = load_sentences(sys.argv[0])
-    titles = [(s[0], clean_sentences(s[1]).strip().strip("\u200b"), s[2]) for s in sentences]
+
+    # ToDo: merge in one function
+    titles = [(s[0], clean_sentence(s[1]).strip().strip("\u200b"), s[2]) for s in sentences]
     titles_persons = filter_sentences_persons(titles)
 
-    x_vec = classify_sentences([t[1] for t in titles_persons], word2index, max_input_length,
-                               clf, le)
+    pred_labels, predicted_probs = classify_sentences(
+        titles_persons, word2index, max_input_length, clf, le
+    )
+
+    for label, sentence, prob in zip(pred_labels, titles_persons, predicted_probs):
+        idx_max = np.argmax(prob)
+        if prob[idx_max] > 0.9:
+            print(label, prob, '\t', sentence[1], sentence[0][1])
 
     # ToDo: analyze/ dump results
     """
@@ -211,6 +187,7 @@ def main():
 
     print(query_wikidata.cache_info())
     """
+
 
 if __name__ == "__main__":
     main()

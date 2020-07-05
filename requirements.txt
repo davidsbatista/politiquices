@@ -1,3 +1,4 @@
+networkx
 requests
 Keras==2.3.1
 SPARQLWrapper==1.8.5

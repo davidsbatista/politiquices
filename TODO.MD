@@ -5,6 +5,7 @@
 
 
 ### Triple Store
+ - automatically load TTL into dataset in Fuseki 
  - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
  - set timeout query on Fuseki 
  - use OR in FILTER to avoid doing two queries: 

@@ -6,6 +6,8 @@ import regex
 import joblib
 import numpy as np
 
+import networkx as nx
+
 from keras import Input, Model
 from keras.layers import Bidirectional, Dense, LSTM
 from keras.losses import categorical_crossentropy
@@ -61,6 +63,70 @@ def train_tfidf_logit_clf(data):
     return clf, vectorizer, le
 
 
+def pre_process_train_data(data):
+    # filter out 'other' samples
+    ignore = ["other", "ent1_replaces_ent2", "ent2_replaces_ent1"]
+    data = [sample for sample in data if sample["label"] not in ignore]
+
+    print("\nSamples per class:")
+    for k, v in Counter(d["label"] for d in data).items():
+        print(k, "\t", v)
+    print("\nTotal nr. messages:\t", len(data))
+    print("\n")
+    docs = [(d["sentence"], d["ent1"], d["ent2"]) for d in data]
+    labels = [d["label"] for d in data]
+
+    # replace entity name by 'PER'
+    docs = [d[0].replace(d[1], "PER").replace(d[2], "PER") for d in docs]
+
+    return docs, labels
+
+    """
+    for d, l in zip(docs, labels):
+        doc = nlp(d[0])
+        print(doc.ents)
+        print(d[0])
+        print(d[1])
+        print(d[2])
+
+        if str(doc.ents[0]) == d[1] and str(doc.ents[1]) == d[2]:
+            path = extract_syntactic_path(doc, ent1=doc.ents[0], ent2=doc.ents[1])
+            print(path)
+            print(l)
+        else:
+            print("NOT THE SAME")
+        print("\n---------------------------")
+    """
+
+
+def get_head(tokens):
+    """Gets the head token of a subtree"""
+    if len(tokens) > 1:
+        for token in tokens:
+            if token.head not in tokens or token.head == token:
+                top_token = token
+                break
+    else:
+        top_token = tokens[0]
+
+    return top_token
+
+
+def extract_syntactic_path(doc, ent1, ent2):
+    edges = []
+    for token in doc:
+        for child in token.children:
+            edges.append(('{0}'.format(token), '{0}'.format(child)))
+
+    graph = nx.Graph(edges)
+    try:
+        path = nx.shortest_path(graph, source=str(get_head(ent1)), target=str(get_head(ent2)))
+    except nx.NetworkXNoPath:
+        return []
+
+    return path
+
+
 def vectorize_titles(word2index, x_train):
     # tokenize the sentences and convert into vector indexes
     all_sent_tokens = []
@@ -83,23 +149,6 @@ def vectorize_titles(word2index, x_train):
     return x_train_vec
 
 
-def pre_process_train_data(data):
-    # filter out 'other' samples
-    ignore = ["other", "ent1_replaces_ent2", "ent2_replaces_ent1"]
-    data = [sample for sample in data if sample["label"] not in ignore]
-    print("\nSamples per class:")
-    for k, v in Counter(d["label"] for d in data).items():
-        print(k, "\t", v)
-    print("\nTotal nr. messages:\t", len(data))
-    print("\n")
-    docs = [(d["sentence"], d["ent1"], d["ent2"]) for d in data]
-    labels = [d["label"] for d in data]
-
-    # replace entity name by 'PER'
-    docs = [d[0].replace(d[1], "PER").replace(d[2], "PER") for d in docs]
-    return docs, labels
-
-
 def get_embeddings():
     word2embedding, index2word = load_fasttext_embeddings("skip_s100.txt")
     word2index = {v: k for k, v in index2word.items()}
@@ -113,16 +162,16 @@ def get_embeddings():
 def get_model(embedding_layer, max_input_length, num_classes):
     i = Input(shape=(max_input_length,), dtype="int32", name="main_input")
     x = embedding_layer(i)
-    lstm_out = Bidirectional(LSTM(256, dropout=0.3, recurrent_dropout=0.3))(x)
-    o = Dense(num_classes, activation="softmax", name="output")(lstm_out)
+    lstm_out = Bidirectional(LSTM(64, dropout=0.3, recurrent_dropout=0.3))(x)
+    o = Dense(num_classes, activation="sigmoid", name="output")(lstm_out)
     model = Model(inputs=i, outputs=o)
     model.compile(loss={"output": categorical_crossentropy}, optimizer="adam", metrics=["accuracy"])
 
     return model
 
 
-def train_lstm(x_train, y_train, word2index, word2embedding, directional=False, save=False):
-
+def train_lstm(x_train, y_train, word2index, word2embedding, epochs=20, directional=False,
+               save=False):
     x_train_vec = vectorize_titles(word2index, x_train)
 
     # get the max sentence length, needed for padding
@@ -153,7 +202,7 @@ def train_lstm(x_train, y_train, word2index, word2embedding, directional=False, 
     model = get_model(embedding_layer, max_input_length, num_classes)
 
     # ToDo: plot loss graphs on train and test
-    model.fit(x_train_vec_padded, y_train_vec, epochs=20)
+    model.fit(x_train_vec_padded, y_train_vec, epochs=epochs)
 
     # save model
     if save:
@@ -162,7 +211,7 @@ def train_lstm(x_train, y_train, word2index, word2embedding, directional=False, 
         joblib.dump(word2index, f'trained_models/word2index_{date_time}.joblib')
         joblib.dump(le, f'trained_models/label_encoder_{date_time}.joblib')
         with open('trained_models/max_input_length', 'wt') as f_out:
-            f_out.write(str(max_input_length)+"\n")
+            f_out.write(str(max_input_length) + "\n")
 
     return model, le, word2index, max_input_length
 
@@ -187,13 +236,10 @@ def test_model(model, le, word2index, max_input_length, x_test, y_test, directio
     print_cm(cm, labels=le.classes_)
     print()
 
-    """
     for sent, true_label, pred_label in zip(x_test, y_test, pred_labels):
         if true_label != pred_label:
             print(sent, "\t\t", true_label, "\t\t", pred_label)
-            print()
     print()
-    """
 
 
 def main():
@@ -209,12 +255,12 @@ def main():
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
 
         model, le, word2index, max_input_length = train_lstm(
-            x_train, y_train, word2index, word2embedding
+            x_train, y_train, word2index, word2embedding, epochs=25, directional=True
         )
-        test_model(model, le, word2index, max_input_length, x_test, y_test)
+        test_model(model, le, word2index, max_input_length, x_test, y_test, directional=True)
 
     # train with all data
-    train_lstm(docs, labels, word2index, word2embedding, save=True)
+    # train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=True, save=True)
 
 
 if __name__ == "__main__":
