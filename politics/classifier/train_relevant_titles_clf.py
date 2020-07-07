@@ -2,7 +2,7 @@ import csv
 
 from sklearn.model_selection import StratifiedKFold
 
-from politics.classifier.train_classifier import get_embeddings, train_lstm, test_model
+from politics.classifier.train_relationship_clf import get_embeddings, train_lstm, test_model
 from politics.utils import clean_sentence
 
 
@@ -11,18 +11,16 @@ def read_raw_data(filename):
     with open(filename, newline="") as csvfile:
         arquivo = csv.reader(csvfile, delimiter="\t", quotechar="|")
         for row in arquivo:
-            data.append({"title": row[0], "ent_1": row[1], "ent_2": row[2],
-                         "date": row[3], "url": row[4]})
+            data.append({"title": row[0], "label": row[1], "ent_1": row[2], "ent_2": row[3],
+                         "date": row[4], "url": row[5]})
     return data
 
 
 def main():
-    raw = read_raw_data('../../data/to_annotate.csv')
-    pos = read_raw_data('../../data/annotated/arquivo_clean.tsv')
+    data = read_raw_data('../../data/annotated/arquivo_clean.tsv')
+    all_pos_titles = set([clean_sentence(x['title']) for x in data if x['label']])
+    all_neg_titles = set([clean_sentence(x['title']) for x in data if x['label'] == ''])
 
-    all_pos_titles = set([clean_sentence(x['title']) for x in pos])
-    all_neg_titles = set([clean_sentence(x['title']) for x in raw
-                          if clean_sentence(x['title']) not in all_pos_titles])
     data = [(x, 'relevant') for x in all_pos_titles]
     data.extend([(x, 'non-relevant') for x in all_neg_titles])
     docs = [x[0] for x in data]
