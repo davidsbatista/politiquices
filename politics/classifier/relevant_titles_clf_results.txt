@@ -1,28 +1,119 @@
               precision    recall  f1-score   support
 
-non-relevant       0.93      0.97      0.95       574
-    relevant       0.61      0.36      0.45        70
+non-relevant       0.92      0.98      0.95       565
+    relevant       0.60      0.30      0.40        70
 
-    accuracy                           0.91       644
-   macro avg       0.77      0.66      0.70       644
-weighted avg       0.89      0.91      0.89       644
+    accuracy                           0.90       635
+   macro avg       0.76      0.64      0.67       635
+weighted avg       0.88      0.90      0.89       635
 
          t/p     non-relevant     relevant
-    non-relevant        558.0         16.0
-        relevant         45.0         25.0
-
-
+    non-relevant        551.0         14.0
+        relevant         49.0         21.0
 
 
               precision    recall  f1-score   support
 
-non-relevant       0.93      0.96      0.95       574
-    relevant       0.60      0.44      0.51        70
+non-relevant       0.94      0.95      0.94       566
+    relevant       0.52      0.49      0.51        69
 
-    accuracy                           0.91       644
-   macro avg       0.77      0.70      0.73       644
-weighted avg       0.90      0.91      0.90       644
+    accuracy                           0.90       635
+   macro avg       0.73      0.72      0.72       635
+weighted avg       0.89      0.90      0.89       635
 
          t/p     non-relevant     relevant
-    non-relevant        553.0         21.0
-        relevant         39.0         31.0
+    non-relevant        535.0         31.0
+        relevant         35.0         34.0
+
+==============================================================================================
+
+
+              precision    recall  f1-score   support
+
+non-relevant       0.93      0.96      0.95       553
+    relevant       0.67      0.51      0.58        78
+
+    accuracy                           0.91       631
+   macro avg       0.80      0.74      0.76       631
+weighted avg       0.90      0.91      0.90       631
+
+         t/p     non-relevant     relevant
+    non-relevant        533.0         20.0
+        relevant         38.0         40.0
+
+
+              precision    recall  f1-score   support
+
+non-relevant       0.94      0.96      0.95       553
+    relevant       0.66      0.55      0.60        77
+
+    accuracy                           0.91       630
+   macro avg       0.80      0.75      0.77       630
+weighted avg       0.90      0.91      0.91       630
+
+         t/p     non-relevant     relevant
+    non-relevant        531.0         22.0
+        relevant         35.0         42.0
+
+==============================================================================================
+
+
+              precision    recall  f1-score   support
+
+non-relevant       0.93      0.97      0.95       541
+    relevant       0.74      0.56      0.64        88
+
+    accuracy                           0.91       629
+   macro avg       0.84      0.76      0.79       629
+weighted avg       0.90      0.91      0.91       629
+
+         t/p     non-relevant     relevant
+    non-relevant        524.0         17.0
+        relevant         39.0         49.0
+
+
+              precision    recall  f1-score   support
+
+non-relevant       0.94      0.98      0.96       540
+    relevant       0.84      0.60      0.70        88
+
+    accuracy                           0.93       628
+   macro avg       0.89      0.79      0.83       628
+weighted avg       0.92      0.93      0.92       628
+
+         t/p     non-relevant     relevant
+    non-relevant        530.0         10.0
+        relevant         35.0         53.0
+
+
+===============================================================================================
+
+
+             precision    recall  f1-score   support
+
+non-relevant       0.94      0.97      0.95       538
+    relevant       0.76      0.60      0.67        91
+
+    accuracy                           0.92       629
+   macro avg       0.85      0.79      0.81       629
+weighted avg       0.91      0.92      0.91       629
+
+         t/p     non-relevant     relevant
+    non-relevant        521.0         17.0
+        relevant         36.0         55.0
+
+
+              precision    recall  f1-score   support
+
+non-relevant       0.93      0.97      0.95       537
+    relevant       0.78      0.57      0.66        91
+
+    accuracy                           0.91       628
+   macro avg       0.85      0.77      0.80       628
+weighted avg       0.91      0.91      0.91       628
+
+         t/p     non-relevant     relevant
+    non-relevant        522.0         15.0
+        relevant         39.0         52.0
+
+===============================================================================================

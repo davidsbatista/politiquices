@@ -3,8 +3,8 @@ from random import randint
 from time import sleep
 
 
-def just_sleep():
-    sec = randint(1, 3)
+def just_sleep(upper_bound=3):
+    sec = randint(1, upper_bound)
     print(f"sleeping for {sec} seconds")
     sleep(sec)
 

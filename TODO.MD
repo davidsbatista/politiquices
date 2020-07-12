@@ -2,6 +2,7 @@
 ### Classifier
 - refactor `apply_clf_batch.py`
 - apply new model on already crawled data
+- a classifier/method to detect duplicate titles
 
 
 ### Triple Store
@@ -16,7 +17,19 @@
 
 
 ### Wikidata / Entity Linking
-- Use entity-search-engine: https://github.com/inventaire/entities-search-engine/issues/14
+- Use initial SPARQL queries to get a list of potentials wiki is:
+    - politicians
+    - bankers
+    - political parties
+    - etc.
+    
+- Use this endpoint to get JSON with all the information for each entity:
+    - https://www.mediawiki.org/wiki/Wikibase/EntityData
+    
+- Filter the information by lang: 'pt', 'en', 'de' and index in ElasticSearch
+
+- Evaluate the query 
+
 
 
 ### Other sources:

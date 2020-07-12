@@ -40,6 +40,9 @@ def main():
         )
         test_model(model, le, word2index, max_input_length, x_test, y_test, directional=False)
 
+    # train with all data
+    # train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=False, save=True)
+
 
 if __name__ == '__main__':
     main()

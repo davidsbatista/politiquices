@@ -27,6 +27,7 @@ from politics.classifier.embeddings_utils import (
     get_embeddings_layer,
     load_fasttext_embeddings,
 )
+from politics.utils.ml_utils import plot_precision_recall_vs_threshold, plot_precision_recall_curve
 
 nlp = pt_core_news_sm.load()
 
@@ -116,7 +117,7 @@ def extract_syntactic_path(doc, ent1, ent2):
     edges = []
     for token in doc:
         for child in token.children:
-            edges.append(('{0}'.format(token), '{0}'.format(child)))
+            edges.append(("{0}".format(token), "{0}".format(child)))
 
     graph = nx.Graph(edges)
     try:
@@ -170,8 +171,9 @@ def get_model(embedding_layer, max_input_length, num_classes):
     return model
 
 
-def train_lstm(x_train, y_train, word2index, word2embedding, epochs=20, directional=False,
-               save=False):
+def train_lstm(
+    x_train, y_train, word2index, word2embedding, epochs=20, directional=False, save=False
+):
     x_train_vec = vectorize_titles(word2index, x_train)
 
     # get the max sentence length, needed for padding
@@ -207,10 +209,10 @@ def train_lstm(x_train, y_train, word2index, word2embedding, epochs=20, directio
     # save model
     if save:
         date_time = datetime.now().strftime("%Y-%m-%d-%H:%m:%S")
-        model.save(f'trained_models/rel_clf_{date_time}.h5')
-        joblib.dump(word2index, f'trained_models/word2index_{date_time}.joblib')
-        joblib.dump(le, f'trained_models/label_encoder_{date_time}.joblib')
-        with open('trained_models/max_input_length', 'wt') as f_out:
+        model.save(f"trained_models/rel_clf_{date_time}.h5")
+        joblib.dump(word2index, f"trained_models/word2index_{date_time}.joblib")
+        joblib.dump(le, f"trained_models/label_encoder_{date_time}.joblib")
+        with open("trained_models/max_input_length", "wt") as f_out:
             f_out.write(str(max_input_length) + "\n")
 
     return model, le, word2index, max_input_length
@@ -236,9 +238,17 @@ def test_model(model, le, word2index, max_input_length, x_test, y_test, directio
     print_cm(cm, labels=le.classes_)
     print()
 
-    for sent, true_label, pred_label in zip(x_test, y_test, pred_labels):
+    precision_vals, recall_vals, thresholds = plot_precision_recall_curve(
+        predicted_probs, y_test, "relevant", "precision_recall_curve"
+    )
+
+    plot_precision_recall_vs_threshold(
+        precision_vals, recall_vals, thresholds, "precision_recall_vd_threshold"
+    )
+
+    for sent, true_label, pred_label, prob in zip(x_test, y_test, pred_labels, predicted_probs):
         if true_label != pred_label:
-            print(sent, "\t\t", true_label, "\t\t", pred_label)
+            print(sent, "\t\t", true_label, "\t\t", pred_label, prob)
     print()
 
 
@@ -255,12 +265,12 @@ def main():
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
 
         model, le, word2index, max_input_length = train_lstm(
-            x_train, y_train, word2index, word2embedding, epochs=25, directional=True
+            x_train, y_train, word2index, word2embedding, epochs=25, directional=False
         )
-        test_model(model, le, word2index, max_input_length, x_test, y_test, directional=True)
+        test_model(model, le, word2index, max_input_length, x_test, y_test, directional=False)
 
     # train with all data
-    # train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=True, save=True)
+    # train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=True, save=False)
 
 
 if __name__ == "__main__":

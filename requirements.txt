@@ -1,3 +1,4 @@
+matplotlib
 networkx
 requests
 Keras==2.3.1
