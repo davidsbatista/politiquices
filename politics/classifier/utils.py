@@ -1,4 +1,6 @@
-from politics.service.endpoints import nlp
+import networkx as nx
+import pt_core_news_sm
+nlp = pt_core_news_sm.load()
 
 
 def expand_contractions(title):
@@ -66,3 +68,31 @@ def named_entity(sentence):
     doc = nlp(title)
     ent_per = [ent.text for ent in doc.ents if str(ent.label_) == 'PER']
     return ent_per
+
+
+def get_head(tokens):
+    """Gets the head token of a subtree"""
+    if len(tokens) > 1:
+        for token in tokens:
+            if token.head not in tokens or token.head == token:
+                top_token = token
+                break
+    else:
+        top_token = tokens[0]
+
+    return top_token
+
+
+def extract_syntactic_path(doc, ent1, ent2):
+    edges = []
+    for token in doc:
+        for child in token.children:
+            edges.append(("{0}".format(token), "{0}".format(child)))
+
+    graph = nx.Graph(edges)
+    try:
+        path = nx.shortest_path(graph, source=str(get_head(ent1)), target=str(get_head(ent2)))
+    except nx.NetworkXNoPath:
+        return []
+
+    return path

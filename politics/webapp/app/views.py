@@ -1,40 +1,20 @@
 import json
-import os
 import sys
 import logging
-from collections import defaultdict
 
-import joblib
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-from flask import request, jsonify
+from flask import request
 from flask import render_template
 from app import app
 
-from datetime import datetime
-import pt_core_news_sm
 
-nlp = pt_core_news_sm.load()
+from politics.utils.utils import convert_dates
 
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-MODELS = os.path.join(APP_ROOT, 'models/')
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
-clf = joblib.load(MODELS + 'relationship_clf.joblib')
-vectorizer = joblib.load(MODELS + 'vectorizer.joblib')
-le = joblib.load(MODELS + 'label_encoder.joblib')
-
-# utils
-
-
-def convert_dates(date: str):
-    date_obj = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
-    return date_obj.strftime('%Y %b')
-
-
-# web interface
 
 @app.route('/entity')
 def detail_entity():
@@ -193,70 +173,6 @@ def list_entities():
                       'image_url': image_url})
 
     return render_template('all_entities.html', items=items)
-
-
-# http-end-points
-
-@app.route('/sentence')
-def sentence():
-    return render_template('input_sentence.html')
-
-
-@app.route('/sentence_result', methods=['POST'])
-def sentence_result():
-    if request.method == 'POST':
-        data = request.form
-        sent = data['sentence']
-        ent_per = named_entity(sent)
-        clf_result = sentence_classifier(sent)
-        person_mappings = defaultdict(list)
-        for per in ent_per:
-            items = []
-            print(f'querying: {per}')
-            wiki_results = query_wikidata(per)
-            for row in wiki_results['results']['bindings']:
-                url = row['subj']['value']
-                name = row['subjLabel']['value']
-                party = ''
-                if 'political_partyLabel' in row:
-                    party = row['political_partyLabel']['value']
-                items.append({'name': name, 'url': url, 'party': party})
-            person_mappings[per] = items
-
-        result = {'sentence': sent,
-                  'relationship_clf': clf_result, 'named_entities': ent_per,
-                  "wikidata_mappings": person_mappings}
-
-        return jsonify(result)
-        # return render_template('list_sent_clf_results.html', items=result)
-
-
-@app.route('/wikidata')
-def wikidata():
-    return render_template('input_wikidata.html')
-
-
-@app.route('/wikidata_result', methods=['POST'])
-def wikidata_result():
-    items = []
-    if request.method == 'POST':
-        data = request.form
-        results = query_wikidata(data['entity'])
-        for row in results['results']['bindings']:
-            url = row['subj']['value']
-            name = row['subjLabel']['value']
-            party = ''
-            if 'political_partyLabel' in row:
-                party = row['political_partyLabel']['value']
-            items.append({'name': name, 'url': url, 'party': party})
-
-        if data['type'] == 'JSON':
-            return jsonify(items)
-
-        if items:
-            return render_template('list_entities.html', items=items)
-        else:
-            return render_template('list_entities.html')
 
 
 def query_sparql(query, endpoint):

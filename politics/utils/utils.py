@@ -1,3 +1,4 @@
+from datetime import datetime
 from functools import reduce
 from random import randint
 from time import sleep
@@ -65,3 +66,8 @@ def clean_sentence(text):
     ]
 
     return reduce(lambda a, v: a.replace(v, ""), to_clean, text)
+
+
+def convert_dates(date: str):
+    date_obj = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+    return date_obj.strftime('%Y %b')

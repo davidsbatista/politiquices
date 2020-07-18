@@ -3,15 +3,15 @@ from typing import Optional
 
 import joblib
 import pt_core_news_sm
+from elasticsearch import Elasticsearch
 
 from fastapi import FastAPI
 from keras_preprocessing.sequence import pad_sequences
 from keras.models import load_model
 
-app = FastAPI()
+from politics.classifier.embeddings_utils import vectorize_titles
 
-print("Loading spaCy model...")
-nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
+app = FastAPI()
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 MODELS = os.path.join(APP_ROOT, "../classifier/trained_models/")
@@ -20,12 +20,24 @@ RESOURCES = os.path.join(APP_ROOT, "resources/")
 # logger = logging.getLogger(__name__)
 # logger.setLevel(logging.WARNING)
 
+print("Loading spaCy model...")
+nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
+
+print("Setting up connection with Elasticsearch")
+es = Elasticsearch([{"host": "localhost", "port": 9200}])
+
 print("Loading trained models...")
-clf = load_model(MODELS + "rel_clf_2020-07-18-01:07:12.h5")
-word2index = joblib.load(MODELS + "word2index_2020-07-18-01:07:12.joblib")
-le = joblib.load(MODELS + "label_encoder_2020-07-04-02:07:44.joblib")
-with open(MODELS + "max_input_length", "rt") as f_in:
-    max_input_length = int(f_in.read().strip())
+relationship_word2index = joblib.load(MODELS + "relationship_word2index.joblib")
+relationship_clf = load_model(MODELS + "relationship_clf.h5")
+relationship_le = joblib.load(MODELS + "relationship_label_encoder.joblib")
+with open(MODELS + "relationship_max_input_length", "rt") as f_in:
+    relationship_input_length = int(f_in.read().strip())
+
+relevancy_word2index = joblib.load(MODELS + "relevancy_word2index.joblib")
+relevancy_clf = load_model(MODELS + "relevancy_clf.h5")
+relevancy_le = joblib.load(MODELS + "relevancy_label_encoder.joblib")
+with open(MODELS + "relevancy_max_input_length", "rt") as f_in:
+    relevancy_input_length = int(f_in.read().strip())
 
 
 @app.get("/")
@@ -34,16 +46,30 @@ async def root():
 
 
 @app.get("/relevant")
-async def relevant_clf():
-    # ToDo: call the relevant classifier to apply to news titles
-    return {"message": "Hello World"}
+async def classify_relevancy(news_title: Optional[str] = None):
+    word_no_vectors = set()
+    tokens = [str(t).lower() for t in news_title]
+    x_vec = []
+
+    for tok in tokens:
+        if tok in relevancy_word2index:
+            x_vec.append(relevancy_word2index[tok])
+        else:
+            x_vec.append(relevancy_word2index["UNKNOWN"])
+            word_no_vectors.add(tok)
+
+    x_vec_padded = pad_sequences(
+        [x_vec], maxlen=relevancy_input_length, padding="post", truncating="post"
+    )
+
+    predicted_probs = relevancy_clf.predict(x_vec_padded)[0]
+    scores = {label: float(pred) for label, pred in zip(relevancy_le.classes_, predicted_probs)}
+
+    return scores
 
 
 @app.get("/relationship/")
-async def relationship_clf(news_title: Optional[str] = None):
-    # ToDo: if no context or context = 1 char return None
-    # ToDo: logging ?
-
+async def classify_relationship(news_title: Optional[str] = None):
     doc = nlp(news_title)
     persons = [ent.text for ent in doc.ents if ent.label_ == "PER"]
     if len(persons) != 2:
@@ -57,37 +83,72 @@ async def relationship_clf(news_title: Optional[str] = None):
     x_vec = []
 
     for tok in tokens:
-        if tok in word2index:
-            x_vec.append(word2index[tok])
+        if tok in relationship_word2index:
+            x_vec.append(relationship_word2index[tok])
         else:
-            x_vec.append(word2index["UNKNOWN"])
+            x_vec.append(relationship_word2index["UNKNOWN"])
             word_no_vectors.add(tok)
 
     x_vec_padded = pad_sequences(
-        [x_vec], maxlen=max_input_length, padding="post", truncating="post"
+        [x_vec], maxlen=relationship_input_length, padding="post", truncating="post"
     )
-    predicted_probs = clf.predict(x_vec_padded)[0]
-    scores = {label: float(pred) for label, pred in zip(le.classes_, predicted_probs)}
+    predicted_probs = relationship_clf.predict(x_vec_padded)[0]
+    scores = {label: float(pred) for label, pred in zip(relationship_le.classes_, predicted_probs)}
+    wiki_id_1 = await wikidata_linking(persons[0])
+    wiki_id_2 = await wikidata_linking(persons[1])
     result = {
         "title": news_title,
         "entity_1": persons[0],
         "entity_2": persons[1],
-        "entity_1_wiki": "wiki_1",
-        "entity_2_wiki": "wiki_2",
+        "entity_1_wiki": wiki_id_1,
+        "entity_2_wiki": wiki_id_2,
     }
 
     return {**scores, **result}
 
 
-@app.get("/items/")
-async def read_items(q: Optional[str] = None):
-    results = {"items": [{"item_id": "Foo"}, {"item_id": "Bar"}]}
-    if q:
-        results.update({"q": q})
-    return results
-
-
 @app.get("/wikidata")
-async def wikidata_linking():
-    # ToDo: call the relationship classifier to apply to a relevant title
-    return {"message": "Hello World"}
+async def wikidata_linking(entity: str):
+    mappings = {
+        'Costa': 'António Costa',
+        'Durão': 'Durão Barroso',
+        'Ferreira de o Amaral': 'Joaquim Ferreira do Amaral',
+        'Jerónimo': 'Jerónimo de Sousa',
+        'Nobre': 'Fernando Nobre',
+        'Marques Mendes': 'Luís Marques Mendes',
+        'Marcelo': 'Marcelo Rebelo de Sousa',
+        'Rebelo de Sousa': 'Marcelo Rebelo de Sousa',
+        'Carrilho': 'Manuela Maria Carrilho',
+        'Menezes': 'Luís Filipe Menezes',
+        'Moura Guedes': 'Manuela Moura Guedes',
+        'Portas': 'Paulo Portas',
+        'Relvas': 'Miguel Relvas',
+        'Soares': 'Mário Soares',
+        'Sousa Tavares': 'Miguel Sousa Tavares',
+        'Santos Silva': 'Augusto Santos Silva',
+        'Santana': 'Pedro Santana Lopes',
+
+        # due to contractions
+        'Adelino Amaro de a Costa': 'Adelino Amaro da Costa',
+        'Amaro de a Costa': 'Amaro da Costa',
+        'Carvalho de a Silva': 'Carvalho da Silva',
+        'Gomes de a Silva': 'Gomes da Silva',
+        'João César de as Neves': 'João César das Neves',
+        'Rui Gomes de a Silva': 'Rui Gomes da Silva',
+        'Martins de a Cruz': 'Martins da Cruz',
+        'Manuel de os Santos': 'Manuel dos Santos',
+        'Teixeira de os Santos': 'Teixeira dos Santos',
+        'Freitas de o Amaral': 'Freitas do Amaral',
+        'Moreira de a Silva': 'Moreira da Silva',
+        'Paula Teixeira de a Cruz': 'Paula Teixeira da Cruz',
+        'Vieira de a Silva': 'Vieira da Silva'
+    }
+    entity = mappings.get(entity, entity)
+    entity_query = ' AND '.join(entity.split(' '))
+    res = es.search(
+        index="politicians", body={"query": {"query_string": {"query": entity_query}}}
+    )
+    if res['hits']['hits']:
+        return {'wiki_id': res['hits']['hits'][0]['_source']}
+
+    return {'wiki_id': None}

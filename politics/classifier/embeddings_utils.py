@@ -1,5 +1,8 @@
 import numpy as np
+import pt_core_news_sm
 from keras.layers import Embedding
+
+nlp = pt_core_news_sm.load()
 
 
 def load_fasttext_embeddings(file):
@@ -55,3 +58,35 @@ def get_embeddings_layer(embeddings_matrix, max_len, name="embedding_layer", tra
         name=name,
     )
     return embedding_layer
+
+
+def get_embeddings():
+    word2embedding, index2word = load_fasttext_embeddings("skip_s100.txt")
+    word2index = {v: k for k, v in index2word.items()}
+    word2index["PAD"] = 0
+    word2index["UNKNOWN"] = 1
+    index2word[0] = "PAD"
+    index2word[1] = "UNKNOWN"
+    return word2embedding, word2index
+
+
+def vectorize_titles(word2index, x_train):
+    # tokenize the sentences and convert into vector indexes
+    all_sent_tokens = []
+    word_no_vectors = set()
+    for doc in nlp.pipe(x_train, disable=["tagger", "parser", "ner"]):
+        all_sent_tokens.append([str(t).lower() for t in doc])
+    x_train_vec = []
+    for sent in all_sent_tokens:
+        tokens_idx = []
+        for tok in sent:
+            if tok in word2index:
+                tokens_idx.append(word2index[tok])
+            else:
+                tokens_idx.append(word2index["UNKNOWN"])
+                word_no_vectors.add(tok)
+        x_train_vec.append(tokens_idx)
+
+    print("words without vector: ", len(word_no_vectors))
+
+    return x_train_vec

@@ -1,8 +1,9 @@
-
 ### Classifier
+- remove expanded contractions from publico.pt 
+- a classifier/method to detect duplicate titles
+- better/cleaner embeddings
 - refactor `apply_clf_batch.py`
 - apply new model on already crawled data
-- a classifier/method to detect duplicate titles
 
 
 ### Triple Store
@@ -17,14 +18,16 @@
 
 
 ### Wikidata / Entity Linking
+- https://elasticsearch-cheatsheet.jolicode.com/
 - Expand knowledge base:
-    - politicians
+    - politicians -> party to which it belongs
     - bankers
     - political parties
     - etc.
 
 ### Get data from arquivo.pt
     - get latests titles
+        - was this title already processed?
         - time period ?
         - query keywords ? 
  
