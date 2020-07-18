@@ -1,5 +1,6 @@
 import os
 import json
+import sys
 
 from elasticsearch import Elasticsearch
 from elasticsearch import helpers
@@ -29,10 +30,11 @@ def create_index():
 
 def main():
     bulk_data = []
-    for file in os.listdir("."):
+    path = sys.argv[1]
+    for file in os.listdir(path):
         if not file.endswith("json"):
             continue
-        with open(file, 'rt') as f_in:
+        with open(path+"/"+file, 'rt') as f_in:
             data = json.load(f_in)
             wiki_id = file.split(".json")[0]
             data_keys = data['entities'][wiki_id]
@@ -51,6 +53,12 @@ def main():
         print("label: ", label)
         print("aliases: ", aliases)
         print("--------------------")
+
+        """
+        # ToDo: extende aliases for some cases
+        if label == 'António Costa':
+            aliases.append("Costa")
+        """
 
         doc = {
             'wiki': wiki_id,

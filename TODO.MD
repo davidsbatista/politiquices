@@ -13,25 +13,27 @@
         https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
 
 ### Web App
- - do layouts 
+    - do layouts 
 
 
 ### Wikidata / Entity Linking
-- Use initial SPARQL queries to get a list of potentials wiki is:
+- Expand knowledge base:
     - politicians
     - bankers
     - political parties
     - etc.
-    
-- Use this endpoint to get JSON with all the information for each entity:
-    - https://www.mediawiki.org/wiki/Wikibase/EntityData
-    
-- Filter the information by lang: 'pt', 'en', 'de' and index in ElasticSearch
 
-- Evaluate the query 
-
-
-
+### Get data from arquivo.pt
+    - get latests titles
+        - time period ?
+        - query keywords ? 
+ 
+### API - endpoint
+   - relationship classifier
+   - relevancy classifier
+   - wikidata entity linking classifier
+ 
+ 
 ### Other sources:
     https://www.politicaparatodos.pt/
     http://demo.cratica.org/deputados/

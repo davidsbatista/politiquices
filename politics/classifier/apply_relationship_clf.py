@@ -27,19 +27,6 @@ def load_sentences(filename):
     return titles
 
 
-@lru_cache(maxsize=5000, typed=False)
-def query_wikidata(name):
-    url = "http://0.0.0.0:5000/wikidata_result"
-    payload = {"entity": name, "type": "JSON"}
-    response = requests.request("POST", url, data=payload)
-    return response.json()
-
-
-def load_wrong_per():
-    with open("resources/wrong_PER.txt", "rt") as f_in:
-        return [line.strip() for line in f_in]
-
-
 def load_models():
     clf = load_model(MODELS + "rel_clf_2020-07-04-00:07:51.h5")
     word2index = joblib.load(MODELS + "word2index_2020-07-04-00:07:51.joblib")

@@ -238,6 +238,7 @@ def test_model(model, le, word2index, max_input_length, x_test, y_test, directio
     print_cm(cm, labels=le.classes_)
     print()
 
+    """
     precision_vals, recall_vals, thresholds = plot_precision_recall_curve(
         predicted_probs, y_test, "relevant", "precision_recall_curve"
     )
@@ -250,12 +251,14 @@ def test_model(model, le, word2index, max_input_length, x_test, y_test, directio
         if true_label != pred_label:
             print(sent, "\t\t", true_label, "\t\t", pred_label, prob)
     print()
+    """
 
 
 def main():
     data = read_ground_truth(only_label=True)
     docs, labels = pre_process_train_data(data)
     word2embedding, word2index = get_embeddings()
+    """
     skf = StratifiedKFold(n_splits=2, random_state=42, shuffle=True)
 
     for train_index, test_index in skf.split(docs, labels):
@@ -268,9 +271,9 @@ def main():
             x_train, y_train, word2index, word2embedding, epochs=25, directional=False
         )
         test_model(model, le, word2index, max_input_length, x_test, y_test, directional=False)
-
+    """
     # train with all data
-    # train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=True, save=False)
+    train_lstm(docs, labels, word2index, word2embedding, epochs=2, directional=True, save=True)
 
 
 if __name__ == "__main__":
