@@ -1,9 +1,7 @@
 ### Classifier
-- remove expanded contractions from publico.pt 
+- add publico annotated data in training a title relevancy classifier 
 - a classifier/method to detect duplicate titles
 - better/cleaner embeddings
-- refactor `apply_clf_batch.py`
-- apply new model on already crawled data
 
 
 ### Triple Store
@@ -25,21 +23,18 @@
     - political parties
     - etc.
 
+
 ### Get data from arquivo.pt
     - get latests titles
         - was this title already processed?
         - time period ?
         - query keywords ? 
- 
-### API - endpoint
-   - relationship classifier
-   - relevancy classifier
-   - wikidata entity linking classifier
- 
- 
+
+  
 ### Other sources:
     https://www.politicaparatodos.pt/
     http://demo.cratica.org/deputados/
+
 
 ### Documentation
  - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch

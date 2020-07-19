@@ -42,8 +42,8 @@ def read_raw_data(filename):
 def get_model(embedding_layer, max_input_length, num_classes):
     i = Input(shape=(max_input_length,), dtype="int32", name="main_input")
     x = embedding_layer(i)
-    lstm_out = Bidirectional(LSTM(64, dropout=0.3, recurrent_dropout=0.3))(x)
-    o = Dense(num_classes, activation="sigmoid", name="output")(lstm_out)
+    lstm_out = Bidirectional(LSTM(128, dropout=0.3, recurrent_dropout=0.3))(x)
+    o = Dense(num_classes, activation="softmax", name="output")(lstm_out)
     model = Model(inputs=i, outputs=o)
     model.compile(loss={"output": categorical_crossentropy}, optimizer="adam", metrics=["accuracy"])
 
@@ -151,7 +151,7 @@ def main():
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
 
         model, le, word2index, max_input_length = train_lstm(
-            x_train, y_train, word2index, word2embedding, epochs=25, directional=False
+            x_train, y_train, word2index, word2embedding, epochs=20, directional=False, save=True
         )
         test_model(model, le, word2index, max_input_length, x_test, y_test, directional=False)
 

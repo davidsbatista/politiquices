@@ -108,7 +108,7 @@ def train_lstm(
 
     # save model
     if save:
-        date_time = datetime.now().strftime("%Y-%m-%d-%H:%m:%s")
+        date_time = datetime.now().strftime("%Y-%m-%d-%H:%m:%S")
         model.save(f"trained_models/relationship_clf_{date_time}.h5")
         joblib.dump(word2index, f"trained_models/relationship_word2index_{date_time}.joblib")
         joblib.dump(le, f"trained_models/relationship_label_encoder_{date_time}.joblib")

@@ -47,23 +47,12 @@ async def root():
 
 @app.get("/relevant")
 async def classify_relevancy(news_title: Optional[str] = None):
-    word_no_vectors = set()
-    tokens = [str(t).lower() for t in news_title]
-    x_vec = []
-
-    for tok in tokens:
-        if tok in relevancy_word2index:
-            x_vec.append(relevancy_word2index[tok])
-        else:
-            x_vec.append(relevancy_word2index["UNKNOWN"])
-            word_no_vectors.add(tok)
-
-    x_vec_padded = pad_sequences(
-        [x_vec], maxlen=relevancy_input_length, padding="post", truncating="post"
+    x_test_vec = vectorize_titles(relevancy_word2index, [news_title])
+    x_test_vec_padded = pad_sequences(
+        x_test_vec, maxlen=relevancy_input_length, padding="post", truncating="post"
     )
-
-    predicted_probs = relevancy_clf.predict(x_vec_padded)[0]
-    scores = {label: float(pred) for label, pred in zip(relevancy_le.classes_, predicted_probs)}
+    predicted_probs = relevancy_clf.predict(x_test_vec_padded)
+    scores = {label: float(pred) for label, pred in zip(relevancy_le.classes_, predicted_probs[0])}
 
     return scores
 

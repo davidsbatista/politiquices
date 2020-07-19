@@ -4,7 +4,7 @@ import csv
 def read_ground_truth(only_label=False):
     data = []
     with open(
-            "../../data/annotated/political_relationships - annotated_publico.tsv", newline=""
+            "../../data/annotated/political_relationships - publico_fixed.tsv", newline=""
     ) as csvfile:
         titles = csv.reader(csvfile, delimiter="\t", quotechar="|")
         for row in titles:
@@ -24,3 +24,4 @@ def read_ground_truth(only_label=False):
             else:
                 data.append(sample)
     return data
+
