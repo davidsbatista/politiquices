@@ -62,27 +62,14 @@ async def classify_relationship(news_title: Optional[str] = None):
     doc = nlp(news_title)
     persons = [ent.text for ent in doc.ents if ent.label_ == "PER"]
     if len(persons) != 2:
-        pass
-
-    # replace entity name by 'PER'
+        return persons
     news_title_PER = news_title.replace(persons[0], "PER").replace(persons[1], "PER")
-
-    word_no_vectors = set()
-    tokens = [str(t).lower() for t in news_title_PER]
-    x_vec = []
-
-    for tok in tokens:
-        if tok in relationship_word2index:
-            x_vec.append(relationship_word2index[tok])
-        else:
-            x_vec.append(relationship_word2index["UNKNOWN"])
-            word_no_vectors.add(tok)
-
-    x_vec_padded = pad_sequences(
-        [x_vec], maxlen=relationship_input_length, padding="post", truncating="post"
+    x_test_vec = vectorize_titles(relationship_word2index, [news_title_PER])
+    x_test_vec_padded = pad_sequences(
+        x_test_vec, maxlen=relationship_input_length, padding="post", truncating="post"
     )
-    predicted_probs = relationship_clf.predict(x_vec_padded)[0]
-    scores = {label: float(pred) for label, pred in zip(relationship_le.classes_, predicted_probs)}
+    predicted_probs = relationship_clf.predict(x_test_vec_padded)
+    scores = {label: float(pred) for label, pred in zip(relationship_le.classes_, predicted_probs[0])}
     wiki_id_1 = await wikidata_linking(persons[0])
     wiki_id_2 = await wikidata_linking(persons[1])
     result = {
