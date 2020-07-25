@@ -85,6 +85,7 @@ async def classify_relationship(news_title: Optional[str] = None):
 
 @app.get("/wikidata")
 async def wikidata_linking(entity: str):
+    # ToDo: handle this in indexing
     mappings = {
         'Costa': 'António Costa',
         'Durão': 'Durão Barroso',

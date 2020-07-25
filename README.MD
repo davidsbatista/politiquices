@@ -247,7 +247,7 @@
     } ORDER BY ?start
 
 
-   Getting statments values
+   Getting statements values
    - https://stackoverflow.com/questions/54974504/sparql-question-how-to-return-property-labels-and-associated-date-qualifiers-fr
    - https://stackoverflow.com/questions/36023098/querying-wikidata-difference-between-p-and-wdt-default-prefix
 

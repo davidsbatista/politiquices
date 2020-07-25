@@ -1,3 +1,6 @@
+
+.SILENT: start
+
 lint:
 	/Users/dsbatista/virtual_envs/python38/bin/flake8
 	# pylint arquivo.pt --rcfile=pylint.cfg
@@ -7,3 +10,6 @@ lint:
 	# pylint webapp --rcfile=pylint.cfg
 	# pylint wikidata --rcfile=pylint.cfg
 
+start:
+	$(MAKE) -C wikidata build
+	$(MAKE) -C service start

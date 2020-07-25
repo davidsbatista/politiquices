@@ -1,11 +1,12 @@
 ### Classifier
 - add publico annotated data in training a title relevancy classifier 
-- a classifier/method to detect duplicate titles
 - better/cleaner embeddings
+- Classifier API:
+    - https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
 
 
 ### Triple Store
- - automatically load TTL into dataset in Fuseki 
+ - Docker: automatically load TTL into dataset in Fuseki 
  - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
  - set timeout query on Fuseki 
  - use OR in FILTER to avoid doing two queries: 
@@ -13,24 +14,35 @@
 
 ### Web App
     - do layouts 
+    - listar todas pessoas
+    - listar todos os partidos/organizações
+    - listar pessoas com informação incompleta: foto, cargos, etc.
+    - clicar numa pessoa: desenvolver mais
 
 
 ### Wikidata / Entity Linking
-- https://elasticsearch-cheatsheet.jolicode.com/
-- Expand knowledge base:
-    - politicians -> party to which it belongs
-    - bankers
-    - political parties
-    - etc.
+ - Automate loading with Docker
+ - https://elasticsearch-cheatsheet.jolicode.com/
+ - Expand knowledge base:
+     - politicians -> party to which it belongs
+     - bankers
+     - political parties
+     - add Madeira and Azores regional government politicians
+     - add anyone that was/is member of portuguese political party
+     - add anyone that was/is member of portuguese public institutions, e.g.: CGD, Banco Portugal
+     - guys like: Zeinal Bava, portuguese top managers
+     - etc.
 
 
 ### Get data from arquivo.pt
     - get latests titles
-        - was this title already processed?
+        - query keywords ?
         - time period ?
-        - query keywords ? 
-
-  
+        - was this title already processed?
+            - is in some BD ?
+            - method to detect duplicate titles: semantically similar
+            
+        
 ### Other sources:
     https://www.politicaparatodos.pt/
     http://demo.cratica.org/deputados/

@@ -17,11 +17,17 @@ def main():
         "maxItems": 500,
         "itemsPerSite": 1,
         "type": "html",
-        "fields": "title,tstamp",
+        "fields": "title, tstamp, originalURL, linkToArchive",
     }
 
     response = requests.get(URL_REQUEST, params=params, timeout=45)
     response_dict = response.json()
+
+    for item in response_dict['response_items']:
+        for k, v in item.items():
+            print(k, '\t', v)
+        print()
+
     unquote(response_dict['next_page'])
 
 
