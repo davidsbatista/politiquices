@@ -17,6 +17,7 @@ def write_iterator_to_file(iter_struct, filename):
 
 
 def clean_sentence(text):
+    text = text.strip().strip("\u200b")
     to_clean = [
         " | Expresso.pt",
         " - Visao.pt",
@@ -62,7 +63,10 @@ def clean_sentence(text):
         " - Galerias - DN",
         "- ZAP",
         "- Política",
-        "- Sociedade"
+        "- Sociedade",
+        "- Economima",
+        " – Página 2",
+        "- Notícias"
     ]
 
     return reduce(lambda a, v: a.replace(v, ""), to_clean, text)

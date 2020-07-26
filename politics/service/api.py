@@ -17,9 +17,6 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 MODELS = os.path.join(APP_ROOT, "../classifier/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
 
-# logger = logging.getLogger(__name__)
-# logger.setLevel(logging.WARNING)
-
 print("Loading spaCy model...")
 nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
 
@@ -59,9 +56,14 @@ async def classify_relevancy(news_title: Optional[str] = None):
 
 @app.get("/relationship/")
 async def classify_relationship(news_title: Optional[str] = None):
+
+    # ToDo: if no persons are found try string matching with wikidata ?
+    # ToDo: log everything for analysis
+    # logger = logging.getLogger(__name__)
+    # logger.setLevel(logging.WARNING)
+
     doc = nlp(news_title)
     persons = [ent.text for ent in doc.ents if ent.label_ == "PER"]
-    # ToDo: if no persons are found try string matching with wikidata ?
     if len(persons) != 2:
         return {'not enough entities': persons}
     news_title_PER = news_title.replace(persons[0], "PER").replace(persons[1], "PER")
@@ -71,15 +73,29 @@ async def classify_relationship(news_title: Optional[str] = None):
     )
     predicted_probs = relationship_clf.predict(x_test_vec_padded)
     scores = {label: float(pred) for label, pred in zip(relationship_le.classes_, predicted_probs[0])}
-    wiki_id_1 = await wikidata_linking(persons[0])
-    wiki_id_2 = await wikidata_linking(persons[1])
     result = {
         "title": news_title,
         "entity_1": persons[0],
         "entity_2": persons[1],
-        "entity_1_wiki": wiki_id_1['wiki_id'],
-        "entity_2_wiki": wiki_id_2['wiki_id'],
     }
+
+    wiki_id_1 = None
+    wiki_id_2 = None
+    try:
+        wiki_id_1 = await wikidata_linking(persons[0])
+        wiki_id_2 = await wikidata_linking(persons[1])
+    except Exception as e:
+        print(type(e))
+        print(e)
+        # ToDo: log this error
+        # e.g: RequestError(400, 'search_phase_execution_exception', 'Failed to parse query [Fernando AND Gomes AND  AND Lusa]')
+
+    if wiki_id_1 and wiki_id_2:
+        result.update({"entity_1_wiki": wiki_id_1['wiki_id'],
+                       "entity_2_wiki": wiki_id_2['wiki_id']})
+    else:
+        result.update(
+            {"entity_1_wiki": None, "entity_2_wiki": None})
 
     return {**scores, **result}
 
@@ -122,7 +138,7 @@ async def wikidata_linking(entity: str):
         'Vieira de a Silva': 'Vieira da Silva'
     }
     entity = mappings.get(entity, entity)
-    entity_query = ' AND '.join(entity.split(' '))
+    entity_query = ' AND '.join(entity.split(' ')).replace(':', '')
     res = es.search(
         index="politicians", body={"query": {"query_string": {"query": entity_query}}}
     )

@@ -1,12 +1,7 @@
 Estremadoura:
-www.dn.pt
-www.publico.pt
 www.cmjornal.pt
-www.ionline.pt
 www.destak.pt
-www.record.pt
-www.abola.pt
-www.jornaleconomico.sapo.pt
+
 www.jornaldenegocios.pt
 www.sapo.pt
 www.observador.pt
