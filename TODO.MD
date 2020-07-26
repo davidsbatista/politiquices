@@ -41,7 +41,7 @@
 
 ### Wikidata / Entity Linking
  - https://elasticsearch-cheatsheet.jolicode.com/
- - Expand knowledge base:
+ - 'get_relevant_entities.py' should output .JSON like in 'get_relevant_persons_JSON.py'
      - politicians -> party to which it belongs
      - bankers
      - political parties
