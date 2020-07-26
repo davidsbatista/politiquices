@@ -61,8 +61,9 @@ async def classify_relevancy(news_title: Optional[str] = None):
 async def classify_relationship(news_title: Optional[str] = None):
     doc = nlp(news_title)
     persons = [ent.text for ent in doc.ents if ent.label_ == "PER"]
+    # ToDo: if no persons are found try string matching with wikidata ?
     if len(persons) != 2:
-        return persons
+        return {'not enough entities': persons}
     news_title_PER = news_title.replace(persons[0], "PER").replace(persons[1], "PER")
     x_test_vec = vectorize_titles(relationship_word2index, [news_title_PER])
     x_test_vec_padded = pad_sequences(
@@ -76,8 +77,8 @@ async def classify_relationship(news_title: Optional[str] = None):
         "title": news_title,
         "entity_1": persons[0],
         "entity_2": persons[1],
-        "entity_1_wiki": wiki_id_1,
-        "entity_2_wiki": wiki_id_2,
+        "entity_1_wiki": wiki_id_1['wiki_id'],
+        "entity_2_wiki": wiki_id_2['wiki_id'],
     }
 
     return {**scores, **result}

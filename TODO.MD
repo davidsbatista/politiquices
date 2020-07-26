@@ -1,4 +1,13 @@
+### Arquivo.PT
+    - get latests titles
+        - query keywords ?
+        - time period ?
+        - was this title already processed?
+            - is in some BD ?
+            - method to detect duplicate titles: semantically similar
+
 ### Classifier
+- Apply string cleaning
 - add publico annotated data in training a title relevancy classifier 
 - better/cleaner embeddings
 - Classifier API:
@@ -12,16 +21,20 @@
  - use OR in FILTER to avoid doing two queries: 
         https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
 
+
 ### Web App
     - do layouts 
     - listar todas pessoas
     - listar todos os partidos/organizações
     - listar pessoas com informação incompleta: foto, cargos, etc.
-    - clicar numa pessoa: desenvolver mais
-
+        - sugerir para completar:
+            https://www.politicaparatodos.pt/
+            http://demo.cratica.org/deputados/            
+    
+    - clicar numa pessoa: desenvolver mai
+    - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch
 
 ### Wikidata / Entity Linking
- - Automate loading with Docker
  - https://elasticsearch-cheatsheet.jolicode.com/
  - Expand knowledge base:
      - politicians -> party to which it belongs
@@ -32,21 +45,3 @@
      - add anyone that was/is member of portuguese public institutions, e.g.: CGD, Banco Portugal
      - guys like: Zeinal Bava, portuguese top managers
      - etc.
-
-
-### Get data from arquivo.pt
-    - get latests titles
-        - query keywords ?
-        - time period ?
-        - was this title already processed?
-            - is in some BD ?
-            - method to detect duplicate titles: semantically similar
-            
-        
-### Other sources:
-    https://www.politicaparatodos.pt/
-    http://demo.cratica.org/deputados/
-
-
-### Documentation
- - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch
