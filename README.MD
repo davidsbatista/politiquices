@@ -1,3 +1,10 @@
+## Start all the services
+
+    virtual_env
+    export PYTHONPATH=/Users/dsbatista/PycharmProjects/politic-relationships/
+    make start
+
+
 ## Gold-Data annotations guidelines
     ToDo
 

@@ -13,3 +13,6 @@ lint:
 start:
 	$(MAKE) -C wikidata build
 	$(MAKE) -C service start
+
+api:
+	$(MAKE) -C service start
