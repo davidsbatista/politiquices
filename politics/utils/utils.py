@@ -4,9 +4,10 @@ from random import randint
 from time import sleep
 
 
-def just_sleep(upper_bound=3):
+def just_sleep(upper_bound=3, verbose=False):
     sec = randint(1, upper_bound)
-    print(f"sleeping for {sec} seconds")
+    if verbose:
+        print(f"sleeping for {sec} seconds")
     sleep(sec)
 
 

@@ -39,7 +39,7 @@
     #  - add anyone that was/is member of portuguese public institutions, e.g.: CGD, Banco Portugal
     #  - Zeinal Bava
 
-## 1. Arquivo.pt data 
+## 1. Arquivo.pt data (arquivo.pt)
 
    Get news articles from arquivo.pt where politicians (`/wikidata/politicians_no_parties.json`) 
    are mentioned: 
@@ -52,7 +52,7 @@
        - arquivo.pt URL
        
        
-## 2. Relationship Classifier
+## 2. Relationship Classifier (classifier)
 
    - Relationship Classifier
 

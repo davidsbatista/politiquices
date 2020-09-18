@@ -1,3 +1,4 @@
+import json
 import sys
 
 import requests
@@ -21,6 +22,29 @@ affiliated_with_relevant_political_party = """
              ?person rdfs:label ?personLabel }
         FILTER(LANG(?personLabel) = "pt")
 
+    } ORDER BY ?personLabel
+    """
+
+# all portuguese bankers
+portuguese_bankers = """
+    SELECT DISTINCT ?pessoa ?pessoaLabel ?x WHERE {
+        ?pessoa wdt:P106 wd:Q806798;
+          rdfs:label ?pessoaLabel.
+        ?pessoa wdt:P27 wd:Q45
+      FILTER((LANG(?pessoaLabel)) = "pt")
+    }
+    ORDER BY (?pessoaLabel)
+    """
+
+# portuguese_business_man
+portuguese_business_man = """
+    SELECT DISTINCT ?person ?personLabel
+    WHERE {
+      ?person wdt:P106 wd:Q43845.
+      ?person rdfs:label ?personLabel.
+      ?person wdt:P27 wd:Q45.
+
+      FILTER(LANG(?personLabel) = "pt")
     } ORDER BY ?personLabel
     """
 
@@ -64,17 +88,6 @@ portuguese_banks = """
 
     """
 
-# all portuguese bankers
-portuguese_bankers = """
-    SELECT DISTINCT ?pessoa ?pessoaLabel ?x WHERE {
-        ?pessoa wdt:P106 wd:Q806798;
-          rdfs:label ?pessoaLabel.
-        ?pessoa wdt:P27 wd:Q45
-      FILTER((LANG(?pessoaLabel)) = "pt")
-    }
-    ORDER BY (?pessoaLabel)
-    """
-
 # all_portuguese_municipalities
 portuguese_municipalities = """
     SELECT DISTINCT ?locality ?localityLabel WHERE {
@@ -96,6 +109,17 @@ persons_affiliated_with_any_political_party = """"
     } ORDER BY ?personLabel
     """
 
+# all public portuguese enterprises
+portuguese_public_enterprises = """
+    SELECT DISTINCT ?enterprise ?enterpriseLabel ?x WHERE {
+        ?enterprise wdt:P31 wd:Q270791;
+          rdfs:label ?enterpriseLabel.
+        ?enterprise wdt:P17 wd:Q45;
+      FILTER((LANG(?enterpriseLabel)) = "pt")
+    }
+    ORDER BY (?enterpriseLabel)
+    """
+
 # get a list of all possible public office positions hold by a someone portuguese
 public_office_positions = """
     SELECT DISTINCT ?personLabel ?person ?positionLabel ?position WHERE {
@@ -110,29 +134,6 @@ public_office_positions = """
     LIMIT 100
     """
 
-# all public portuguese enterprises
-portuguese_public_enterprises = """
-    SELECT DISTINCT ?enterprise ?enterpriseLabel ?x WHERE {
-        ?enterprise wdt:P31 wd:Q270791;
-          rdfs:label ?enterpriseLabel.
-        ?enterprise wdt:P17 wd:Q45;
-      FILTER((LANG(?enterpriseLabel)) = "pt")
-    }
-    ORDER BY (?enterpriseLabel)
-    """
-
-# portuguese_business_man
-portuguese_business_man = """
-    SELECT DISTINCT ?person ?personLabel
-    WHERE {
-      ?person wdt:P106 wd:Q43845.
-      ?person rdfs:label ?personLabel.
-      ?person wdt:P27 wd:Q45.
-    
-      FILTER(LANG(?personLabel) = "pt")
-    } ORDER BY ?personLabel
-    """
-
 
 def get_relevant_persons_based_on_public_office_positions():
     """
@@ -145,15 +146,21 @@ def get_relevant_persons_based_on_public_office_positions():
     :return:
     """
 
-    query = """
+    wiki_ids = []
+    with open('public_office_positions.json') as f_in:
+        data = json.load(f_in)
+        for k, v in data.items():
+            for wiki_id, description in v.items():
+                wiki_ids.append('wd:'+wiki_id)
+
+    query = f"""
     SELECT DISTINCT ?person ?personLabel
-    WHERE {
-      VALUES ?positions { wd:Q19953703 wd:Q1723031 wd:Q322459 wd:Q1101237 wd:Q43185970 wd:Q82560916}
-      ?person p:P39 ?position_held.
-      ?position_held ps:P39 ?positions .
+    WHERE {{
+      VALUES ?positions {{ {' '.join(wiki_ids)} }}
+      ?person wdt:P39 ?positions.
       ?person rdfs:label ?personLabel
       FILTER(LANG(?personLabel) = "pt")
-    } ORDER BY ?personLabel
+    }} ORDER BY ?personLabel
     """
 
     return query
@@ -169,20 +176,27 @@ def get_results(endpoint_url, sarpql_query):
 
 
 def main():
-    queries = [affiliated_with_relevant_political_party]
+    queries = [affiliated_with_relevant_political_party,
+               get_relevant_persons_based_on_public_office_positions()]
+
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
     endpoint_url = "https://query.wikidata.org/sparql"
+    relevant_persons_ids = []
+    default_dir = 'wiki_jsons/'
 
-    # ToDo: handle duplicates
+    # get the wiki ids for all relevant persons
     for query in queries:
         results = get_results(endpoint_url, query)
         wiki_ids = [r['person']['value'].split("/")[-1] for r in results["results"]["bindings"]]
-        wiki_json = [base_url+wiki_id+'.json' for wiki_id in wiki_ids]
-        for wiki_id, url in zip(wiki_ids, wiki_json):
-            print(url)
-            just_sleep(2)
-            r = requests.get(url, params={'format': 'json', 'id': wiki_id})
-            open(wiki_id+'.json', 'wt').write(r.text)
+        relevant_persons_ids.extend(wiki_ids)
+
+    # get detailed information for each person
+    for idx, wiki_id in enumerate(set(relevant_persons_ids)):
+        print(str(idx)+'/'+str(len(set(relevant_persons_ids))))
+        just_sleep(2)
+        url = base_url + wiki_id + '.json'
+        r = requests.get(url, params={'format': 'json', 'id': wiki_id})
+        open(default_dir+wiki_id+'.json', 'wt').write(r.text)
 
 
 if __name__ == '__main__':

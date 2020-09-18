@@ -10,9 +10,14 @@
 
 # Build Entity Knowledge Base
 
-    1. Get data
-
-
-    2. Index into Elastic Search
+   1. Get raw data from WikiData
+    
+    
+        mkdir wiki_jsons/
         
-        - python create_es_index.py wiki_jsons/
+        python get_KB_entities.py
+
+   2. Index into Elastic Search
+        
+        
+        python create_es_index.py wiki_jsons/

@@ -19,8 +19,8 @@
 
   "Parliament and Republic": {
     "Q25448371":"Presidente da Assembleia da República Portuguesa",
-    "Q19953703":"Deputado da Assembleia da República"
-    "Q322459":"Presidente da República Portuguesa"
+    "Q19953703":"Deputado da Assembleia da República",
+    "Q322459":"Presidente da República Portuguesa",
     "Q60999452":"Procurador-geral da República"},
 
   "Regional Governments": {
@@ -50,7 +50,7 @@
 
   "Misc. Public Positions": {
     "Q50362555":"Governador do Banco de Portugal",
-    "Q89840006":"Secretário de Estado do Turismo",
+    "Q89840006":"Secretário de Estado do Turismo"
   },
 
   "PALOPS": {
@@ -58,6 +58,3 @@
     "Q18565665":"Presidente de Moçambique",
     "Q19058289":"Presidente de São Tomé e Príncipe"}
 }
-
-
-
