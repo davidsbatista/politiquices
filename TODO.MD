@@ -19,11 +19,13 @@
 
 ### Triple Store
  - Create an RDF from all the processed JSONs
- - Docker: automatically load TTL into dataset in Fuseki 
- - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
- - set timeout query on Fuseki 
- - use OR in FILTER to avoid doing two queries: 
-        https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
+ - Infrastructure:
+    - Docker: automatically load TTL into dataset in Fuseki
+    - set timeout query on Fuseki
+ - SPARQL queries:
+        - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
+        - use OR in FILTER to avoid doing two queries: 
+            https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
 
 
 ### Web App
@@ -41,12 +43,3 @@
 
 ### Wikidata / Entity Linking
  - https://elasticsearch-cheatsheet.jolicode.com/
- - 'get_relevant_entities.py' should output .JSON like in 'get_relevant_persons_JSON.py'
-     - politicians -> party to which it belongs
-     - bankers
-     - political parties
-     - add Madeira and Azores regional government politicians
-     - add anyone that was/is member of portuguese political party
-     - add anyone that was/is member of portuguese public institutions, e.g.: CGD, Banco Portugal
-     - guys like: Zeinal Bava, portuguese top managers
-     - etc.

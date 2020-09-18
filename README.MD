@@ -1,12 +1,26 @@
-## Start all the services
+## Start all the backend services
 
-    virtual_env
+    start the virtual_env e.g.: 
+        source ~/virtual_envs/python38/bin/activate
+    cd politics/
     export PYTHONPATH=/Users/dsbatista/PycharmProjects/politic-relationships/
     make start
+    
+   
+    Relationship classifier: 
+        http://127.0.0.1:8000/relationship/?news_title=Costa tenta esvaziar revisão constitucional proposta por André Ventura
+    
+    Relevancy classifier
+        http://127.0.0.1:8000/relevant?news_title=Sampaio critica política de saúde de Arcanjo
+    
+    Entity Linking
+        http://127.0.0.1:8000/wikidata?entity=Costa
+    
 
 
 ## Gold-Data annotations guidelines
     ToDo
+
 
 ## 0. Build a Knowledge Base for the news domain using the Wikidata annotated data
 
