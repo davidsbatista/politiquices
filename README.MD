@@ -22,23 +22,6 @@
     ToDo
 
 
-## 0. Build a Knowledge Base for the news domain using the Wikidata annotated data
-
-   Read the annotated ground truth data and extract from each entity:
-     - the instance type
-     - all the occupations from 'occupation'
-     - all positions from 'position_held'
-     - all the political parties from 'member of political party'
-     
-   Then get all persons that have an occupation, a position or belong to any party from all the
-   info gathered before  
-   
-   # ToDo:
-    #  - add Madeira and Azores politicians
-    #  - add anyone that was/is member of portuguese political party
-    #  - add anyone that was/is member of portuguese public institutions, e.g.: CGD, Banco Portugal
-    #  - Zeinal Bava
-
 ## 1. Arquivo.pt data (arquivo.pt)
 
    Get news articles from arquivo.pt where politicians (`/wikidata/politicians_no_parties.json`) 

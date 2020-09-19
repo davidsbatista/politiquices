@@ -20,4 +20,11 @@
    2. Index into Elastic Search
         
         
-        python create_es_index.py wiki_jsons/
+        python index_wikidata.py wiki_jsons/
+
+   3. Evaluate annotated data against Index
+   
+      
+        python evaluate_entity_linking.py
+
+
