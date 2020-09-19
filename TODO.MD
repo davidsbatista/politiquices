@@ -1,11 +1,3 @@
-### Arquivo.PT
-  - stored all processed data in JSON into a ElasticSearch
-  - get latest titles:
-      - query keywords ?
-      - time period ?
-  - method to detect duplicate titles: semantically similar
-
-
 ### API
  - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching
  - Classifier API arch: https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459

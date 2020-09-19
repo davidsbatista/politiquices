@@ -28,6 +28,7 @@ SPECIAL_CHARACTERS_DICT = dict(
     ]
 )
 
+
 # limit thresholds
 #  https://docs.google.com/spreadsheets/d/1f4OZWE1BOtMS7JJcruNh8Rpem-MbmBVnLrERcmP9OZU/edit#gid=0
 
@@ -90,7 +91,7 @@ class ArquivoPT(BaseDataSource):
     DATETIME_FORMAT = "%Y%m%d%H%M%S"
 
     def __init__(
-        self, max_items_per_site=50, domains_by_request=1, processes=2, docs_per_query=2000
+            self, max_items_per_site=50, domains_by_request=1, processes=2, docs_per_query=2000
     ):
         BaseDataSource.__init__(self, "ArquivoPT")
         self.max_items_per_site = max_items_per_site
@@ -241,8 +242,8 @@ class ArquivoPT(BaseDataSource):
                 results[url_domain] = {}
 
             if (
-                item_result.url not in results[url_domain]
-                or results[url_domain][item_result.url].datetime > item_result.datetime
+                    item_result.url not in results[url_domain]
+                    or results[url_domain][item_result.url].datetime > item_result.datetime
             ):
                 results[url_domain][item_result.url] = item_result
         result_array = []
@@ -252,30 +253,29 @@ class ArquivoPT(BaseDataSource):
         return result_array
 
 
-def load_politicians():
-    names = dict()
-    with open('../wikidata/politicians_no_parties.json', 'rt') as f_in:
-        data = json.load(f_in)
-        for person in data['results']['bindings']:
-            person_uri = person['person']['value']
-            person_name = person['personLabel']['value']
-            names[person_uri] = person_name
-
+def load_entities():
+    names = []
+    with open('../data/entities_names.txt', 'rt') as f_in:
+        for line in f_in:
+            if not line.startswith('#') and len(line) > 1:
+                names.append(line.strip('\n'))
+                print(line.strip())
     return names
 
 
 def load_domains():
     domains = []
-    with open('data/domains.txt', 'rt') as f_in:
+    with open('../data/domains.txt', 'rt') as f_in:
         for line in f_in:
-            domains.append(line.strip('\n'))
+            if not line.startswith('#') and len(line) > 1:
+                domains.append(line.strip('\n'))
     return domains
 
 
 def main():
-
     domains = load_domains()
-    names = load_politicians()
+    names = load_entities()
+    exit(-1)
 
     for idx, (k, v) in enumerate(names.items()):
         print(idx, v)
@@ -294,7 +294,6 @@ def main():
 
 
 def query_arquivo(name, domains):
-
     params = {
         "domains": domains,
         "from": datetime(year=1996, month=1, day=1),
