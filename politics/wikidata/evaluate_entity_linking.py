@@ -1,8 +1,6 @@
-import sys
-
 from functools import lru_cache
 from elasticsearch import Elasticsearch
-from politics.utils import just_sleep, read_ground_truth, write_iterator_to_file
+from politics.utils import read_ground_truth, write_iterator_to_file
 
 ent_string = []
 ent_true = []

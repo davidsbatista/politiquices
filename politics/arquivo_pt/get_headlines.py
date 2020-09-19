@@ -266,7 +266,7 @@ def load_politicians():
 
 def load_domains():
     domains = []
-    with open('domains.txt', 'rt') as f_in:
+    with open('data/domains.txt', 'rt') as f_in:
         for line in f_in:
             domains.append(line.strip('\n'))
     return domains

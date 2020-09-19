@@ -21,3 +21,11 @@
 # BibTeX
 *.bbl
 *.blg
+
+# directories
+data/
+open_ie/
+politics/classifier/plots/
+politics/classifier/resources/
+politics/classifier/trained_models/
+politics/wikidata/wiki_jsons/

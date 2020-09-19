@@ -43,3 +43,4 @@
 
 ### Wikidata / Entity Linking
  - https://elasticsearch-cheatsheet.jolicode.com/
+ - Filter out ppl born before 1900
