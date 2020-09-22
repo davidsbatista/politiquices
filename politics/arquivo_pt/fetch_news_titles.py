@@ -1,4 +1,5 @@
 import concurrent
+import json
 from collections import defaultdict
 from concurrent.futures.thread import ThreadPoolExecutor
 from datetime import datetime
@@ -10,65 +11,61 @@ from loguru import logger
 import requests
 
 from politics.arquivo_pt.utils import load_domains
-from politics.utils import just_sleep
+
 
 # https://docs.google.com/spreadsheets/d/1f4OZWE1BOtMS7JJcruNh8Rpem-MbmBVnLrERcmP9OZU/edit#gid=0
 
 URL_REQUEST = "http://arquivo.pt/textsearch"
 
+domains_crawled_dates = None
+
 
 def runner(domains, query):
-    # ToDo: what can go wrong? how to account for possible errors and save all results
-    # ToDo: log all the success and failed queries
-
-    print(f'querying for {len(domains)} domains')
-
     all_results = defaultdict(list)
-
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-
-        # Start the load operations and mark each future with its URL
         future_to_url = {executor.submit(query_arquivo, query, url): url for url in domains}
-
         try:
-            for future in concurrent.futures.as_completed(future_to_url, timeout=0.00001):
+            for future in concurrent.futures.as_completed(future_to_url, timeout=120):
                 url = future_to_url[future]
-                http_code, data = future.result()
-                # ToDo: add query,url,from,to
-                # ToDo: log if there was an error, query_arquivo() return HTTP codes and result
-                if http_code == 200:
-                    print(url, len(data), query)
-                    all_results[url] = data
-                else:
-                    print(http_code)
+                data = future.result()
+                all_results[url] = data
+                logger.info(f'{url}\t{len(data)}')
                 # ToDo: log success for query,url,from,to
 
         except Exception as exc:
-            print('%r generated an exception: %s' % (query, exc))
+            logger.debug(f'{query} generated an exception: {exc}')
 
     return all_results
 
 
-def query_arquivo(query, domain):
-
-    # just_sleep(5)
+def query_arquivo(query, domain, timeout=10, n_attempts=10):
 
     params = {
         "q": query,
+        "from": domains_crawled_dates[domain]['first_crawl'],
+        "to": domains_crawled_dates[domain]['last_crawl'],
         "siteSearch": domain,
         "maxItems": 2000,
         "dedupField": 'title',
         "type": "html",
         "fields": "title, tstamp, linkToArchive",
     }
-    # print("querying: ", domain)
-    response = requests.get(URL_REQUEST, params=params, timeout=20)
+    # ToDo: log this query?
 
-    if response.status_code == 200:
-        response_dict = response.json()
-        return 200, response_dict['response_items']
+    for i in range(n_attempts):
+        if i > 0:
+            print(query, domain, "attempt: ", i)
+        try:
+            response = requests.get(URL_REQUEST, params=params, timeout=timeout+(i*3))
+            if response.status_code == 200:
+                response_dict = response.json()
+                return response_dict['response_items']
+            logger.info(f'{domain}\t{response.reason}\t{response.status_code}')
+        except Exception as exc:
+            print("Exception: ", exc)
+            print(query, domain)
 
-    return response.status_code, None
+    return None
 
 
 def load_entities():
@@ -84,13 +81,24 @@ def main():
     domains = load_domains()
     names = load_entities()
 
-    # ToDo: read domains crawled span times
+    print("querying:")
+    print(f'{len(domains)} domains')
+    print(f'{len(names)} entities')
+    print()
+
+    # read domains crawled span times
+    with open('domains_crawled_dates.json') as f_in:
+        global domains_crawled_dates
+        domains_crawled_dates = json.load(f_in)
 
     for name in names:
+        if name < 'Ricardo Mourinho Félix':
+            continue
         print(name)
         f_name = '_'.join(name.split()) + '.jsonl'
-        results = runner(domains[:4], name)
+        results = runner(domains, name)
         if results:
+            # ToDo: index this files in MongoDB
             with jsonlines.open(f_name, mode='w') as writer:
                 for k, v in results.items():
                     for r in v:
