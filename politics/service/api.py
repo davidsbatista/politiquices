@@ -62,6 +62,29 @@ async def classify_relationship(news_title: Optional[str] = None):
     # logger = logging.getLogger(__name__)
     # logger.setLevel(logging.WARNING)
 
+    # ToDo:
+    """
+    def filter_sentences_persons(titles):
+        # filter only the ones with at least two 'PER'
+        # ToDo: add also 'PER' from a hand-crafted list,
+        #  see: https://spacy.io/usage/rule-based-matching
+        wrong_PER = load_wrong_per()
+        print(f"Extracting named-entities from {len(titles)} titles")
+        titles_doc = [(t[0], nlp(t[1]), t[2]) for t in titles]
+        titles_per = []
+        for title in titles_doc:
+            persons = [ent.text for ent in title[1].ents if ent.label_ == "PER"]
+            if len(persons) == 2:
+                if not set(persons).intersection(set(wrong_PER)):
+                    titles_per.append((title, persons))
+
+        return titles_per
+    """
+
+    """
+    if cleaned_title == extractd entities skip
+    """
+
     doc = nlp(news_title)
     persons = [ent.text for ent in doc.ents if ent.label_ == "PER"]
     if len(persons) != 2:

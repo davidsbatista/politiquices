@@ -1,12 +1,15 @@
-### API
- - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching
- - Classifier API arch: https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
- - log when queries to ElasticSearch fail
-
-
-### Classifiers
- - add publico annotated data in training a title relevancy classifier 
- - better/cleaner embeddings
+### API / Classifiers
+   
+   - Service:
+     - load classes instead raw model files 
+     - Classifier API arch: https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
+     - log when queries to ElasticSearch fail
+   
+   - Classifiers
+     - Make a class for each classifier with .train() and .tag() methods()
+     - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching
+     - add publico annotated data in training a title relevancy classifier 
+     - better/cleaner embeddings
 
 
 ### Triple Store

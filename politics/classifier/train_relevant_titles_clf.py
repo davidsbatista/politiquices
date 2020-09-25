@@ -14,9 +14,12 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
 
-from politics.classifier.embeddings_utils import (create_embeddings_matrix, get_embeddings,
-                                                  get_embeddings_layer, vectorize_titles)
-from politics.classifier.train_relationship_clf import test_model, train_lstm
+from politics.classifier.embeddings_utils import (
+    create_embeddings_matrix,
+    get_embeddings,
+    get_embeddings_layer,
+    vectorize_titles,
+)
 from politics.utils import clean_sentence, print_cm
 from politics.utils.ml_utils import plot_precision_recall_curve, plot_precision_recall_vs_threshold
 
@@ -39,96 +42,121 @@ def read_raw_data(filename):
     return data
 
 
-def get_model(embedding_layer, max_input_length, num_classes):
-    i = Input(shape=(max_input_length,), dtype="int32", name="main_input")
-    x = embedding_layer(i)
-    lstm_out = Bidirectional(LSTM(128, dropout=0.3, recurrent_dropout=0.3))(x)
-    o = Dense(num_classes, activation="softmax", name="output")(lstm_out)
-    model = Model(inputs=i, outputs=o)
-    model.compile(loss={"output": categorical_crossentropy}, optimizer="adam", metrics=["accuracy"])
+class RelevancyClassifier:
+    def __init__(self, epochs=20, directional=False):
+        self.epochs = epochs
+        self.directional = directional
+        self.max_input_length = None
+        self.model = None
+        self.word2index = None
+        self.label_encoder = None
+        self.num_classes = None
+        self.history = None  # make function to plot loss graphs on train and test
 
-    return model
+    def get_model(self, embedding_layer):
+        i = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
+        x = embedding_layer(i)
+        lstm_out = Bidirectional(LSTM(128, dropout=0.3, recurrent_dropout=0.3))(x)
+        o = Dense(self.num_classes, activation="softmax", name="output")(lstm_out)
+        model = Model(inputs=i, outputs=o)
+        model.compile(
+            loss={"output": categorical_crossentropy}, optimizer="adam", metrics=["accuracy"]
+        )
 
+        return model
 
-def train_lstm(
-    x_train, y_train, word2index, word2embedding, epochs=20, directional=False, save=False
-):
-    x_train_vec = vectorize_titles(word2index, x_train)
+    def train(self, x_train, y_train, word2index, word2embedding):
 
-    # get the max sentence length, needed for padding
-    max_input_length = max([len(x) for x in x_train_vec])
-    print("Max. sequence length: ", max_input_length)
+        # ToDo: clean titles
+        # cleaned_title = clean_sentence(entry['title']).strip()
 
-    # pad all the sequences of indexes to the 'max_input_length'
-    x_train_vec_padded = pad_sequences(
-        x_train_vec, maxlen=max_input_length, padding="post", truncating="post"
-    )
+        x_train_vec = vectorize_titles(word2index, x_train)
 
-    # Encode the labels, each must be a vector with dim = num. of possible labels
-    if directional is False:
-        y_train = [regex.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_train]
+        # get the max sentence length, needed for padding
+        self.max_input_length = max([len(x) for x in x_train_vec])
+        print("Max. sequence length: ", self.max_input_length)
 
-    le = LabelEncoder()
-    y_train_encoded = le.fit_transform(y_train)
-    y_train_vec = to_categorical(y_train_encoded, num_classes=None)
-    print("Shape of train data tensor:", x_train_vec_padded.shape)
-    print("Shape of train label tensor:", y_train_vec.shape)
-    num_classes = y_train_vec.shape[1]
+        # pad all the sequences of indexes to the 'max_input_length'
+        x_train_vec_padded = pad_sequences(
+            x_train_vec, maxlen=self.max_input_length, padding="post", truncating="post"
+        )
 
-    # create the embedding layer
-    embeddings_matrix = create_embeddings_matrix(word2embedding, word2index)
-    embedding_layer = get_embeddings_layer(embeddings_matrix, max_input_length, trainable=True)
-    print("embeddings_matrix: ", embeddings_matrix.shape)
+        # Encode the labels, each must be a vector with dim = num. of possible labels
+        # also train relationships directions or not?
+        if self.directional is False:
+            y_train = [regex.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_train]
 
-    model = get_model(embedding_layer, max_input_length, num_classes)
+        le = LabelEncoder()
+        y_train_encoded = le.fit_transform(y_train)
+        y_train_vec = to_categorical(y_train_encoded, num_classes=None)
+        print("Shape of train data tensor:", x_train_vec_padded.shape)
+        print("Shape of train label tensor:", y_train_vec.shape)
+        self.num_classes = y_train_vec.shape[1]
 
-    # ToDo: plot loss graphs on train and test
-    model.fit(x_train_vec_padded, y_train_vec, epochs=epochs)
+        # create the embedding layer
+        embeddings_matrix = create_embeddings_matrix(word2embedding, word2index)
+        embedding_layer = get_embeddings_layer(
+            embeddings_matrix, self.max_input_length, trainable=True
+        )
+        print("embeddings_matrix: ", embeddings_matrix.shape)
 
-    # save model
-    if save:
-        date_time = datetime.now().strftime("%Y-%m-%d-%H:%m:%s")
-        model.save(f"trained_models/relevancy_clf_{date_time}.h5")
-        joblib.dump(word2index, f"trained_models/relevancy_word2index_{date_time}.joblib")
-        joblib.dump(le, f"trained_models/relevancy_label_encoder_{date_time}.joblib")
-        with open("trained_models/relevancy_max_input_length", "wt") as f_out:
-            f_out.write(str(max_input_length) + "\n")
+        model = self.get_model(embedding_layer)
 
-    return model, le, word2index, max_input_length
+        # ToDo: plot loss graphs on train and test
+        self.history = model.fit(x_train_vec_padded, y_train_vec, epochs=self.epochs)
+        self.model = model
+        self.word2index = word2index
+        self.label_encoder = le
 
+    def tag(self, x_test):
+        x_test_vec = vectorize_titles(self.word2index, x_test)
+        x_test_vec_padded = pad_sequences(
+            x_test_vec, maxlen=self.max_input_length, padding="post", truncating="post"
+        )
 
-def test_model(model, le, word2index, max_input_length, x_test, y_test, directional=False):
+        return self.model.predict(x_test_vec_padded)
 
-    # Encode the labels, each must be a vector with dim = num. of possible labels
-    if directional is False:
-        y_test = [regex.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_test]
+    def evaluate(self, x_test, y_test):
 
-    x_test_vec = vectorize_titles(word2index, x_test)
+        # ToDo: save this as in a report format
+        if not self.model:
+            pass
 
-    x_test_vec_padded = pad_sequences(
-        x_test_vec, maxlen=max_input_length, padding="post", truncating="post"
-    )
+        # Encode the labels, each must be a vector with dim = num. of possible labels
+        if self.directional is False:
+            y_test = [regex.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_test]
 
-    predicted_probs = model.predict(x_test_vec_padded)
-    labels_idx = np.argmax(predicted_probs, axis=1)
-    pred_labels = le.inverse_transform(labels_idx)
-    print("\n" + classification_report(y_test, pred_labels))
-    cm = confusion_matrix(y_test, pred_labels, labels=le.classes_)
-    print_cm(cm, labels=le.classes_)
-    print()
+        x_predicted_probs = self.tag(x_test)
 
-    precision_vals, recall_vals, thresholds = plot_precision_recall_curve(
-        predicted_probs, y_test, "relevant", "precision_recall_curve"
-    )
+        labels_idx = np.argmax(x_predicted_probs, axis=1)
+        pred_labels = self.label_encoder.inverse_transform(labels_idx)
+        print("\n" + classification_report(y_test, pred_labels))
+        report = classification_report(y_test, pred_labels, output_dict=True)
+        cm = confusion_matrix(y_test, pred_labels, labels=self.label_encoder.classes_)
+        print_cm(cm, labels=self.label_encoder.classes_)
+        print()
 
-    plot_precision_recall_vs_threshold(
-        precision_vals, recall_vals, thresholds, "precision_recall_vd_threshold"
-    )
+        precision_vals, recall_vals, thresholds = plot_precision_recall_curve(
+            x_predicted_probs, y_test, "relevant", "precision_recall_curve"
+        )
 
-    for sent, true_label, pred_label, prob in zip(x_test, y_test, pred_labels, predicted_probs):
-        if true_label != pred_label:
-            print(sent, "\t\t", true_label, "\t\t", pred_label, prob)
-    print()
+        plot_precision_recall_vs_threshold(
+            precision_vals, recall_vals, thresholds, "precision_recall_vd_threshold"
+        )
+
+        for sent, true_label, pred_label, prob in zip(
+            x_test, y_test, pred_labels, x_predicted_probs
+        ):
+            if true_label != pred_label:
+                print(sent, "\t\t", true_label, "\t\t", pred_label, prob)
+        print()
+
+        return report
+
+    def save(self):
+        pass
+        # save model to disk
+        # date_time = datetime.now().strftime("%Y-%m-%d-%H:%m:%s")
 
 
 def main():
@@ -150,13 +178,21 @@ def main():
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
 
+        model = RelevancyClassifier(directional=False, epochs=20)
+        model.train(x_train, y_train, word2index, word2embedding)
+        report = model.evaluate(x_test, y_test)
+        print(report)
+
+        """
         model, le, word2index, max_input_length = train_lstm(
             x_train, y_train, word2index, word2embedding, epochs=20, directional=False, save=True
         )
+        
         test_model(model, le, word2index, max_input_length, x_test, y_test, directional=False)
+        """
 
-    # train with all data
-    train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=False, save=True)
+    # train a final model with all data
+    # train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=False, save=True)
 
 
 if __name__ == "__main__":

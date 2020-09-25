@@ -13,32 +13,11 @@ url_relevancy_clf = "http://127.0.0.1:8000/relevant"
 arquivo_data = "../../data/crawled"
 
 
-# ToDo:
-"""
-def filter_sentences_persons(titles):
-    # filter only the ones with at least two 'PER'
-    # ToDo: add also 'PER' from a hand-crafted list,
-    #  see: https://spacy.io/usage/rule-based-matching
-    wrong_PER = load_wrong_per()
-    print(f"Extracting named-entities from {len(titles)} titles")
-    titles_doc = [(t[0], nlp(t[1]), t[2]) for t in titles]
-    titles_per = []
-    for title in titles_doc:
-        persons = [ent.text for ent in title[1].ents if ent.label_ == "PER"]
-        if len(persons) == 2:
-            if not set(persons).intersection(set(wrong_PER)):
-                titles_per.append((title, persons))
-
-    return titles_per
-"""
-
-
 def crawled_data():
     for filename in os.listdir(arquivo_data):
-        with open(arquivo_data + "/" + filename, newline="") as csvfile:
-            arquivo = csv.reader(csvfile, delimiter="\t", quotechar="|")
-            for row in arquivo:
-                yield {"date": row[0], "title": row[1], "url": row[2]}
+        with jsonlines.open(arquivo_data + "/" + filename, mode="r") as reader:
+            for line in reader:
+                yield line
 
 
 def read_hashes():
@@ -49,10 +28,11 @@ def read_hashes():
     return set()
 
 
-def main():
-    titles_hashes = read_hashes()
+def process_titles(titles_hashes):
     with jsonlines.open('processed_titles.jsonl', mode='a') as writer:
         for entry in crawled_data():
+
+            # ToDo: cleaning and checking should go into the clf class
             cleaned_title = clean_sentence(entry['title']).strip()
 
             # too short skipped
@@ -84,6 +64,11 @@ def main():
             if relevancy_resp_json['relevant'] > relevancy_resp_json['non-relevant']:
                 print(processed_entry)
                 print()
+
+
+def main():
+    titles_hashes = read_hashes()
+    process_titles(titles_hashes)
 
 
 if __name__ == "__main__":
