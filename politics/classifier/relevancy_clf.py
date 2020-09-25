@@ -51,7 +51,7 @@ class RelevancyClassifier:
         self.word2index = None
         self.label_encoder = None
         self.num_classes = None
-        self.history = None  # make function to plot loss graphs on train and test
+        self.history = None  # ToDo: make function to plot loss graphs on train and test
 
     def get_model(self, embedding_layer):
         i = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
@@ -113,7 +113,6 @@ class RelevancyClassifier:
         x_test_vec_padded = pad_sequences(
             x_test_vec, maxlen=self.max_input_length, padding="post", truncating="post"
         )
-
         return self.model.predict(x_test_vec_padded)
 
     def evaluate(self, x_test, y_test):
@@ -182,14 +181,6 @@ def main():
         model.train(x_train, y_train, word2index, word2embedding)
         report = model.evaluate(x_test, y_test)
         print(report)
-
-        """
-        model, le, word2index, max_input_length = train_lstm(
-            x_train, y_train, word2index, word2embedding, epochs=20, directional=False, save=True
-        )
-        
-        test_model(model, le, word2index, max_input_length, x_test, y_test, directional=False)
-        """
 
     # train a final model with all data
     # train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=False, save=True)
