@@ -36,6 +36,7 @@ def process_titles(titles_hashes):
             cleaned_title = clean_sentence(entry['title']).strip()
 
             # too short skipped
+            # maybe increse this a bit? 4 ?
             if len(cleaned_title.split()) <= 2:
                 continue
 

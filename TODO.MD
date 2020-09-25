@@ -6,7 +6,8 @@
      - log when queries to ElasticSearch fail
    
    - Classifiers
-     - Make a class for each classifier with .train() and .tag() methods()
+     -cleaning the sentence should be done int the clf class:
+        cleaned_title = clean_sentence(entry['title']).strip()
      - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching
      - add publico annotated data in training a title relevancy classifier 
      - better/cleaner embeddings
