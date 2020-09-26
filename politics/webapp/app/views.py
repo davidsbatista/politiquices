@@ -161,7 +161,7 @@ def list_entities():
     persons = set()
     items = []
     for e in entities['results']['bindings']:
-        url = e['person']['value']
+        url = e['item']['value']
         if url in persons:
             continue
         persons.add(url)

@@ -2,8 +2,10 @@
    
    - Service:
      - load classes instead raw model files 
-     - Classifier API arch: https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
+     - Classifier API arch: 
+        https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
      - log when queries to ElasticSearch fail
+     - relevancy clf: no need to return the cleaned title again
    
    - Classifiers
      -cleaning the sentence should be done int the clf class:
@@ -13,10 +15,22 @@
      - better/cleaner embeddings
 
 
+### Data Processing
+ - script ingests titles and outputs classified news titles
+ - filter out:
+      'desporto' in URL
+ 
+ - generate some statistics about the processed titles:
+    - relevant and irrelevant: how many, what percentage of the total? 
+    - what are scores for the relevant and the irrelevant?
+    - for the relevant how many have not enough entities?
+    - for the relevant with enough entities, how many did not matched a wiki entry?
+    - relevant with enough entities, all entities matched the wiki -> Triples
+
+
 ### Triple Store
- - Create an RDF from all the processed JSONs
  - Infrastructure:
-    - Docker: automatically load TTL into dataset in Fuseki
+    - Docker: automatically load TTL into dataset in Fuseki: https://hub.docker.com/r/stain/jena-fuseki
     - set timeout query on Fuseki
  - SPARQL queries:
         - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
@@ -40,3 +54,6 @@
 ### Wikidata / Entity Linking
  - https://elasticsearch-cheatsheet.jolicode.com/
  - Filter out ppl born before 1900
+ - ORGS:
+        Partidos Politicis
+        Empresas públicos: TAP, Banco de Portugal?

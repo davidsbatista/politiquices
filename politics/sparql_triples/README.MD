@@ -2,7 +2,7 @@
 
    1. Generating RDF/Turtle triples on classifier output:
    
-          `python all_results.tsv`
+          `python create_RDF.py <classified_titles.jsonl>`
         
       outputs `sample.ttl`
   
@@ -26,7 +26,7 @@
     PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
 
     SELECT DISTINCT ?person ?p ?portuguese_party ?portuguese_partyLabel{
-      ?person ns1:name ?p
+      ?person rdfs:label ?p
       SERVICE <https://query.wikidata.org/sparql> {
         ?person wdt:P27 wd:Q45.
         ?person wdt:P102 ?portuguese_party .
@@ -167,14 +167,15 @@
 
 ##### All office positions hold by 'José Sócrates'
 
-    SELECT DISTINCT ?officeLabel ?start ?end WHERE {
-      wd:Q182367 p:P39 ?officeStmnt.
-      ?officeStmnt ps:P39 ?office.
-      OPTIONAL { ?officeStmnt pq:P580 ?start. }
-      OPTIONAL { ?officeStmnt pq:P582 ?end. }
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
-    }
-
+    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
+    PREFIX        wd:  <http://www.wikidata.org/entity/>
+    PREFIX        bd:  <http://www.bigdata.com/rdf#>
+    PREFIX  wikibase:  <http://wikiba.se/ontology#>
+    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX my_prefix: <http://some.namespace/with/name#>
+    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
+    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
 
     SELECT DISTINCT ?image_url ?officeLabel ?education ?start ?end WHERE {
       wd:Q182367 wdt:P18 ?image_url;
@@ -184,6 +185,30 @@
       OPTIONAL { ?officeStmnt pq:P582 ?end. }  
       SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
     } ORDER BY ?start
+
+
+##### All the wiki id from persons in the graph and the 'known as' and 'image_url' from Wikidata
+
+    Note: some persons can have more than one picture 
+
+    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
+    PREFIX        wd:  <http://www.wikidata.org/entity/>
+    PREFIX        bd:  <http://www.bigdata.com/rdf#>
+    PREFIX  wikibase:  <http://wikiba.se/ontology#>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
+    PREFIX       rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+    
+    SELECT DISTINCT ?personLabel ?item ?image_url {
+      ?item wdt:P31 wd:Q5 # get all human entities from the local graph
+      SERVICE <https://query.wikidata.org/sparql> {
+        OPTIONAL { ?item wdt:P18 ?image_url. }
+        ?item rdfs:label ?personLabel
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?personLabel }
+      }
+    }
+    
+    Download JSON and copy to webapp/front-end/entities_in_database.json
 
 
    Getting statements values

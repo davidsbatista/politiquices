@@ -82,7 +82,7 @@ async def classify_relationship(news_title: Optional[str] = None):
     """
 
     """
-    if cleaned_title == extractd entities skip
+    if cleaned_title == extracted entities skip
     """
 
     doc = nlp(news_title)
@@ -97,7 +97,6 @@ async def classify_relationship(news_title: Optional[str] = None):
     predicted_probs = relationship_clf.predict(x_test_vec_padded)
     scores = {label: float(pred) for label, pred in zip(relationship_le.classes_, predicted_probs[0])}
     result = {
-        "title": news_title,
         "entity_1": persons[0],
         "entity_2": persons[1],
     }
