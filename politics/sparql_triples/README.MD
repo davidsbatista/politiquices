@@ -8,7 +8,10 @@
   
    2. start a docker container with Apache-Jena (https://hub.docker.com/r/stain/jena-fuseki)
     
-        `docker run -p 3030:3030 stain/jena-fuseki`
+        `docker run -v fuseki-data:/fuseki --name=fuseki -p 3030:3030 stain/jena-fuseki`
+        
+        
+        
         
       and create/load a dataset from `sample.tll`
       

@@ -18,7 +18,7 @@ build:
 
 	echo "Launching Kibana"
 	docker stop kibana || true && docker rm kibana || true
-	docker run -d --name kibana --network=elastic -p 5601:5601 docker.elastic.co/kibana/kibana:7.6.2
+	docker run -d --name=kibana --network=elastic -p 5601:5601 docker.elastic.co/kibana/kibana:7.6.2
 	docker inspect --format 0.0.0.0:9200 elasticsearch | xargs wget -q --retry-connrefused --tries=10 --waitretry=10 --spider
 	echo "ElasticSearch is up and running!"
 

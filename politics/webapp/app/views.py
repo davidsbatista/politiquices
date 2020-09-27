@@ -147,8 +147,8 @@ def detail_entity():
     for k, v in items.items():
         print(k, '\t', v)
 
-    with open(wiki_id+'json', 'wt') as outfile:
-        json.dump(items, outfile)
+    # with open(wiki_id+'json', 'wt') as outfile:
+    #    json.dump(items, outfile)
 
     return render_template('entity_detail.html', items=items)
 

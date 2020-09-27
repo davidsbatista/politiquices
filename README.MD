@@ -1,3 +1,7 @@
+
+Extract and identify relationships of support and opposition between politicians from archived newspapers.
+
+
 ## Start all the backend services
 
     start the virtual_env e.g.: 
