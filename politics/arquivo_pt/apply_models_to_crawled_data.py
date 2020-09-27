@@ -6,7 +6,7 @@ import jsonlines as jsonlines
 import mmh3
 import requests
 
-from politics.utils import clean_sentence
+from politics.utils import clean_title
 
 url_relationship_clf = "http://127.0.0.1:8000/relationship"
 url_relevancy_clf = "http://127.0.0.1:8000/relevant"
@@ -33,7 +33,7 @@ def process_titles(titles_hashes):
         for entry in crawled_data():
 
             # ToDo: cleaning and checking should go into the clf class
-            cleaned_title = clean_sentence(entry['title']).strip()
+            cleaned_title = clean_title(entry['title']).strip()
 
             # too short skipped
             # maybe increse this a bit? 4 ?

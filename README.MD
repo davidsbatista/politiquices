@@ -3,10 +3,9 @@
     start the virtual_env e.g.: 
         source ~/virtual_envs/python38/bin/activate
     cd politics/
-    export PYTHONPATH=/Users/dsbatista/PycharmProjects/politic-relationships/
+    export PYTHONPATH=/Users/dsbatista/PycharmProjects/politic-relationships:/Users/dsbatista/PycharmProjects/politic-relationships/politics/classifiers/
     make start
-    
-   
+       
     Relationship classifier: 
         http://127.0.0.1:8000/relationship/?news_title=Costa tenta esvaziar revisão constitucional proposta por André Ventura
     

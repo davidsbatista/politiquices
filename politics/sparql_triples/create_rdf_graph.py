@@ -52,66 +52,71 @@ def process_classified_titles():
     seen_hashes = set()
     print("Processing classified titles")
     count = 0
-    for processed_title in processed_titles(sys.argv[1]):
+    with jsonlines.open('non_relevant.jsonl', 'w') as non_relevant_writer, \
+            jsonlines.open('no_entities.jsonl', 'w') as no_entities_writer, \
+            jsonlines.open('no_wiki.jsonl', 'w') as no_wiki__writer:
 
-        count += 1
+        for processed_title in processed_titles(sys.argv[1]):
 
-        if count % 25000 == 0:
-            print(".", end="", flush=True)
+            count += 1
 
-        if processed_title["hash"] in seen_hashes:
-            continue
+            if count % 25000 == 0:
+                print(".", end="", flush=True)
 
-        if processed_title["relevancy"]["relevant"] < 0.5:
-            # ToDo: get a list non-relevant news articles
-            continue
+            if processed_title["hash"] in seen_hashes:
+                continue
 
-        if "not enough entities" in processed_title["relationship"].keys():
-            # ToDo: get a list relevant news articles but without entities
-            continue
+            # non-relevant news articles
+            if processed_title["relevancy"]["relevant"] < 0.5:
+                non_relevant_writer.write(processed_title)
+                continue
 
-        rel = processed_title["relationship"]
-        if not rel["entity_1_wiki"] or not rel["entity_1_wiki"]:
-            # ToDo: get a list of recognized entities not linked to Wikidata
-            continue
+            # relevant news articles but without entities
+            if "not enough entities" in processed_title["relationship"].keys():
+                no_entities_writer.write(processed_title)
+                continue
 
-        seen_hashes.add(processed_title["hash"])
+            rel = processed_title["relationship"]
+            # recognized entities not linked to Wikidata
+            if not rel["entity_1_wiki"] or not rel["entity_2_wiki"]:
+                no_wiki__writer.write(processed_title)
+                continue
 
-        scores = [(k, v) for k, v in rel.items() if isinstance(v, float)]
-        rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
+            seen_hashes.add(processed_title["hash"])
 
-        e1_wiki = rel["entity_1_wiki"]['wiki']
-        e2_wiki = rel["entity_2_wiki"]['wiki']
-        person_1 = processed_title["relationship"]["entity_1"]
-        person_2 = processed_title["relationship"]["entity_2"]
-        title = processed_title["entry"]["title"]
-        title_cleaned = processed_title["cleaned_title"]
-        url = processed_title["entry"]["linkToArchive"]
+            scores = [(k, v) for k, v in rel.items() if isinstance(v, float)]
+            rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
 
-        p1_id = e1_wiki
-        p1_name = person_1
-        build_person(p1_id, p1_name, persons)
+            e1_wiki = rel["entity_1_wiki"]['wiki']
+            e2_wiki = rel["entity_2_wiki"]['wiki']
+            person_1 = processed_title["relationship"]["entity_1"]
+            person_2 = processed_title["relationship"]["entity_2"]
+            title = processed_title["entry"]["title"]
+            title_cleaned = processed_title["cleaned_title"]
+            url = processed_title["entry"]["linkToArchive"]
 
-        p2_id = e2_wiki
-        p2_name = person_2
-        build_person(p2_id, p2_name, persons)
+            p1_id = e1_wiki
+            p1_name = person_1
+            build_person(p1_id, p1_name, persons)
 
-        relationships.append(
-            Relationship(
-                url=url, rel_type=rel_type[0], rel_score=rel_type[1], ent1=p1_id, ent2=p2_id
+            p2_id = e2_wiki
+            p2_name = person_2
+            build_person(p2_id, p2_name, persons)
+
+            relationships.append(
+                Relationship(
+                    url=url, rel_type=rel_type[0], rel_score=rel_type[1], ent1=p1_id, ent2=p2_id
+                )
             )
-        )
 
-        articles.append(
-            Article(url=url, title=title_cleaned, source=None, date=None, crawled_date=None)
-        )
+            articles.append(
+                Article(url=url, title=title_cleaned, source=None, date=None, crawled_date=None)
+            )
 
-    print()
-    return articles, persons, relationships
+        return articles, persons, relationships
 
 
 def main():
-
     articles, persons, relationships = process_classified_titles()
 
     g = Graph()
@@ -125,7 +130,7 @@ def main():
     # linked-data vocabularies
     # https://lov.linkeddata.es/dataset/lov/
 
-    print("adding Persons")
+    print("\nadding Persons")
     # add Person triples: <wiki_URI, SKOS.prefLabel, name>
     for wikidata_id, person in persons.items():
 

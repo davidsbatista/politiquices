@@ -15,17 +15,21 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
 
-from politics.utils import print_cm, read_ground_truth
-from politics.classifier.embeddings_utils import (
+from politics.utils import print_cm, read_ground_truth, clean_title
+from politics.classifiers.embeddings_utils import (
     create_embeddings_matrix,
     get_embeddings_layer,
     get_embeddings,
-    vectorize_titles
+    vectorize_titles,
 )
 
 
 def pre_process_train_data(data):
-    # filter out some classes samples
+    """
+
+    :param data:
+    :return:
+    """
     ignore = ["other", "ent1_replaces_ent2", "ent2_replaces_ent1", "meet_together"]
     data = [sample for sample in data if sample["label"] not in ignore]
 
@@ -42,26 +46,8 @@ def pre_process_train_data(data):
 
     return docs, labels
 
-    """
-    for d, l in zip(docs, labels):
-        doc = nlp(d[0])
-        print(doc.ents)
-        print(d[0])
-        print(d[1])
-        print(d[2])
-
-        if str(doc.ents[0]) == d[1] and str(doc.ents[1]) == d[2]:
-            path = extract_syntactic_path(doc, ent1=doc.ents[0], ent2=doc.ents[1])
-            print(path)
-            print(l)
-        else:
-            print("NOT THE SAME")
-        print("\n---------------------------")
-    """
-
 
 class RelationshipClassifier:
-
     def __init__(self, epochs=20, directional=False):
         self.epochs = epochs
         self.directional = directional
@@ -78,7 +64,9 @@ class RelationshipClassifier:
         lstm_out = Bidirectional(LSTM(128, dropout=0.3, recurrent_dropout=0.3))(x)
         o = Dense(self.num_classes, activation="softmax", name="output")(lstm_out)
         model = Model(inputs=i, outputs=o)
-        model.compile(loss={"output": categorical_crossentropy}, optimizer="adam", metrics=["accuracy"])
+        model.compile(
+            loss={"output": categorical_crossentropy}, optimizer="adam", metrics=["accuracy"]
+        )
 
         return model
 
@@ -107,7 +95,9 @@ class RelationshipClassifier:
 
         # create the embedding layer
         embeddings_matrix = create_embeddings_matrix(word2embedding, word2index)
-        embedding_layer = get_embeddings_layer(embeddings_matrix, self.max_input_length, trainable=True)
+        embedding_layer = get_embeddings_layer(
+            embeddings_matrix, self.max_input_length, trainable=True
+        )
         print("embeddings_matrix: ", embeddings_matrix.shape)
 
         model = self.get_model(embedding_layer)
@@ -124,28 +114,6 @@ class RelationshipClassifier:
             x_test_vec, maxlen=self.max_input_length, padding="post", truncating="post"
         )
         return self.model.predict(x_test_vec_padded)
-
-    """
-    def test_model(self, model, le, word2index, max_input_length, x_test, y_test, directional=False):
-
-        # Encode the labels, each must be a vector with dim = num. of possible labels
-        if directional is False:
-            y_test = [regex.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_test]
-
-        x_test_vec = vectorize_titles(word2index, x_test)
-
-        x_test_vec_padded = pad_sequences(
-            x_test_vec, maxlen=max_input_length, padding="post", truncating="post"
-        )
-
-        predicted_probs = model.predict(x_test_vec_padded)
-        labels_idx = np.argmax(predicted_probs, axis=1)
-        pred_labels = le.inverse_transform(labels_idx)
-        print("\n" + classification_report(y_test, pred_labels))
-        cm = confusion_matrix(y_test, pred_labels, labels=le.classes_)
-        print_cm(cm, labels=le.classes_)
-        print()
-    """
 
     def evaluate(self, x_test, y_test):
 
@@ -169,25 +137,35 @@ class RelationshipClassifier:
 
         return report
 
+    def save(self):
+        date_time = datetime.now().strftime("%Y-%m-%d_%H:%m:%S")
+        joblib.dump(self, f"trained_models/relationship_clf_{date_time}.pkl")
+
 
 def main():
     data = read_ground_truth(only_label=True)
+
+    for entry in data:
+        entry["title"] = clean_title(entry["title"]).strip()
+
     docs, labels = pre_process_train_data(data)
     word2embedding, word2index = get_embeddings()
+
     skf = StratifiedKFold(n_splits=2, random_state=42, shuffle=True)
+
     for train_index, test_index in skf.split(docs, labels):
         x_train = [doc for idx, doc in enumerate(docs) if idx in train_index]
         x_test = [doc for idx, doc in enumerate(docs) if idx in test_index]
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
-
-        model = RelationshipClassifier(directional=False, epochs=20)
+        model = RelationshipClassifier(directional=True, epochs=20)
         model.train(x_train, y_train, word2index, word2embedding)
         report = model.evaluate(x_test, y_test)
         print(report)
 
-    # train a final model with all data
-    # train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=False, save=True)
+    model = RelationshipClassifier(directional=True, epochs=20)
+    model.train(docs, labels, word2index, word2embedding)
+    model.save()
 
 
 if __name__ == "__main__":

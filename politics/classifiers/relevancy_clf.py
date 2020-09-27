@@ -14,13 +14,13 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
 
-from politics.classifier.embeddings_utils import (
+from politics.classifiers.embeddings_utils import (
     create_embeddings_matrix,
     get_embeddings,
     get_embeddings_layer,
     vectorize_titles,
 )
-from politics.utils import clean_sentence, print_cm
+from politics.utils import clean_title, print_cm
 from politics.utils.ml_utils import plot_precision_recall_curve, plot_precision_recall_vs_threshold
 
 
@@ -66,9 +66,6 @@ class RelevancyClassifier:
         return model
 
     def train(self, x_train, y_train, word2index, word2embedding):
-
-        # ToDo: clean titles
-        # cleaned_title = clean_sentence(entry['title']).strip()
 
         x_train_vec = vectorize_titles(word2index, x_train)
 
@@ -153,15 +150,19 @@ class RelevancyClassifier:
         return report
 
     def save(self):
-        pass
-        # save model to disk
-        # date_time = datetime.now().strftime("%Y-%m-%d-%H:%m:%s")
+        date_time = datetime.now().strftime("%Y-%m-%d_%H:%m:%S")
+        joblib.dump(self, f"trained_models/relevancy_clf_{date_time}.pkl")
 
 
 def main():
-    data = read_raw_data("../../data/annotated/arquivo_clean.tsv")
-    all_pos_titles = set([clean_sentence(x["title"]) for x in data if x["label"]])
-    all_neg_titles = set([clean_sentence(x["title"]) for x in data if x["label"] == ""])
+    data = read_raw_data("../../data/annotated/arquivo.tsv")
+
+    for entry in data:
+        entry['title'] = clean_title(entry['title']).strip()
+
+    # sentences without any label are considered non-relevant
+    all_pos_titles = set([clean_title(x["title"]) for x in data if x["label"]])
+    all_neg_titles = set([clean_title(x["title"]) for x in data if x["label"] == ""])
 
     data = [(x, "relevant") for x in all_pos_titles]
     data.extend([(x, "non-relevant") for x in all_neg_titles])
@@ -182,8 +183,9 @@ def main():
         report = model.evaluate(x_test, y_test)
         print(report)
 
-    # train a final model with all data
-    # train_lstm(docs, labels, word2index, word2embedding, epochs=20, directional=False, save=True)
+    model = RelevancyClassifier(directional=True, epochs=2)
+    model.train(docs, labels, word2index, word2embedding)
+    model.save()
 
 
 if __name__ == "__main__":

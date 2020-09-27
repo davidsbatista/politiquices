@@ -17,7 +17,13 @@ def write_iterator_to_file(iter_struct, filename):
             f_out.write(str(el) + '\n')
 
 
-def clean_sentence(text):
+def clean_title(text):
+    """
+    Remove 'garbage' unimportant information from the title
+
+    :param text:
+    :return:
+    """
     text = text.strip().strip("\u200b")
     to_clean = [
         " | Expresso.pt",
@@ -67,7 +73,8 @@ def clean_sentence(text):
         "- Sociedade",
         "- Economima",
         " – Página 2",
-        "- Notícias"
+        "- Notícias",
+
     ]
 
     return reduce(lambda a, v: a.replace(v, ""), to_clean, text)
