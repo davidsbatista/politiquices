@@ -1,5 +1,4 @@
 ### API / Classifiers
-
    - Classifiers
      - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching
      - add publico annotated data in training a title relevancy classifier 
@@ -26,7 +25,6 @@
 
 ### Triple Store
  - Infrastructure:
-    - Docker: automatically load TTL into dataset in Fuseki: https://hub.docker.com/r/stain/jena-fuseki
     - set timeout query on Fuseki
  - SPARQL queries:
         - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?

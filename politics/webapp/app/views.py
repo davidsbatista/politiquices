@@ -159,6 +159,9 @@ def detail_entity():
 @app.route('/')
 @app.route('/entities')
 def list_entities():
+
+    # ToDo: this can be done with a SPARLQ query
+
     with open('front-end/entities_in_database.json', 'rt') as f_in:
         entities = json.load(f_in)
     persons = set()

@@ -52,9 +52,9 @@ def process_classified_titles():
     seen_hashes = set()
     print("Processing classified titles")
     count = 0
-    with jsonlines.open('non_relevant.jsonl', 'w') as non_relevant_writer, \
-            jsonlines.open('no_entities.jsonl', 'w') as no_entities_writer, \
-            jsonlines.open('no_wiki.jsonl', 'w') as no_wiki__writer:
+    with jsonlines.open('logs/non_relevant.jsonl', 'w') as non_relevant_writer, \
+            jsonlines.open('logs/no_entities.jsonl', 'w') as no_entities_writer, \
+            jsonlines.open('logs/no_wiki.jsonl', 'w') as no_wiki__writer:
 
         for processed_title in processed_titles(sys.argv[1]):
 

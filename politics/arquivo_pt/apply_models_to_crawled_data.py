@@ -1,4 +1,3 @@
-import csv
 import os
 from os import path
 
@@ -36,7 +35,7 @@ def process_titles(titles_hashes):
             cleaned_title = clean_title(entry['title']).strip()
 
             # too short skipped
-            # maybe increse this a bit? 4 ?
+            # maybe increase this a bit? 4 ?
             if len(cleaned_title.split()) <= 2:
                 continue
 
