@@ -1,0 +1,1910 @@
+{
+  "head": {
+    "vars": [ "personLabel" , "item" , "image_url" ]
+  } ,
+  "results": {
+    "bindings": [
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Daniel Campelo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10263926" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Duarte Pacheco" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10268881" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Faria de Oliveira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10281337" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Valle" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10281536" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Fernando%20Valle.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Franco Nogueira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10285498" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Nogueiro%2C%20Alberto%20Franco%20cropped%2C%20Bestanddeelnr%20916-4273.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jorge Campinos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10308079" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Eduardo Martins" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10309299" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Falcão e Cunha" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10309357" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Loureiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10311748" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Mira Amaral" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10321568" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Nazaré" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10321579" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Silvério Gonçalves Saias" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10321651" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Macário Correia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10322865" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Dias Loureiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10324087" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mariana Aiveca" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10326209" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marçal Grilo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10327054" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mesquita Machado" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10328972" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Braga%20Romana%202011%20Mesquita%20Machado.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Frasquilho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10329776" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Miguel%20Frasquilho%2009.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário David" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10334416" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/David%20M%C3%A1rio%202014-02-06%201.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Firmino Miguel" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10334430" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Patinha Antão" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10334505" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Raposo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10334520" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Tomé" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10334548" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Odete Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10340237" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo Mendo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10346704" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Pinto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10347324" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Filipe Soares" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10347467" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Pedro%20Filipe%20Soares%20na%20VIII%20Conven%C3%A7%C3%A3o%20do%20Bloco%20de%20Esquerda.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Nabeiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10365301" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Rui%20Nabeiro%20na%20Exponor.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Carvalhas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1042803" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Mendes Bota" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q11728611" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Mendes%20Bota.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Gouveia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q11728710" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria Carrilho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q11768765" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Tiago" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q11780551" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "André Almeida" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1188408" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Andr%C3%A9%20Brand%C3%A3o%20de%20Almeida%20-%20Deputado%20PSD.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António de Oliveira Salazar" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q151394" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Antonio%20Salazar-1.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Pedro Aguiar Branco" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1555060" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Panetta%20y%20Aguiar-Branco.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Seabra" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q15833722" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Pires de Lima" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16336748" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marques Júnior" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16491101" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Duarte Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16491505" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Artur Santos Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16494439" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Berta Cabral" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16498018" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/BertaCabral.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando de Carvalho Ruas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16545093" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ricardo Serrão Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16596372" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Vicente Barbosa du Bocage" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1709686" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Bocage-JV-Barbosa-du-1823-1.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Liliana Rodrigues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17270451" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Liliana%20Rodrigues1%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Viegas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17270836" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Hermínio Martinho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17318208" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria Belo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17420667" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Nélio Mendonça" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17420804" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Football%20stadium%20monument%2C%20Funchal%20%2833084948001%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Moniz" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17420808" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Pimenta" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17420856" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Margarida Salema Martins" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17420882" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Manuel Torres Couto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17420910" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Helena Vaz da Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17420920" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Helena%20Vaz%20da%20Silva.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Gusmão" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17496473" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/%28Jos%C3%A9%20Gusm%C3%A3o%29%20Strasbourg%20Plenary%20November%202019%20F70A5692-2%20%2849136575106%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jorge Barreto Xavier" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17725191" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jorge%20Barreto%20Xavier%201.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Isabel Pires de Lima" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q180801" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Patrício Gouveia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q19607602" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Antoniopg.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Zita Seabra" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q206147" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Joaquim Chissano" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q208355" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Joaquim%20Chissano%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Margarida Mano" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q21290358" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Eduardo Cabrita" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q21600813" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Eduardo%20Cabrita%2C%20Feira%20do%20Fumeiro%202017.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Guerra" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q22298080" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Domingos Abrantes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q22958314" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/DomingosAbrantes1980%28NL%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Sophia de Mello Breyner Andresen" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q235992" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Sophia%20Mello%20Breyner%20Andersen.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marcos Perestrello" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q23836571" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Tavares" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q23905420" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Josef Klaus" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q241131" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Bundesarchiv%20B%20145%20Bild-F020439-0011%2C%20Detail%20Bundeskanzler%20Josef%20Klaus.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Júlio Meirinhos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q25694309" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Natália Correia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q270268" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Nat%C3%A1lia%20Correia.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Edgar Correia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q27093788" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Vales" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q27836017" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Lu%C3%ADs%20vales.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Hermínio da Palma Inácio" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3071895" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Herminio%20da%20Palma%20Inacio%20%282%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Álvaro Castello-Branco" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q30934717" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Feist" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q30934997" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Henrique Nascimento Rodrigues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3132528" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Óscar Carmona" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q314022" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Carmona.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João de Barros" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3187336" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António de Spínola" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q336884" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/DuartePimentel04.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Alberto Costa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q364934" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Francisco Nunes Correia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q365293" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/FranciscoNunesCorreia.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Correia de Campos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q365986" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Afonso Costa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q383401" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Afonso%20Costa.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Torres" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q42297127" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jo%C3%A3o%20Torres.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Adelino Maltez" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4681977" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Adelino%20Maltez.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Adriano Moreira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4685594" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/AdrianoMoreira.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ana Luís" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4750402" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vitorino Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q47537702" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Rosa Mendes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4777606" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nioRosaMendes.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Sousa Franco" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4777639" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ana Jorge" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q482868" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ana%20Jorge3.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Alfredo de Brito" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5041861" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/CarlosBrito.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Rosas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5444915" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Fernando%20Rosas%2C%202014%20%28quadrado%29.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Artur Torres Pereira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q56349776" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António José de Ávila" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q611078" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Retrato%20do%20Duque%20d%E2%80%99%C3%81vila%20e%20Bolama%20-%20Miguel%20%C3%82ngelo%20Lupi%2C%201880.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jaime Ornelas Camacho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6123873" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Carlos Rates" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6291852" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Carlos%20Rates.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Joaquim Masseno" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65031510" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís António Pita Ameixa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65161985" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo de Almeida Sande" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65174706" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Paulo%20Almeida%20Sande.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Vasco Paiva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65496826" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Malato Correia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65497013" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Mota Torres" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65497088" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luísa Mesquita" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65497966" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maximiano Martins" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65498301" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo Pisco" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65499184" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Meirinho Martins" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65499244" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Duarte Chagas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q66689124" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo Neves" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q66713687" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Isabel Carvalhais" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q67115913" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria Elisa Domingues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6761173" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Orlando Smith" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q715046" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/D.%20Orlando%20Smith%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Nuno Carvalho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q72988063" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ricardo Baptista Leite" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q7322552" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ricardo%20Baptista%20Leite%2C%20MD%2C%20MP.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Francisco Salgado Zenha" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q7404412" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Silo%20da%20Memoria%2002.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Álvaro Monjardino" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q8076725" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marta Freitas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q85180684" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jorge Carvalho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q85873087" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Teófilo Cunha" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q85877644" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Duarte Marques" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9212694" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Duarte%20Marques%2C%20Congresso%20do%20PPE%20em%20Bona%2C%202009.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Eduardo Ferro Rodrigues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q925136" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Eduardo%20Ferro%20Rodrigues%20smiling%20at%20handshaking%2C%20Bratislava%20Informal%20Parliamentary%20Summit%202016-10-07.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Nuno Álvares Pereira de Melo, 1.º Duque de Cadaval" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q934065" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Nuno%20%C3%81lvares%20Pereira%20de%20Melo.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Alberto Arons de Carvalho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9594142" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Alexandre Relvas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9602307" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Almerindo da Silva Marques" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9604772" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "André Valente Martins" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9614660" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Dias Lourenço" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9618996" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Pinto Leite" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9619988" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Corrêa Gago" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9696968" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Encarnação" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9697042" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Pinto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9697287" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Santos Ferreira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9697337" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Elza Pais" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10272128" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Helena Roseta" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10294464" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Henrique Granadeiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10294766" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Manuel Pureza" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10309889" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Manuel%20Pureza%2001.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Martins Júnior" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10310072" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Martins%20J%C3%BAnior.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Silveira Godinho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10310517" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Filipe Castro Mendes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10321431" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/8th%20ASEM%20Culture%20Ministers%27%20Meeting%20Arrival%20%2826681700308%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Beleza" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10329729" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Nuno Miguel Henriques" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10338221" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Nuno Morais Sarmento" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10338225" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Nuno Rodrigues dos Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10338246" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Machete" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10365280" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Secretary%20Kerry%20and%20Portuguese%20Foreign%20Minister%20Machete%20Address%20Reporters.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Patrício (empresário)" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10365311" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Sofia Ribeiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10372930" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Domingos Leite Pereira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1237519" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Domingos%20Leite%20Pereira.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Herman Van Rompuy" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q12983" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Herman%20Van%20Rompuy%20675.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ricardo Rio" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q15105537" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Saints%20of%20June%20Procession%202014%2031.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Martins da Cruz" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16336736" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Mexia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16336739" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Cláudia Monteiro de Aguiar" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16537126" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Cl%C3%A1udia%20Monteiro%20de%20Aguiar%2C%20World%20Travel%20and%20Tourism%20Council%20%2844019942124%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Joaquim Pedro Martins" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16930167" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Sérgio Silva Monteiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16940806" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Augusto Lacerda de Queiroz" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17420780" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mariana Mortágua" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17496474" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Mariana%20Mort%C3%A1gua%20-%20Asia-Europe%20Peoples%27%20Forum%20Press%20Conference%2C%2019%20October%202012.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Lista de presidentes do Senado da Câmara Municipal de Lisboa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q18464169" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Valente de Oliveira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1878439" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Valente%20de%20Oliveira.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vasco Graça Moura" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2119928" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Vasco%20Gra%C3%A7a%20Moura%20-%20Pr%C3%A9mio%20Europa%20David%20Mour%C3%A3o-Ferreira%202010.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rubina Berardo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q22807807" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Joana Mortágua" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q23905015" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Joana%20Mort%C3%A1gua%202016%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Álvaro Cunhal" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q250919" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Alvaro%20Cunhal%20%281980%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Álvaro Cunhal" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q250919" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Alvaro%20Cunhal.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Anacoreta Correia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q28555818" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Teresa Caeiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3038797" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Edite Estrela" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3047625" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Estrela%20Edite-2254.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Nogueira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3069515" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Picture%20of%20Fernando%20Nogueira.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paula Teixeira da Cruz" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3075716" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ilda Figueiredo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3116195" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ilda%20Figueiredo%202011%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Joaquim Pina Moura" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3179732" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Luís Arnaut" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3186389" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Lu%C3%ADs%20Arnaut.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Pinto Coelho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3186526" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jose-pinto-coelho.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria João Rodrigues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3290963" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Maria%20Jo%C3%A3o%20Rodrigues%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Francisco Sá Carneiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q367010" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/S%C3%A1%20Carneiro.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mariano Gago" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q367910" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Mariano%20Gago%20signing%20ESO%20treaty.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Arnaut" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4777527" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Arnaut.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António de Araújo e Azevedo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4777634" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Antonio%20de%20Azevedo3.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António de Araújo e Azevedo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4777634" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Antonio%20de%20Azevedo.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rubina Leal" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q56352307" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marta Temido" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q57339530" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Che Guevara" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5809" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/CheHigh.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Humberto Vasconcelos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q59572077" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Álvaro Amaro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q61944361" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Joel Hasse Ferreira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6213542" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ruben de Carvalho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q64578215" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro dos Santos Soares" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65164957" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Abílio Curto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65496925" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Braga" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65497945" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Adão Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65499616" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Sara Madruga da Costa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q66688384" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulino Ascenção" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q66688848" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João de Deus Pinheiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q722614" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Cadilhe" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q732154" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Luís Carneiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q74256324" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Lu%C3%ADs%20Carneiro.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Francisco Rodrigues dos Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q83737817" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Olavo Câmara" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q85179710" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Calado" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q85876514" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jaime Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q921602" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Bernardo de Almeida" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q96030992" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Joaquim Gomes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q96464159" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vasco Cordeiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q968223" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Vasco%20Cordeiro%202016.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Heloísa Apolónia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q971595" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Helo%C3%ADsa%20Apol%C3%B3nia.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Negrão" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10281462" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ribau Esteves" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10308703" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Moura Soeiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10310170" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Soeiro.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Veiga Simão" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10310607" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Defense.gov%20News%20Photo%20980630-D-2987S-034.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João de Freitas Cruz" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10312487" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Nobre Guedes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10321580" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Maria Carrilho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q13582493" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Manuel Durão Barroso" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q15849" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Manuel%20Barroso%20MEDEF%202.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Avelino Ferreira Torres" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16495518" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Inocêncio Camacho Rodrigues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1664277" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Inoc%C3%AAncio%20Camacho%2C%20%C3%A0%20varanda%20dos%20Pa%C3%A7os%20do%20Concelho%2C%20l%C3%AA%20os%20nomes%20dos%20membros%20do%20Governo%20Provis%C3%B3rio%2C%20depois%20de%20proclamada%20a%20Rep%C3%BAblica%2C%201910.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Ruivo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16940280" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Magalhães" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17285265" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jose%20Magalhaes%20na%20Exponor.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Pinto Luz" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17318300" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/%28Miguel%20Pinto%20Luz%29%20Horasis%20Global%20Meeting%20-%20Grand%20Opening.%202018%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Teixeira Lopes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17496469" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Agostinho Neto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q181665" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Agostinho%20Neto%20%281975%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Cláudio Monteiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q26256214" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Abade Correia da Serra" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2656605" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Abade%20correia%20da%20serra.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria de Lurdes Rodrigues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q275677" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Maria%20Lurdes%20Rodrigues%20na%20Exponor.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Alberto Martins" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2831797" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Barreto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2857756" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Antonio%20Barreto%20na%20Exponor.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "David Justino" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3018178" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Graça Fonseca" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q30930777" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Visit%20of%20Start-up%20Lisboa%20%2815659612382%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Teresa Leal Coelho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q30934991" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Teresa%20Leal%20Coelho%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Isabel Alçada" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3154816" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Semin%C3%A1rio%20Nacional%20Mais%20Sucesso%20-%20Tipologia%20F%C3%A9nix%20no%20ISCTE%20-%20IUL%200023.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Teófilo Braga" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q345926" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Teofilo%20Braga.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Sebastião de Magalhães Lima" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3476927" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Magalh%C3%A3esLima.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Sebastião de Magalhães Lima" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3476927" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Sebasti%C3%A3o%20de%20Magalh%C3%A3es%20Lima%20em%201891.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Capoulas Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3496740" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Lu%C3%ADs%20Capoulas%20Santos%20em%20%C3%93bidos%202016-11-26%20%28cropped%29.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Eduardo Catroga" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5340560" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Elisa Ferreira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5361358" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Hearings%20with%20Elisa%20Ferreira%20PT%2C%20candidate%20commissioner%20for%20cohesion%20and%20reforms%20EU%20%2848832802368%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fátima Felgueiras" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5511406" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Baltazar dos Santos Alves" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q55237841" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Cravinho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q64685" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jo%C3%A3o%20Cravinho%20%28%27M%C3%A3o%20Invis%C3%ADvel%27%2C%20Centro%20de%20Estudos%20Sociais%20da%20Universidade%20de%20Coimbra%29%2C%20cropped.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Laurentino Dias" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65497451" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Laurentino%20Dias.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Alberto Gonçalves" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65499241" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Monteiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6752747" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Filipe Lobo d'Ávila" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9259658" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Basílio Horta" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9650912" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Basilio%20Horta%20na%20Exponor.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Carreiras" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9696942" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Francisco José Viegas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10284869" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Isabel Mota" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10303811" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Web%20Summit%202018%20-%20Forum%20-%20Day%201%2C%20November%206%20SMX%206898%20%2844839331345%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jorge Miranda" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10308185" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/JorgeMiranda.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Manuel de Sousa Rodrigues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10309911" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Vieira de Carvalho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10310636" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Veiga" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10329879" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Montalvão Machado" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10334488" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ricardo Rodrigues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10361221" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ricardo%20Rodrigues.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Joaquim Pedro de Oliveira Martins" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1399091" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Oliveira%20Martins.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria Teresa da Costa Macedo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q15891359" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Fotografia%20Oficial.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Almeida Henriques" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16336402" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Adolfo Mesquita Nunes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16485477" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Adolfo%20Mesquita%20Nunes%2002.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel dos Santos Machado" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q17420886" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Teresa Morais" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q23836573" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ana Paula Vitorino" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q23904964" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ana%20Paula%20Vitorino%202017-08-31.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Filipe Anacoreta Correia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q28555817" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Filipe%20Anacoreta%20Correia%202.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Filipe Soares Franco" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3745041" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jorge Moreira da Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4576565" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jorge%20Moreira%20da%20Silva%20-%20World%20Water%20Congress%2C%20Lisbon%2C%2021%20September%202014.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Mendes Cabeçadas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q470926" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/President%20Jos%C3%A9%20Mendes%20Cabe%C3%A7adas.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Paulo Alves" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q472852" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carmona Rodrigues" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5043745" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Carmona%20Rodrigues.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Silva Peneda" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6291307" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Silva%20Peneda%20na%20Exponor.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Licínio Moreira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65497054" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vítor Crespo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q7925828" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ricardo Sá Fernandes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q85876953" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Bernardino Soares" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9169371" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Isaltino Morais" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q993533" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Seara" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10281523" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Gabriela Canavilhas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10287923" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Gabriela%20Canavilhas%20-%20VII%20Reuni%C3%A3o%20de%20Ministros%20da%20Cultura%20da%20CPLP%2C%20Sintra%2C%20Portugal%2C%2018%20de%20Junho%20de%202010.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jorge Sá Borges" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10308242" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Miguel Júdice" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10310141" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Maria Ferreira Sarmento Pimentel" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10311834" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Vera Jardim" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10389774" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Silvio Berlusconi" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q11860" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Silvio%20Berlusconi%20July%202019.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Alfredo Barroso" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16336375" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Duque" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q18708029" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Vitorino" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q200941" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Antonio%20Vitorino%20Politico.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Vitorino" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q200941" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Costa%20Perry%20Vitorino%20DF-SC-98-03115.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Nuno Crato" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2344342" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/NunoCrato.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo Núncio" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q25440961" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Paulo%20N%C3%BAncio.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marcelo Caetano" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q310870" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Marcello%20caetano.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Lino" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q357941" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Mario%20Lino%20na%20Exponor.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Valentim Loureiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4007647" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Valentim%20Loureiro%20by%20Henrique%20Matos%2001.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Diogo Freitas do Amaral" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q438868" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Freitas%20do%20Amaral%2C%20XV%20Cimeira%20Ibero-Americana%20-%20Salamanca%2C%20Espanha.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vítor Constâncio" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q529992" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/V%C3%ADtor%20Constancio%20at%20Chatham%20House.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Henrique de Barros Gomes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5716802" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Henrique%20de%20Barros%20Gomes%201886.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ana Catarina Mendes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q65498266" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Catarina%20Mendes%2C%20Festa%20de%20Natal%20do%20PS%20Montalegre%20de%202015.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel dos Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6752420" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vitorino Guimarães" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q741496" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Vitorino%20M%C3%A1ximo%20de%20Carvalho%20Guimar%C3%A3es%20%28Arquivo%20Hist%C3%B3rico%20Parlamentar%29.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mota Amaral" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q745134" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Helder%20Antunes%20e%20Jo%C3%A3o%20Bosco%20Mota%20Amaral%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Diogo Feio" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9207629" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Feio%2C%20Diogo-1526.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Gilberto Madaíl" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9268064" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Capucho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9618827" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Moedas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9697231" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Carlos%20Moedas%20%28cropped%29.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Daniel Oliveira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10263981" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/DanielOliveiraExpresso.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuela Moura Guedes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10324736" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Medina" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q20017756" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Fernando%20Medina.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Alberto Azeredo Lopes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q21582227" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Informal%20meeting%20of%20defence%20ministers%20%28FAC%29.%20Arrivals%20Jos%C3%A9%20Azeredo%20Lopes%20%2836267036083%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jorge Lacão" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3183843" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jorge%20Lac%C3%A3o.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Siza Vieira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q42305316" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/20%2006%202018%20-%20Pedro%20Siza%20Vieira.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Pacheco Pereira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6293647" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/JosePachecoPereira.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ângelo Correia" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q8077028" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carmelinda Pereira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9697452" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Carmelinda%20Pereira.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Clotário Luís Supico Ribeiro Pinto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9777479" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Guilherme Pinto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q98446386" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Guilherme%20Pinto%20na%20Exponor.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando José Pinto Monteiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10281394" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Manuel Fernandes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10309880" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Manuel%20Fernandes%20-%20Portuguese%20-%20Citizens%27%20Corner%20debate%20on%20cutting%20Europe%27s%20youth%20unemployment-%20Mission%20impossible%3F%20%2822956490881%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo Mota Pinto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10346718" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Joana Marques Vidal" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q19360799" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jorge Coelho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3183808" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António de Almeida Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q611579" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Almeida%20Santos.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Barreto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q73104708" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Emanuel Câmara" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q85871588" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Topa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q98418954" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Topa.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Narciso Miranda" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10335529" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Álvaro Augusto Matos Almeida" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10395752" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Alvaro5.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Nuno Magalhães" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q11794196" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria Teresa Ambrósio" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q25419872" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/TA%201.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Lourenço" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q28650390" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/2018-07-04%20President%20Jo%C3%A3o%20Louren%C3%A7o-0555.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Luis Rodríguez Zapatero" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q41395" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Luis%20Rodr%C3%ADguez%20Zapatero%20en%20el%20Foro%20Econ%C3%B3mico%20Mundial%20%28cropped%29%202.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Armando Vara" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4792848" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo Pedroso" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q7155277" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Vital%20Moreira%2C%20acompanhado%20de%20Edite%20Estrela%20e%20Paulo%20Pedroso.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Pereira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q729402" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria José Nogueira Pinto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10325930" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo de Morais" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q18697787" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/PauloMorais.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Hermínio Loureiro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q18707969" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vítor Gaspar" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2118027" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Vitor%20Gaspar.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Dias Coelho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4237195" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Garcia Pereira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4777562" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Eduardo dos Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q57313" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Eduardo%20dos%20Santos%202.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Teixeira dos Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q586749" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Teixeira%20dos%20Santos-2.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marco António Costa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q11767932" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Tavares" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1337232" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Rui%20Tavares%20%288642707968%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Arménio Carlos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16336787" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Mota Soares" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2913325" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Luis%20Pedro%20Mota%20Soares%2C%20Former%20Minister%20of%20Social%20Affairs%2C%20Portugal%20%2827892180960%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Helena André" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3129652" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ricardo Mourinho Félix" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q43422874" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ricardo%20Mourinho%20F%C3%A9lix%2C%20Informal%20ECOFIN%2C%202016-09-10.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Borges" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q4777532" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Duarte Lima" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5290424" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Ramalho Eanes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q60114" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Ramalho%20Eanes.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Semedo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q655391" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jo%C3%A3o%20m%20Semedo.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Nuno Santos" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10347660" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Hugo Soares" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q42851646" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Hugo%20Soares.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vitalino Canas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10392072" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Vitalino%20Canas%2C%20Semin%C3%A1rio%20Internacional%20de%20Direito%20Administrativo%20e%20de%20Administra%C3%A7%C3%A3o%20P%C3%BAblica%2C%202017%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Zorrinho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q15980671" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Carlos%20Zorrinho%2C%20MEP%2C%20Leader%20of%20Portuguese%20delegation%20to%20the%20S%26D%20Group%20at%20the%20European%20Parliament.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Marques" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q22005939" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/High-hevel%20Conference%20Dedicated%20to%20EU%20Cohesion%20Policy%20Handshake%20%2827796851787%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Lobo Xavier" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q9619510" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Pinho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1382767" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Manuel%20Pinho.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Gomes da Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16940727" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Defensor Moura" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q266197" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Defensor%20Moura%20square.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Assunção Esteves" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2868303" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ollanta%20Humala%20cumprimenta%20Assun%C3%A7%C3%A3o%20Esteves.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Sérgio Sousa Pinto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q7666117" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Isabel Moreira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q19409554" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Isabel%20Moreira.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jean-Claude Juncker" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q57661" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jean-Claude%20Juncker%20April%202019.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vânia Jesus" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q66741724" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Filipe Menezes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6706787" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Lu%C3%ADs%20Filipe%20Menezes.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Guilherme Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10292842" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Guilherme%20Silva%20-%2021-04-2015.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "João Barroso Soares" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1340708" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jo%C3%A3o%20Soares%20Senate%20of%20Poland.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Vital Moreira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q446042" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Moreira%20Vital%202014-02-03%203.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Isabel Castro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10303791" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jorge Sampaio" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q156780" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jorge%20Sampaio%20%282010%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Bagão Félix" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2857730" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Felix111111.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Guterres" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q311440" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Guterres%20-%202019%20%2848132270313%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Silva Pereira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2066785" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Pedro%20Silva%20Pereira%2C%20Festa%20de%20Natal%20do%20PS%20Montalegre%20de%202015.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Macedo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3131021" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Gonçalo Ribeiro Telles" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q368644" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/GRTelles.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Duarte" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10347430" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Edgar Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q21857888" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Edgar-silva-2016-01-11.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Francisco Pinto Balsemão" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q381029" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Francisco%20Pinto%20Balsem%C3%A3o.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Carvalho da Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6752494" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Carvalho%20da%20Silva.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Amado" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1382641" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Luis%20Amado.JPEG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Alberto João Jardim" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q784504" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Alberto%20Jo%C3%A3o%20Jardim%20e%20Irineu%20Barreto%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Henrique Neto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q5716738" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria de Belém Roseira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6761683" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Maria%20de%20Bel%C3%A9m%20Roseira.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Manuel Coelho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3186409" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Manuel%20Coelho-square.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Lello" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q64688" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jos%C3%A9%20Lello.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos Costa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q524996" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Carlos%20Costa%2C%20Governor%2C%20Banco%20de%20Portugal.JPG" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Albuquerque" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10329706" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Saint%20Helier%20-%20Funchal%202012%2013.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Montenegro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q11764394" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Lu%C3%ADs%20Montenegro%202016-01-14.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Pinto da Costa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q295049" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Manuel%20Pinto%20da%20Costa.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Pizarro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10324447" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Luís Marques Mendes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q550243" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/EPP%20Summit%2021%20June%202007%20-%20European%20People%27s%20Party%20%28cropped%29.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuela Ferreira Leite" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q444059" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Manuela%20Ferreira%20Leite.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Nuno Melo" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10338219" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Nuno%20Melo%20MEP%2C%20Strasbourg%20-%20Diliff.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Francisco Lopes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3062583" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Miguel Relvas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q527722" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Miguel%20Relvas%20%28cropped%29.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marinho Pinto" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q611182" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Marinho%20e%20Pinto%20%28entrevista%20com%20R%C3%BAben%20Branco%29%20%28cropped%29.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Vieira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10365348" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/RuiVieiraEng.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Assunção Cristas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q439377" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Assun%C3%A7%C3%A3oCristas.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Maria Luís Albuquerque" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q13581124" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Maria%20Lu%C3%ADs%20Albuquerque.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Nobre" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q3069519" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Fernando%20Nobre%2002.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "André Ventura" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q69935603" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Andr%C3%A9%20Ventura%20%28Lancamento%20livro%20DiaD%20Trump%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marcelo Rebelo de Sousa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q6756617" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Marcelo%20Rebelo%20de%20Sousa%20em%20fevereiro%20de%202018.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Catarina Martins" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q612666" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Catarina%20Martins%2C%20SomosBibliotecas%20%28cropped2%29.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo Rangel" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10346767" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/MERCOSUL%20-%20Representa%C3%A7%C3%A3o%20Brasileira%20no%20Parlamento%20do%20Mercosul%20%2822371092998%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Augusto Santos Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q769747" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/2019%2005%2031%20Augusto%20Santos%20Silva.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António José Seguro" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1580316" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Jos%C3%A9%20Seguro%2C%20Europeias%202014%20%28cropped%29.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos César" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2571494" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Sma%20vpo%20carlos%20cesar%20%2812%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Carlos César" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2571494" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Barack%20Obama%20and%20Carlos%20Cesar.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Santana Lopes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q239248" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Pedro%20Santana%20Lopes.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Centeno" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q21568721" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/M%C3%A1rio%20Centeno%2C%20Informal%20ECOFIN%2C%202016-09-10.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Centeno" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q21568721" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Informal%20meeting%20of%20economic%20and%20financial%20affairs%20ministers%20%28ECOFIN%29.%20Handshake%2C%20Eurogroup%20Toomas%20T%C3%B5niste%20and%20M%C3%A1rio%20Centeno%20%2837238535645%29%20%28cropped%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Fernando Gomes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q10281366" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Marisa Matias" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q440355" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Marisa%20Matias%20%2848951346106%29.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Ana Gomes" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q2844986" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Gomes%2C%20Ana-9446.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo Portas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q58161" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/P%20Portas%202009.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Paulo Portas" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q58161" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Paulo%20Portas%20in%2023%C2%BA%20Congress%20of%20CDS-PP%205.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Manuel Alegre" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q737410" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Manuel%20Alegre.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Francisco Louçã" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1442096" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Francisco%20Lou%C3%A7%C3%A3%20na%20VI%20Conven%C3%A7%C3%A3o%20Nacional%20do%20Bloco%20de%20Esquerda%2001%20cropped.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Mário Soares" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q156781" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/M%C3%A1rio%20Soares%20%282003%29%20portrait.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Moreira" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q16940732" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Rui%20Moreira.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Francisco Assis" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q656518" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/FranciscoAssis.png" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Jerónimo de Sousa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q1688029" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Jer%C3%B3nimo%20de%20Sousa.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Rui Rio" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q7378729" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/RuiRio%40EPP2018.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "José Sócrates" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q182367" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Josesocrates09082006.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "António Costa" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q610788" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Costa%20img%206536.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Aníbal Cavaco Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q57398" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Cavaco%20Silva%202007.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Aníbal Cavaco Silva" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q57398" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/An%C3%ADbal%20Cavaco%20Silva%20Senate%20of%20Poland%2001.jpg" }
+      } ,
+      {
+        "personLabel": { "type": "literal" , "xml:lang": "pt" , "value": "Pedro Passos Coelho" } ,
+        "item": { "type": "uri" , "value": "http://www.wikidata.org/entity/Q57615" } ,
+        "image_url": { "type": "uri" , "value": "http://commons.wikimedia.org/wiki/Special:FilePath/Pedro%20Passos%20Coelho%201.jpg" }
+      }
+    ]
+  }
+}
