@@ -1,6 +1,7 @@
 import json
 import sys
 import logging
+from datetime import datetime
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -9,7 +10,9 @@ from flask import render_template
 from app import app
 
 
-from politics.utils.utils import convert_dates
+def convert_dates(date: str):
+    date_obj = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+    return date_obj.strftime('%Y %b')
 
 
 logger = logging.getLogger(__name__)
