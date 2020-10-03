@@ -1,7 +1,6 @@
 ### Triple Store
 
-inspired from
-https://hub.docker.com/r/stain/jena-fuseki
+ - inspired from: https://hub.docker.com/r/stain/jena-fuseki
 
  - Infrastructure:
     - set timeout query on Fuseki
@@ -9,6 +8,8 @@ https://hub.docker.com/r/stain/jena-fuseki
         - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
         - use OR in FILTER to avoid doing two queries:
             https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
+            
+ - see: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
 
 
 ### Web App
