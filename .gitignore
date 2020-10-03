@@ -25,7 +25,7 @@
 # directories
 data/
 open_ie/
-politics/classifiers/plots/
-politics/classifiers/resources/
-politics/classifiers/trained_models/
-politics/wikidata/wiki_jsons/
+politiquices/extraction/classifiers/training/experiments/
+politiquices/extraction/classifiers/training/resources/
+politiquices/extraction/classifiers/training/trained_models/
+politiquices/extraction/wikidata/wiki_jsons/
