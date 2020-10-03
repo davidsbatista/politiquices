@@ -1,7 +1,3 @@
-Extract and identify relationships of support and opposition between politicians from archived newspapers.
-
-       
-       
 ## 2. Relationship Classifier (classifier)
 
    - Relationship Classifier
@@ -60,3 +56,24 @@ Extract and identify relationships of support and opposition between politicians
      - Classifier API arch: 
         https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
      - log when queries to ElasticSearch fail
+
+
+
+## Starting the API endpoint
+
+- First make sure the Entity-Linking endpoint is running
+         
+        source ~/virtual_envs/python38/bin/activate
+        PYTHONPATH=/Users/dsbatista/PycharmProjects/politic-relationships:/Users/dsbatista/PycharmProjects/politic-relationships/politics/classifiers/    
+        cd wikidata/
+        make build
+
+ - After that just start the FastAPI app
+
+        uvicorn --workers 2 --reload api:app
+
+
+## Documentation
+
+- http://127.0.0.1:8000/docs
+- http://127.0.0.1:8000/redoc

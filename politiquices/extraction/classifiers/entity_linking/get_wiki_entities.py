@@ -4,7 +4,7 @@ import sys
 import requests
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-from politiquices.extraction.utils import just_sleep
+from politiquices.extraction.commons import just_sleep
 
 # persons that are/were affiliated with a recent/relevant portuguese political party
 affiliated_with_relevant_political_party = """

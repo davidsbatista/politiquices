@@ -5,7 +5,7 @@ import jsonlines as jsonlines
 import mmh3
 import requests
 
-from politiquices.extraction.utils import clean_title
+from politiquices.extraction.commons import clean_title
 
 url_relationship_clf = "http://127.0.0.1:8000/relationship"
 url_relevancy_clf = "http://127.0.0.1:8000/relevant"

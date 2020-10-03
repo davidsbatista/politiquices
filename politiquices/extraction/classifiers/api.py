@@ -7,23 +7,24 @@ from elasticsearch import Elasticsearch
 
 from fastapi import FastAPI
 
-from politiquices.extraction.utils import clean_title
+from politiquices.extraction.commons import clean_title
 
 app = FastAPI()
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-MODELS = os.path.join(APP_ROOT, "../classifiers/trained_models/")
+MODELS = os.path.join(APP_ROOT, "../classifiers/news_titles/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
 
 print("Loading spaCy model...")
 nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
 
+# ToDo: fail on error
 print("Setting up connection with Elasticsearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
 print("Loading trained models...")
-relationship_clf = joblib.load(MODELS + "relationship_clf_2020-09-26_23:09:11.pkl")
-relevancy_clf = joblib.load(MODELS + "relevancy_clf_2020-09-26-22:09:55.pkl")
+relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-03_202343.pkl")
+relevancy_clf = joblib.load(MODELS + "relevancy_clf_2020-10-03_200809.pkl")
 
 
 @app.get("/")
@@ -70,7 +71,9 @@ async def classify_relationship(news_title: Optional[str] = None):
         # ToDo: if no persons are found try string matching with wikidata ?
         return {"not enough entities": persons}
 
-    title = title.replace(persons[1], "PER").replace(persons[2], "PER")
+    print(persons)
+
+    title = title.replace(persons[0], "PER").replace(persons[1], "PER")
     predicted_probs = relationship_clf.tag([title])
 
     rel_type_scores = {

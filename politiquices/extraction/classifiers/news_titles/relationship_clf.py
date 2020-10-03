@@ -1,7 +1,7 @@
 from collections import Counter
 from datetime import datetime
 
-import regex
+import re
 import joblib
 import numpy as np
 
@@ -12,14 +12,12 @@ from keras.utils import to_categorical
 from keras_preprocessing.sequence import pad_sequences
 
 from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
 
-from politiquices.extraction.utils import print_cm, read_ground_truth, clean_title
-from politiquices.extraction.classifiers.training.embeddings_utils import (
+from politiquices.extraction.commons import print_cm
+from politiquices.extraction.classifiers.news_titles.embeddings_utils import (
     create_embeddings_matrix,
     get_embeddings_layer,
-    get_embeddings,
     vectorize_titles,
 )
 
@@ -38,7 +36,7 @@ def pre_process_train_data(data):
         print(k, "\t", v)
     print("\nTotal nr. messages:\t", len(data))
     print("\n")
-    docs = [(d["sentence"], d["ent1"], d["ent2"]) for d in data]
+    docs = [(d["title"], d["ent1"], d["ent2"]) for d in data]
     labels = [d["label"] for d in data]
 
     # replace entity name by 'PER'
@@ -84,7 +82,7 @@ class RelationshipClassifier:
 
         # Encode the labels, each must be a vector with dim = num. of possible labels
         if self.directional is False:
-            y_train = [regex.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_train]
+            y_train = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_train]
 
         le = LabelEncoder()
         y_train_encoded = le.fit_transform(y_train)
@@ -123,7 +121,7 @@ class RelationshipClassifier:
 
         # Encode the labels, each must be a vector with dim = num. of possible labels
         if self.directional is False:
-            y_test = [regex.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_test]
+            y_test = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_test]
 
         x_predicted_probs = self.tag(x_test)
 
@@ -138,35 +136,6 @@ class RelationshipClassifier:
         return report
 
     def save(self):
-        date_time = datetime.now().strftime("%Y-%m-%d_%H:%m:%S")
+        date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         joblib.dump(self, f"trained_models/relationship_clf_{date_time}.pkl")
 
-
-def main():
-    data = read_ground_truth(only_label=True)
-
-    for entry in data:
-        entry["title"] = clean_title(entry["title"]).strip()
-
-    docs, labels = pre_process_train_data(data)
-    word2embedding, word2index = get_embeddings()
-
-    skf = StratifiedKFold(n_splits=2, random_state=42, shuffle=True)
-
-    for train_index, test_index in skf.split(docs, labels):
-        x_train = [doc for idx, doc in enumerate(docs) if idx in train_index]
-        x_test = [doc for idx, doc in enumerate(docs) if idx in test_index]
-        y_train = [label for idx, label in enumerate(labels) if idx in train_index]
-        y_test = [label for idx, label in enumerate(labels) if idx in test_index]
-        model = RelationshipClassifier(directional=True, epochs=20)
-        model.train(x_train, y_train, word2index, word2embedding)
-        report = model.evaluate(x_test, y_test)
-        print(report)
-
-    model = RelationshipClassifier(directional=True, epochs=20)
-    model.train(docs, labels, word2index, word2embedding)
-    model.save()
-
-
-if __name__ == "__main__":
-    main()
