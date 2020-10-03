@@ -6,7 +6,7 @@ sparql:
 
 web:
 	# create the python venv and launch the webapp
-	python3 -m venv $${HOME}/politiquices_venv; source $${HOME}/politiquices_venv/bin/activate; \
+	python3 -m venv $${HOME}/politiquices_venv; . $${HOME}/politiquices_venv/bin/activate; \
 	pip install --upgrade pip; \
 	pip install -r webapp/requirements.txt; \
 	export PYTHONPATH=$HOME/politic-relationships; \
