@@ -147,11 +147,11 @@ def get_relevant_persons_based_on_public_office_positions():
     """
 
     wiki_ids = []
-    with open('public_office_positions.json') as f_in:
+    with open("public_office_positions.json") as f_in:
         data = json.load(f_in)
         for k, v in data.items():
             for wiki_id, description in v.items():
-                wiki_ids.append('wd:'+wiki_id)
+                wiki_ids.append("wd:" + wiki_id)
 
     query = f"""
     SELECT DISTINCT ?person ?personLabel
@@ -176,28 +176,30 @@ def get_results(endpoint_url, sarpql_query):
 
 
 def main():
-    queries = [affiliated_with_relevant_political_party,
-               get_relevant_persons_based_on_public_office_positions()]
+    queries = [
+        affiliated_with_relevant_political_party,
+        get_relevant_persons_based_on_public_office_positions(),
+    ]
 
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
     endpoint_url = "https://query.wikidata.org/sparql"
     relevant_persons_ids = []
-    default_dir = 'wiki_jsons/'
+    default_dir = "wiki_jsons/"
 
     # get the wiki ids for all relevant persons
     for query in queries:
         results = get_results(endpoint_url, query)
-        wiki_ids = [r['person']['value'].split("/")[-1] for r in results["results"]["bindings"]]
+        wiki_ids = [r["person"]["value"].split("/")[-1] for r in results["results"]["bindings"]]
         relevant_persons_ids.extend(wiki_ids)
 
     # get detailed information for each person
     for idx, wiki_id in enumerate(set(relevant_persons_ids)):
-        print(str(idx)+'/'+str(len(set(relevant_persons_ids))))
+        print(str(idx) + "/" + str(len(set(relevant_persons_ids))))
         just_sleep(2)
-        url = base_url + wiki_id + '.json'
-        r = requests.get(url, params={'format': 'json', 'id': wiki_id})
-        open(default_dir+wiki_id+'.json', 'wt').write(r.text)
+        url = base_url + wiki_id + ".json"
+        r = requests.get(url, params={"format": "json", "id": wiki_id})
+        open(default_dir + wiki_id + ".json", "wt").write(r.text)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

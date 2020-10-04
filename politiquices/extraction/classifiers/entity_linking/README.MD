@@ -1,5 +1,3 @@
-
-
 # Start ElasticSearch + Kibana
 
     docker network create elastic
@@ -17,7 +15,7 @@
     
         mkdir wiki_jsons/
         
-        python get_KB_entities.py
+        python get_wiki_entities.py
 
    2. Index into Elastic Search
         

@@ -1,14 +1,14 @@
 import json
 import os
-import sys
 import logging
 from datetime import datetime
-
-from SPARQLWrapper import SPARQLWrapper, JSON
 
 from flask import request
 from flask import render_template
 from app import app
+
+from politiquices.webapp.webapp.app.sparql_queries import query_sparql
+from politiquices.webapp.webapp.app.sparql_queries import initalize
 
 
 def convert_dates(date: str):
@@ -151,28 +151,24 @@ def detail_entity():
     for k, v in items.items():
         print(k, '\t', v)
 
-    # with open(wiki_id+'json', 'wt') as outfile:
-    #    json.dump(items, outfile)
-
     return render_template('entity_detail.html', items=items)
 
 
 @app.route('/')
 @app.route('/entities')
 def list_entities():
-
-    # ToDo: this can be done with a SPARLQ query
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    with open(dir_path+'/front-end/entities_in_database.json', 'rt') as f_in:
-        entities = json.load(f_in)
+    # ToDo: run this on the Makefile, just after the server is launched
+    print("Getting entities")
+    entities = query_sparql(initalize(), 'local')
     persons = set()
     items = []
+
     for e in entities['results']['bindings']:
         url = e['item']['value']
         if url in persons:
             continue
         persons.add(url)
-        name = e['personLabel']['value']
+        name = e['label']['value']
         if 'image_url' in e:
             image_url = e['image_url']['value']
         else:
@@ -188,20 +184,3 @@ def list_entities():
     return render_template('all_entities.html', items=items)
 
 
-def query_sparql(query, endpoint):
-    if endpoint == 'wiki':
-        endpoint_url = "https://query.wikidata.org/sparql"
-    elif endpoint == 'local':
-        endpoint_url = "http://localhost:3030/arquivo/query"
-    else:
-        print("endpoint not valid")
-        return None
-
-    # TODO adjust user agent; see https://w.wiki/CX6
-    user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
-    sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
-    sparql.setQuery(query)
-    sparql.setReturnFormat(JSON)
-    results = sparql.query().convert()
-
-    return results

@@ -6,19 +6,7 @@
         
       outputs `sample.ttl`
   
-   2. start a docker container with Apache-Jena (https://hub.docker.com/r/stain/jena-fuseki)
-    
-        `docker run -v fuseki-data:/fuseki --name=fuseki -p 3030:3030 stain/jena-fuseki`
-        
-        docker run -p 3030:3030 -v $(pwd)/fuseki-data:/usr/share/data atomgraph/fuseki --file=/usr/share/data/sample.ttl /ds
-
-        
-        # ./fuseki-server --file=../fuseki-data/sample.ttl /ds
-        
-        
-      and create/load a dataset from `sample.tll`
-      
-         http://localhost:3030/manage.html
+   2. ToDo:
         
    3. Query the graph:
 
