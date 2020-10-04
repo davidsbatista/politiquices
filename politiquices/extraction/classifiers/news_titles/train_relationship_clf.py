@@ -3,7 +3,7 @@ from politiquices.extraction.classifiers.news_titles.relationship_clf import (
     RelationshipClassifier,
     pre_process_train_data,
 )
-from politiquices.extraction.commons import clean_title, read_ground_truth
+from politiquices.extraction.utils import clean_title, read_ground_truth
 
 
 def main():

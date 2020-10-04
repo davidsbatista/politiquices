@@ -17,8 +17,8 @@ from politiquices.extraction.classifiers.news_titles.embeddings_utils import (
     get_embeddings_layer,
     vectorize_titles,
 )
-from politiquices.extraction.commons import print_cm
-from politiquices.extraction.commons.ml_utils import (
+from politiquices.extraction.utils import print_cm
+from politiquices.extraction.utils.ml_utils import (
     plot_precision_recall_curve,
     plot_precision_recall_vs_threshold,
 )

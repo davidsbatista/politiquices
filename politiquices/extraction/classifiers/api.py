@@ -7,7 +7,7 @@ from elasticsearch import Elasticsearch
 
 from fastapi import FastAPI
 
-from politiquices.extraction.commons import clean_title
+from politiquices.extraction.utils import clean_title
 
 app = FastAPI()
 

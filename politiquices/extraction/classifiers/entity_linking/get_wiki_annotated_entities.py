@@ -3,7 +3,7 @@ import sys
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-from politiquices.extraction.commons import just_sleep, write_iterator_to_file, read_ground_truth
+from politiquices.extraction.utils import just_sleep, write_iterator_to_file, read_ground_truth
 
 endpoint_url = "https://query.wikidata.org/sparql"
 

@@ -8,13 +8,15 @@ from elasticsearch import helpers
 
 def create_index():
     es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
-    # es.indices.delete(index='politica_titles')
+    # es.indices.delete(index='politicians')
 
     request_body = {
         "settings": {
             "number_of_shards": 1,
             "number_of_replicas": 1
         },
+
+        # ToDo:
         'mappings': {
             'properties': {
                 'date': {'type': 'text'},
@@ -32,21 +34,27 @@ def main():
     bulk_data = []
     path = sys.argv[1]
     for file in os.listdir(path):
+
         if not file.endswith("json"):
             continue
+
         with open(path+"/"+file, 'rt') as f_in:
             data = json.load(f_in)
             wiki_id = file.split(".json")[0]
             data_keys = data['entities'][wiki_id]
+
         if 'pt' in data_keys['labels']:
             label = data_keys['labels']['pt']['value']
         else:
             label = None
             print("no pt found in labels")
+
         if 'pt' in data_keys['aliases']:
             aliases = [aliases['value'] for aliases in data_keys['aliases']['pt']]
         else:
             aliases = None
+
+        # ToDo: extract occupations in PT
 
         print("wiki: ", wiki_id)
         print("last_modified", data_keys['modified'])

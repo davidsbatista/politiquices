@@ -14,3 +14,4 @@ spacy==2.2.4
 tensorflow==2.2.0
 elasticsearch>=7.0.0,<8.0.0
 uvicorn
+jsonlines

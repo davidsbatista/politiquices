@@ -26,6 +26,7 @@ def clean_title(text):
     """
     text = text.strip().strip("\u200b")
     to_clean = [
+        " | DNOTICIAS.PT",
         " | Expresso.pt",
         " - Visao.pt",
         " - Notícias Lusa - SAPO Notícias",
@@ -74,7 +75,9 @@ def clean_title(text):
         "- Economima",
         " – Página 2",
         "- Notícias",
-
+        " - TSF",
+        " - PÚBLICO",
+        " - AEIOU.pt",
     ]
 
     return reduce(lambda a, v: a.replace(v, ""), to_clean, text)
@@ -83,3 +86,12 @@ def clean_title(text):
 def convert_dates(date: str):
     date_obj = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
     return date_obj.strftime('%Y %b')
+
+
+def load_domains():
+    domains = []
+    with open('data/domains.txt', 'rt') as f_in:
+        for line in f_in:
+            if not line.startswith('#') and len(line) > 1:
+                domains.append(line.strip('\n'))
+    return domains

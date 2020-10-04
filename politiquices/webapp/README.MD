@@ -1,14 +1,33 @@
-## Generate triples graph
+### Triple Store
 
-   1. Generating RDF/Turtle triples on classifier output:
+ - inspired from: https://hub.docker.com/r/stain/jena-fuseki
+
+ - Infrastructure:
+    - set timeout query on Fuseki
+ - SPARQL queries:
+        - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
+        - use OR in FILTER to avoid doing two queries:
+            https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
+            
+ - see: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
+
+
+### Web App
+   - do layouts
+   - endpoints:
+        - listar todas pessoas
+        - listar todos os partidos/organizações
+        - listar pessoas com informação incompleta: foto, cargos, etc.
    
-          `python create_RDF.py <classified_titles.jsonl>`
-        
-      outputs `sample.ttl`
-  
-   2. ToDo:
-        
-   3. Query the graph:
+   - sugerir para completar:
+        - https://www.politicaparatodos.pt/
+        - http://demo.cratica.org/deputados/            
+   - clicar numa pessoa: desenvolver mais
+   - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch
+
+
+### Queries
+
 
 ##### List all the politicians in the graph and the party they belong through Wikidata endpoint     
 
@@ -212,3 +231,4 @@
    Federated queries: 
    - http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/   
    - https://stackoverflow.com/questions/53012303/using-wikidata-label-service-in-federated-queries
+

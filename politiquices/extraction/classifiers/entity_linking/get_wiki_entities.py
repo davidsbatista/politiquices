@@ -4,7 +4,9 @@ import sys
 import requests
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-from politiquices.extraction.commons import just_sleep
+from politiquices.extraction.utils import just_sleep
+
+# PERSONS
 
 # persons that are/were affiliated with a recent/relevant portuguese political party
 affiliated_with_relevant_political_party = """
@@ -21,32 +23,35 @@ affiliated_with_relevant_political_party = """
              ?person wdt:P102 ?relevant_parties . 
              ?person rdfs:label ?personLabel }
         FILTER(LANG(?personLabel) = "pt")
-
     } ORDER BY ?personLabel
     """
 
-# all portuguese bankers
-portuguese_bankers = """
-    SELECT DISTINCT ?pessoa ?pessoaLabel ?x WHERE {
-        ?pessoa wdt:P106 wd:Q806798;
-          rdfs:label ?pessoaLabel.
-        ?pessoa wdt:P27 wd:Q45
-      FILTER((LANG(?pessoaLabel)) = "pt")
-    }
-    ORDER BY (?pessoaLabel)
-    """
+# portuguese persons based on their occupation(s) AND born after 1935
+# wd:Q1930187  jornalista
+# wd:Q16533    juiz,
+# wd:Q188094   economista
+# wd:Q40348    advogado
+# wd:Q212238   civil servant
+# wd:Q82955    politician
+# wd:Q43845    businessperson
+# wd:Q131524   entrepreneur
 
-# portuguese_business_man
-portuguese_business_man = """
-    SELECT DISTINCT ?person ?personLabel
+portuguese_persons_occupations = """
+    SELECT DISTINCT ?person ?personLabel ?date_of_birth
     WHERE {
-      ?person wdt:P106 wd:Q43845.
-      ?person rdfs:label ?personLabel.
       ?person wdt:P27 wd:Q45.
-
+      { VALUES ?ocupations { wd:Q1930187 wd:Q16533 wd:Q188094 wd:Q40348 
+                             wd:Q212238  wd:Q82955 wd:Q43845 wd:Q806798}} .
+      ?person wdt:P106 ?ocupations .
+      ?person wdt:P569 ?date_of_birth .
+      ?person rdfs:label ?personLabel.
+      FILTER(?date_of_birth >= "1935-01-01T00:00:00"^^xsd:dateTime )
       FILTER(LANG(?personLabel) = "pt")
-    } ORDER BY ?personLabel
+    } 
+    ORDER BY ?personLabel
     """
+
+# ORGANISATIONS
 
 # all portuguese political parties
 portuguese_political_parties = """
@@ -98,17 +103,6 @@ portuguese_municipalities = """
     ORDER BY (?localityLabel)
     """
 
-# all persons affiliated with any portuguese political party - even if already disbanded
-persons_affiliated_with_any_political_party = """"
-    SELECT DISTINCT ?person ?personLabel
-    WHERE {
-      ?party wdt:P31 wd:Q7278 .
-      ?party wdt:P17 wd:Q45 .
-      ?person wdt:P102 ?party .
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". }
-    } ORDER BY ?personLabel
-    """
-
 # all public portuguese enterprises
 portuguese_public_enterprises = """
     SELECT DISTINCT ?enterprise ?enterpriseLabel ?x WHERE {
@@ -143,6 +137,8 @@ def get_relevant_persons_based_on_public_office_positions():
         wdt:P39 position held
         subject currently or formerly holds the object position or public office
 
+        filter to return only those born after 1935
+
     :return:
     """
 
@@ -158,8 +154,10 @@ def get_relevant_persons_based_on_public_office_positions():
     WHERE {{
       VALUES ?positions {{ {' '.join(wiki_ids)} }}
       ?person wdt:P39 ?positions.
-      ?person rdfs:label ?personLabel
+      ?person rdfs:label ?personLabel .
+      ?person wdt:P569 ?date_of_birth .
       FILTER(LANG(?personLabel) = "pt")
+      FILTER(?date_of_birth >= "1935-01-01T00:00:00"^^xsd:dateTime )
     }} ORDER BY ?personLabel
     """
 
@@ -179,16 +177,24 @@ def main():
     queries = [
         affiliated_with_relevant_political_party,
         get_relevant_persons_based_on_public_office_positions(),
+        portuguese_persons_occupations,
     ]
 
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
     endpoint_url = "https://query.wikidata.org/sparql"
     relevant_persons_ids = []
-    default_dir = "wiki_jsons/"
+    default_dir = "new_wiki_jsons/"
 
     # get the wiki ids for all relevant persons
     for query in queries:
+
+        print(query)
+
         results = get_results(endpoint_url, query)
+
+        print(len(results))
+        print()
+
         wiki_ids = [r["person"]["value"].split("/")[-1] for r in results["results"]["bindings"]]
         relevant_persons_ids.extend(wiki_ids)
 

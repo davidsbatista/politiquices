@@ -3,8 +3,8 @@ from sklearn.model_selection import StratifiedKFold
 
 from politiquices.extraction.classifiers.news_titles.embeddings_utils import get_embeddings
 from politiquices.extraction.classifiers.news_titles.relevancy_clf import RelevancyClassifier
-from politiquices.extraction.commons import clean_title
-from politiquices.extraction.commons.io import read_raw_data
+from politiquices.extraction.utils import clean_title
+from politiquices.extraction.utils.io import read_raw_data
 
 
 def main():

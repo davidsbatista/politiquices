@@ -7,7 +7,7 @@ import requests
 from jsonlines import jsonlines
 from loguru import logger
 
-from politiquices.extraction.arquivo_pt.utils import load_domains
+from politiquices.extraction.utils.utils import load_domains
 
 # https://docs.google.com/spreadsheets/d/1f4OZWE1BOtMS7JJcruNh8Rpem-MbmBVnLrERcmP9OZU/edit#gid=0
 

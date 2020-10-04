@@ -5,7 +5,7 @@ import jsonlines as jsonlines
 import mmh3
 import requests
 
-from politiquices.extraction.commons import clean_title
+from politiquices.extraction.utils import clean_title
 
 url_relationship_clf = "http://127.0.0.1:8000/relationship"
 url_relevancy_clf = "http://127.0.0.1:8000/relevant"
@@ -20,19 +20,20 @@ def crawled_data():
 
 
 def read_hashes():
-    if path.exists("processed_titles.jsonl"):
+    if path.exists("../arquivo_pt/processed_titles.jsonl"):
         print("Loading already processed titles...")
-        with jsonlines.open('processed_titles.jsonl') as reader:
+        with jsonlines.open('../arquivo_pt/processed_titles.jsonl') as reader:
             return set([obj['hash'] for obj in reader.iter(type=dict, skip_invalid=False)])
     return set()
 
 
 def process_titles(titles_hashes):
-    with jsonlines.open('processed_titles.jsonl', mode='a') as writer:
+    with jsonlines.open('../arquivo_pt/processed_titles.jsonl', mode='a') as writer:
         for entry in crawled_data():
 
-            # ToDo: cleaning and checking should go into the clf class
             cleaned_title = clean_title(entry['title']).strip()
+
+            # ToDo: skip 'desporto'/'desportos' in URL
 
             # too short skipped
             # maybe increase this a bit? 4 ?

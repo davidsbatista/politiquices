@@ -1,6 +1,6 @@
 from functools import lru_cache
 from elasticsearch import Elasticsearch
-from politiquices.extraction.commons import read_ground_truth, write_iterator_to_file
+from politiquices.extraction.utils import read_ground_truth, write_iterator_to_file
 
 ent_string = []
 ent_true = []

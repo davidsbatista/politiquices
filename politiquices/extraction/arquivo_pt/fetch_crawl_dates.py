@@ -1,7 +1,6 @@
 import json
 import requests
-from politiquices.extraction.arquivo_pt.utils import load_domains
-
+from politiquices.extraction.utils.utils import load_domains
 
 URL_REQUEST = "http://arquivo.pt/wayback/cdx"
 

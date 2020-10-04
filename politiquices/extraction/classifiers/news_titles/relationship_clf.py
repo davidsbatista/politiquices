@@ -14,7 +14,7 @@ from keras_preprocessing.sequence import pad_sequences
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 
-from politiquices.extraction.commons import print_cm
+from politiquices.extraction.utils import print_cm
 from politiquices.extraction.classifiers.news_titles.embeddings_utils import (
     create_embeddings_matrix,
     get_embeddings_layer,

@@ -1,0 +1,58 @@
+NOT FOUND
+=========
+
+https://www.wikidata.org/wiki/Q9619875      António Nogueira Leite
+https://www.wikidata.org/wiki/Q10325927     Maria José Morgado
+
+
+
+estrangeiros
+============
+https://www.wikidata.org/wiki/Q40688        Yanis Varoufakis
+Lula da Silva
+Merkel
+Bolsonaro
+
+
+
+Organisations
+=============
+- Partidos Politicos
+- Organismos públicos:
+    - https://www.wikidata.org/wiki/Q10265177 DIAP
+- Empresas públicas:
+    - TAP
+    - Banco de Portugal?
+    - CGD
+    - Infrastructuras de Portugal   https://www.wikidata.org/wiki/Q20730106
+
+- Sindicatos
+    - UGT
+
+- Bancos privados:
+    - Banif
+
+- Empresas privadas
+    - Sonangol
+    - Galp
+
+- Grupos Financeiros
+    - Sonae
+
+
+
+
+not in wikidata
+===============
+João Galamba            https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=4166
+Victor Baptista         https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=1592
+André Figueiredo        https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=2259
+João Proença            https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=174
+Isabele Meyrelles       https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=6935
+Marcos Sá               https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=2268
+Afonso Candal           https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=1488
+
+João César das Neves    https://www.wikiwand.com/pt/Jo%C3%A3o_C%C3%A9sar_das_Neves
+
+
+
