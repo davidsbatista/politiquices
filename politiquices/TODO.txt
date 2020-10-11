@@ -1,0 +1,64 @@
+arquivo_pt:
+==========
+    - method to detect duplicate titles: semantically similar
+
+
+classifiers
+===========
+    - relevancy:
+        - is this really needed? if there are no interesting named-entities discard
+        - use 'PER' on relevancy classifiers instead of names?
+
+    - relationship:
+        - titles with more than one relationship?
+        - embeddings: better/cleaner
+        - Transformer models
+
+    - named_entity:
+        - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching
+
+    - entity_linking:
+        - Filter out ppl born before 1935
+        - 'Vieira da Silva' https://www.wikidata.org/wiki/Q1709692 is being mapped to
+          wrongly to https://www.wikidata.org/wiki/Q10365348
+
+   - service:
+     - log when queries to ElasticSearch fail
+     - review classifier API arch:
+        https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
+
+
+SPARQL DB
+=========
+    - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
+    - use OR in FILTER to avoid doing two queries:
+            https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
+
+   Getting statements values:
+      - https://stackoverflow.com/questions/54974504/sparql-question-how-to-return-property-labels-and-associated-date-qualifiers-fr
+      - https://stackoverflow.com/questions/36023098/querying-wikidata-difference-between-p-and-wdt-default-prefix
+
+   Federated queries:
+      - http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/
+      - https://stackoverflow.com/questions/53012303/using-wikidata-label-service-in-federated-queries
+
+
+Web App
+=======
+   - dentro da página de político ter as datas das notícias, e um interface qualquer para poder
+     selecionar  as relações e o intervalo de datas
+
+   - endpoints:
+        - listar todas pessoas
+        - listar todos os partidos/organizações
+        - listar pessoas com informação incompleta: foto, cargos, etc.
+
+   - sugerir para completar:
+        - https://www.politicaparatodos.pt/
+        - http://demo.cratica.org/deputados/
+
+   - clicar numa pessoa: desenvolver mais
+
+   - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch
+
+

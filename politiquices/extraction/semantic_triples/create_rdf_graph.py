@@ -23,6 +23,18 @@ def processed_titles(filename):
             yield line
 
 
+def extract_date(crawled_date: str):
+    year = crawled_date[0:4]
+    month = crawled_date[4:6]
+    day = crawled_date[6:8]
+    hour = crawled_date[8:10]
+    minute = crawled_date[10:12]
+    second = crawled_date[12:14]
+    date_str = f'{year}-{month}-{day}T{hour}:{minute}:{second}'
+    # date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
+    return date_str
+
+
 def build_person(wikidata_id, name, persons):
     """
     Store all the persons to be added to the Graph
@@ -82,6 +94,7 @@ def process_classified_titles():
                 no_wiki__writer.write(processed_title)
                 continue
 
+            # ToDo: one can also use a similarity metric
             seen_hashes.add(processed_title["hash"])
 
             scores = [(k, v) for k, v in rel.items() if isinstance(v, float)]
@@ -91,9 +104,9 @@ def process_classified_titles():
             e2_wiki = rel["entity_2_wiki"]['wiki']
             person_1 = processed_title["relationship"]["entity_1"]
             person_2 = processed_title["relationship"]["entity_2"]
-            title = processed_title["entry"]["title"]
             title_cleaned = processed_title["cleaned_title"]
             url = processed_title["entry"]["linkToArchive"]
+            crawled_date = extract_date(processed_title['entry']["tstamp"])
 
             p1_id = e1_wiki
             p1_name = person_1
@@ -110,7 +123,7 @@ def process_classified_titles():
             )
 
             articles.append(
-                Article(url=url, title=title_cleaned, source=None, date=None, crawled_date=None)
+                Article(url=url, title=title_cleaned, source=None, date=None, crawled_date=crawled_date)
             )
 
         return articles, persons, relationships
@@ -174,7 +187,7 @@ def main():
     #   <url, DC.data, date)
     for article in articles:
         g.add((URIRef(article.url), DC.title, Literal(article.title, lang="pt")))
-        g.add((URIRef(article.url), DC.date, Literal(article.date, datatype=XSD.datetime)))
+        g.add((URIRef(article.url), DC.date, Literal(article.crawled_date, datatype=XSD.dateTime)))
 
     print("adding Relationships")
     # add relationships as Blank Node:
@@ -192,7 +205,10 @@ def main():
     print(g.serialize(format="turtle").decode("utf-8"))
     g.serialize(destination="sample.ttl", format="turtle")
     print("graph has {} statements.".format(len(g)))
-    sys.exit()
+
+    print("persons      : ", len(persons))
+    print("articles     : ", len(articles))
+    print("relationships: ", len(relationships))
 
 
 if __name__ == "__main__":

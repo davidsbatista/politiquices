@@ -1,38 +1,35 @@
-### Triple Store
 
- - inspired from: https://hub.docker.com/r/stain/jena-fuseki
+##### List the total number of persons (politicians)
 
- - Infrastructure:
-    - set timeout query on Fuseki
- - SPARQL queries:
-        - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
-        - use OR in FILTER to avoid doing two queries:
-            https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
-            
- - see: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
-
-
-### Web App
-   - do layouts
-   - endpoints:
-        - listar todas pessoas
-        - listar todos os partidos/organizações
-        - listar pessoas com informação incompleta: foto, cargos, etc.
-   
-   - sugerir para completar:
-        - https://www.politicaparatodos.pt/
-        - http://demo.cratica.org/deputados/            
-   - clicar numa pessoa: desenvolver mais
-   - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch
+    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX my_prefix: <http://some.namespace/with/name#>
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    
+    SELECT COUNT(?x) WHERE {
+        ?x wdt:P31 wd:Q5
+    }
 
 
-### Queries
+##### List the total number of articles
+
+    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX my_prefix: <http://some.namespace/with/name#>
+    
+    SELECT COUNT(?x) WHERE {
+      ?x my_prefix:arquivo ?y .
+    }
 
 
-##### List the total number of politicians
+##### List the total number of news articles by year 
 
-
-##### List the total number of news articles 
+    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+    
+    SELECT ?year COUNT(?x) WHERE {
+      ?x dc:date ?date .
+    }
+    GROUP BY (YEAR(?date) AS ?year)
+    ORDER BY ?year
 
 
 ##### List all the politicians and the number of articles where they occur
@@ -251,15 +248,3 @@
         SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?personLabel }
       }
     }
-    
-    Download JSON and copy to webapp/front-end/entities_in_database.json
-
-
-   Getting statements values
-   - https://stackoverflow.com/questions/54974504/sparql-question-how-to-return-property-labels-and-associated-date-qualifiers-fr
-   - https://stackoverflow.com/questions/36023098/querying-wikidata-difference-between-p-and-wdt-default-prefix
-
-   Federated queries: 
-   - http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/   
-   - https://stackoverflow.com/questions/53012303/using-wikidata-label-service-in-federated-queries
-

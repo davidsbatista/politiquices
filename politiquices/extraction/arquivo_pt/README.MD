@@ -36,7 +36,3 @@
     {"title": <title of the news artile>,
      "linkToArchive": <url for arquivo.pt containing the news article>, 
      "tstamp": <time stamp of the crawl data>}
-
-
-ToDo:
-   - method to detect duplicate titles: semantically similar 

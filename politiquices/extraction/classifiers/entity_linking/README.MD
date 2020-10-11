@@ -26,7 +26,3 @@
    
       
         python evaluate_entity_linking.py
-
-
-### ToDo:
- - Filter out ppl born before 1900

@@ -40,16 +40,3 @@
     
         - http://127.0.0.1:8000/docs
         - http://127.0.0.1:8000/redoc
-
-
-### ToDo
-   - Classifiers
-     - use 'PER' on relevancy classifiers instead of names?
-     - titles with more than one relationship?
-     - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching 
-     - better/cleaner embeddings
-   
-   - Service: 
-     - Classifier API arch: 
-        https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
-     - log when queries to ElasticSearch fail

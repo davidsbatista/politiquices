@@ -18,5 +18,3 @@
           `python create_RDF.py <classified_titles.jsonl>`
         
       outputs `sample.ttl`
-  
- 
