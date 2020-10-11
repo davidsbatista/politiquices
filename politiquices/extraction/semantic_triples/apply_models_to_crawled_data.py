@@ -34,6 +34,14 @@ def process_titles(titles_hashes):
             cleaned_title = clean_title(entry['title']).strip()
 
             # ToDo: skip 'desporto'/'desportos' in URL
+            """
+            if 'desporto' in line['entry']['linkToArchive']:
+                continue
+
+            if re.match(r'(Benfica|Sporting|Porto|Desporto|Futebol)',
+                        line['entry']['title'], flags=re.IGNORECASE):
+                continue
+            """
 
             # too short skipped
             # maybe increase this a bit? 4 ?

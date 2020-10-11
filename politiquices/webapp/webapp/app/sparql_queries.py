@@ -16,6 +16,7 @@ prefixes = """
 
 
 def initalize():
+    # get: wiki_id, name(label), image_url
     query = """
         SELECT DISTINCT ?item ?label ?image_url{
             ?item wdt:P31 wd:Q5.
@@ -30,6 +31,22 @@ def initalize():
         ORDER BY ?label
         """
     return prefixes+"\n"+query
+
+
+def counts():
+    query = """
+        SELECT ?person_name ?person (COUNT(*) as ?count){
+            ?person rdfs:label ?person_name .
+            ?person wdt:P31 wd:Q5 .
+            {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
+            ?rel my_prefix:arquivo ?arquivo_doc .
+            ?arquivo_doc dc:title ?title .
+            }
+        GROUP BY ?person_name ?person
+        HAVING (count(distinct *) > 1)
+        ORDER BY DESC (?count)
+        """
+    return prefixes + "\n" + query
 
 
 def query_sparql(query, endpoint):

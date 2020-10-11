@@ -29,6 +29,37 @@
 ### Queries
 
 
+##### List the total number of politicians
+
+
+##### List the total number of news articles 
+
+
+##### List all the politicians and the number of articles where they occur
+
+    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
+    PREFIX        wd:  <http://www.wikidata.org/entity/>
+    PREFIX        bd:  <http://www.bigdata.com/rdf#>
+    PREFIX  wikibase:  <http://wikiba.se/ontology#>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
+    PREFIX my_prefix: <http://some.namespace/with/name#>
+    PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    
+    # ?arquivo_doc ?title
+    
+    SELECT ?person_name ?person (COUNT(*) as ?count){
+      ?person rdfs:label ?person_name .
+      ?person wdt:P31 wd:Q5 .
+      {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
+      ?rel my_prefix:arquivo ?arquivo_doc .
+      ?arquivo_doc dc:title ?title .
+    }
+    GROUP BY ?person_name ?person
+    HAVING (count(distinct *) > 1)
+    ORDER BY DESC (?count)
+
+
 ##### List all the politicians in the graph and the party they belong through Wikidata endpoint     
 
     PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>

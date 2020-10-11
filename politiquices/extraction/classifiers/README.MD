@@ -1,13 +1,12 @@
-## 2. Relationship Classifier (classifier)
+## Relationship Classifier
 
    - Relationship Classifier
 
       - supports(ent1,ent2):    ent1 supports/agrees ent2 [on something]
       - supports(ent2,ent1):    ent2 supports/agrees ent1 [on something]
-      - opposes(ent1,ent2) :    ent1 accuses/disagrenees/criticizes ent2 [of something]
+      - opposes(ent1,ent2) :    ent1 accuses/disagrees/criticizes ent2 [of something]
       - opposes(ent2,ent1) :    ent2 accuses/disagrees/criticizes ent1 [of something]
       - other              :    not a relevant relationship 
-
 
    Applying classifier on arquivo.pt data:
 
@@ -26,13 +25,7 @@
    2. saves models in `webapp/app/models`
    
    
-## 3. Classifiers Endpoint
-
-    start the virtual_env e.g.: 
-        source ~/virtual_envs/python38/bin/activate
-    cd politics/
-    export PYTHONPATH=/Users/dsbatista/PycharmProjects/politic-relationships:/Users/dsbatista/PycharmProjects/politic-relationships/politics/classifiers/
-    make start
+## Classifiers Endpoint
        
     Relationship classifier: 
         http://127.0.0.1:8000/relationship/?news_title=Costa tenta esvaziar revisão constitucional proposta por André Ventura
@@ -43,37 +36,20 @@
     Entity Linking
         http://127.0.0.1:8000/wikidata?entity=Costa
 
+    Documenation:
+    
+        - http://127.0.0.1:8000/docs
+        - http://127.0.0.1:8000/redoc
 
 
-
-### API / Classifiers
+### ToDo
    - Classifiers
-     - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching
-     - add publico annotated data in training a title relevancy classifier 
+     - use 'PER' on relevancy classifiers instead of names?
+     - titles with more than one relationship?
+     - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching 
      - better/cleaner embeddings
    
    - Service: 
      - Classifier API arch: 
         https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
      - log when queries to ElasticSearch fail
-
-
-
-## Starting the API endpoint
-
-- First make sure the Entity-Linking endpoint is running
-         
-        source ~/virtual_envs/python38/bin/activate
-        PYTHONPATH=/Users/dsbatista/PycharmProjects/politic-relationships:/Users/dsbatista/PycharmProjects/politic-relationships/politics/classifiers/    
-        cd wikidata/
-        make build
-
- - After that just start the FastAPI app
-
-        uvicorn --workers 2 --reload api:app
-
-
-## Documentation
-
-- http://127.0.0.1:8000/docs
-- http://127.0.0.1:8000/redoc

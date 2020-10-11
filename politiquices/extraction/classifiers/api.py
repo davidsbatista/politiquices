@@ -1,3 +1,4 @@
+import re
 import os
 from typing import Optional
 
@@ -23,8 +24,8 @@ print("Setting up connection with Elasticsearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
 print("Loading trained models...")
-relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-03_202343.pkl")
-relevancy_clf = joblib.load(MODELS + "relevancy_clf_2020-10-03_200809.pkl")
+relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-11_140818.pkl")
+relevancy_clf = joblib.load(MODELS + "relevancy_clf_2020-10-10_211240.pkl")
 
 
 @app.get("/")
@@ -42,36 +43,33 @@ async def classify_relevancy(news_title: Optional[str] = None):
     }
 
 
-@app.get("/relationship/")
-async def classify_relationship(news_title: Optional[str] = None):
-
-    """
-    def filter_sentences_persons(titles):
-        # filter only the ones with at least two 'PER'
-        # ToDo: add also 'PER' from a hand-crafted list,
-        #  see: https://spacy.io/usage/rule-based-matching
-        wrong_PER = load_wrong_per()
-        print(f"Extracting named-entities from {len(titles)} titles")
-        titles_doc = [(t[0], nlp(t[1]), t[2]) for t in titles]
-        titles_per = []
-        for title in titles_doc:
-            persons = [ent.text for ent in title[1].ents if ent.label_ == "PER"]
-            if len(persons) == 2:
-                if not set(persons).intersection(set(wrong_PER)):
-                    titles_per.append((title, persons))
-
-        return titles_per
-    """
-
+@app.get("/named_entities")
+async def named_entities(news_title: Optional[str] = None):
     title = clean_title(news_title).strip()
     doc = nlp(title)
-    persons = [ent.text for ent in doc.ents if ent.label_ == "PER"]
-    # ToDo: discard known false positives?
-    if len(persons) != 2:
+    entities = {ent.text: ent.label_ for ent in doc.ents}
+    persons_to_tag = ['Marcelo', 'Passos', 'Rio']
+    persons = []
+
+    for k, v in entities.items():
+        if k in persons_to_tag and v != 'PER':
+            persons.append(k)
+        if v == 'PER':
+            persons.append(k)
+
+    return persons
+
+
+@app.get("/relationship/")
+async def classify_relationship(news_title: Optional[str] = None):
+    title = clean_title(news_title).strip()
+    persons = await named_entities(title)
+    if len(persons) < 2:
         # ToDo: if no persons are found try string matching with wikidata ?
         return {"not enough entities": persons}
-
-    print(persons)
+    if len(persons) > 2:
+        # ToDo: extract all possible contexts
+        return {"more than 2 entities": persons}
 
     title = title.replace(persons[0], "PER").replace(persons[1], "PER")
     predicted_probs = relationship_clf.tag([title])
@@ -133,8 +131,10 @@ async def wikidata_linking(entity: str):
         "Santana": "Pedro Santana Lopes",
     }
 
-    entity = mappings.get(entity, entity)
-    entity_query = " AND ".join(entity.split(" ")).replace(":", "")
+    entity_clean = re.sub(r'[:-]', '', entity)
+    entity_clean = re.sub(r'\s+', ' ', entity_clean)
+    entity_clean = mappings.get(entity, entity_clean)
+    entity_query = " AND ".join(entity_clean.strip().split(' '))
     res = es.search(index="politicians", body={"query": {"query_string": {"query": entity_query}}})
 
     if res["hits"]["hits"]:

@@ -1,5 +1,3 @@
-import json
-import os
 import logging
 from datetime import datetime
 
@@ -7,7 +5,7 @@ from flask import request
 from flask import render_template
 from app import app
 
-from politiquices.webapp.webapp.app.sparql_queries import query_sparql
+from politiquices.webapp.webapp.app.sparql_queries import query_sparql, counts
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 
 
@@ -18,6 +16,8 @@ def convert_dates(date: str):
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
+
+cached_list_entities = None
 
 
 @app.route('/entity')
@@ -157,29 +157,52 @@ def detail_entity():
 @app.route('/')
 @app.route('/entities')
 def list_entities():
-    # ToDo: run this on the Makefile, just after the server is launched
-    print("Getting entities")
-    entities = query_sparql(initalize(), 'local')
-    persons = set()
-    items = []
+    """
+    ToDo: run this on the Makefile, just after the server is launched and cache
+    """
 
-    for e in entities['results']['bindings']:
-        url = e['item']['value']
-        if url in persons:
-            continue
-        persons.add(url)
-        name = e['label']['value']
-        if 'image_url' in e:
-            image_url = e['image_url']['value']
-        else:
-            image_url = "/static/images/no_picture.jpg"
-        items.append({'wikidata_url': url,
-                      'wikidata_id': url.split('/')[-1],
-                      'name': name,
-                      'image_url': image_url})
+    if not cached_list_entities:
+        print("Getting entities extra info from wikidata.org")
+        entities = query_sparql(initalize(), 'local')
+        persons = set()
+        items_as_dict = dict()
+        nr_entities = len(entities['results']['bindings'])
 
-    # with open('all-entities-frontend.json', 'wt') as outfile:
-    #     json.dump(items, outfile)
+        print(f'{nr_entities} retrieved')
+
+        for e in entities['results']['bindings']:
+
+            # this is just avoid duplicate entities, same entity with two labels
+            # ToDo: see how to fix this with a SPARQL query
+            url = e['item']['value']
+            if url in persons:
+                continue
+            persons.add(url)
+
+            name = e['label']['value']
+            if 'image_url' in e:
+                image_url = e['image_url']['value']
+            else:
+                image_url = "/static/images/no_picture.jpg"
+
+            wiki_id = url.split('/')[-1]
+
+            items_as_dict[wiki_id] = {'wikidata_url': url,
+                                      'wikidata_id': wiki_id,
+                                      'name': name,
+                                      'nr_articles': 0,
+                                      'image_url': image_url}
+
+        article_counts = query_sparql(counts(), 'local')
+        for e in article_counts['results']['bindings']:
+            wiki_id = e['person']['value'].split('/')[-1]
+            nr_articles = int(e['count']['value'])
+            items_as_dict[wiki_id]['nr_articles'] = nr_articles
+
+        items = sorted(list(items_as_dict.values()), key=lambda x: x['nr_articles'], reverse=True)
+
+    else:
+        items = cached_list_entities
 
     return render_template('all_entities.html', items=items)
 

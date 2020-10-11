@@ -1,3 +1,5 @@
+import csv
+
 from datetime import datetime
 from functools import reduce
 from random import randint
@@ -24,8 +26,18 @@ def clean_title(text):
     :param text:
     :return:
     """
+
+    # ToDo: clean from match to end
+    # "Catarina Martins critica escolha de ministro que defendeu Ricardo Salgado - Economia - Jornal de Neg"
+    # "Catarina Martins critica escolha de ministro que defendeu Ricardo Salgado"
+
     text = text.strip().strip("\u200b")
     to_clean = [
+        " | Rui Moreira | PÚBLICO",
+        " - Weekend - Jornal de Negócios",
+        " - Politica - DN",
+        " - Sábado",
+        " > Sociedade",
         " | DNOTICIAS.PT",
         " | Expresso.pt",
         " - Visao.pt",
@@ -95,3 +107,37 @@ def load_domains():
             if not line.startswith('#') and len(line) > 1:
                 domains.append(line.strip('\n'))
     return domains
+
+
+def read_ground_truth(filename, only_label=False):
+    data = []
+    with open(filename, newline="") as csvfile:
+        titles = csv.reader(csvfile, delimiter="\t", quotechar="|")
+        for row in titles:
+            if len(row) == 8:
+                sample = {
+                    "title": row[0],
+                    "label": row[1],
+                    "date": row[2],
+                    "url": row[3],
+                    "ent1": row[4],
+                    "ent2": row[5],
+                    "ent1_id": row[6],
+                    "ent2_id": row[7],
+                }
+            else:
+                sample = {
+                    "title": row[0],
+                    "label": row[1],
+                    "date": row[2],
+                    "url": row[3],
+                    "ent1": row[4],
+                    "ent2": row[5],
+                }
+
+            if only_label:
+                if row[1]:
+                    data.append(sample)
+            else:
+                data.append(sample)
+    return data

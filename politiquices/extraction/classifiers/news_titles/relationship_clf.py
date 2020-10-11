@@ -14,7 +14,7 @@ from keras_preprocessing.sequence import pad_sequences
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 
-from politiquices.extraction.utils import print_cm
+from politiquices.extraction.utils import print_cm, clean_title
 from politiquices.extraction.classifiers.news_titles.embeddings_utils import (
     create_embeddings_matrix,
     get_embeddings_layer,
@@ -28,7 +28,9 @@ def pre_process_train_data(data):
     :param data:
     :return:
     """
-    ignore = ["other", "ent1_replaces_ent2", "ent2_replaces_ent1", "meet_together"]
+    ignore = ["other", "ent1_replaces_ent2", "ent2_replaces_ent1", "meet_together",
+              "ent1_asks_support_ent2", "ent2_asks_support_ent1"]
+
     data = [sample for sample in data if sample["label"] not in ignore]
 
     print("\nSamples per class:")
@@ -36,7 +38,7 @@ def pre_process_train_data(data):
         print(k, "\t", v)
     print("\nTotal nr. messages:\t", len(data))
     print("\n")
-    docs = [(d["title"], d["ent1"], d["ent2"]) for d in data]
+    docs = [(clean_title(d["title"]), d["ent1"], d["ent2"]) for d in data]
     labels = [d["label"] for d in data]
 
     # replace entity name by 'PER'

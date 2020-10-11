@@ -12,7 +12,7 @@
 
    1. Get raw data from WikiData
     
-    
+        
         mkdir wiki_jsons/
         
         python get_wiki_entities.py
@@ -28,6 +28,5 @@
         python evaluate_entity_linking.py
 
 
-### Wikidata / Entity Linking
- - https://elasticsearch-cheatsheet.jolicode.com/
+### ToDo:
  - Filter out ppl born before 1900

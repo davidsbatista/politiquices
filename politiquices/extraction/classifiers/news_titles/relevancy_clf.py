@@ -114,6 +114,7 @@ class RelevancyClassifier:
         print_cm(cm, labels=self.label_encoder.classes_)
         print()
 
+        """
         precision_vals, recall_vals, thresholds = plot_precision_recall_curve(
             x_predicted_probs, y_test, "relevant", "precision_recall_curve"
         )
@@ -130,6 +131,7 @@ class RelevancyClassifier:
         print()
 
         return report
+        """
 
     def save(self):
         date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
