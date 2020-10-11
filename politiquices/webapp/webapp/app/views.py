@@ -157,6 +157,7 @@ def detail_entity():
 @app.route('/')
 @app.route('/entities')
 def list_entities():
+    global cached_list_entities
     """
     ToDo: run this on the Makefile, just after the server is launched and cache
     """
@@ -200,6 +201,7 @@ def list_entities():
             items_as_dict[wiki_id]['nr_articles'] = nr_articles
 
         items = sorted(list(items_as_dict.values()), key=lambda x: x['nr_articles'], reverse=True)
+        cached_list_entities = items
 
     else:
         items = cached_list_entities
