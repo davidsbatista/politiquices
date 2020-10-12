@@ -5,24 +5,29 @@ arquivo_pt:
 
 classifiers
 ===========
-    - relevancy:
+    relevancy:
+    ----------
         - is this really needed? if there are no interesting named-entities discard
         - use 'PER' on relevancy classifiers instead of names?
 
-    - relationship:
+    relationship:
+    -------------
         - titles with more than one relationship?
         - embeddings: better/cleaner
         - Transformer models
 
-    - named_entity:
+    named_entity:
+    -------------
         - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching
 
-    - entity_linking:
+    entity_linking:
+    ---------------
         - Filter out ppl born before 1935
         - 'Vieira da Silva' https://www.wikidata.org/wiki/Q1709692 is being mapped to
           wrongly to https://www.wikidata.org/wiki/Q10365348
 
-   - service:
+   service:
+   --------
      - log when queries to ElasticSearch fail
      - review classifier API arch:
         https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
@@ -45,8 +50,20 @@ SPARQL DB
 
 Web App
 =======
+
+   - pagina inicial de status:
+        - nº artigos por ano / ano mês
+        - nº de pessoas
+        - nº de organizações
+
    - dentro da página de político ter as datas das notícias, e um interface qualquer para poder
      selecionar  as relações e o intervalo de datas
+
+
+   - clicar numa pessoa, desenvolver mais:
+        - partidos, cargos, estudos
+        - top oponentes, top supporters
+        - titulos ordenadas por data
 
    - endpoints:
         - listar todas pessoas
@@ -56,8 +73,6 @@ Web App
    - sugerir para completar:
         - https://www.politicaparatodos.pt/
         - http://demo.cratica.org/deputados/
-
-   - clicar numa pessoa: desenvolver mais
 
    - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch
 

@@ -15,6 +15,49 @@ prefixes = """
     """
 
 
+def nr_articles_per_year():
+    query = """
+        PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+    
+        SELECT ?year (COUNT(?x) as ?nr_articles) WHERE {
+          ?x dc:date ?date .
+        }
+        GROUP BY (YEAR(?date) AS ?year)
+        ORDER BY ?year
+        """
+    result = query_sparql(prefixes + "\n" + query, 'local')
+    articles_per_year = dict()
+    for x in result['results']['bindings']:
+        articles_per_year[x['year']['value']] = int(x['nr_articles']['value'])
+    return articles_per_year
+
+
+def nr_of_persons():
+    query = """
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    
+        SELECT (COUNT(?x) as ?nr_persons) WHERE {
+            ?x wdt:P31 wd:Q5
+            } 
+        """
+    results = query_sparql(prefixes + "\n" + query, 'local')
+    return results['results']['bindings'][0]['nr_persons']['value']
+
+
+def total_nr_of_articles():
+    query = """
+        PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+        PREFIX my_prefix: <http://some.namespace/with/name#>
+    
+        SELECT (COUNT(?x) as ?nr_articles) WHERE {
+            ?x my_prefix:arquivo ?y .
+        }
+        """
+    results = query_sparql(prefixes + "\n" + query, 'local')
+    return results['results']['bindings'][0]['nr_articles']['value']
+
+
 def initalize():
     # get: wiki_id, name(label), image_url
     query = """

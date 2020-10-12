@@ -17,9 +17,13 @@
 </head>
 <body>
 
+<h1><center>nome_da_pessoa_aqui</center></h1>
+
+<br><br>
+
+<div id="outer" class="container d-flex align-items-center justify-content-center">
+
 <div class="media">
-
-
     <figure class="figure">
         <a href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">
         <img src={{items.image}} class="figure-img img-fluid rounded" width="240" height="300">
@@ -53,47 +57,74 @@
 
   </div>
 </div>
+    </div>
 
 
 <br><br><br>
 
 
-<p class="">Opõe-se a/Discorda com/Acusa:</p>
-{% for item in items.opposed %}
-<ul>
-    <a href={{item.ent2_url}}> {{item.ent2_name}} </a> :- <a href={{item.url}}> {{item.title}} </a>
-</ul>
-{% endfor %}
-
-<br><br>
-
-
-<p class="">Apoia/Defende:</p>
-{% for item in items.supported %}
-<ul>
-    <a href={{item.ent2_url}}> {{item.ent2_name}} </a> :- <a href={{item.url}}> {{item.title}} </a>
-</ul>
-{% endfor %}
-
-<br><br>
-
-<p class="">É acusado/opost por:</p>
-{% for item in items.opposed_by %}
-<ul>
-    <a href={{item.ent1_url}}> {{item.ent1_name}} </a> :- <a href={{item.url}}> {{item.title}} </a>
-    </ul>
-{% endfor %}
-
+<p class="">Discorda / Opõe-se / Acusa</p>
+<table class="table">
+  <tbody>
+  {% for item in items.opposed %}
+    <tr>
+      <td><a href={{item.ent2_url}}> {{item.ent2_name}} </a></td>
+      <td>{{item.date}}</td>
+      <td><a href={{item.url}}> {{item.title}} </a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
 
 
 <br><br>
 
-<p class="">É apoiado/defendido por:</p>
-{% for item in items.supported_by %}
-<ul>
-    <a href={{item.ent1_url}}> {{item.ent1_name}} </a> :- <a href={{item.url}}> {{item.title}} </a>
-    </ul>
-{% endfor %}
+
+<p class="">Apoia / Defende</p>
+<table class="table">
+  <tbody>
+  {% for item in items.supported %}
+    <tr>
+      <td><a href={{item.ent2_url}}> {{item.ent2_name}} </a></td>
+      <td>{{item.date}}</td>
+      <td><a href={{item.url}}> {{item.title}} </a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+<br><br>
+
+<p class="">Acusado por / Oposto por</p>
+<table class="table">
+  <tbody>
+  {% for item in items.opposed_by %}
+    <tr>
+      <td><a href={{item.ent1_url}}> {{item.ent1_name}} </a></td>
+      <td>{{item.date}}</td>
+      <td><a href={{item.url}}> {{item.title}} </a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+<br><br>
+
+
+<p class="">Apoiado por / Defendido por</p>
+<table class="table">
+  <tbody>
+  {% for item in items.supported_by %}
+    <tr>
+      <td><a href={{item.ent1_url}}> {{item.ent1_name}} </a></td>
+      <td>{{item.date}}</td>
+      <td><a href={{item.url}}> {{item.title}} </a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
 
 
 </body>
