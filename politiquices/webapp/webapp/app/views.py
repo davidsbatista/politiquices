@@ -28,14 +28,15 @@ cached_list_entities = None
 
 @app.route("/")
 def status():
-    articles_per_year = nr_articles_per_year()
+    year, nr_articles_year = nr_articles_per_year()
     nr_persons = nr_of_persons()
     nr_articles = total_nr_of_articles()
     items = {
         "nr_persons": nr_persons,
         "nr_articles": nr_articles,
+        "year_labels": year,
+        "year_articles": nr_articles_year
     }
-
     return render_template("index.html", items=items)
 
 

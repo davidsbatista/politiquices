@@ -9,15 +9,22 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
+    <!-- Charts.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
     <style>
     img { object-fit: contain; }
+    canvas {
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
     </style>
 
-    <title>Test App</title>
+    <title>Politiquices::Arquivo.pt</title>
 </head>
 <body>
 
-<h1><center> Politiquices</center></h1>
+<h1><center>Politiquices</center></h1>
 
 <br><br>
 
@@ -31,5 +38,38 @@
  </div>
 </div>
 
+<br><br>
+
+<div class="container h-100">
+  <div class="row h-100 justify-content-center align-items-center">
+        <h4>Articles by Year</h4>
+    <canvas id="myChart" width="1000" height="250"></canvas>
+  </div>
+</div>
+
+
+
+<script>
+
+var ctx = document.getElementById('myChart');
+var color = Chart.helpers.color;
+
+var year_labels = {{ items['year_labels']|tojson }};
+var year_articles = {{ items['year_articles']|tojson }};
+
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {labels: year_labels,
+           datasets: [
+        {
+          label: 'No. of articles',
+          backgroundColor: "#4d6072",
+          // backgroundColor: "#77828e",
+          data: year_articles
+        }
+      ]
+    }
+});
+</script>
 </body>
 </html>

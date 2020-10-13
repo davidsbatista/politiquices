@@ -51,14 +51,8 @@ SPARQL DB
 Web App
 =======
 
-   - pagina inicial de status:
-        - nº artigos por ano / ano mês
-        - nº de pessoas
-        - nº de organizações
-
    - dentro da página de político ter as datas das notícias, e um interface qualquer para poder
      selecionar  as relações e o intervalo de datas
-
 
    - clicar numa pessoa, desenvolver mais:
         - partidos, cargos, estudos

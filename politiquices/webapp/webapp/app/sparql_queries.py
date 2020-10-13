@@ -25,11 +25,14 @@ def nr_articles_per_year():
         GROUP BY (YEAR(?date) AS ?year)
         ORDER BY ?year
         """
-    result = query_sparql(prefixes + "\n" + query, 'local')
-    articles_per_year = dict()
-    for x in result['results']['bindings']:
-        articles_per_year[x['year']['value']] = int(x['nr_articles']['value'])
-    return articles_per_year
+    result = query_sparql(prefixes + "\n" + query, "local")
+    year = []
+    nr_articles = []
+
+    for x in result["results"]["bindings"]:
+        year.append(int(x["year"]["value"]))
+        nr_articles.append(int(x["nr_articles"]["value"]))
+    return year, nr_articles
 
 
 def nr_of_persons():
@@ -41,8 +44,8 @@ def nr_of_persons():
             ?x wdt:P31 wd:Q5
             } 
         """
-    results = query_sparql(prefixes + "\n" + query, 'local')
-    return results['results']['bindings'][0]['nr_persons']['value']
+    results = query_sparql(prefixes + "\n" + query, "local")
+    return results["results"]["bindings"][0]["nr_persons"]["value"]
 
 
 def total_nr_of_articles():
@@ -54,8 +57,8 @@ def total_nr_of_articles():
             ?x my_prefix:arquivo ?y .
         }
         """
-    results = query_sparql(prefixes + "\n" + query, 'local')
-    return results['results']['bindings'][0]['nr_articles']['value']
+    results = query_sparql(prefixes + "\n" + query, "local")
+    return results["results"]["bindings"][0]["nr_articles"]["value"]
 
 
 def initalize():
@@ -73,7 +76,7 @@ def initalize():
             }
         ORDER BY ?label
         """
-    return prefixes+"\n"+query
+    return prefixes + "\n" + query
 
 
 def counts():
