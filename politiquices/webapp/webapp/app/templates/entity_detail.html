@@ -68,7 +68,7 @@
   <tbody>
   {% for item in items.opposed %}
     <tr>
-      <td><a href={{item.ent2_url}}> {{item.ent2_name}} </a></td>
+      <td><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
       <td>{{item.date}}</td>
       <td><a href={{item.url}}> {{item.title}} </a></td>
     </tr>
@@ -85,7 +85,7 @@
   <tbody>
   {% for item in items.supported %}
     <tr>
-      <td><a href={{item.ent2_url}}> {{item.ent2_name}} </a></td>
+      <td><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
       <td>{{item.date}}</td>
       <td><a href={{item.url}}> {{item.title}} </a></td>
     </tr>
@@ -101,7 +101,7 @@
   <tbody>
   {% for item in items.opposed_by %}
     <tr>
-      <td><a href={{item.ent1_url}}> {{item.ent1_name}} </a></td>
+      <td><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
       <td>{{item.date}}</td>
       <td><a href={{item.url}}> {{item.title}} </a></td>
     </tr>
@@ -118,7 +118,7 @@
   <tbody>
   {% for item in items.supported_by %}
     <tr>
-      <td><a href={{item.ent1_url}}> {{item.ent1_name}} </a></td>
+      <td><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
       <td>{{item.date}}</td>
       <td><a href={{item.url}}> {{item.title}} </a></td>
     </tr>

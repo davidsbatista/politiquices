@@ -1,6 +1,6 @@
 arquivo_pt:
 ==========
-    - method to detect duplicate titles: semantically similar
+    - method to semantically similar titles:
 
 
 classifiers
@@ -57,14 +57,13 @@ Web App
    - clicar numa pessoa, desenvolver mais:
         - partidos, cargos, estudos
         - top oponentes, top supporters
-        - titulos ordenadas por data
 
    - endpoints:
         - listar todas pessoas
         - listar todos os partidos/organizações
         - listar pessoas com informação incompleta: foto, cargos, etc.
 
-   - sugerir para completar:
+   - fontes de informação para a alimentar a wikidata:
         - https://www.politicaparatodos.pt/
         - http://demo.cratica.org/deputados/
 

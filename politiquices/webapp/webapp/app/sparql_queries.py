@@ -61,6 +61,97 @@ def total_nr_of_articles():
     return results["results"]["bindings"][0]["nr_articles"]["value"]
 
 
+def get_all_relationships(wiki_id, rel_type, reverse=False):
+    """
+    :param reverse:
+    :param wiki_id:
+    :param rel_type: ent1_opposes_ent2, ent1_support_ent2,
+    :return:
+    """
+
+    # set the order of the relationship, by default wiki_id is ent1
+    arg_order = f"""
+                ?rel my_prefix:ent1 wd:{wiki_id} .
+                ?rel my_prefix:ent2 ?other_ent .
+                """
+
+    # otherwise swap arguments
+    if reverse:
+        arg_order = f"""
+                    ?rel my_prefix:ent2 wd:{wiki_id} .
+                    ?rel my_prefix:ent1 ?other_ent .
+                    """
+
+    query = f"""
+        SELECT DISTINCT ?arquivo_doc ?date ?title ?other_ent ?other_ent_name
+        WHERE {{
+          {arg_order}
+          ?rel my_prefix:type ?rel_type .
+          ?other_ent rdfs:label ?other_ent_name .
+          ?rel my_prefix:arquivo ?arquivo_doc .
+          ?arquivo_doc dc:title ?title .
+          ?arquivo_doc dc:date  ?date .
+          FILTER (?rel_type = "{rel_type}")
+        }}
+        ORDER BY ?date
+        """
+
+    results = query_sparql(prefixes + "\n" + query, "local")
+    relations = []
+
+    for e in results["results"]["bindings"]:
+        rel = {
+            "url": e["arquivo_doc"]["value"],
+            "title": e["title"]["value"],
+            "date": e["date"]["value"],
+            "other_ent_url": e["other_ent"]["value"],
+            "other_ent_name": e["other_ent_name"]["value"],
+        }
+        relations.append(rel)
+
+    return relations
+
+
+def get_all_relationships_by_month_year(wiki_id, rel_type, reverse=False):
+
+    # set the order of the relationship, by default wiki_id is ent1
+    arg_order = f"""
+                ?rel my_prefix:ent1 wd:{wiki_id} .
+                ?rel my_prefix:ent2 ?other_ent .
+                """
+
+    # otherwise swap arguments
+    if reverse:
+        arg_order = f"""
+                    ?rel my_prefix:ent2 wd:{wiki_id} .
+                    ?rel my_prefix:ent1 ?other_ent .
+                    """
+
+    query = f"""
+        SELECT ?year ?month (COUNT(?arquivo_doc) as ?nr_articles)
+        WHERE {{
+          {arg_order}
+          ?rel my_prefix:type ?rel_type .
+          ?other_ent rdfs:label ?other_ent_name .
+          ?rel my_prefix:arquivo ?arquivo_doc .
+          ?arquivo_doc dc:title ?title .
+          ?arquivo_doc dc:date  ?date .
+          FILTER (?rel_type = "ent1_opposes_ent2")
+        }}
+        GROUP BY (YEAR(?date) AS ?year) (MONTH(?date) AS ?month)
+        ORDER BY ?year
+        """
+    result = query_sparql(prefixes + "\n" + query, "local")
+    year_month = []
+    nr_articles = []
+    for x in result["results"]["bindings"]:
+        year = int(x["year"]["value"])
+        month = int(x["month"]["value"])
+        year_month.append(str(year)+'-'+str(month)+'-01')
+        nr_articles.append(int(x["nr_articles"]["value"]))
+    return year_month, nr_articles
+
+
 def initalize():
     # get: wiki_id, name(label), image_url
     query = """
@@ -99,7 +190,7 @@ def query_sparql(query, endpoint):
     if endpoint == "wiki":
         endpoint_url = "https://query.wikidata.org/sparql"
     elif endpoint == "local":
-        endpoint_url = "http://localhost:3030/arquivo/query"
+        endpoint_url = "http://0.0.0.0:3030/arquivo/query"
     else:
         print("endpoint not valid")
         return None

@@ -11,6 +11,8 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     nr_articles_per_year,
     nr_of_persons,
     total_nr_of_articles,
+    get_all_relationships,
+    get_all_relationships_by_month_year,
 )
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 
@@ -35,7 +37,7 @@ def status():
         "nr_persons": nr_persons,
         "nr_articles": nr_articles,
         "year_labels": year,
-        "year_articles": nr_articles_year
+        "year_articles": nr_articles_year,
     }
     return render_template("index.html", items=items)
 
@@ -100,6 +102,24 @@ def list_entities():
 def detail_entity():
     wiki_id = request.args.get("q")
 
+    opposed = get_all_relationships(wiki_id, "ent1_opposes_ent2")
+    supported = get_all_relationships(wiki_id, "ent1_supports_ent2")
+    opposed_by = get_all_relationships(wiki_id, "ent1_opposes_ent2", reverse=True)
+    supported_by = get_all_relationships(wiki_id, "ent1_supports_ent2", reverse=True)
+
+    # ToDo: see https://www.chartjs.org/samples/latest/scales/time/financial.html
+    #           https://www.chartjs.org/docs/latest/axes/cartesian/time.html
+    #      - get first and last year-month of occurrence
+    #      - fill-in all year-month within that interval that don't have any articles with 0
+    opposed_freq = get_all_relationships_by_month_year(wiki_id, "ent1_opposes_ent2")
+    supported_freq = get_all_relationships_by_month_year(wiki_id, "ent1_supports_ent2")
+    opposed_by_freq = get_all_relationships_by_month_year(
+        wiki_id, "ent1_opposes_ent2", reverse=True
+    )
+    supported_by_freq = get_all_relationships_by_month_year(
+        wiki_id, "ent1_supports_ent2", reverse=True
+    )
+
     # entity info
     query = f"""SELECT DISTINCT ?image_url ?officeLabel ?start ?end
                 WHERE {{
@@ -111,16 +131,12 @@ def detail_entity():
                 SERVICE wikibase:label {{ 
                     bd:serviceParam wikibase:language "pt". }}
                 }} ORDER BY ?start"""
-
     results = query_sparql(query, "wiki")
-
-    # person info
     image_url = None
     offices = []
     for e in results["results"]["bindings"]:
         if not image_url:
             image_url = e["image_url"]["value"]
-
         start = None
         end = None
         if "start" in e:
@@ -129,88 +145,6 @@ def detail_entity():
             end = convert_dates(e["end"]["value"])
 
         offices.append({"title": e["officeLabel"]["value"], "start": start, "end": end})
-
-    query = f"""
-    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX        bd:  <http://www.bigdata.com/rdf#>
-    PREFIX  wikibase:  <http://wikiba.se/ontology#>
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
-    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
-
-    SELECT DISTINCT ?rel_type ?arquivo_doc ?date ?title ?ent2 ?ent2_name
-       WHERE {{
-        ?rel my_prefix:ent1 wd:{wiki_id} .
-        ?rel my_prefix:type ?rel_type .
-        ?rel my_prefix:ent2 ?ent2 .
-        ?ent2 rdfs:label ?ent2_name .
-        ?rel my_prefix:arquivo ?arquivo_doc .
-        ?arquivo_doc dc:title ?title .
-        ?arquivo_doc dc:date  ?date .
-        FILTER (?rel_type != "other")}}
-    ORDER BY ?date
-    """
-    ent1_results = query_sparql(query, "local")
-
-    query = f"""
-    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX        bd:  <http://www.bigdata.com/rdf#>
-    PREFIX  wikibase:  <http://wikiba.se/ontology#>
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
-    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
-
-    SELECT DISTINCT ?rel_type ?arquivo_doc ?date ?title ?ent1 ?ent1_name
-       WHERE {{
-        ?rel my_prefix:ent2 wd:{wiki_id} .
-        ?rel my_prefix:type ?rel_type .
-        ?rel my_prefix:ent1 ?ent1 .
-        ?ent1 rdfs:label ?ent1_name .
-        ?rel my_prefix:arquivo ?arquivo_doc .
-        ?arquivo_doc dc:title ?title .
-        ?arquivo_doc dc:date  ?date .
-        FILTER (?rel_type != "other")}}
-    ORDER BY ?date
-    """
-    ent2_results = query_sparql(query, "local")
-
-    opposed = []
-    supported = []
-    for e in ent1_results["results"]["bindings"]:
-        rel = {
-            "url": e["arquivo_doc"]["value"],
-            "title": e["title"]["value"],
-            "date": e["date"]["value"],
-            "ent2_url": e["ent2"]["value"],
-            "ent2_name": e["ent2_name"]["value"],
-        }
-
-        if e["rel_type"]["value"] == "ent1_opposes_ent2":
-            opposed.append(rel)
-        elif e["rel_type"]["value"] == "ent1_supports_ent2":
-            supported.append(rel)
-
-    opposed_by = []
-    supported_by = []
-    for e in ent2_results["results"]["bindings"]:
-        rel = {
-            "url": e["arquivo_doc"]["value"],
-            "title": e["title"]["value"],
-            "date": e["date"]["value"],
-            "ent1_url": e["ent1"]["value"],
-            "ent1_name": e["ent1_name"]["value"],
-        }
-
-        if e["rel_type"]["value"] == "ent1_opposes_ent2":
-            opposed_by.append(rel)
-        elif e["rel_type"]["value"] == "ent1_supports_ent2":
-            supported_by.append(rel)
 
     items = {
         "wiki_id": wiki_id,
