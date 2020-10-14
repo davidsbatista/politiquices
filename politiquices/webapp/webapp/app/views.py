@@ -1,4 +1,5 @@
 import logging
+from collections import defaultdict
 from datetime import datetime
 
 from flask import request
@@ -98,6 +99,41 @@ def list_entities():
     return render_template("all_entities.html", items=items)
 
 
+def monthlist_fast(start, end):
+    # see: https://stackoverflow.com/questions/34898525/generate-list-of-months-between-interval-in-python
+    # start, end = [datetime.strptime(_, "%Y-%m") for _ in dates]
+    total_months = lambda dt: dt.month + 12 * dt.year
+    mlist = []
+    for tot_m in range(total_months(start)-1, total_months(end)):
+        y, m = divmod(tot_m, 12)
+        mlist.append(datetime(y, m+1, 1).strftime("%Y-%b"))
+    return mlist
+
+
+def find_maximum_interval(opposed_freq, supported_freq, opposed_by_freq, supported_by_freq):
+    # ToDo: some lists might be empty
+    min_dates = [list(opposed_freq.keys())[0], list(supported_freq.keys())[0],
+                 list(opposed_by_freq.keys())[0], list(opposed_by_freq.keys())[0]]
+
+    max_dates = [list(opposed_freq.keys())[-1], list(supported_freq.keys())[-1],
+                 list(opposed_by_freq.keys())[-1], list(supported_by_freq.keys())[-1]]
+
+    return min(min_dates), max(max_dates)
+
+
+def get_all_months(few_months_freq, months_lst):
+    year_months_values = defaultdict(int)
+    for m in months_lst:
+        x = datetime.strptime(m, "%Y-%b")
+        key = x.strftime("%Y-%m")
+        if key in few_months_freq:
+            year_months_values[m] = few_months_freq[key]
+        else:
+            year_months_values[m] = 0
+
+    return year_months_values
+
+
 @app.route("/entity")
 def detail_entity():
     wiki_id = request.args.get("q")
@@ -109,8 +145,6 @@ def detail_entity():
 
     # ToDo: see https://www.chartjs.org/samples/latest/scales/time/financial.html
     #           https://www.chartjs.org/docs/latest/axes/cartesian/time.html
-    #      - get first and last year-month of occurrence
-    #      - fill-in all year-month within that interval that don't have any articles with 0
     opposed_freq = get_all_relationships_by_month_year(wiki_id, "ent1_opposes_ent2")
     supported_freq = get_all_relationships_by_month_year(wiki_id, "ent1_supports_ent2")
     opposed_by_freq = get_all_relationships_by_month_year(
@@ -119,6 +153,24 @@ def detail_entity():
     supported_by_freq = get_all_relationships_by_month_year(
         wiki_id, "ent1_supports_ent2", reverse=True
     )
+
+    min_date, max_date = find_maximum_interval(opposed_freq, supported_freq, opposed_by_freq,
+                                               supported_by_freq)
+    print(min_date, max_date)
+    min_date_obj = datetime.strptime(min_date, "%Y-%m")
+    max_date_obj = datetime.strptime(max_date, "%Y-%m")
+    months_lst = monthlist_fast(min_date_obj, max_date_obj)
+
+    opposed_freq_month = get_all_months(opposed_freq, months_lst)
+    supported_freq_month = get_all_months(supported_freq, months_lst)
+    opposed_by_freq_month = get_all_months(opposed_by_freq, months_lst)
+    supported_by_freq_month = get_all_months(supported_by_freq, months_lst)
+
+    year_month_labels = list(opposed_by_freq_month.keys())
+    opposed_freq = list(opposed_freq_month.values())
+    supported_freq = list(supported_freq_month.values())
+    opposed_by_freq = list(opposed_by_freq_month.values())
+    supported_by_freq = list(supported_by_freq_month.values())
 
     # entity info
     query = f"""SELECT DISTINCT ?image_url ?officeLabel ?start ?end
@@ -154,6 +206,12 @@ def detail_entity():
         "supported": supported,
         "opposed_by": opposed_by,
         "supported_by": supported_by,
+        "year_month_labels": year_month_labels,
+        "opposed_freq": opposed_freq,
+        "supported_freq": supported_freq,
+        "opposed_by_freq": opposed_by_freq,
+        "supported_by_freq": supported_by_freq
+
     }
 
     return render_template("entity_detail.html", items=items)

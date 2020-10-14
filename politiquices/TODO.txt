@@ -1,7 +1,6 @@
 arquivo_pt:
 ==========
-    - method to semantically similar titles:
-
+    - method to detect semantically similar titles
 
 classifiers
 ===========
@@ -51,21 +50,28 @@ SPARQL DB
 Web App
 =======
 
-   - dentro da página de político ter as datas das notícias, e um interface qualquer para poder
-     selecionar  as relações e o intervalo de datas
+   - dentro da página de político
+       - nome completo, partidos a que pertenceu/pertence, outra info? cargos mais importantes?
+       - top oponentes, top supporters (por ano/mes?)
 
-   - clicar numa pessoa, desenvolver mais:
-        - partidos, cargos, estudos
-        - top oponentes, top supporters
+      - um interface qualquer para poder selecionar as relações e o intervalo de datas
+      - para cada titulo remover a component da hora no datetime:
+        - https://stackoverflow.com/questions/36630273/remove-time-from-datetime-in-spaqrl
 
-   - endpoints:
-        - listar todas pessoas
-        - listar todos os partidos/organizações
-        - listar pessoas com informação incompleta: foto, cargos, etc.
+    - queries mais interessantes:
+        triangulos politicos: qual a relação tipica entre X e Y, se X e Y acusam/defendem sempre Z
 
-   - fontes de informação para a alimentar a wikidata:
-        - https://www.politicaparatodos.pt/
-        - http://demo.cratica.org/deputados/
+    - pagina inicial:
+      ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
+
+    - procurar pessoa por nome
+    - listar pessoas com informação incompleta: foto, cargos, etc.
+      e explicar como alimentar a wikidata com fontes de informação :
+                - https://www.politicaparatodos.pt/
+                - http://demo.cratica.org/deputados/
+    - listar todas pessoas de uma forma mais leve/organizada
+    - listar todos os partidos/organizações
+
 
    - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch
 

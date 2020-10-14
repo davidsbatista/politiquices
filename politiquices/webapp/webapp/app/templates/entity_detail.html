@@ -9,6 +9,18 @@
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
+    <!-- Charts.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+
+    <style>
+    img { object-fit: contain; }
+    canvas {
+      -moz-user-select: none;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+    }
+    </style>
+
     <style>
     img { object-fit: contain; }
     </style>
@@ -58,6 +70,70 @@
   </div>
 </div>
     </div>
+
+
+<div class="container h-100">
+  <div class="row h-100 justify-content-center align-items-center">
+    <canvas id="myChart" width="900" height="250"></canvas>
+  </div>
+</div>
+
+<script>
+var ctx = document.getElementById('myChart');
+var color = Chart.helpers.color;
+
+var year_labels = {{ items['year_month_labels']|tojson }};
+var opposed_freq = {{ items['opposed_freq']|tojson }};
+var supported_freq = {{ items['supported_freq']|tojson }};
+var opposed_by_freq = {{ items['opposed_by_freq']|tojson }};
+var supported_by_freq = {{ items['supported_by_freq']|tojson }};
+
+var myChart = new Chart(ctx, {
+    type: 'line',
+    data: {labels: year_labels,
+           datasets: [
+                {label: 'Opposed', borderColor: "#FF0000", fill: false, data: opposed_freq},
+                {label: 'Opposed By', borderColor: "#980000", fill: false, data: opposed_by_freq},
+                {label: 'Supported', borderColor: "#44861E", fill: false, data: supported_freq},
+                {label: 'Supported By', borderColor: "#70DA33", fill: false, data: supported_by_freq}
+           ]
+    }
+});
+</script>
+
+<!--
+    datasets: [{
+            label: "My First dataset",
+            borderColor: window.chartColors.red,
+            backgroundColor: window.chartColors.red,
+            fill: false,
+            data: [
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor()
+            ],
+            yAxisID: "y-axis-1",
+        }, {
+            label: "My Second dataset",
+            borderColor: window.chartColors.blue,
+            backgroundColor: window.chartColors.blue,
+            fill: false,
+            data: [
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor(),
+                randomScalingFactor()
+            ],
+            yAxisID: "y-axis-2"
+        }]
+-->
 
 
 <br><br><br>

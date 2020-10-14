@@ -136,20 +136,19 @@ def get_all_relationships_by_month_year(wiki_id, rel_type, reverse=False):
           ?rel my_prefix:arquivo ?arquivo_doc .
           ?arquivo_doc dc:title ?title .
           ?arquivo_doc dc:date  ?date .
-          FILTER (?rel_type = "ent1_opposes_ent2")
+          FILTER (?rel_type = "{rel_type}")
         }}
         GROUP BY (YEAR(?date) AS ?year) (MONTH(?date) AS ?month)
         ORDER BY ?year
         """
     result = query_sparql(prefixes + "\n" + query, "local")
-    year_month = []
-    nr_articles = []
+    # dicts are insertion ordered
+    year_month_articles = dict()
     for x in result["results"]["bindings"]:
-        year = int(x["year"]["value"])
-        month = int(x["month"]["value"])
-        year_month.append(str(year)+'-'+str(month)+'-01')
-        nr_articles.append(int(x["nr_articles"]["value"]))
-    return year_month, nr_articles
+        year = x["year"]["value"]
+        month = x["month"]["value"]
+        year_month_articles[(str(year)+'-'+str(month))] = int(x["nr_articles"]["value"])
+    return year_month_articles
 
 
 def initalize():
