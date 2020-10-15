@@ -101,7 +101,6 @@ def list_entities():
 
 def monthlist_fast(start, end):
     # see: https://stackoverflow.com/questions/34898525/generate-list-of-months-between-interval-in-python
-    # start, end = [datetime.strptime(_, "%Y-%m") for _ in dates]
     total_months = lambda dt: dt.month + 12 * dt.year
     mlist = []
     for tot_m in range(total_months(start)-1, total_months(end)):
