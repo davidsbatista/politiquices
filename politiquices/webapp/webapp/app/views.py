@@ -170,12 +170,15 @@ def detail_entity():
     supported_freq = list(supported_freq_month.values())
     opposed_by_freq = list(opposed_by_freq_month.values())
     supported_by_freq = list(supported_by_freq_month.values())
-
+        
     # entity info
-    query = f"""SELECT DISTINCT ?image_url ?officeLabel ?start ?end
+    query = f"""SELECT DISTINCT ?image_url ?political_partyLabel ?political_party ?officeLabel ?start ?end
                 WHERE {{
                 wd:{wiki_id} wdt:P18 ?image_url;
-                             p:P39 ?officeStmnt.
+                             p:P39 ?officeStmnt;
+                             p:P102 ?political_partyStmnt.
+                ?political_partyStmnt ps:P102 ?political_party.
+                OPTIONAL {{ ?political_party wdt:P154 ?political_party_logo. }}
                 ?officeStmnt ps:P39 ?office.
                 OPTIONAL {{ ?officeStmnt pq:P580 ?start. }}
                 OPTIONAL {{ ?officeStmnt pq:P582 ?end. }}
