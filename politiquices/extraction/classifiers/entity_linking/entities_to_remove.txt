@@ -1,4 +1,11 @@
 https://www.wikidata.org/wiki/Q10365348,Rui Vieira
 https://www.wikidata.org/wiki/Q470926,José Mendes Cabeçadas
 https://www.wikidata.org/wiki/Q741496,Vitorino Guimarães
+https://www.wikidata.org/wiki/Q3476927,Sebastião de Magalhães Lima
+https://www.wikidata.org/wiki/Q3476927,Teófilo Braga
+https://www.wikidata.org/wiki/Q151394,António de Oliveira Salazar
+https://www.wikidata.org/wiki/Q10311834,João Maria Ferreira Sarmento Pimentel
+https://www.wikidata.org/wiki/Q934065,Nuno Álvares Pereira de Melo, 1.º Duque de Cadaval
+https://www.wikidata.org/wiki/Q314022,Óscar Carmona
+
 

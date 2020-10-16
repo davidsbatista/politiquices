@@ -52,7 +52,12 @@ SPARQL DB
 
 Web App
 =======
+
+   - show all entities in the KB even the ones without any articles
+   - initalize() and get_total_nr_articles_for_each_person() get the name from Wikidata rdfs:label
+
    - dentro da página de político
+      - clicar no logo do partido: lista todas as pessoas desse partido
       - list de titulos de artigos:
         - por uma fotografia pequena ao lado do nome da pessoa;
         - nome da pessoa só apelido, porque?

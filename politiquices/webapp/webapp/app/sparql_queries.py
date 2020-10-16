@@ -61,7 +61,6 @@ def get_total_nr_articles_for_each_person():
             ?arquivo_doc dc:title ?title .
             }
         GROUP BY ?person_name ?person
-        HAVING (count(distinct *) > 1)
         ORDER BY DESC (?count)
         """
     return prefixes + "\n" + query
