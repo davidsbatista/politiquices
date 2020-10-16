@@ -24,8 +24,6 @@ classifiers
     entity_linking:
     ---------------
         - Filter out ppl born before 1935
-        - 'Vieira da Silva' https://www.wikidata.org/wiki/Q1709692 is being mapped to
-          wrongly to https://www.wikidata.org/wiki/Q10365348
 
    service:
    --------
@@ -77,8 +75,6 @@ Web App
 
     - procurar pessoa por nome
     - listar todas pessoas de uma forma mais leve/organizada
-
-
 
     - listar todos os partidos/organizações
 

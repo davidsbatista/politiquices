@@ -25,5 +25,7 @@ build:
 	echo "Loading data"
 	python index_wikidata.py wiki_jsons/
 
+	echo -e "\nhttp://localhost:5601/app/kibana"
+
 clean:
 	# ToDo

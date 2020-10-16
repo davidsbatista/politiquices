@@ -11,18 +11,6 @@ Afonso Candal           https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.a
 João César das Neves    https://www.wikiwand.com/pt/Jo%C3%A3o_C%C3%A9sar_das_Neves
 
 
-manually selected
-=================
-https://www.wikidata.org/wiki/Q9619875      António Nogueira Leite
-https://www.wikidata.org/wiki/Q10325927     Maria José Morgado
-
-https://www.wikidata.org/wiki/Q40688        Yanis Varoufakis
-https://www.wikidata.org/wiki/Q37181        Lula da Silva
-https://www.wikidata.org/wiki/Q567          Angela Merkel
-https://www.wikidata.org/wiki/Q10304982     Bolsonaro
-
-
-
 Organisations
 =============
 - Partidos Politicos e secções

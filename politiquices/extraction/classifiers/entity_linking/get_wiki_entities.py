@@ -176,6 +176,12 @@ def get_results(endpoint_url, sarpql_query):
     return sparql.query().convert()
 
 
+def load_from_list(fname):
+    with open(fname, 'rt') as f_in:
+        wiki_ids_urls = [line.split(',')[0].split("/")[-1] for line in f_in]
+    return wiki_ids_urls
+
+
 def main():
     queries = [
         affiliated_with_relevant_political_party,
@@ -183,23 +189,28 @@ def main():
         portuguese_persons_occupations,
     ]
 
+    to_load = load_from_list('entities_to_add.txt')
+    to_remove = load_from_list('entities_to_remove.txt')
+
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
     endpoint_url = "https://query.wikidata.org/sparql"
     relevant_persons_ids = []
-    default_dir = "new_wiki_jsons/"
+    default_dir = "wiki_jsons/"
 
     # get the wiki ids for all relevant persons
     for query in queries:
-
-        print(query)
-
         results = get_results(endpoint_url, query)
-
-        print(len(results))
-        print()
-
         wiki_ids = [r["person"]["value"].split("/")[-1] for r in results["results"]["bindings"]]
         relevant_persons_ids.extend(wiki_ids)
+
+    print(f'{len(relevant_persons_ids)} entities gathered from SPARQL queries')
+    print(f'{len(to_load)} manually selected entities to be added')
+    print(f'{len(to_remove)} manually selected entities to be removed')
+    relevant_persons_ids.extend(to_load)
+    for el in to_remove:
+        relevant_persons_ids.remove(el)
+
+    print(f'{len(relevant_persons_ids)} entities to be loaded')
 
     # get detailed information for each person
     for idx, wiki_id in enumerate(set(relevant_persons_ids)):
