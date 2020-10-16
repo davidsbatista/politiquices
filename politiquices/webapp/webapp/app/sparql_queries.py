@@ -1,6 +1,8 @@
 import sys
 
 from SPARQLWrapper import SPARQLWrapper, JSON
+from politiquices.webapp.webapp.app.data_models import OfficePosition, PoliticalParty, Person
+from politiquices.webapp.webapp.app.utils import convert_dates
 
 prefixes = """
     PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
@@ -15,7 +17,7 @@ prefixes = """
     """
 
 
-def nr_articles_per_year():
+def get_nr_articles_per_year():
     query = """
         PREFIX        dc: <http://purl.org/dc/elements/1.1/>
     
@@ -32,27 +34,15 @@ def nr_articles_per_year():
     for x in result["results"]["bindings"]:
         year.append(int(x["year"]["value"]))
         nr_articles.append(int(x["nr_articles"]["value"]))
+
     return year, nr_articles
 
 
-def nr_of_persons():
-    query = """
-        PREFIX wd: <http://www.wikidata.org/entity/>
-        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-    
-        SELECT (COUNT(?x) as ?nr_persons) WHERE {
-            ?x wdt:P31 wd:Q5
-            } 
-        """
-    results = query_sparql(prefixes + "\n" + query, "local")
-    return results["results"]["bindings"][0]["nr_persons"]["value"]
-
-
-def total_nr_of_articles():
+def get_total_nr_of_articles():
     query = """
         PREFIX        dc: <http://purl.org/dc/elements/1.1/>
         PREFIX my_prefix: <http://some.namespace/with/name#>
-    
+
         SELECT (COUNT(?x) as ?nr_articles) WHERE {
             ?x my_prefix:arquivo ?y .
         }
@@ -61,7 +51,96 @@ def total_nr_of_articles():
     return results["results"]["bindings"][0]["nr_articles"]["value"]
 
 
-def get_all_relationships(wiki_id, rel_type, reverse=False):
+def get_total_nr_articles_for_each_person():
+    query = """
+        SELECT ?person_name ?person (COUNT(*) as ?count){
+            ?person rdfs:label ?person_name .
+            ?person wdt:P31 wd:Q5 .
+            {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
+            ?rel my_prefix:arquivo ?arquivo_doc .
+            ?arquivo_doc dc:title ?title .
+            }
+        GROUP BY ?person_name ?person
+        HAVING (count(distinct *) > 1)
+        ORDER BY DESC (?count)
+        """
+    return prefixes + "\n" + query
+
+
+def get_nr_of_persons():
+    query = """
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        
+        SELECT (COUNT(?x) as ?nr_persons) WHERE {
+            ?x wdt:P31 wd:Q5
+            } 
+        """
+    results = query_sparql(prefixes + "\n" + query, "local")
+    return results["results"]["bindings"][0]["nr_persons"]["value"]
+
+
+def get_person_info(wiki_id):
+    query = f"""SELECT DISTINCT ?name ?image_url ?political_partyLabel ?political_party_logo 
+                                ?officeLabel ?start ?end
+                WHERE {{
+                    wd:{wiki_id} rdfs:label ?name filter (lang(?name) = "pt").
+                    OPTIONAL {{ wd:{wiki_id} wdt:P18 ?image_url. }}
+                    OPTIONAL {{ 
+                        wd:{wiki_id} p:P102 ?political_partyStmnt. 
+                        ?political_partyStmnt ps:P102 ?political_party. 
+                        OPTIONAL {{ ?political_party wdt:P154 ?political_party_logo. }}
+                    }}
+                    OPTIONAL {{
+                        wd:{wiki_id} p:P39 ?officeStmnt.
+                        ?officeStmnt ps:P39 ?office.
+                        OPTIONAL {{ ?officeStmnt pq:P580 ?start. }}
+                        OPTIONAL {{ ?officeStmnt pq:P582 ?end. }}
+                    }}
+                    SERVICE wikibase:label {{
+                        bd:serviceParam wikibase:language "pt". 
+                    }}
+                }}
+            """
+    results = query_sparql(query, "wiki")
+    name = None
+    image_url = None
+    parties = []
+    offices = []
+    for e in results["results"]["bindings"]:
+        if not name:
+            name = e["name"]['value']
+
+        if not image_url:
+            if 'image_url' in e:
+                image_url = e["image_url"]["value"]
+
+        # political parties
+        party = PoliticalParty(
+            name=e["political_partyLabel"]['value'] if 'political_partyLabel' in e else None,
+            image_url=e["political_party_logo"]['value'] if 'political_party_logo' in e else None
+        )
+        if party not in parties:
+            parties.append(party)
+
+        # office positions
+        if 'officeLabel' in e:
+            office_position = OfficePosition(
+                start=convert_dates(e["start"]["value"]) if 'start' in e else None,
+                end=convert_dates(e["end"]["value"]) if 'end' in e else None,
+                position=e["officeLabel"]["value"],
+            )
+            if office_position not in offices:
+                offices.append(office_position)
+    person = Person(wiki_id=wiki_id,
+                    name=name,
+                    image_url=image_url,
+                    parties=parties,
+                    positions=offices)
+    return person
+
+
+def get_person_relationships(wiki_id, rel_type, reverse=False):
     """
     :param reverse:
     :param wiki_id:
@@ -103,7 +182,7 @@ def get_all_relationships(wiki_id, rel_type, reverse=False):
         rel = {
             "url": e["arquivo_doc"]["value"],
             "title": e["title"]["value"],
-            "date": e["date"]["value"],
+            "date": e["date"]["value"].split("T")[0],
             "other_ent_url": 'entity?q='+e["other_ent"]["value"].split("/")[-1],
             "other_ent_name": e["other_ent_name"]["value"],
         }
@@ -112,7 +191,7 @@ def get_all_relationships(wiki_id, rel_type, reverse=False):
     return relations
 
 
-def get_all_relationships_by_month_year(wiki_id, rel_type, reverse=False):
+def get_person_relationships_by_month_year(wiki_id, rel_type, reverse=False):
 
     # set the order of the relationship, by default wiki_id is ent1
     arg_order = f"""
@@ -169,22 +248,6 @@ def initalize():
     return prefixes + "\n" + query
 
 
-def counts():
-    query = """
-        SELECT ?person_name ?person (COUNT(*) as ?count){
-            ?person rdfs:label ?person_name .
-            ?person wdt:P31 wd:Q5 .
-            {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
-            ?rel my_prefix:arquivo ?arquivo_doc .
-            ?arquivo_doc dc:title ?title .
-            }
-        GROUP BY ?person_name ?person
-        HAVING (count(distinct *) > 1)
-        ORDER BY DESC (?count)
-        """
-    return prefixes + "\n" + query
-
-
 def query_sparql(query, endpoint):
     if endpoint == "wiki":
         endpoint_url = "https://query.wikidata.org/sparql"
@@ -194,8 +257,8 @@ def query_sparql(query, endpoint):
         print("endpoint not valid")
         return None
 
-    # TODO adjust user agent; see https://w.wiki/CX6
-    user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
+    # ToDo: see user agent policy: https://w.wiki/CX6
+    user_agent = "Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
 
     sparql.setQuery(query)
