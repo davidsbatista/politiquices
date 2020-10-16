@@ -25,17 +25,18 @@
     img { object-fit: contain; }
     </style>
 
-    <title>Test App</title>
+    <title>{{items.name}}</title>
 </head>
 <body>
 
-<h1><center>nome_da_pessoa_aqui</center></h1>
+<h1><center>{{items.name}}</center></h1>
 
 <br><br>
 
 <div id="outer" class="container d-flex align-items-center justify-content-center">
 
 <div class="media">
+
     <figure class="figure">
         <a href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">
         <img src={{items.image}} class="figure-img img-fluid rounded" width="240" height="300">
@@ -46,7 +47,23 @@
     </figure>
 
     <div class="media-body">
+        <table class="table">
+          <tbody>
+          {% for item in items.parties %}
+            <tr>
+              <td><img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75"></td>
+            </tr>
+            <tr>
+              <td>{{item.name}}</td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
 
+    </div>
+
+
+    <div class="media-body">
     <h5 class="mt-0">Cargos ocupados</h5>
         <table class="table">
           <thead>
@@ -61,15 +78,14 @@
             <tr>
               <td>{{item.start}}</td>
               <td>{{item.end}}</td>
-              <td>{{item.title}}</td>
+              <td>{{item.position}}</td>
             </tr>
           {% endfor %}
           </tbody>
         </table>
-
   </div>
 </div>
-    </div>
+</div>
 
 
 <div class="container h-100">

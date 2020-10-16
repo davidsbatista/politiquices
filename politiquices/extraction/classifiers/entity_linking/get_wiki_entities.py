@@ -55,13 +55,16 @@ portuguese_persons_occupations = """
 
 # all portuguese political parties
 portuguese_political_parties = """
-    SELECT DISTINCT ?party ?partyLabel ?inception ?disbanded
+    SELECT DISTINCT ?party ?partyLabel ?logo ?inception ?disbanded
     WHERE {
-      ?party wdt:P31 wd:Q7278.
-      ?party wdt:P17 wd:Q45.
+      ?party wdt:P31 wd:Q7278;
+             wdt:P17 wd:Q45.
+      OPTIONAL {
+        ?party wdt:P154 ?logo.
+      }
       OPTIONAL {
         ?party wdt:P576 ?disbanded.
-        ?party wdt:P571 ?inception
+        ?party wdt:P571 ?inception.
       }
       SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". }
     } ORDER BY ?partyLabel

@@ -104,7 +104,7 @@ def get_all_relationships(wiki_id, rel_type, reverse=False):
             "url": e["arquivo_doc"]["value"],
             "title": e["title"]["value"],
             "date": e["date"]["value"],
-            "other_ent_url": e["other_ent"]["value"],
+            "other_ent_url": 'entity?q='+e["other_ent"]["value"].split("/")[-1],
             "other_ent_name": e["other_ent_name"]["value"],
         }
         relations.append(rel)
