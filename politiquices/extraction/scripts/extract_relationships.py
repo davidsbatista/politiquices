@@ -1,5 +1,7 @@
 import os
 import sys
+from functools import lru_cache
+
 import joblib
 import requests
 from jsonlines import jsonlines
@@ -19,6 +21,7 @@ url = "http://127.0.0.1:8000/wikidata"
 nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
 
 
+@lru_cache
 def entity_linking(entity):
     payload = {'entity': entity}
     response = requests.request("GET", url, params=payload)
@@ -45,6 +48,8 @@ def get_persons(title):
 def main():
     processed = jsonlines.open('titles_processed.jsonl', mode='w')
     no_entities = jsonlines.open('titles_processed_no_entities.jsonl', mode='w')
+    no_relation = jsonlines.open('titles_processed_no_relation.jsonl', mode='w')
+    no_wiki = jsonlines.open('titles_processed_no_wiki_id.jsonl', mode='w')
 
     count = 0
     with jsonlines.open(sys.argv[1]) as f_in:
@@ -66,14 +71,20 @@ def main():
                     zip(relationship_clf.label_encoder.classes_, predicted_probs[0])
                 }
 
-                # ToDo: gravar este scores também e ver o resultado
                 if rel_type_scores['other'] > 0.5:
+                    no_relation.write({'title': cleaned_title,
+                                       'entities': persons,
+                                       'scores': rel_type_scores,
+                                       'linkToArchive': line['linkToArchive'],
+                                       'tstamp': line['tstamp']
+                                       })
                     continue
 
                 entity = entity_linking(persons[0])
                 ent_1 = entity['wiki_id'] if entity['wiki_id'] else None
                 entity = entity_linking(persons[1])
                 ent_2 = entity['wiki_id'] if entity['wiki_id'] else None
+
                 result = {
                     'title': cleaned_title,
                     'entities': persons,
@@ -83,7 +94,11 @@ def main():
                     'linkToArchive': line['linkToArchive'],
                     'tstamp': line['tstamp']
                 }
-                processed.write(result)
+
+                if ent_1 is None or ent_2 is None:
+                    no_wiki.write(result)
+                else:
+                    processed.write(result)
 
             else:
                 no_entities.write({'title': cleaned_title, 'entities': persons})

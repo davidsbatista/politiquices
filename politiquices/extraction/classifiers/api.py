@@ -1,4 +1,3 @@
-import re
 import os
 from typing import Optional
 
@@ -37,15 +36,26 @@ async def named_entities(news_title: Optional[str] = None):
     title = clean_title(news_title).strip()
     doc = nlp(title)
     entities = {ent.text: ent.label_ for ent in doc.ents}
-    persons_to_tag = ['Marcelo', 'Passos', 'Rio', 'Centeno', 'Negrão', 'Relvas', 'Costa',
-                      'Coelho', 'Santana', 'Alegre', 'Sócrates']
+    persons_to_tag = [
+        "Marcelo",
+        "Passos",
+        "Rio",
+        "Centeno",
+        "Negrão",
+        "Relvas",
+        "Costa",
+        "Coelho",
+        "Santana",
+        "Alegre",
+        "Sócrates",
+    ]
 
     persons = []
 
     for k, v in entities.items():
-        if k in persons_to_tag and v != 'PER':
+        if k in persons_to_tag and v != "PER":
             persons.append(k)
-        if v == 'PER':
+        if v == "PER":
             persons.append(k)
 
     return persons
@@ -90,69 +100,75 @@ async def classify_relationship(news_title: Optional[str] = None):
         # 'Failed to parse query [Fernando AND Gomes AND  AND Lusa]')
 
     if wiki_id_1 and wiki_id_2:
-        result.update({"entity_1_wiki": wiki_id_1["wiki_id"],
-                       "entity_2_wiki": wiki_id_2["wiki_id"]})
+        result.update(
+            {"entity_1_wiki": wiki_id_1["wiki_id"], "entity_2_wiki": wiki_id_2["wiki_id"]}
+        )
     else:
-        result.update({"entity_1_wiki": None,
-                       "entity_2_wiki": None})
+        result.update({"entity_1_wiki": None, "entity_2_wiki": None})
     return {**rel_type_scores, **result}
-
-
-def needs_escaping(character):
-    escape_chars = {
-     '\\' : True, '+' : True, '-' : True, '!' : True,
-     '(' : True, ')' : True, ':' : True, '^' : True,
-     '[' : True, ']': True, '\"' : True, '{' : True,
-     '}' : True, '~' : True, '*' : True, '?' : True,
-     '|' : True, '&' : True, '/' : True
-    }
-    return escape_chars.get(character, False)
 
 
 @app.get("/wikidata")
 async def wikidata_linking(entity: str):
 
-    # ToDo: handle this in indexing
+    def needs_escaping(char):
+        escape_chars = {
+            "\\": True,
+            "+": True,
+            "-": True,
+            "!": True,
+            "(": True,
+            ")": True,
+            ":": True,
+            "^": True,
+            "[": True,
+            "]": True,
+            '"': True,
+            "{": True,
+            "}": True,
+            "~": True,
+            "*": True,
+            "?": True,
+            "|": True,
+            "&": True,
+            "/": True,
+        }
+        return escape_chars.get(char, False)
+
+    # ToDo: add more from PER_entities.txt
     mappings = {
+        "Carrilho": "Manuela Maria Carrilho",
         "Costa": "António Costa",
         "Durão": "Durão Barroso",
         "Ferreira de o Amaral": "Joaquim Ferreira do Amaral",
         "Jerónimo": "Jerónimo de Sousa",
-        "Nobre": "Fernando Nobre",
-        "Marques Mendes": "Luís Marques Mendes",
         "Marcelo": "Marcelo Rebelo de Sousa",
-        "Rebelo de Sousa": "Marcelo Rebelo de Sousa",
-        "Carrilho": "Manuela Maria Carrilho",
+        "Marques Mendes": "Luís Marques Mendes",
         "Menezes": "Luís Filipe Menezes",
         "Moura Guedes": "Manuela Moura Guedes",
+        "Nobre": "Fernando Nobre",
         "Portas": "Paulo Portas",
+        "Rebelo de Sousa": "Marcelo Rebelo de Sousa",
         "Relvas": "Miguel Relvas",
+        "Santana": "Pedro Santana Lopes",
+        "Santos Silva": "Augusto Santos Silva",
         "Soares": "Mário Soares",
         "Sousa Tavares": "Miguel Sousa Tavares",
-        "Santos Silva": "Augusto Santos Silva",
-        "Santana": "Pedro Santana Lopes",
     }
 
-    sanitized = ''
+    sanitized = ""
     for character in entity:
         if needs_escaping(character):
-            sanitized += '\\%s' % character
+            sanitized += "\\%s" % character
         else:
             sanitized += character
 
-    """
-    entity_clean = re.sub(r'[:-\]', '', entity)
-    entity_clean = re.sub(r'\s+', ' ', entity_clean)
-    entity_clean = mappings.get(entity, entity_clean)
-    entity_query = " AND ".join(entity_clean.strip().split(' '))
-    """
-
-    print(entity, '\t', sanitized)
-    entity_query = " AND ".join([token.strip() for token in sanitized.split()])
+    entity_clean = mappings.get(sanitized, sanitized)
+    entity_query = " AND ".join([token.strip() for token in entity_clean.split()])
+    print(entity, "\t", sanitized, "\t", entity_query)
     res = es.search(index="politicians", body={"query": {"query_string": {"query": entity_query}}})
 
     if res["hits"]["hits"]:
         return {"wiki_id": res["hits"]["hits"][0]["_source"]}
 
     return {"wiki_id": None}
-

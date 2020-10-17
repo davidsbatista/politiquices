@@ -6,6 +6,16 @@ from spacy.pipeline import EntityRuler
 connectors = ['do', 'da', 'de', 'dos']
 
 
+def get_names_kb():
+    es = Elasticsearch([{"host": "localhost", "port": 9200}])
+    res = es.search(index="politicians",
+                    body={"query": {"match_all": {}},
+                          "size": 2000})
+    all_names = sorted([r['_source']['label'] for r in res['hits']['hits']])
+
+    return all_names
+
+
 def build_entity_patterns(names):
     patterns = []
 
@@ -36,15 +46,13 @@ def build_entity_patterns(names):
 
     return patterns
 
+def get_names_file(fname):
+    with open(fname,'rt') as f_in:
+        pass
+
 
 def main():
-    # create a client instance of Elasticsearch
-    es = Elasticsearch([{"host": "localhost", "port": 9200}])
-    res = es.search(index="politicians",
-                    body={"query": {"match_all": {}},
-                          "size": 2000})
-
-    all_names = sorted([r['_source']['label'] for r in res['hits']['hits']])
+    all_names = get_names_kb()
     patterns = build_entity_patterns(all_names)
     print(len(patterns))
 

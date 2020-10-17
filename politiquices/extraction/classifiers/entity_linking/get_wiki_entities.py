@@ -208,14 +208,16 @@ def main():
     print(f'{len(to_remove)} manually selected entities to be removed')
     relevant_persons_ids.extend(to_load)
     for el in to_remove:
-        relevant_persons_ids.remove(el)
+        if el in relevant_persons_ids:
+            relevant_persons_ids.remove(el)
+            print("Removed ", el)
 
     print(f'{len(relevant_persons_ids)} entities to be loaded')
 
     # get detailed information for each person
     for idx, wiki_id in enumerate(set(relevant_persons_ids)):
         print(str(idx) + "/" + str(len(set(relevant_persons_ids))))
-        just_sleep(2)
+        just_sleep(5)
         url = base_url + wiki_id + ".json"
         r = requests.get(url, params={"format": "json", "id": wiki_id})
         open(default_dir + wiki_id + ".json", "wt").write(r.text)

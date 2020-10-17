@@ -1,5 +1,8 @@
 arquivo_pt:
 ==========
+    - tirar todos os nomes da pagina do governo:
+        - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
+        - Ontologia POWER
     - method to detect semantically similar titles
     - detect very similar titles / same URL, probably different crawls:
         - keep older date/version
@@ -53,7 +56,10 @@ Web App
 
    - dentro da página de político
       - clicar no logo do partido: lista todas as pessoas desse partido
-      - list de titulos de artigos:
+      - total de artigos em que é mencionado
+      - total de artigos em que é mencionado por relação
+
+      - lista de titulos de artigos:
         - por uma fotografia pequena ao lado do nome da pessoa;
         - nome da pessoa só apelido, porque?
 
@@ -63,8 +69,11 @@ Web App
 
     - queries mais interessantes:
         - quais os partidos que acusam mais? e que partidos alvo?
+        
         - pessoas do mesmo partido a acusarem pessoas do mesmo partido
+
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+
         - existem relações familiares no grafo? entre quem?
 
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
