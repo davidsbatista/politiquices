@@ -87,6 +87,4 @@ def vectorize_titles(word2index, x_train):
                 word_no_vectors.add(tok)
         x_train_vec.append(tokens_idx)
 
-    print("words without vector: ", len(word_no_vectors))
-
     return x_train_vec

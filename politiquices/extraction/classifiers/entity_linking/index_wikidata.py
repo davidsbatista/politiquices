@@ -54,8 +54,6 @@ def main():
         else:
             aliases = None
 
-        # ToDo: extract occupations in PT
-
         print("wiki: ", wiki_id)
         print("last_modified", data_keys['modified'])
         print("label: ", label)

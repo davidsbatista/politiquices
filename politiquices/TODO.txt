@@ -6,20 +6,15 @@ arquivo_pt:
 
 classifiers
 ===========
-    relevancy:
-    ----------
-        - is this really needed? if there are no interesting named-entities discard
-        - use 'PER' on relevancy classifiers instead of names?
+    named_entity:
+    -------------
+        - build NER based on rules only using spaCy and names from ElasticSearch
 
     relationship:
     -------------
         - titles with more than one relationship?
         - embeddings: better/cleaner
         - Transformer models
-
-    named_entity:
-    -------------
-        - add also 'PER' from a hand-crafted list, see: https://spacy.io/usage/rule-based-matching
 
     entity_linking:
     ---------------

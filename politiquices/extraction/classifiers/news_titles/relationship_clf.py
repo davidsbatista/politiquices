@@ -28,18 +28,18 @@ def pre_process_train_data(data):
     :param data:
     :return:
     """
-    ignore = ["other", "ent1_replaces_ent2", "ent2_replaces_ent1", "meet_together",
-              "ent1_asks_support_ent2", "ent2_asks_support_ent1"]
+    other = ["other", "ent1_replaces_ent2", "ent2_replaces_ent1", "meet_together",
+             "ent1_asks_support_ent2", "ent2_asks_support_ent1", "mutual_disagreement",
+             "reach_agreement", "ent1_asks_action_ent2"]
 
-    data = [sample for sample in data if sample["label"] not in ignore]
+    docs = [(clean_title(d["title"]), d["ent1"], d["ent2"]) for d in data]
+    labels = [d["label"] if d['label'] not in other else 'other' for d in data]
 
     print("\nSamples per class:")
-    for k, v in Counter(d["label"] for d in data).items():
+    for k, v in Counter(labels).items():
         print(k, "\t", v)
     print("\nTotal nr. messages:\t", len(data))
     print("\n")
-    docs = [(clean_title(d["title"]), d["ent1"], d["ent2"]) for d in data]
-    labels = [d["label"] for d in data]
 
     # replace entity name by 'PER'
     docs = [d[0].replace(d[1], "PER").replace(d[2], "PER") for d in docs]

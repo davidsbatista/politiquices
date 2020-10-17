@@ -24,8 +24,7 @@ print("Setting up connection with Elasticsearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
 print("Loading trained models...")
-relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-11_140818.pkl")
-relevancy_clf = joblib.load(MODELS + "relevancy_clf_2020-10-10_211240.pkl")
+relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-17_001401.pkl")
 
 
 @app.get("/")
@@ -33,22 +32,14 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/relevant")
-async def classify_relevancy(news_title: Optional[str] = None):
-    title = clean_title(news_title).strip()
-    predicted_probs = relevancy_clf.tag(title)
-    return {
-        label: float(pred)
-        for label, pred in zip(relevancy_clf.label_encoder.classes_, predicted_probs[0])
-    }
-
-
-@app.get("/named_entities")
+@app.get("/ner")
 async def named_entities(news_title: Optional[str] = None):
     title = clean_title(news_title).strip()
     doc = nlp(title)
     entities = {ent.text: ent.label_ for ent in doc.ents}
-    persons_to_tag = ['Marcelo', 'Passos', 'Rio']
+    persons_to_tag = ['Marcelo', 'Passos', 'Rio', 'Centeno', 'Negrão', 'Relvas', 'Costa',
+                      'Coelho', 'Santana', 'Alegre', 'Sócrates']
+
     persons = []
 
     for k, v in entities.items():
@@ -107,6 +98,17 @@ async def classify_relationship(news_title: Optional[str] = None):
     return {**rel_type_scores, **result}
 
 
+def needs_escaping(character):
+    escape_chars = {
+     '\\' : True, '+' : True, '-' : True, '!' : True,
+     '(' : True, ')' : True, ':' : True, '^' : True,
+     '[' : True, ']': True, '\"' : True, '{' : True,
+     '}' : True, '~' : True, '*' : True, '?' : True,
+     '|' : True, '&' : True, '/' : True
+    }
+    return escape_chars.get(character, False)
+
+
 @app.get("/wikidata")
 async def wikidata_linking(entity: str):
 
@@ -131,10 +133,22 @@ async def wikidata_linking(entity: str):
         "Santana": "Pedro Santana Lopes",
     }
 
-    entity_clean = re.sub(r'[:-]', '', entity)
+    sanitized = ''
+    for character in entity:
+        if needs_escaping(character):
+            sanitized += '\\%s' % character
+        else:
+            sanitized += character
+
+    """
+    entity_clean = re.sub(r'[:-\]', '', entity)
     entity_clean = re.sub(r'\s+', ' ', entity_clean)
     entity_clean = mappings.get(entity, entity_clean)
     entity_query = " AND ".join(entity_clean.strip().split(' '))
+    """
+
+    print(entity, '\t', sanitized)
+    entity_query = " AND ".join([token.strip() for token in sanitized.split()])
     res = es.search(index="politicians", body={"query": {"query_string": {"query": entity_query}}})
 
     if res["hits"]["hits"]:

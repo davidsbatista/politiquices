@@ -53,85 +53,56 @@ def build_person(wikidata_id, name, persons):
         )
 
 
-def process_classified_titles():
-    """
-
-    :return:
-    """
+def process_classified_titles(f_in):
     persons = defaultdict(Person)
     relationships = []
     articles = []
-    seen_hashes = set()
-    print("Processing classified titles")
     count = 0
-    with jsonlines.open('logs/non_relevant.jsonl', 'w') as non_relevant_writer, \
-            jsonlines.open('logs/no_entities.jsonl', 'w') as no_entities_writer, \
-            jsonlines.open('logs/no_wiki.jsonl', 'w') as no_wiki__writer:
 
-        for processed_title in processed_titles(sys.argv[1]):
+    for title in processed_titles(f_in):
 
-            count += 1
+        count += 1
+        if count % 500 == 0:
+            print(".", end="", flush=True)
 
-            if count % 25000 == 0:
-                print(".", end="", flush=True)
+        scores = [(k, v) for k, v in title['scores'].items()]
+        rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
 
-            if processed_title["hash"] in seen_hashes:
-                continue
+        e1_wiki = title["ent_1"]['wiki'] if title["ent_1"] else None
+        e2_wiki = title["ent_2"]['wiki'] if title["ent_2"] else None
 
-            # non-relevant news articles
-            if processed_title["relevancy"]["relevant"] < 0.5:
-                non_relevant_writer.write(processed_title)
-                continue
+        if not (e1_wiki and e2_wiki):
+            print("no wiki links")
+            continue
 
-            # relevant news articles but without entities
-            if "not enough entities" in processed_title["relationship"].keys():
-                no_entities_writer.write(processed_title)
-                continue
+        person_1 = title["entities"][0]
+        person_2 = title["entities"][1]
+        news_title = title["title"]
+        url = title["linkToArchive"]
+        crawled_date = extract_date(title["tstamp"])
 
-            rel = processed_title["relationship"]
-            # recognized entities not linked to Wikidata
-            if not rel["entity_1_wiki"] or not rel["entity_2_wiki"]:
-                no_wiki__writer.write(processed_title)
-                continue
+        p1_id = e1_wiki
+        p1_name = person_1
+        build_person(p1_id, p1_name, persons)
 
-            # ToDo: one can also use a similarity metric
-            seen_hashes.add(processed_title["hash"])
+        p2_id = e2_wiki
+        p2_name = person_2
+        build_person(p2_id, p2_name, persons)
 
-            scores = [(k, v) for k, v in rel.items() if isinstance(v, float)]
-            rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
-
-            e1_wiki = rel["entity_1_wiki"]['wiki']
-            e2_wiki = rel["entity_2_wiki"]['wiki']
-            person_1 = processed_title["relationship"]["entity_1"]
-            person_2 = processed_title["relationship"]["entity_2"]
-            title_cleaned = processed_title["cleaned_title"]
-            url = processed_title["entry"]["linkToArchive"]
-            crawled_date = extract_date(processed_title['entry']["tstamp"])
-
-            p1_id = e1_wiki
-            p1_name = person_1
-            build_person(p1_id, p1_name, persons)
-
-            p2_id = e2_wiki
-            p2_name = person_2
-            build_person(p2_id, p2_name, persons)
-
-            relationships.append(
-                Relationship(
-                    url=url, rel_type=rel_type[0], rel_score=rel_type[1], ent1=p1_id, ent2=p2_id
-                )
+        relationships.append(
+            Relationship(
+                url=url, rel_type=rel_type[0], rel_score=rel_type[1], ent1=p1_id, ent2=p2_id
             )
+        )
 
-            articles.append(
-                Article(url=url, title=title_cleaned, source=None, date=None, crawled_date=crawled_date)
-            )
+        articles.append(
+            Article(url=url, title=news_title, source=None, date=None, crawled_date=crawled_date)
+        )
 
-        return articles, persons, relationships
+    return articles, persons, relationships
 
 
-def main():
-    articles, persons, relationships = process_classified_titles()
-
+def populate_graph(articles, persons, relationships):
     g = Graph()
     ns1 = Namespace("http://some.namespace/with/name#")
     g.bind("my_prefix", ns1)
@@ -139,10 +110,8 @@ def main():
     wiki_item = Namespace("http://www.wikidata.org/entity/")
     g.bind("wd", wiki_item)
     g.bind("wdt", wiki_prop)
-
     # linked-data vocabularies
     # https://lov.linkeddata.es/dataset/lov/
-
     print("\nadding Persons")
     # add Person triples: <wiki_URI, SKOS.prefLabel, name>
     for wikidata_id, person in persons.items():
@@ -180,7 +149,6 @@ def main():
                     Literal(alt_name, lang="pt"),
                 )
             )
-
     print("adding Articles")
     # add triple Article:
     #   <url, DC.title, title>
@@ -188,7 +156,6 @@ def main():
     for article in articles:
         g.add((URIRef(article.url), DC.title, Literal(article.title, lang="pt")))
         g.add((URIRef(article.url), DC.date, Literal(article.crawled_date, datatype=XSD.dateTime)))
-
     print("adding Relationships")
     # add relationships as Blank Node:
     for rel in relationships:
@@ -199,16 +166,25 @@ def main():
         g.add((_rel, ns1.arquivo, URIRef(rel.url)))
         g.add((_rel, ns1.ent1, URIRef(f"http://www.wikidata.org/entity/{rel.ent1}")))
         g.add((_rel, ns1.ent2, URIRef(f"http://www.wikidata.org/entity/{rel.ent2}")))
-
     # print out the entire Graph in the RDF Turtle format
     # "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
     print(g.serialize(format="turtle").decode("utf-8"))
     g.serialize(destination="sample.ttl", format="turtle")
     print("graph has {} statements.".format(len(g)))
+    print("persons      : ", len(persons))
+    print("articles     : ", len(articles))
+    print("relationships: ", len(relationships))
+
+
+def main():
+    articles, persons, relationships = process_classified_titles(sys.argv[1])
 
     print("persons      : ", len(persons))
     print("articles     : ", len(articles))
     print("relationships: ", len(relationships))
+
+
+    populate_graph(articles, persons, relationships)
 
 
 if __name__ == "__main__":

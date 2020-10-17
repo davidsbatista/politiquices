@@ -7,5 +7,10 @@ https://www.wikidata.org/wiki/Q151394,António de Oliveira Salazar
 https://www.wikidata.org/wiki/Q10311834,João Maria Ferreira Sarmento Pimentel
 https://www.wikidata.org/wiki/Q934065,Nuno Álvares Pereira de Melo, 1.º Duque de Cadaval
 https://www.wikidata.org/wiki/Q314022,Óscar Carmona
+https://www.wikidata.org/wiki/Q241131,Josef Klaus
+https://www.wikidata.org/wiki/Q28226050,Robert A. Sherman
+https://www.wikidata.org/wiki/Q9619550,António Louçã
+https://www.wikidata.org/wiki/Q9619550,Alexandre Relvas
+
 
 
