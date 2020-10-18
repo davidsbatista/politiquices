@@ -4,7 +4,7 @@ import jsonlines
 
 
 def titles_no_entities():
-    # ToDo: see top n-grams: 1 to 3
+    # ToDo: see top n-grams: 1 to 3 for capitalized tokens
     # with jsonlines.open('titles_processed_no_entities.jsonl', 'r') as f_in:
     pass
 
@@ -26,7 +26,6 @@ def entities_no_relation():
         no_relation_pairs_count = []
 
         for entry in f_in:
-            print(entry)
             ent_1 = entry['entities'][0]
             ent_2 = entry['entities'][1]
             pair = str(ent_1+' <-> '+ent_2)
@@ -44,12 +43,18 @@ def main():
     """
 
     no_relation_pairs_count, no_relation_pairs_titles = entities_no_relation()
-    for el in no_relation_pairs_count.most_common(9):
+
+    for el in no_relation_pairs_count.most_common():
+        print(el)
+
+    """
+    for el in no_relation_pairs_count.most_common(10):
         print(el[0])
         for title in no_relation_pairs_titles[el[0]]:
             print(title)
             print()
         print("\n\n---------------------")
+    """
 
 
 if __name__ == '__main__':

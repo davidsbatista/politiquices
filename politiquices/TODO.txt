@@ -13,8 +13,11 @@ classifiers
 ===========
     named_entity:
     -------------
-        - "Marinho e Pinto" -> tagged como duas entidades distintas
-        - build NER based on rules only using spaCy and names from ElasticSearch
+        - RuleBasedNER class: good results with rules + statistical classifier
+
+    extraction:
+    ----------
+        - do all without any call to webservices
 
     relationship:
     -------------
@@ -25,15 +28,10 @@ classifiers
     entity_linking:
     ---------------
         - Filter out ppl born before 1935
-        Linking Errors:
+        - Linking Errors:
             - http://0.0.0.0:5000/entity?q=Q295049 as 'Pinto da Costa' (futebol)
             - http://0.0.0.0:5000/entity?q=Q4237195 as 'José Manuel Coelho'
-
-   service:
-   --------
-     - log when queries to ElasticSearch fail
-     - review classifier API arch:
-        https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
+        - Adicionar 'Pinto da Costa' ?
 
 
 Web App

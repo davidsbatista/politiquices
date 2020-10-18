@@ -1,12 +1,13 @@
 import os
-from typing import Optional
+from typing import Optional, List
 
 import joblib
 import pt_core_news_sm
 from elasticsearch import Elasticsearch
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 
+from politiquices.extraction.classifiers.ner.rule_based_ner import get_rule_based_ner
 from politiquices.extraction.utils import clean_title
 
 app = FastAPI()
@@ -16,7 +17,7 @@ MODELS = os.path.join(APP_ROOT, "../classifiers/news_titles/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
 
 print("Loading spaCy model...")
-nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
+nlp_core = pt_core_news_sm.load(disable=["tagger", "parser"])
 
 # ToDo: fail on error
 print("Setting up connection with Elasticsearch")
@@ -34,7 +35,7 @@ async def root():
 @app.get("/ner")
 async def named_entities(news_title: Optional[str] = None):
     title = clean_title(news_title).strip()
-    doc = nlp(title)
+    doc = nlp_core(title)
     entities = {ent.text: ent.label_ for ent in doc.ents}
     persons_to_tag = [
         "Marcelo",
@@ -61,16 +62,22 @@ async def named_entities(news_title: Optional[str] = None):
     return persons
 
 
-@app.get("/relationship/")
-async def classify_relationship(news_title: Optional[str] = None):
+@app.get("/ner_patterns")
+async def named_entities_patterns(news_title: Optional[str] = None):
+    # ToDo
+    pass
+
+
+@app.get("/relationship")
+async def classify_relationship(news_title: str, person: List[str] = Query(None)):
+    persons = person
     title = clean_title(news_title).strip()
-    persons = await named_entities(title)
+
     if len(persons) < 2:
-        # ToDo: if no persons are found try string matching with wikidata ?
-        return {"not enough entities": persons}
+        return {"not enough entities": person}
+
     if len(persons) > 2:
-        # ToDo: extract all possible contexts
-        return {"more than 2 entities": persons}
+        return {"more than 2 entities": person}
 
     title = title.replace(persons[0], "PER").replace(persons[1], "PER")
     predicted_probs = relationship_clf.tag([title])
@@ -80,32 +87,7 @@ async def classify_relationship(news_title: Optional[str] = None):
         for label, pred in zip(relationship_clf.label_encoder.classes_, predicted_probs[0])
     }
 
-    result = {
-        "entity_1": persons[0],
-        "entity_2": persons[1],
-    }
-
-    wiki_id_1 = None
-    wiki_id_2 = None
-
-    try:
-        wiki_id_1 = await wikidata_linking(persons[0])
-        wiki_id_2 = await wikidata_linking(persons[1])
-
-    except Exception as e:
-        print(type(e))
-        print(e)
-        # ToDo: all type of errors
-        # e.g: RequestError(400, 'search_phase_execution_exception',
-        # 'Failed to parse query [Fernando AND Gomes AND  AND Lusa]')
-
-    if wiki_id_1 and wiki_id_2:
-        result.update(
-            {"entity_1_wiki": wiki_id_1["wiki_id"], "entity_2_wiki": wiki_id_2["wiki_id"]}
-        )
-    else:
-        result.update({"entity_1_wiki": None, "entity_2_wiki": None})
-    return {**rel_type_scores, **result}
+    return rel_type_scores
 
 
 @app.get("/wikidata")

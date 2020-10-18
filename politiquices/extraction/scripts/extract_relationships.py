@@ -5,8 +5,8 @@ from functools import lru_cache
 import joblib
 import requests
 from jsonlines import jsonlines
-import pt_core_news_sm
 
+from politiquices.extraction.classifiers.ner.rule_based_ner import get_rule_based_ner
 from politiquices.extraction.utils import clean_title
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -18,8 +18,6 @@ relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-17_001401.pkl"
 
 url = "http://127.0.0.1:8000/wikidata"
 
-nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
-
 
 @lru_cache(maxsize=500000)
 def entity_linking(entity):
@@ -28,24 +26,10 @@ def entity_linking(entity):
     return response.json()
 
 
-def get_persons(title):
-    doc = nlp(title)
-    entities = {ent.text: ent.label_ for ent in doc.ents}
-    persons_to_tag = ['Marcelo', 'Passos', 'Rio', 'Centeno', 'Negrão', 'Relvas', 'Costa',
-                      'Coelho', 'Santana', 'Alegre', 'Sócrates']
-
-    persons = []
-
-    for k, v in entities.items():
-        if k in persons_to_tag and v != 'PER':
-            persons.append(k)
-        if v == 'PER':
-            persons.append(k)
-
-    return persons
-
-
 def main():
+
+    nlp_ner_rule_based = get_rule_based_ner()
+
     processed = jsonlines.open('titles_processed.jsonl', mode='w')
     more_entities = jsonlines.open('titles_processed_more_entities.jsonl', mode='w')
     no_entities = jsonlines.open('titles_processed_no_entities.jsonl', mode='w')
@@ -61,7 +45,11 @@ def main():
                 print(count)
 
             cleaned_title = clean_title(line['title']).strip()
-            persons = get_persons(cleaned_title)
+            # persons = get_persons(cleaned_title)
+            persons = nlp_ner_rule_based(cleaned_title)
+            print(cleaned_title)
+            print(persons)
+            print("\n-----------------")
 
             if len(persons) == 2:
                 title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")
@@ -103,7 +91,7 @@ def main():
                 else:
                     processed.write(result)
 
-            if len(persons) > 2:
+            elif len(persons) > 2:
                 more_entities.write({'title': cleaned_title, 'entities': persons})
 
             else:
