@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 cached_list_entities = None
+person_no_image = "/static/images/no_picture.jpg"
 
 
 @app.route("/")
@@ -64,10 +65,7 @@ def list_entities():
             persons.add(url)
 
             name = e["label"]["value"]
-            if "image_url" in e:
-                image_url = e["image_url"]["value"]
-            else:
-                image_url = "/static/images/no_picture.jpg"
+            image_url = e["image_url"]["value"] if "image_url" in e else person_no_image
 
             wiki_id = url.split("/")[-1]
 

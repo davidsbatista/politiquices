@@ -120,8 +120,7 @@ def get_person_info(wiki_id):
             name = e["name"]["value"]
 
         if not image_url:
-            if "image_url" in e:
-                image_url = e["image_url"]["value"]
+            image_url = e["image_url"]["value"] if "image_url" in e else person_no_image
 
         # political parties
         party = PoliticalParty(
@@ -168,14 +167,18 @@ def get_person_relationships(wiki_id, rel_type, reverse=False):
                     """
 
     query = f"""
-        SELECT DISTINCT ?arquivo_doc ?date ?title ?other_ent ?other_ent_name
+        SELECT DISTINCT ?arquivo_doc ?date ?title ?score ?other_ent ?other_ent_name
         WHERE {{
           {arg_order}
-          ?rel my_prefix:type ?rel_type .
-          ?other_ent rdfs:label ?other_ent_name .
+          
+          ?rel my_prefix:type ?rel_type;
+               my_prefix:score ?score.
           ?rel my_prefix:arquivo ?arquivo_doc .
+          
           ?arquivo_doc dc:title ?title .
           ?arquivo_doc dc:date  ?date .
+          
+          ?other_ent rdfs:label ?other_ent_name .
           FILTER (?rel_type = "{rel_type}")
         }}
         ORDER BY ?date
@@ -188,6 +191,7 @@ def get_person_relationships(wiki_id, rel_type, reverse=False):
         rel = {
             "url": e["arquivo_doc"]["value"],
             "title": e["title"]["value"],
+            "score": str(e["score"]["value"])[0:5],
             "date": e["date"]["value"].split("T")[0],
             "other_ent_url": "entity?q=" + e["other_ent"]["value"].split("/")[-1],
             "other_ent_name": e["other_ent_name"]["value"],
