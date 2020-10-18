@@ -12,7 +12,8 @@ url_keywords_ignore = ['desporto', 'opiniao', 'musica', 'cinema', 'artes', 'mult
                        'foto', 'vida', 'humor']
 url_other_topic = '.*(' + '|'.join(url_keywords_ignore) + ').*'
 
-title_keywords_ignore = ['Futebol', 'Desporto', 'Concerto de Bolso', 'Celebridades']
+title_keywords_ignore = ['Futebol', 'Desporto', 'Concerto de Bolso', 'Celebridades',
+                         'Liga dos Campeões']
 
 
 already_seen = set()

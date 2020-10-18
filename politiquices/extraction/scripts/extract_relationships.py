@@ -21,7 +21,7 @@ url = "http://127.0.0.1:8000/wikidata"
 nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
 
 
-@lru_cache
+@lru_cache(maxsize=500000)
 def entity_linking(entity):
     payload = {'entity': entity}
     response = requests.request("GET", url, params=payload)
@@ -47,6 +47,7 @@ def get_persons(title):
 
 def main():
     processed = jsonlines.open('titles_processed.jsonl', mode='w')
+    more_entities = jsonlines.open('titles_processed_more_entities.jsonl', mode='w')
     no_entities = jsonlines.open('titles_processed_no_entities.jsonl', mode='w')
     no_relation = jsonlines.open('titles_processed_no_relation.jsonl', mode='w')
     no_wiki = jsonlines.open('titles_processed_no_wiki_id.jsonl', mode='w')
@@ -85,6 +86,8 @@ def main():
                 entity = entity_linking(persons[1])
                 ent_2 = entity['wiki_id'] if entity['wiki_id'] else None
 
+                print(entity_linking.cache_info())
+
                 result = {
                     'title': cleaned_title,
                     'entities': persons,
@@ -100,9 +103,16 @@ def main():
                 else:
                     processed.write(result)
 
+            if len(persons) > 2:
+                more_entities.write({'title': cleaned_title, 'entities': persons})
+
             else:
                 no_entities.write({'title': cleaned_title, 'entities': persons})
 
+    no_entities.close()
+    more_entities.close()
+    no_wiki.close()
+    no_relation.close()
     processed.close()
 
 

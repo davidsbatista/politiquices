@@ -3,6 +3,8 @@ arquivo_pt:
     - tirar todos os nomes da pagina do governo:
         - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
         - Ontologia POWER
+    - mais dominos ?
+    - datas dos dominos crawlados, alteraram-se ?
     - method to detect semantically similar titles
     - detect very similar titles / same URL, probably different crawls:
         - keep older date/version
@@ -11,6 +13,7 @@ classifiers
 ===========
     named_entity:
     -------------
+        - "Marinho e Pinto" -> tagged como duas entidades distintas
         - build NER based on rules only using spaCy and names from ElasticSearch
 
     relationship:
@@ -33,31 +36,23 @@ classifiers
         https://medium.com/@8B_EC/tutorial-serving-machine-learning-models-with-fastapi-in-python-c1a27319c459
 
 
-SPARQL DB
-=========
-    - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
-    - use OR in FILTER to avoid doing two queries:
-            https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
-
-   Getting statements values:
-      - https://stackoverflow.com/questions/54974504/sparql-question-how-to-return-property-labels-and-associated-date-qualifiers-fr
-      - https://stackoverflow.com/questions/36023098/querying-wikidata-difference-between-p-and-wdt-default-prefix
-
-   Federated queries:
-      - http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/
-      - https://stackoverflow.com/questions/53012303/using-wikidata-label-service-in-federated-queries
-
-
 Web App
 =======
 
-   - show all entities in the KB even the ones without any articles
+   - http://ceur-ws.org/Vol-1320/paper_39.pdf
+   - http://biohackathon.org/d3sparql/
+   - https://github.com/ktym/d3sparql
+
+   - run cache at start of the web server
+
    - initalize() and get_total_nr_articles_for_each_person() get the name from Wikidata rdfs:label
 
    - dentro da página de político
-      - clicar no logo do partido: lista todas as pessoas desse partido
       - total de artigos em que é mencionado
       - total de artigos em que é mencionado por relação
+
+
+      - clicar no logo do partido: lista todas as pessoas desse partido
 
       - lista de titulos de artigos:
         - por uma fotografia pequena ao lado do nome da pessoa;
@@ -67,9 +62,10 @@ Web App
 
     - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
-    - queries mais interessantes:
+    queries mais interessantes:
+    ---------------------------
         - quais os partidos que acusam mais? e que partidos alvo?
-        
+
         - pessoas do mesmo partido a acusarem pessoas do mesmo partido
 
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
@@ -79,8 +75,9 @@ Web App
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
-        - listar pessoas com informação incompleta: foto, cargos, etc.
-          e explicar como alimentar a wikidata com fontes de informação :
+        - mostrar informação para completar:
+            listar pessoas com informação incompleta: foto, cargos, etc. e explicar como alimentar
+            a wikidata com fontes de informação :
                 - https://www.politicaparatodos.pt/
                 - http://demo.cratica.org/deputados/
 
@@ -94,5 +91,20 @@ Web App
 
 
    - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch
+   - https://www.dafont.com/de/28-days-later.font?text=Politiquices&psize=l&back=theme
 
 
+
+SPARQL DB
+=========
+    - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
+    - use OR in FILTER to avoid doing two queries:
+            https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
+
+   Getting statements values:
+      - https://stackoverflow.com/questions/54974504/sparql-question-how-to-return-property-labels-and-associated-date-qualifiers-fr
+      - https://stackoverflow.com/questions/36023098/querying-wikidata-difference-between-p-and-wdt-default-prefix
+
+   Federated queries:
+      - http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/
+      - https://stackoverflow.com/questions/53012303/using-wikidata-label-service-in-federated-queries

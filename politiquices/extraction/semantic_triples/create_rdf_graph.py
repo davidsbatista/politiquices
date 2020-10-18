@@ -61,10 +61,6 @@ def process_classified_titles(f_in):
 
     for title in processed_titles(f_in):
 
-        count += 1
-        if count % 500 == 0:
-            print(".", end="", flush=True)
-
         scores = [(k, v) for k, v in title['scores'].items()]
         rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
 
@@ -162,7 +158,10 @@ def populate_graph(articles, persons, relationships):
         _rel = BNode()
         g.add((_rel, ns1.type, Literal(rel.rel_type)))
         g.add((_rel, ns1.score, Literal(rel.rel_score, datatype=XSD.float)))
-        g.add((_rel, ns1.score, Literal(1.0, datatype=XSD.float)))
+
+        # ToDo: set score to 1.0 when indexing annotated data
+        # g.add((_rel, ns1.score, Literal(1.0, datatype=XSD.float)))
+
         g.add((_rel, ns1.arquivo, URIRef(rel.url)))
         g.add((_rel, ns1.ent1, URIRef(f"http://www.wikidata.org/entity/{rel.ent1}")))
         g.add((_rel, ns1.ent2, URIRef(f"http://www.wikidata.org/entity/{rel.ent2}")))
@@ -183,6 +182,10 @@ def main():
     print("articles     : ", len(articles))
     print("relationships: ", len(relationships))
 
+    #for x in relationships:
+    #    print(x)
+    #    print('\n')
+    #exit(-1)
 
     populate_graph(articles, persons, relationships)
 

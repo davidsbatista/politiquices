@@ -3,6 +3,12 @@ from collections import Counter, defaultdict
 import jsonlines
 
 
+def titles_no_entities():
+    # ToDo: see top n-grams: 1 to 3
+    # with jsonlines.open('titles_processed_no_entities.jsonl', 'r') as f_in:
+    pass
+
+
 def entities_no_wiki_link():
     with jsonlines.open('titles_processed_no_wiki_id.jsonl', 'r') as f_in:
         no_wiki_link = []
@@ -20,10 +26,12 @@ def entities_no_relation():
         no_relation_pairs_count = []
 
         for entry in f_in:
+            print(entry)
             ent_1 = entry['entities'][0]
             ent_2 = entry['entities'][1]
-            no_relation_pairs_count.append(ent_1+' <-> '+ent_2)
-            no_relation_pairs_titles[ent_1+' <-> '+ent_2].append(entry['title'])
+            pair = str(ent_1+' <-> '+ent_2)
+            no_relation_pairs_count.append(pair)
+            no_relation_pairs_titles[pair].append(entry['title'])
 
     return Counter(no_relation_pairs_count), Counter(no_relation_pairs_titles)
 
@@ -35,15 +43,13 @@ def main():
         print(el)
     """
 
-    no_relation_entities, no_relation_pairs = entities_no_relation()
-
-    """
-    for el in no_relation_entities.most_common():
-        print(el)
-    """
-
-    for el in no_relation_pairs.most_common():
-        print(el)
+    no_relation_pairs_count, no_relation_pairs_titles = entities_no_relation()
+    for el in no_relation_pairs_count.most_common(9):
+        print(el[0])
+        for title in no_relation_pairs_titles[el[0]]:
+            print(title)
+            print()
+        print("\n\n---------------------")
 
 
 if __name__ == '__main__':

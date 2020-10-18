@@ -21,21 +21,23 @@
     }
     </style>
 
-    <title>Politiquices::Arquivo.pt</title>
+    <title>Politiquices</title>
 </head>
 <body>
 
-<h1><center>Politiquices</center></h1>
+<br>
+
+<center>
+    <img src="static/images/politiquices.png" class="figure-img img-fluid rounded" width="300" height="375">
+</center>
 
 <br><br>
 
 <div id="outer" class="container d-flex align-items-center justify-content-center">
- <div id="inner">
-  <h4>Persons</h4>
-     <a href="/entities"><p><center>{{items.nr_persons}}</center></p></a>
+ <div id="inner" class="w-75 p-2" align="center">
+     <center></center><h4>Explorar relações individuais de <a href="/entities"><b>{{items.nr_persons}} pessoas</b></a></h4></center>
      <br>
- <h4>Articles</h4>
-  <p><center>{{items.nr_articles}}</center></p>
+     <center></center><h4>Explorar o <a href="/insights"><b>grafo de relações</b></a></h4></center>
  </div>
 </div>
 
@@ -43,7 +45,7 @@
 
 <div class="container h-100">
   <div class="row h-100 justify-content-center align-items-center">
-        <h4>Articles by Year</h4>
+        <h4><b>{{items.nr_articles}}</b> títulos de artigos analisados</h4>
     <canvas id="myChart" width="1000" height="250"></canvas>
   </div>
 </div>

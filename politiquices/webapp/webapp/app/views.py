@@ -1,6 +1,6 @@
 import logging
 
-from flask import request
+from flask import request, current_app
 from flask import render_template
 from app import app
 
@@ -11,7 +11,7 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_nr_of_persons,
     get_total_nr_of_articles,
     get_person_info,
-)
+    get_list_of_persons_from_some_party_opposing_someone)
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 from politiquices.webapp.webapp.app.relationships import (
     build_list_relationships_articles,
@@ -126,3 +126,15 @@ def detail_entity():
     }
 
     return render_template("entity_detail.html", items=items)
+
+
+@app.route('/insights')
+def insights():
+    return current_app.send_static_file('insights.html')
+
+
+@app.route('/queries')
+def queries():
+    query_nr = request.args.get("q")
+    results = get_list_of_persons_from_some_party_opposing_someone()
+    return render_template("template_one.html", items=results)

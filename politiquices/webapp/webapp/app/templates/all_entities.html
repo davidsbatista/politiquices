@@ -24,12 +24,12 @@
     <td>
     <figure class="figure">
         <a href=/entity?q={{item.wikidata_id}}>
-            <img src={{item.image_url}} class="figure-img img-fluid rounded" width="100" height="100">
+            <img src={{item.image_url}} class="figure-img img-fluid rounded" width="120" height="150">
         </a>
-        <figcaption class="figure-caption">
+        <figcaption class="figure-caption" style="text-align:center;">
             <a href=/entity?q={{item.wikidata_id}}>{{item.name}}</a>
         </figcaption>
-        {{item.nr_articles}} articles
+        <center>{{item.nr_articles}} articles</center>
     </figure>
     </td>
     {% endfor %}

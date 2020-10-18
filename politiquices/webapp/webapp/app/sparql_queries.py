@@ -1,8 +1,17 @@
 import sys
 
 from SPARQLWrapper import SPARQLWrapper, JSON
-from politiquices.webapp.webapp.app.data_models import OfficePosition, PoliticalParty, Person
+from politiquices.webapp.webapp.app.data_models import (
+    OfficePosition,
+    PoliticalParty,
+    Person,
+    Relationship,
+    RelationshipType,
+)
 from politiquices.webapp.webapp.app.utils import convert_dates
+
+socrates = None
+person_no_image = "/static/images/no_picture.jpg"
 
 prefixes = """
     PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
@@ -108,34 +117,32 @@ def get_person_info(wiki_id):
     offices = []
     for e in results["results"]["bindings"]:
         if not name:
-            name = e["name"]['value']
+            name = e["name"]["value"]
 
         if not image_url:
-            if 'image_url' in e:
+            if "image_url" in e:
                 image_url = e["image_url"]["value"]
 
         # political parties
         party = PoliticalParty(
-            name=e["political_partyLabel"]['value'] if 'political_partyLabel' in e else None,
-            image_url=e["political_party_logo"]['value'] if 'political_party_logo' in e else None
+            name=e["political_partyLabel"]["value"] if "political_partyLabel" in e else None,
+            image_url=e["political_party_logo"]["value"] if "political_party_logo" in e else None,
         )
         if party not in parties:
             parties.append(party)
 
         # office positions
-        if 'officeLabel' in e:
+        if "officeLabel" in e:
             office_position = OfficePosition(
-                start=convert_dates(e["start"]["value"]) if 'start' in e else None,
-                end=convert_dates(e["end"]["value"]) if 'end' in e else None,
+                start=convert_dates(e["start"]["value"]) if "start" in e else None,
+                end=convert_dates(e["end"]["value"]) if "end" in e else None,
                 position=e["officeLabel"]["value"],
             )
             if office_position not in offices:
                 offices.append(office_position)
-    person = Person(wiki_id=wiki_id,
-                    name=name,
-                    image_url=image_url,
-                    parties=parties,
-                    positions=offices)
+    person = Person(
+        wiki_id=wiki_id, name=name, image_url=image_url, parties=parties, positions=offices
+    )
     return person
 
 
@@ -182,7 +189,7 @@ def get_person_relationships(wiki_id, rel_type, reverse=False):
             "url": e["arquivo_doc"]["value"],
             "title": e["title"]["value"],
             "date": e["date"]["value"].split("T")[0],
-            "other_ent_url": 'entity?q='+e["other_ent"]["value"].split("/")[-1],
+            "other_ent_url": "entity?q=" + e["other_ent"]["value"].split("/")[-1],
             "other_ent_name": e["other_ent_name"]["value"],
         }
         relations.append(rel)
@@ -225,8 +232,60 @@ def get_person_relationships_by_month_year(wiki_id, rel_type, reverse=False):
     for x in result["results"]["bindings"]:
         year = x["year"]["value"]
         month = x["month"]["value"]
-        year_month_articles[(str(year)+'-'+str(month))] = int(x["nr_articles"]["value"])
+        year_month_articles[(str(year) + "-" + str(month))] = int(x["nr_articles"]["value"])
     return year_month_articles
+
+
+def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", party="Q847263"):
+
+    global socrates
+
+    if socrates:
+        return socrates
+
+    query = f"""        
+        SELECT DISTINCT ?ent1 ?ent1_name ?image_url ?arquivo_doc ?date ?title ?score
+        WHERE {{
+            ?rel my_prefix:type "ent1_opposes_ent2";
+                 my_prefix:ent2 wd:{wiki_id};
+                 my_prefix:ent1 ?ent1;
+                 my_prefix:score ?score;
+                 my_prefix:arquivo ?arquivo_doc .
+            ?arquivo_doc dc:title ?title;
+                         dc:date ?date.
+            ?ent1 rdfs:label ?ent1_name .
+            
+            SERVICE <https://query.wikidata.org/sparql> {{
+                ?ent1 wdt:P102 wd:{party};
+                      rdfs:label ?personLabel.
+                FILTER(LANG(?personLabel) = "pt")
+                OPTIONAL {{ ?ent1 wdt:P18 ?image_url. }}
+                SERVICE wikibase:label {{ 
+                    bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label 
+                }}
+            }}
+        }}
+        ORDER BY DESC(?date) DESC(?score)
+        """
+    result = query_sparql(prefixes + "\n" + query, "local")
+    results = []
+    for x in result["results"]["bindings"]:
+        image = x["image_url"]["value"] if "image_url" in x else person_no_image
+        person = Person(name=x["ent1_name"]["value"], wiki_id=x["ent1"]["value"], image_url=image)
+        rel = Relationship(
+            article_title=x["title"]["value"],
+            article_url=x["arquivo_doc"]["value"],
+            article_date=x["date"]["value"].split("T")[0],
+            rel_type=RelationshipType.ent1_opposes_ent2,
+            rel_score=x["score"]["value"][0:5],
+            ent1=person,
+            ent2=Person(wiki_id=wiki_id),
+        )
+        results.append(rel)
+
+    socrates = results
+
+    return results
 
 
 def initalize():
