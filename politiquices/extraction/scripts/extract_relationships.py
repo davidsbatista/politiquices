@@ -6,7 +6,7 @@ import joblib
 import requests
 from jsonlines import jsonlines
 
-from politiquices.extraction.classifiers.ner.rule_based_ner import get_rule_based_ner
+from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
 from politiquices.extraction.utils import clean_title
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -28,7 +28,7 @@ def entity_linking(entity):
 
 def main():
 
-    nlp_ner_rule_based = get_rule_based_ner()
+    rule_ner = RuleBasedNer()
 
     processed = jsonlines.open('titles_processed.jsonl', mode='w')
     more_entities = jsonlines.open('titles_processed_more_entities.jsonl', mode='w')
@@ -46,10 +46,7 @@ def main():
 
             cleaned_title = clean_title(line['title']).strip()
             # persons = get_persons(cleaned_title)
-            persons = nlp_ner_rule_based(cleaned_title)
-            print(cleaned_title)
-            print(persons)
-            print("\n-----------------")
+            persons = rule_ner.tag(cleaned_title)
 
             if len(persons) == 2:
                 title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")

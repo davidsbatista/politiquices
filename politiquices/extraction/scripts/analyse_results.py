@@ -1,6 +1,13 @@
+import sys
 from collections import Counter, defaultdict
 
 import jsonlines
+
+
+def titles_processed(f_name):
+    with jsonlines.open(f_name, 'r') as f_in:
+        for entry in f_in:
+            print(entry['title'])
 
 
 def titles_no_entities():
@@ -42,12 +49,13 @@ def main():
         print(el)
     """
 
-    no_relation_pairs_count, no_relation_pairs_titles = entities_no_relation()
+    titles_processed(sys.argv[1])
 
+    """
+    no_relation_pairs_count, no_relation_pairs_titles = entities_no_relation()
     for el in no_relation_pairs_count.most_common():
         print(el)
 
-    """
     for el in no_relation_pairs_count.most_common(10):
         print(el[0])
         for title in no_relation_pairs_titles[el[0]]:

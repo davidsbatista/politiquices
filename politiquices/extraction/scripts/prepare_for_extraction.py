@@ -48,6 +48,12 @@ def main():
             other_topics += 1
             continue
 
+        # ToDo: normalize some characters
+        """
+        - Mota Soares: Costa "empurra as pessoas para os sistemas privados" de reformas
+        - Mota Soares: Costa “empurra as pessoas para os sistemas privados” de reformas
+        """
+
         cleaned_title = clean_title(entry['title']).strip()
 
         if len(cleaned_title.split()) <= 4:

@@ -7,7 +7,6 @@ from elasticsearch import Elasticsearch
 
 from fastapi import FastAPI, Query
 
-from politiquices.extraction.classifiers.ner.rule_based_ner import get_rule_based_ner
 from politiquices.extraction.utils import clean_title
 
 app = FastAPI()
@@ -60,12 +59,6 @@ async def named_entities(news_title: Optional[str] = None):
             persons.append(k)
 
     return persons
-
-
-@app.get("/ner_patterns")
-async def named_entities_patterns(news_title: Optional[str] = None):
-    # ToDo
-    pass
 
 
 @app.get("/relationship")
