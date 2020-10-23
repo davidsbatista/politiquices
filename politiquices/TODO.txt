@@ -16,6 +16,13 @@ classifiers
     -------------
         - RuleBasedNER class: good results with rules + statistical classifier
 
+        - Remove patterns with just one token entities as much as possible:
+        - "Cavaco Silva felicita Passos Coelho" ["Silva", "Passos Coelho"]
+          "Marcelo Rebelo de Sousa: políticos têm de pensar nas “pessoas de carne e osso”", "entities": ["Marcelo", "Rebelo de Sousa"]
+          "Margarida Sousa Uva: o sereno apoio de Durão", "entities": ["Sousa", "Durão"],
+          "Alfredo Barroso. “Maria de Belém é uma candidata indesejável”", "entities": ["Alfredo", "Barroso"]
+
+
     extraction:
     ----------
         - do all without any call to webservices

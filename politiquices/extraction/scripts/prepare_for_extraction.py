@@ -9,7 +9,7 @@ from politiquices.extraction.utils import clean_title
 arquivo_data = "../../../data/crawled"
 
 url_keywords_ignore = ['desporto', 'opiniao', 'musica', 'cinema', 'artes', 'multimedia',
-                       'foto', 'vida', 'humor']
+                       'foto', 'vida', 'humor', 'tv']
 url_other_topic = '.*(' + '|'.join(url_keywords_ignore) + ').*'
 
 title_keywords_ignore = ['Futebol', 'Desporto', 'Concerto de Bolso', 'Celebridades',

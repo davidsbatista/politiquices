@@ -63,6 +63,10 @@ class RuleBasedNer:
             name_parts = name_clean.split()
             names.add(name_clean)
 
+            # as is
+            p = {"label": "PER", "pattern": list(self.dict_entry(name))}
+            patterns.append(p)
+
             # first and last name
             if len(name_parts) > 2:
                 name = name_parts[0] + ' ' + name_parts[-1]
@@ -70,6 +74,7 @@ class RuleBasedNer:
                 p = {"label": "PER", "pattern": list(self.dict_entry(name))}
                 patterns.append(p)
 
+            """
             # skip second name
             if len(name_parts) > 3:
                 end = ' '.join(name_parts[len(name_parts) - 2:])
@@ -93,10 +98,15 @@ class RuleBasedNer:
                 last_two = name_parts[-2:]
                 if any(x == last_two[0] for x in self.connectors):
                     last_two = last_two[1:]
-                name = ' '.join(last_two)
-                names.add(name)
-                p = {"label": "PER", "pattern": list(self.dict_entry(name))}
-                patterns.append(p)
+
+                if len(last_two) >= 2:
+                    name = ' '.join(last_two)
+                    names.add(name)
+                    p = {"label": "PER", "pattern": list(self.dict_entry(name))}
+                    patterns.append(p)
+                else:
+                    print("discarded: ", name_parts)
+            """
 
         for name in self.file_names:
             names.add(name)

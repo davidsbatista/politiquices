@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <!-- CSS only -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
     <!-- JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
@@ -29,7 +30,7 @@
 </head>
 <body>
 
-<h1><center>{{items.name}}</center></h1>
+<h1><center id="ent_1">{{items.name}}</center></h1>
 
 <br><br>
 
@@ -42,7 +43,7 @@
         <img src={{items.image}} class="figure-img img-fluid rounded" width="240" height="300">
     </a>
         <figcaption class="figure-caption" style="text-align:center;">
-            <a href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">Editar na Wikidata</a>
+            <a id="ent1_wikid_id" href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">Editar na Wikidata</a>
         </figcaption>
     </figure>
 
@@ -98,7 +99,9 @@
   </div>
 </div>
 
+
 <script>
+
 var ctx = document.getElementById('myChart');
 var color = Chart.helpers.color;
 
@@ -112,32 +115,119 @@ var myChart = new Chart(ctx, {
     type: 'line',
     data: {labels: year_labels,
            datasets: [
-                {label: 'Opposed', borderColor: "#FF0000", fill: false, data: opposed_freq},
-                {label: 'Opposed By', borderColor: "#980000", fill: false, data: opposed_by_freq},
-                {label: 'Supported', borderColor: "#44861E", fill: false, data: supported_freq},
-                {label: 'Supported By', borderColor: "#70DA33", fill: false, data: supported_by_freq}
+                {label: 'acusa', borderColor: "#FF0000", fill: false, data: opposed_freq},
+                {label: 'é acusado', borderColor: "#980000", fill: false, data: opposed_by_freq},
+                {label: 'defende', borderColor: "#44861E", fill: false, data: supported_freq},
+                {label: 'é defendido', borderColor: "#70DA33", fill: false, data: supported_by_freq}
            ],
     options: { scales: { yAxes: [ { ticks: {beginAtZero: false} } ] }
     }
     }
 });
+
+// https://stackoverflow.com/questions/14460421/get-the-contents-of-a-table-row-with-a-button-click
+// https://stackoverflow.com/questions/4737476/how-to-select-and-change-value-of-table-cell-with-jquery
+
+$(document).ready(function() {
+  $(".submit").click(function() {
+    var title_data = {};
+    $(this).closest('tr').find('td').not(':last').each(function() {
+
+        var ent1_wiki_url = $('#ent1_wikid_id').attr("href").split("wiki/")[1]
+        var ent_1 = $('#ent_1').text();
+        title_data.ent1_wiki = ent1_wiki_url;
+        title_data.ent_1 = ent_1;
+
+        if ($(this).attr('id') == 'ent_2') {
+            var entidade = $(this).find('a').text();
+            title_data.ent_2 = entidade;
+
+            var ent2_wiki_url = $(this).find('a').attr("href").split("q=")[1]
+            title_data.ent2_wiki = ent2_wiki_url;
+
+        }
+
+        if ($(this).attr('id') == 'data') {
+            var data = $(this).text();
+            title_data.date = data;
+        }
+
+
+        if ($(this).attr('id') == 'title') {
+            title_text = $(this).text();
+            title_link = $(this).find('a').attr("href");
+            title_data.title = title_text;
+            title_data.url = title_link;
+        }
+
+
+        if ($(this).attr('id') == 'rel_type') {
+            selected_rel =  $(this).find('button').text();
+            title_data.rel_type  = selected_rel;
+        }
+
+   });
+   var myJsonString = JSON.stringify(title_data);
+   $.ajax({
+     type: "POST",
+     crossDomain: true,
+     url: 'http://127.0.0.1:8000/annotation/',
+     data: myJsonString,
+     success: function (data) {},
+   });
+  });
+});
+
+
+$(document).ready(function() {
+   $(".dropdown-menu").on('click', 'a', function(){
+       $(this).parents('.dropdown').find('button').text($(this).text());
+       $(this).parent().parent().textContent = "teste"
+
+   });
+});
+
+
 </script>
 
 <br><br><br>
 
-<p class="">Discorda / Opõe-se / Acusa</p>
-<table class="table">
+<p class="d-flex align-items-center justify-content-center">Discorda / Opõe-se / Acusa</p>
+
+<div class="align-items-center justify-content-center">
+
+<table id="ent1_opposes_ent2">
   <tbody>
   {% for item in items.opposed %}
     <tr>
-      <td><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
-      <td>{{item.date}}</td>
-      <td><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
-      <td>{{item.score}}</td>
+      <td id="ent_2"><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
+      <td id="data">{{item.date}}</td>
+      <td id="title"><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
+      <td id="score">{{item.score}}</td>
+      <td id="rel_type">
+          <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle"
+                      type="button" id="dropdownMenuButton"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false">ent1_opposes_ent2</button>
+              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item">other</a>
+                  <a class="dropdown-item">ent2_opposes_ent1</a>
+                  <a class="dropdown-item">ent1_supports_ent2</a>
+                  <a class="dropdown-item">ent2_supports_ent1</a>
+              </div>
+          </div>
+      </td>
+      <td>
+        <a class="submit btn btn-primary" role="button">Submit</a>
+      </td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
+
+</div>
 
 
 <br><br>
