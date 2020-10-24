@@ -170,10 +170,15 @@ $(document).ready(function() {
    var myJsonString = JSON.stringify(title_data);
    $.ajax({
      type: "POST",
+     context: this,
      crossDomain: true,
      url: 'http://127.0.0.1:8000/annotation/',
      data: myJsonString,
-     success: function (data) {},
+     success: function (data) {
+       console.log(this);
+       //$(this).prop('disabled', true);
+       $(this).addClass("disabled");
+     },
    });
   });
 });
