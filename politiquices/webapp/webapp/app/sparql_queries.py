@@ -156,18 +156,22 @@ def get_person_relationships(wiki_id, rel_type, reverse=False):
     # set the order of the relationship, by default wiki_id is ent1
     arg_order = f"""
                 ?rel my_prefix:ent1 wd:{wiki_id} .
+                ?rel my_prefix:ent1_str ?focus_ent .
                 ?rel my_prefix:ent2 ?other_ent .
+                ?rel my_prefix:ent2_str ?other_ent_name .
                 """
 
     # otherwise swap arguments
     if reverse:
         arg_order = f"""
                     ?rel my_prefix:ent2 wd:{wiki_id} .
+                    ?rel my_prefix:ent2_str ?focus_ent .
                     ?rel my_prefix:ent1 ?other_ent .
+                    ?rel my_prefix:ent1_str ?other_ent_name .
                     """
 
     query = f"""
-        SELECT DISTINCT ?arquivo_doc ?date ?title ?score ?other_ent ?other_ent_name
+        SELECT DISTINCT ?arquivo_doc ?date ?title ?score ?focus_ent ?other_ent ?other_ent_name
         WHERE {{
           {arg_order}
           
@@ -178,10 +182,9 @@ def get_person_relationships(wiki_id, rel_type, reverse=False):
           ?arquivo_doc dc:title ?title .
           ?arquivo_doc dc:date  ?date .
           
-          ?other_ent rdfs:label ?other_ent_name .
           FILTER (?rel_type = "{rel_type}")
         }}
-        ORDER BY ?date
+        ORDER BY ASC(?score)
         """
 
     results = query_sparql(prefixes + "\n" + query, "local")
@@ -193,6 +196,7 @@ def get_person_relationships(wiki_id, rel_type, reverse=False):
             "title": e["title"]["value"],
             "score": str(e["score"]["value"])[0:5],
             "date": e["date"]["value"].split("T")[0],
+            "focus_ent": e["focus_ent"]["value"],
             "other_ent_url": "entity?q=" + e["other_ent"]["value"].split("/")[-1],
             "other_ent_name": e["other_ent_name"]["value"],
         }
@@ -269,7 +273,7 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
                 }}
             }}
         }}
-        ORDER BY DESC(?date) DESC(?score)
+        ORDER BY DESC(?date) ASC(?score)
         """
     result = query_sparql(prefixes + "\n" + query, "local")
     results = []

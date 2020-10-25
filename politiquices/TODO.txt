@@ -16,20 +16,32 @@ classifiers
     -------------
         - RuleBasedNER class: good results with rules + statistical classifier
 
-        - Remove patterns with just one token entities as much as possible:
-        - "Cavaco Silva felicita Passos Coelho" ["Silva", "Passos Coelho"]
-          "Marcelo Rebelo de Sousa: políticos têm de pensar nas “pessoas de carne e osso”", "entities": ["Marcelo", "Rebelo de Sousa"]
-          "Margarida Sousa Uva: o sereno apoio de Durão", "entities": ["Sousa", "Durão"],
-          "Alfredo Barroso. “Maria de Belém é uma candidata indesejável”", "entities": ["Alfredo", "Barroso"]
+        - linking:
+            Rui Moreira?
+
+        - Remove identified as PER:
+            - 'Presidente'
+            -  'Neto' -> Neto de Rui Nabeiro explica como o grupo criou a Delta Q.
+            - 'Eduardo Catrog'	2015-12-21	Eduardo Marçal Grilo: "O país não resiste a este pingue-pongue" http://127.0.0.1:5000/entity?q=Q10327054
+            -  'Maio'	2011-03-28	Pedro Passos Coelho quer eleições a 29 de Maio
+            -  'Viana'	2015-05-28	"Passos diz que estaleiros de Viana foram ""erro do passado"" que acabou bem"
+            -  'Passos Coelho'	2015-11-05	Passos Coelho - Passos diz que compete aos reguladores tomar decisões sobre lesados do BES - Economi
+            -  'Maio'	2011-03-29	Passos Coelho defende eleições a 29 de Maio para superar crise política - Notícia Sapo - SAPO Notíci
 
 
-    extraction:
-    ----------
-        - do all without any call to webservices
+        - Remove from patterns:
+            - 'Maria da'
+            - {"title": "\"Rui Pedro Soares \"\"disponível\"\" para ser dono do Sol\"", "entities": ["Rui", "Pedro Soares"]
+
+    create_graph:
+    -------------
+        - add surface string of entities to relationship in RDF/Graph
 
     relationship:
     -------------
         - titles with more than one relationship?
+            Marcelo critica apoio de Balsemão a eventual candidatura de Rui Rio
+
         - embeddings: better/cleaner
         - Transformer models
 
@@ -68,7 +80,10 @@ Web App
 
    - initalize() and get_total_nr_articles_for_each_person() get the name from Wikidata rdfs:label
 
+   - poder ver as relações entre quaisquer duas pessoas
+
    - dentro da página de político
+      - ordenar os cargos por data de início
       - total de artigos em que é mencionado
       - total de artigos em que é mencionado por relação
 
@@ -81,13 +96,16 @@ Web App
 
       - top oponentes, top supporters (por ano/mes?)
 
-    - um interface qualquer para poder selecionar as relações e o intervalo de datas
+       - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
     queries mais interessantes:
     ---------------------------
         - quais os partidos que acusam mais? e que partidos alvo?
 
         - pessoas do mesmo partido a acusarem pessoas do mesmo partido
+
+        - use case:
+            - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
 
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
@@ -102,18 +120,14 @@ Web App
                 - https://www.politicaparatodos.pt/
                 - http://demo.cratica.org/deputados/
 
+    - procurar pessoa por nome
+    - listar todas pessoas de uma forma mais leve/organizada
+    - listar todos os partidos/organizações
     - pagina inicial:
       ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
 
-    - procurar pessoa por nome
-    - listar todas pessoas de uma forma mais leve/organizada
-
-    - listar todos os partidos/organizações
-
-
    - Jinga tips: https://jinja.palletsprojects.com/en/2.11.x/templates/#batch
    - https://www.dafont.com/de/28-days-later.font?text=Politiquices&psize=l&back=theme
-
 
 
 SPARQL DB

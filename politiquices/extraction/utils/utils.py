@@ -109,10 +109,10 @@ def load_domains():
     return domains
 
 
-def read_ground_truth(filename, only_label=False):
+def read_ground_truth(filename, delimiter='\t', only_label=False):
     data = []
     with open(filename, newline="") as csvfile:
-        titles = csv.reader(csvfile, delimiter="\t", quotechar="|")
+        titles = csv.reader(csvfile, delimiter=delimiter)
         for row in titles:
             if len(row) == 8:
                 sample = {

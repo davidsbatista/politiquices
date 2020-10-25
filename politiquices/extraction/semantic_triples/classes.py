@@ -39,3 +39,5 @@ class Relationship:
     rel_score: float
     ent1: Person
     ent2: Person
+    ent1_str: str
+    ent2_str: str

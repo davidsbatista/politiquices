@@ -57,19 +57,21 @@ def process_classified_titles(f_in):
     persons = defaultdict(Person)
     relationships = []
     articles = []
-    count = 0
 
     for title in processed_titles(f_in):
-
-        scores = [(k, v) for k, v in title['scores'].items()]
-        rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
 
         e1_wiki = title["ent_1"]['wiki'] if title["ent_1"] else None
         e2_wiki = title["ent_2"]['wiki'] if title["ent_2"] else None
 
+        # if no wiki links are present discard
+        # ToDo: remove this once there's a model for entity linking that can return None, i.e.,
+        #       entity not present in KB
         if not (e1_wiki and e2_wiki):
             print("no wiki links")
             continue
+
+        scores = [(k, v) for k, v in title['scores'].items()]
+        rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
 
         person_1 = title["entities"][0]
         person_2 = title["entities"][1]
@@ -87,7 +89,8 @@ def process_classified_titles(f_in):
 
         relationships.append(
             Relationship(
-                url=url, rel_type=rel_type[0], rel_score=rel_type[1], ent1=p1_id, ent2=p2_id
+                url=url, rel_type=rel_type[0], rel_score=rel_type[1], ent1=p1_id, ent2=p2_id,
+                ent1_str=person_1, ent2_str=person_2
             )
         )
 
@@ -100,14 +103,19 @@ def process_classified_titles(f_in):
 
 def populate_graph(articles, persons, relationships):
     g = Graph()
+
     ns1 = Namespace("http://some.namespace/with/name#")
     g.bind("my_prefix", ns1)
+
     wiki_prop = Namespace("http://www.wikidata.org/prop/direct/")
     wiki_item = Namespace("http://www.wikidata.org/entity/")
+
     g.bind("wd", wiki_item)
     g.bind("wdt", wiki_prop)
+
     # linked-data vocabularies
     # https://lov.linkeddata.es/dataset/lov/
+
     print("\nadding Persons")
     # add Person triples: <wiki_URI, SKOS.prefLabel, name>
     for wikidata_id, person in persons.items():
@@ -152,6 +160,7 @@ def populate_graph(articles, persons, relationships):
     for article in articles:
         g.add((URIRef(article.url), DC.title, Literal(article.title, lang="pt")))
         g.add((URIRef(article.url), DC.date, Literal(article.crawled_date, datatype=XSD.dateTime)))
+
     print("adding Relationships")
     # add relationships as Blank Node:
     for rel in relationships:
@@ -165,6 +174,9 @@ def populate_graph(articles, persons, relationships):
         g.add((_rel, ns1.arquivo, URIRef(rel.url)))
         g.add((_rel, ns1.ent1, URIRef(f"http://www.wikidata.org/entity/{rel.ent1}")))
         g.add((_rel, ns1.ent2, URIRef(f"http://www.wikidata.org/entity/{rel.ent2}")))
+        g.add((_rel, ns1.ent1_str, Literal(rel.ent1_str)))
+        g.add((_rel, ns1.ent2_str, Literal(rel.ent2_str)))
+
     # print out the entire Graph in the RDF Turtle format
     # "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
     print(g.serialize(format="turtle").decode("utf-8"))
@@ -181,11 +193,6 @@ def main():
     print("persons      : ", len(persons))
     print("articles     : ", len(articles))
     print("relationships: ", len(relationships))
-
-    #for x in relationships:
-    #    print(x)
-    #    print('\n')
-    #exit(-1)
 
     populate_graph(articles, persons, relationships)
 

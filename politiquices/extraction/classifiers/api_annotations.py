@@ -1,3 +1,5 @@
+import csv
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -43,14 +45,13 @@ async def create_item(item: Item):
     print(item.rel_type.strip())
     print()
 
-    with open('annotations_from_webapp.txt', 'a+') as f_out:
-        f_out.write(item.title.strip() + '\t')
-        f_out.write(item.rel_type.strip() + '\t')
-        f_out.write(item.date.strip() + '\t')
-        f_out.write(item.url.strip() + '\t')
-        f_out.write(item.ent_1.strip() + '\t')
-        f_out.write(item.ent_2.strip() + '\t')
-        f_out.write(base_url+item.ent1_wiki.strip() + '\t')
-        f_out.write(base_url+item.ent2_wiki.strip() + '\n')
+    with open('annotations_from_webapp.csv', mode='a+') as f_out:
+        writer = csv.writer(f_out, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+
+        row = [item.title.strip(), item.rel_type.strip(), item.date.strip(), item.url.strip(),
+               item.ent_1.strip(), item.ent_2.strip(), base_url+item.ent1_wiki.strip(),
+               base_url+item.ent2_wiki.strip()]
+
+        writer.writerow(row)
 
     return item

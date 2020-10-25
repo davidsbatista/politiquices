@@ -11,6 +11,5 @@ https://www.wikidata.org/wiki/Q241131,Josef Klaus
 https://www.wikidata.org/wiki/Q28226050,Robert A. Sherman
 https://www.wikidata.org/wiki/Q9619550,António Louçã
 https://www.wikidata.org/wiki/Q9619550,Alexandre Relvas
-
-
-
+https://www.wikidata.org/wiki/Q10365336,rui tovar
+https://www.wikidata.org/wiki/Q10334555,Mário Ventura

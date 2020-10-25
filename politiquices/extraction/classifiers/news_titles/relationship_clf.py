@@ -117,9 +117,8 @@ class RelationshipClassifier:
 
     def evaluate(self, x_test, y_test):
 
-        # ToDo: save this as in a report format
         if not self.model:
-            pass
+            raise Exception("model not trained or not present")
 
         # Encode the labels, each must be a vector with dim = num. of possible labels
         if self.directional is False:
@@ -130,12 +129,18 @@ class RelationshipClassifier:
         labels_idx = np.argmax(x_predicted_probs, axis=1)
         pred_labels = self.label_encoder.inverse_transform(labels_idx)
         print("\n" + classification_report(y_test, pred_labels))
-        report = classification_report(y_test, pred_labels, output_dict=True)
+        report_str = "\n" + classification_report(y_test, pred_labels)
+        report_json = classification_report(y_test, pred_labels, output_dict=True)
         cm = confusion_matrix(y_test, pred_labels, labels=self.label_encoder.classes_)
         print_cm(cm, labels=self.label_encoder.classes_)
         print()
 
-        return report
+        misclassifications = []
+        for title, pred_y, true_y in zip(x_test, pred_labels, y_test):
+            if pred_y != true_y:
+                misclassifications.append([title, pred_y, true_y])
+
+        return report_json, report_str, misclassifications
 
     def save(self):
         date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")

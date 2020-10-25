@@ -4,3 +4,5 @@ https://www.wikidata.org/wiki/Q40688,Yanis Varoufakis
 https://www.wikidata.org/wiki/Q37181,Lula da Silva
 https://www.wikidata.org/wiki/Q567,Angela Merkel
 https://www.wikidata.org/wiki/Q10304982,Bolsonaro
+https://www.wikidata.org/wiki/Q3186200,Joe Berardo
+https://www.wikidata.org/wiki/Q456034,Isabel dos Santos
