@@ -2,6 +2,8 @@ import numpy as np
 import pt_core_news_sm
 from keras.layers import Embedding
 
+from politiquices.extraction.utils import get_time_str
+
 nlp = pt_core_news_sm.load()
 
 
@@ -70,12 +72,19 @@ def get_embeddings():
     return word2embedding, word2index
 
 
-def vectorize_titles(word2index, x_train):
+def vectorize_titles(word2index, x_train, save_tokenized=False, save_missed=False):
     # tokenize the sentences and convert into vector indexes
     all_sent_tokens = []
     word_no_vectors = set()
     for doc in nlp.pipe(x_train, disable=["tagger", "parser", "ner"]):
         all_sent_tokens.append([str(t).lower() for t in doc])
+
+    # save tokenized sentences to file, for later analysis
+    if save_tokenized:
+        with open(f'tokens_{get_time_str()}', 'wt') as f_out:
+            for sent_tokens in all_sent_tokens:
+                f_out.write(' | '.join(sent_tokens)+'\n')
+
     x_train_vec = []
     for sent in all_sent_tokens:
         tokens_idx = []
@@ -86,5 +95,10 @@ def vectorize_titles(word2index, x_train):
                 tokens_idx.append(word2index["UNKNOWN"])
                 word_no_vectors.add(tok)
         x_train_vec.append(tokens_idx)
+
+    if save_missed and word_no_vectors:
+        with open(f'missed_embedding_{get_time_str()}', 'wt') as f_out:
+            for token in word_no_vectors:
+                f_out.write(token+'\n')
 
     return x_train_vec

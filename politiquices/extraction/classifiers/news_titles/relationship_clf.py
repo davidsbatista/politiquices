@@ -28,12 +28,20 @@ def pre_process_train_data(data):
     :param data:
     :return:
     """
-    other = ["other", "ent1_replaces_ent2", "ent2_replaces_ent1", "meet_together",
-             "ent1_asks_support_ent2", "ent2_asks_support_ent1", "mutual_disagreement",
-             "reach_agreement", "ent1_asks_action_ent2"]
+    other = [
+        "other",
+        "ent1_replaces_ent2",
+        "ent2_replaces_ent1",
+        "meet_together",
+        "ent1_asks_support_ent2",
+        "ent2_asks_support_ent1",
+        "mutual_disagreement",
+        "mutual_agreement",
+        "ent1_asks_action_ent2",
+    ]
 
     docs = [(clean_title(d["title"]), d["ent1"], d["ent2"]) for d in data]
-    labels = [d["label"] if d['label'] not in other else 'other' for d in data]
+    labels = [d["label"] if d["label"] not in other else "other" for d in data]
 
     print("\nSamples per class:")
     for k, v in Counter(labels).items():
@@ -71,7 +79,7 @@ class RelationshipClassifier:
         return model
 
     def train(self, x_train, y_train, word2index, word2embedding):
-        x_train_vec = vectorize_titles(word2index, x_train)
+        x_train_vec = vectorize_titles(word2index, x_train, save_tokenized=True, save_missed=True)
 
         # get the max sentence length, needed for padding
         self.max_input_length = max([len(x) for x in x_train_vec])
@@ -109,7 +117,9 @@ class RelationshipClassifier:
         self.label_encoder = le
 
     def tag(self, x_test):
-        x_test_vec = vectorize_titles(self.word2index, x_test)
+        x_test_vec = vectorize_titles(
+            self.word2index, x_test, save_tokenized=True, save_missed=True
+        )
         x_test_vec_padded = pad_sequences(
             x_test_vec, maxlen=self.max_input_length, padding="post", truncating="post"
         )
@@ -130,7 +140,6 @@ class RelationshipClassifier:
         pred_labels = self.label_encoder.inverse_transform(labels_idx)
         print("\n" + classification_report(y_test, pred_labels))
         report_str = "\n" + classification_report(y_test, pred_labels)
-        report_json = classification_report(y_test, pred_labels, output_dict=True)
         cm = confusion_matrix(y_test, pred_labels, labels=self.label_encoder.classes_)
         print_cm(cm, labels=self.label_encoder.classes_)
         print()
@@ -140,9 +149,8 @@ class RelationshipClassifier:
             if pred_y != true_y:
                 misclassifications.append([title, pred_y, true_y])
 
-        return report_json, report_str, misclassifications
+        return report_str, misclassifications
 
     def save(self):
         date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         joblib.dump(self, f"trained_models/relationship_clf_{date_time}.pkl")
-

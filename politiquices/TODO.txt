@@ -12,6 +12,11 @@ arquivo_pt:
 
 classifiers
 ===========
+    extraction:
+    ------------
+        - apply pipeline to publico.pt crawled data
+
+
     named_entity:
     -------------
         - RuleBasedNER class: good results with rules + statistical classifier
@@ -33,12 +38,23 @@ classifiers
             - 'Maria da'
             - {"title": "\"Rui Pedro Soares \"\"disponível\"\" para ser dono do Sol\"", "entities": ["Rui", "Pedro Soares"]
 
-    create_graph:
-    -------------
-        - add surface string of entities to relationship in RDF/Graph
-
     relationship:
     -------------
+        - clean input data bit better:
+            replace some char:
+                popular″
+                tvi24
+                ″dar
+                ″o
+
+            - results in tokenization errors
+
+            - improve clean title
+
+        - early stopping
+        - how F1 per class at each iteration
+        - biLSTM with attention + visualization
+
         - titles with more than one relationship?
             Marcelo critica apoio de Balsemão a eventual candidatura de Rui Rio
 
@@ -77,8 +93,8 @@ Web App
    - https://github.com/ktym/d3sparql
 
    - run cache at start of the web server
-
-   - initalize() and get_total_nr_articles_for_each_person() get the name from Wikidata rdfs:label
+    - initalize()
+    - get_total_nr_articles_for_each_person()
 
    - poder ver as relações entre quaisquer duas pessoas
 
@@ -86,7 +102,6 @@ Web App
       - ordenar os cargos por data de início
       - total de artigos em que é mencionado
       - total de artigos em que é mencionado por relação
-
 
       - clicar no logo do partido: lista todas as pessoas desse partido
 

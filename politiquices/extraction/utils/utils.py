@@ -100,6 +100,10 @@ def convert_dates(date: str):
     return date_obj.strftime('%Y %b')
 
 
+def get_time_str():
+    return datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
+
+
 def load_domains():
     domains = []
     with open('data/domains.txt', 'rt') as f_in:
