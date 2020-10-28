@@ -96,3 +96,9 @@ def extract_syntactic_path(doc, ent1, ent2):
         return []
 
     return path
+
+
+def is_passive_voice_present(title: str, ent1: str, ent2: str) -> bool:
+    # get PoS-tags
+    # apply regex to match PoS-tags to detect passive voice
+    pass

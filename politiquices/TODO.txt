@@ -40,6 +40,10 @@ classifiers
 
     relationship:
     -------------
+
+        - use only support/oppose/other and use other clues (e.g:, passive voice) to detect direction
+        - make sure you are not training it multi-label, scores must add to 1
+
         - clean input data bit better:
             replace some char:
                 popular″
@@ -48,12 +52,12 @@ classifiers
                 ″o
 
             - results in tokenization errors
-
             - improve clean title
 
         - early stopping
         - how F1 per class at each iteration
-        - biLSTM with attention + visualization
+            https://github.com/davidsbatista/SLANG-Sequence-LAbeliNG/blob/master/slang/trainer.py
+        - biLSTM with attention visualization
 
         - titles with more than one relationship?
             Marcelo critica apoio de Balsemão a eventual candidatura de Rui Rio
