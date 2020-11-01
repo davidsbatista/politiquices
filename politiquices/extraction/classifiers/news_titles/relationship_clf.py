@@ -3,6 +3,8 @@ from datetime import datetime
 
 import re
 import joblib
+import keras
+import tensorflow as tf
 import numpy as np
 
 from keras import Input, Model
@@ -10,12 +12,13 @@ from keras.engine import Layer
 from keras.layers import Bidirectional, Dense, LSTM
 from keras.losses import categorical_crossentropy
 from keras.utils import to_categorical
+from keras.callbacks import TensorBoard, Callback
 from keras_preprocessing.sequence import pad_sequences
 from keras.backend import categorical_crossentropy
 
 from tensorflow.keras import backend as K
 
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, recall_score, precision_score
 from sklearn.preprocessing import LabelEncoder
 
 from politiquices.extraction.utils import print_cm, clean_title
@@ -42,6 +45,7 @@ def pre_process_train_data(data):
         "mutual_disagreement",
         "mutual_agreement",
         "ent1_asks_action_ent2",
+        "more_entities",
     ]
 
     docs = [(clean_title(d["title"]), d["ent1"], d["ent2"]) for d in data]
@@ -59,8 +63,10 @@ def pre_process_train_data(data):
     return docs, labels
 
 
-class Attention(Layer):
+# https://chadrick-kwag.net/how-to-manually-write-to-tensorboard-from-tf-keras-callback-useful-trick-when-writing-a-handful-of-validation-metrics-at-once/
 
+
+class Attention(Layer):
     def __init__(self, return_sequences=True):
         self.return_sequences = return_sequences
         super(Attention, self).__init__()
@@ -68,10 +74,10 @@ class Attention(Layer):
         self.b = None
 
     def build(self, input_shape):
-        self.W = self.add_weight(name="att_weight", shape=(input_shape[-1], 1),
-                                 initializer="normal")
-        self.b = self.add_weight(name="att_bias", shape=(input_shape[1], 1),
-                                 initializer="zeros")
+        self.W = self.add_weight(
+            name="att_weight", shape=(input_shape[-1], 1), initializer="normal"
+        )
+        self.b = self.add_weight(name="att_bias", shape=(input_shape[1], 1), initializer="zeros")
         super(Attention, self).build(input_shape)
 
     def call(self, x, **kwargs):
@@ -89,22 +95,24 @@ class attention(Layer):
         super(attention, self).__init__(**kwargs)
 
     def build(self, input_shape):
-        self.W = self.add_weight(name="att_weight",shape=(input_shape[-1],1),initializer="normal")
-        self.b = self.add_weight(name="att_bias",shape=(input_shape[1],1),initializer="zeros")
+        self.W = self.add_weight(
+            name="att_weight", shape=(input_shape[-1], 1), initializer="normal"
+        )
+        self.b = self.add_weight(name="att_bias", shape=(input_shape[1], 1), initializer="zeros")
         super(attention, self).build(input_shape)
 
     def call(self, x, **kwargs):
-        et=K.squeeze(K.tanh(K.dot(x,self.W)+self.b),axis=-1)
-        at=K.softmax(et)
-        at=K.expand_dims(at,axis=-1)
-        output=x*at
-        return K.sum(output,axis=1)
+        et = K.squeeze(K.tanh(K.dot(x, self.W) + self.b), axis=-1)
+        at = K.softmax(et)
+        at = K.expand_dims(at, axis=-1)
+        output = x * at
+        return K.sum(output, axis=1)
 
-    def compute_output_shape(self,input_shape):
+    def compute_output_shape(self, input_shape):
         return input_shape[0], input_shape[-1]
 
     def get_config(self):
-        return super(attention,self).get_config()
+        return super(attention, self).get_config()
 
 
 class LSTMAtt:
@@ -119,6 +127,7 @@ class LSTMAtt:
         self.history = None  # ToDo: make function to plot loss graphs on train and test
 
     def get_model(self, embedding_layer):
+
         i = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
         x = embedding_layer(i)
         lstm_out = Bidirectional(
@@ -133,8 +142,11 @@ class LSTMAtt:
 
         return model
 
-    def train(self, x_train, y_train, word2index, word2embedding):
-        x_train_vec = vectorize_titles(word2index, x_train, save_tokenized=True, save_missed=True)
+    def train(self, x_train, y_train, word2index, word2embedding, x_validation, y_validation):
+        x_train_vec = vectorize_titles(word2index, x_train, save_tokenized=False, save_missed=False)
+        x_val_vec = vectorize_titles(
+            word2index, x_validation, save_tokenized=False, save_missed=False
+        )
 
         # get the max sentence length, needed for padding
         self.max_input_length = max([len(x) for x in x_train_vec])
@@ -145,15 +157,28 @@ class LSTMAtt:
             x_train_vec, maxlen=self.max_input_length, padding="post", truncating="post"
         )
 
+        x_val_vec_padded = pad_sequences(
+            x_val_vec, maxlen=self.max_input_length, padding="post", truncating="post"
+        )
+
         # Encode the labels, each must be a vector with dim = num. of possible labels
         print("directional: ", self.directional)
         print("y_train: ", len(y_train))
         if self.directional is False:
             y_train = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_train]
+            print("Training")
             print("\nSamples per class:")
             for k, v in Counter(y_train).items():
                 print(k, "\t", v)
             print("\nTotal nr. messages:\t", len(y_train))
+            print("\n")
+
+            val_y = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_validation]
+            print("Validation")
+            print("\nSamples per class:")
+            for k, v in Counter(val_y).items():
+                print(k, "\t", v)
+            print("\nTotal nr. messages:\t", len(val_y))
             print("\n")
 
         le = LabelEncoder()
@@ -162,6 +187,24 @@ class LSTMAtt:
         print("Shape of train data tensor:", x_train_vec_padded.shape)
         print("Shape of train label tensor:", y_train_vec.shape)
         self.num_classes = y_train_vec.shape[1]
+        self.label_encoder = le
+        val_y_vec = to_categorical(le.transform(val_y))
+
+        # compute class weights
+        nr_opposes_samples = y_train.count("opposes")
+        nr_supports_samples = y_train.count("supports")
+        nr_other_samples = y_train.count("other")
+        total = len(y_train)
+
+        # Scaling by total/2 helps keep the loss to a similar magnitude.
+        # The sum of the weights of all examples stays the same.
+        weight_for_0 = (1 / nr_opposes_samples) * total
+        weight_for_1 = (1 / nr_supports_samples) * total
+        weight_for_2 = (1 / nr_other_samples) * total
+        class_weight = {0: weight_for_0, 1: weight_for_1, 2: weight_for_2}
+        print("Weight for class 0 (opposes) : {:.2f}".format(weight_for_0))
+        print("Weight for class 1 (supports): {:.2f}".format(weight_for_1))
+        print("Weight for class 2 (other)   : {:.2f}".format(weight_for_2))
 
         # create the embedding layer
         embeddings_matrix = create_embeddings_matrix(word2embedding, word2index)
@@ -172,15 +215,28 @@ class LSTMAtt:
 
         model = self.get_model(embedding_layer)
 
-        # ToDo: plot loss graphs on train and test
-        self.history = model.fit(x_train_vec_padded, y_train_vec, epochs=self.epochs)
+        from .callbacks import Metrics
+
+        metrics = Metrics(**{'le': self.label_encoder,
+                             'val_x': x_val_vec_padded,
+                             'val_y': val_y_vec})
+
+        self.history = model.fit(
+            x_train_vec_padded,
+            y_train_vec,
+            validation_data=(x_val_vec_padded, val_y_vec),
+            epochs=self.epochs,
+            class_weight=class_weight,
+            callbacks=[metrics],
+        )
+
         self.model = model
         self.word2index = word2index
         self.label_encoder = le
 
     def tag(self, x_test):
         x_test_vec = vectorize_titles(
-            self.word2index, x_test, save_tokenized=True, save_missed=True
+            self.word2index, x_test, save_tokenized=False, save_missed=False
         )
         x_test_vec_padded = pad_sequences(
             x_test_vec, maxlen=self.max_input_length, padding="post", truncating="post"
@@ -198,6 +254,13 @@ class LSTMAtt:
 
         x_predicted_probs = self.tag(x_test)
 
+        scores = []
+        for preds in x_predicted_probs:
+            rel_type_scores = {
+                label: float(score) for score, label in zip(preds, self.label_encoder.classes_)
+            }
+            scores.append(rel_type_scores)
+
         labels_idx = np.argmax(x_predicted_probs, axis=1)
         pred_labels = self.label_encoder.inverse_transform(labels_idx)
         print("\n" + classification_report(y_test, pred_labels))
@@ -207,11 +270,14 @@ class LSTMAtt:
         print()
 
         misclassifications = []
-        for title, pred_y, true_y in zip(x_test, pred_labels, y_test):
+        correct_classifications = []
+        for title, pred_y, true_y, scores in zip(x_test, pred_labels, y_test, scores):
             if pred_y != true_y:
-                misclassifications.append([title, pred_y, true_y])
+                misclassifications.append([title, pred_y, true_y, scores])
+            if pred_y == true_y:
+                correct_classifications.append([title, pred_y, true_y, scores])
 
-        return report_str, misclassifications
+        return report_str, misclassifications, correct_classifications
 
     def save(self):
         date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
@@ -242,7 +308,7 @@ class RelationshipClassifier:
         return model
 
     def train(self, x_train, y_train, word2index, word2embedding):
-        x_train_vec = vectorize_titles(word2index, x_train, save_tokenized=True, save_missed=True)
+        x_train_vec = vectorize_titles(word2index, x_train, save_tokenized=False, save_missed=False)
 
         # get the max sentence length, needed for padding
         self.max_input_length = max([len(x) for x in x_train_vec])
@@ -282,7 +348,7 @@ class RelationshipClassifier:
 
     def tag(self, x_test):
         x_test_vec = vectorize_titles(
-            self.word2index, x_test, save_tokenized=True, save_missed=True
+            self.word2index, x_test, save_tokenized=False, save_missed=False
         )
         x_test_vec_padded = pad_sequences(
             x_test_vec, maxlen=self.max_input_length, padding="post", truncating="post"

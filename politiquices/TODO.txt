@@ -12,6 +12,7 @@ arquivo_pt:
 
 classifiers
 ===========
+
     extraction:
     ------------
         - apply pipeline to publico.pt crawled data
@@ -41,20 +42,27 @@ classifiers
     relationship:
     -------------
 
-        - use only support/oppose/other and use other clues (e.g:, passive voice) to detect direction
-        - make sure you are not training it multi-label, scores must add to 1
+        - remover o PER/vector de PER não entra para o classificador
+        - whats the result with less words, just the important ones?
+
+        - Tensorflow or save arch+parameters to object - gravar o histórico
+        - Early Stop
+        - batch size
+
+        - train/evaluate only on sentences with more than 2 entities
+
+        - detect direction:
+            - passive voice
+            - order and position in the sentence of the arguments
 
         - clean input data bit better:
-            replace some char:
+        - improve clean title
+            replace some char which result in tokenization errors
                 popular″
                 tvi24
                 ″dar
                 ″o
 
-            - results in tokenization errors
-            - improve clean title
-
-        - early stopping
         - how F1 per class at each iteration
             https://github.com/davidsbatista/SLANG-Sequence-LAbeliNG/blob/master/slang/trainer.py
         - biLSTM with attention visualization

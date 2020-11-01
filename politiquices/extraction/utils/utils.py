@@ -1,4 +1,5 @@
 import csv
+import re
 
 from datetime import datetime
 from functools import reduce
@@ -19,6 +20,33 @@ def write_iterator_to_file(iter_struct, filename):
             f_out.write(str(el) + '\n')
 
 
+def clean_title_re(title):
+
+    title = title.replace('DN Online:', '').strip()
+
+    parts = re.split(r'\s[|–>-]\s', title)
+
+    if len(parts) == 2:
+
+        if len(parts[0]) > len(parts[1]):
+            # suffix_rules
+            clean = re.sub(r'\s[|–>-]\s.*$', '', title).strip()
+            return clean
+
+        elif len(parts[1]) > len(parts[0]):
+            # prefix_rules
+            clean = re.sub(r'^.*\s[|–>-]\s', '', title).strip()
+            return clean
+
+        else:
+            raise Exception("Can't figure out where to clean")
+
+    elif len(parts) == 3:
+        return max(parts, key=lambda x: len(x))
+
+    return title
+
+
 def clean_title(text):
     """
     Remove 'garbage' unimportant information from the title
@@ -28,8 +56,6 @@ def clean_title(text):
     """
 
     # ToDo: clean from match to end
-    # "Catarina Martins critica escolha de ministro que defendeu Ricardo Salgado - Economia - Jornal de Neg"
-    # "Catarina Martins critica escolha de ministro que defendeu Ricardo Salgado"
 
     text = text.strip().strip("\u200b")
     to_clean = [

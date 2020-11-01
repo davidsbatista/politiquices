@@ -23,7 +23,7 @@ print("Setting up connection with Elasticsearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
 print("Loading trained models...")
-relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-17_001401.pkl")
+relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-30_195441.pkl")
 
 
 @app.get("/")
