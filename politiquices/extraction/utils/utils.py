@@ -2,7 +2,6 @@ import csv
 import re
 
 from datetime import datetime
-from functools import reduce
 from random import randint
 from time import sleep
 
@@ -18,6 +17,13 @@ def write_iterator_to_file(iter_struct, filename):
     with open(filename, 'wt') as f_out:
         for el in iter_struct:
             f_out.write(str(el) + '\n')
+
+
+def clean_title_quotes(title):
+    if title[0] == '"' and title[-1] == '"':
+        title = title[1:-1]
+    cleaned_title = re.sub(r'[“”″\']', '"', title)
+    return re.sub(r'"{2}', '"', cleaned_title)
 
 
 def clean_title_re(title):
@@ -47,80 +53,6 @@ def clean_title_re(title):
     return title
 
 
-def clean_title(text):
-    """
-    Remove 'garbage' unimportant information from the title
-
-    :param text:
-    :return:
-    """
-
-    # ToDo: clean from match to end
-
-    text = text.strip().strip("\u200b")
-    to_clean = [
-        " | Rui Moreira | PÚBLICO",
-        " - Weekend - Jornal de Negócios",
-        " - Politica - DN",
-        " - Sábado",
-        " > Sociedade",
-        " | DNOTICIAS.PT",
-        " | Expresso.pt",
-        " - Visao.pt",
-        " - Notícias Lusa - SAPO Notícias",
-        "Presidenciais - ",
-        "Política - ",
-        " - TV & Media - DN",
-        " - Lusa - SAPO Notícias",
-        "Visão | ",
-        "Expresso | ",
-        "SIC Notícias | ",
-        "- Política - PUBLICO.PT",
-        "- PUBLICO.PT",
-        "- RTP Noticias, Áudio",
-        "> Política vídeos",
-        " – Observador",
-        " - Observador",
-        " – Obser",
-        " - RTP Noticias",
-        " - Renascença",
-        " - Expresso.pt",
-        " - JN",
-        " | TVI24",
-        " > TVI24",
-        " > Política",
-        "VIDEO - ",
-        " > Geral",
-        " > TV",
-        " - Vídeos",
-        " (C/ VIDEO)",
-        " - Opinião - DN",
-        "i:",
-        "DNOTICIAS.PT",
-        " - Lusa - SA",
-        " | Económico",
-        " - Sol",
-        " | Diário Económico.com",
-        " - PÚBLICO",
-        " – O Jornal Económico",
-        "DN Online: ",
-        " - dn - DN",
-        " - Portugal - DN",
-        " - Galerias - DN",
-        "- ZAP",
-        "- Política",
-        "- Sociedade",
-        "- Economima",
-        " – Página 2",
-        "- Notícias",
-        " - TSF",
-        " - PÚBLICO",
-        " - AEIOU.pt",
-    ]
-
-    return reduce(lambda a, v: a.replace(v, ""), to_clean, text)
-
-
 def convert_dates(date: str):
     date_obj = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
     return date_obj.strftime('%Y %b')
@@ -139,7 +71,7 @@ def load_domains():
     return domains
 
 
-def read_ground_truth(filename, delimiter='\t', only_label=False):
+def read_ground_truth(filename, delimiter='\t', only_label=True):
     data = []
     with open(filename, newline="") as csvfile:
         titles = csv.reader(csvfile, delimiter=delimiter)

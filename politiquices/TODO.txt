@@ -13,10 +13,53 @@ arquivo_pt:
 classifiers
 ===========
 
+    - run script with PYTHONHASHSEED=0
+    - create classifier abstraction/interface
+
+    relevancy:
+    ----------
+        - try with another arch
+
+    relationship:
+    -------------
+        - try with another arch
+        - ModelCheckpoint: maximize for precision in lowest class
+        - Optimizer and Learning Rate
+        - batch size, Early Stop
+        - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
+
+        - embeddings
+            Uppercase and lower case, improvment?
+
+            - tool to visualize embeddings
+            - better/cleaner:
+            - catch negations, how?
+                - defende != não + defende
+
+        - remover o PER/vector de PER não entra para o classificador
+
+        - whats the result with less words, just the "important ones"?
+            - which ones are the important ones?
+            - filter out sentences by size or certain structures/components (syntactic parsing)
+                - PER renova críticas a PER em visita ao <Museu do Douro>
+                  {'opposes': 0.001731565804220736, 'supports': 0.9982683658599854}
+                  transform to -> PER renova críticas a PER
+
+                - PER afasta apoio a PER como candidato <à Câmara de Olhão>
+                  {'opposes': 0.0015889732167124748, 'supports': 0.9984110593795776}
+                  transform to -> PER afasta apoio a PER
+
+        - Transformer models: https://huggingface.co/transformers/quicktour.html
+
+        - detect direction:
+            - passive voice
+            - order and position in the sentence of the arguments
+
+        - fix plots, it's a mess!
+
     extraction:
     ------------
         - apply pipeline to publico.pt crawled data
-
 
     named_entity:
     -------------
@@ -39,39 +82,6 @@ classifiers
             - 'Maria da'
             - {"title": "\"Rui Pedro Soares \"\"disponível\"\" para ser dono do Sol\"", "entities": ["Rui", "Pedro Soares"]
 
-    relationship:
-    -------------
-
-        - remover o PER/vector de PER não entra para o classificador
-        - whats the result with less words, just the important ones?
-
-        - Tensorflow or save arch+parameters to object - gravar o histórico
-        - Early Stop
-        - batch size
-
-        - train/evaluate only on sentences with more than 2 entities
-
-        - detect direction:
-            - passive voice
-            - order and position in the sentence of the arguments
-
-        - clean input data bit better:
-        - improve clean title
-            replace some char which result in tokenization errors
-                popular″
-                tvi24
-                ″dar
-                ″o
-
-        - how F1 per class at each iteration
-            https://github.com/davidsbatista/SLANG-Sequence-LAbeliNG/blob/master/slang/trainer.py
-        - biLSTM with attention visualization
-
-        - titles with more than one relationship?
-            Marcelo critica apoio de Balsemão a eventual candidatura de Rui Rio
-
-        - embeddings: better/cleaner
-        - Transformer models
 
     entity_linking:
     ---------------

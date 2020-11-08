@@ -63,13 +63,6 @@ def expand_contractions(title):
     return title
 
 
-def named_entity(sentence):
-    title = expand_contractions(sentence)
-    doc = nlp(title)
-    ent_per = [ent.text for ent in doc.ents if str(ent.label_) == 'PER']
-    return ent_per
-
-
 def get_head(tokens):
     """Gets the head token of a subtree"""
     if len(tokens) > 1:
@@ -96,9 +89,3 @@ def extract_syntactic_path(doc, ent1, ent2):
         return []
 
     return path
-
-
-def is_passive_voice_present(title: str, ent1: str, ent2: str) -> bool:
-    # get PoS-tags
-    # apply regex to match PoS-tags to detect passive voice
-    pass

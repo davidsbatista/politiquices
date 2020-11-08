@@ -1,13 +1,21 @@
+import numpy as np
+
+np.random.seed(1337)  # for reproducibility
+import random as python_random
+
+python_random.seed(123)  # for reproducibility
+import tensorflow as tf
+
+tf.random.set_seed(1234)    # for reproducibility
+
 import pickle
 from collections import Counter
 from datetime import datetime
 
-import re
 import joblib
-import numpy as np
-np.random.seed(1337)    # for reproducibility
 
 from keras import Input, Model
+from keras.callbacks import ModelCheckpoint
 from keras.engine import Layer
 from keras.engine.saving import save_model
 from keras.layers import Bidirectional, Dense, LSTM
@@ -55,9 +63,11 @@ def pre_process_train_data(data):
     labels = []
 
     for d in data:
-        if d["label"] not in other:
-            titles.append((clean_title_quotes((clean_title_re(d["title"]))), d["ent1"], d["ent2"]))
-            labels.append(d["label"])
+        titles.append(clean_title_quotes((clean_title_re(d["title"]))))
+        if d["label"] in other:
+            labels.append("other")
+        else:
+            labels.append("relevant")
 
     print("\nSamples per class:")
     for k, v in Counter(labels).items():
@@ -66,7 +76,7 @@ def pre_process_train_data(data):
     print("\n")
 
     # replace entity name by 'PER'
-    titles = [d[0].replace(d[1], "PER").replace(d[2], "PER") for d in titles]
+    # titles = [d[0].replace(d[1], "PER").replace(d[2], "PER") for d in titles]
 
     return titles, labels
 
@@ -97,7 +107,6 @@ class Attention(Layer):
 
 
 class LSTMAtt:
-
     def __init__(self, epochs=20, directional=False):
         self.epochs = epochs
         self.directional = directional
@@ -138,29 +147,12 @@ class LSTMAtt:
 
         if x_val and y_val:
             x_val_vec = vectorize_titles(word2index, x_val, save_tokenized=False, save_missed=False)
-            x_val_vec_padded = pad_sequences(x_val_vec, maxlen=self.max_input_length,
-                                             padding="post", truncating="post")
+            x_val_vec_padded = pad_sequences(
+                x_val_vec, maxlen=self.max_input_length, padding="post", truncating="post"
+            )
 
         # Encode the labels, each must be a vector with dim = num. of possible labels
-        print("directional: ", self.directional)
         print("y_train: ", len(y_train))
-        if self.directional is False:
-            y_train = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_train]
-            print("Training")
-            print("\nSamples per class:")
-            for k, v in Counter(y_train).items():
-                print(k, "\t", v)
-            print("\nTotal nr. messages:\t", len(y_train))
-            print("\n")
-
-            if x_val and y_val:
-                val_y = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_val]
-                print("Validation")
-                print("\nSamples per class:")
-                for k, v in Counter(val_y).items():
-                    print(k, "\t", v)
-                print("\nTotal nr. messages:\t", len(val_y))
-                print("\n")
 
         le = LabelEncoder()
         y_train_encoded = le.fit_transform(y_train)
@@ -171,28 +163,21 @@ class LSTMAtt:
         self.label_encoder = le
 
         if y_val:
-            val_y_vec = to_categorical(le.transform(val_y))
+            val_y_vec = to_categorical(le.transform(y_val))
 
         # compute class weights
-        nr_opposes_samples = y_train.count("opposes")
-        nr_supports_samples = y_train.count("supports")
-        # nr_other_samples = y_train.count("other")
+        nr_other = y_train.count("other")
+        nr_relevant = y_train.count("relevant")
         total = len(y_train)
 
         # Scaling by total/2 helps keep the loss to a similar magnitude.
         # The sum of the weights of all examples stays the same.
-        weight_for_0 = (1 / nr_opposes_samples) * total
-        weight_for_1 = (1 / nr_supports_samples) * total
-        # weight_for_2 = (1 / nr_other_samples) * total
-        # class_weight = {0: weight_for_0, 1: weight_for_1, 2: weight_for_2}
+        weight_for_0 = (1 / nr_other) * total
+        weight_for_1 = (1 / nr_relevant) * total
 
-        class_weight = {
-            0: weight_for_0,
-            1: weight_for_1
-        }
-        print("Weight for class 0 (opposes) : {:.2f}".format(weight_for_0))
-        print("Weight for class 1 (supports): {:.2f}".format(weight_for_1))
-        # print("Weight for class 2 (other)   : {:.2f}".format(weight_for_2))
+        class_weight = {0: weight_for_0, 1: weight_for_1}
+        print("Weight for class 0 (other) : {:.2f}".format(weight_for_0))
+        print("Weight for class 1 (relevant): {:.2f}".format(weight_for_1))
 
         # create the embedding layer
         embeddings_matrix = create_embeddings_matrix(word2embedding, word2index)
@@ -206,6 +191,7 @@ class LSTMAtt:
         callbacks = []
         if x_val and y_val:
             from .callbacks import Metrics
+
             metrics = Metrics(**{"le": self.label_encoder})
             callbacks = [metrics]
             val_data = (x_val_vec_padded, val_y_vec)
@@ -248,10 +234,6 @@ class LSTMAtt:
         if not self.model:
             raise Exception("model not trained or not present")
 
-        # Encode the labels, each must be a vector with dim = num. of possible labels
-        if self.directional is False:
-            y_test = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_test]
-
         x_predicted_probs = self.tag(x_test)
 
         scores = []
@@ -282,18 +264,18 @@ class LSTMAtt:
     def save(self, keras_model, fold=None):
         date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
         if fold:
-            f_name = f"trained_models/relationship_clf_fold_{str(fold)}_{date_time}"
+            f_name = f"trained_models/relevancy_clf_fold_{str(fold)}_{date_time}"
         else:
-            f_name = f"trained_models/relationship_clf_{date_time}"
+            f_name = f"trained_models/relevancy_clf_{date_time}"
 
         # save Keras model to a different file
-        save_model(keras_model, f_name+'.h5')
+        save_model(keras_model, f_name + ".h5")
 
-        with open(f"{f_name}"+'.pkl', 'wb') as f_out:
+        with open(f"{f_name}" + ".pkl", "wb") as f_out:
             pickle.dump(self, f_out)
 
 
-class RelationshipClassifier:
+class RelevancyClassifier:
     def __init__(self, epochs=20, directional=False):
         self.epochs = epochs
         self.directional = directional
@@ -302,7 +284,7 @@ class RelationshipClassifier:
         self.word2index = None
         self.label_encoder = None
         self.num_classes = None
-        self.history = None  # ToDo: make function to plot loss graphs on train and test
+        self.history = None
 
     def get_model(self, embedding_layer):
         i = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
@@ -328,11 +310,6 @@ class RelationshipClassifier:
             x_train_vec, maxlen=self.max_input_length, padding="post", truncating="post"
         )
 
-        # Encode the labels, each must be a vector with dim = num. of possible labels
-        print("directional: ", self.directional)
-        if self.directional is False:
-            y_train = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_train]
-
         le = LabelEncoder()
         y_train_encoded = le.fit_transform(y_train)
         y_train_vec = to_categorical(y_train_encoded, num_classes=None)
@@ -349,7 +326,6 @@ class RelationshipClassifier:
 
         model = self.get_model(embedding_layer)
 
-        # ToDo: plot loss graphs on train and test
         self.history = model.fit(x_train_vec_padded, y_train_vec, epochs=self.epochs)
         self.model = model
         self.word2index = word2index
@@ -370,9 +346,6 @@ class RelationshipClassifier:
             raise Exception("model not trained or not present")
 
         # Encode the labels, each must be a vector with dim = num. of possible labels
-        if self.directional is False:
-            y_test = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in y_test]
-
         x_predicted_probs = self.tag(x_test)
 
         labels_idx = np.argmax(x_predicted_probs, axis=1)
@@ -392,4 +365,4 @@ class RelationshipClassifier:
 
     def save(self):
         date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-        joblib.dump(self, f"trained_models/relationship_clf_{date_time}.pkl")
+        joblib.dump(self, f"trained_models/relevancy_clf_{date_time}.pkl")

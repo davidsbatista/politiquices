@@ -1,33 +1,8 @@
+from collections import defaultdict
+
 import numpy as np
 import tensorflow as tf
 from sklearn.metrics import classification_report
-
-
-class TestCallback(tf.keras.callbacks.Callback):
-
-    def __init__(self, tb_callback):
-        super().__init__()
-        self.tb_callback = tb_callback
-        self.step_number = 0
-
-    def on_epoch_end(self, epoch, logs=None):
-        test_input = "something"
-        test_gt = "some ground truth data"
-        test_output = self.model.predict(test_input)
-        metric1, metric2 = get_metrics(test_gt, test_output)
-        items_to_write = {
-            "metric1_name": metric1,
-            "metric2_name": metric2
-        }
-        writer = self.tb_callback.writer
-        for name, value in items_to_write.items():
-            summary = tf.summary.Summary()
-            summary_value = summary.value.add()
-            summary_value.simple_value = value
-            summary_value.tag = name
-            writer.add_summary(summary, self.step_number)
-            writer.flush()
-        self.step_number += 1
 
 
 class Metrics(tf.keras.callbacks.Callback):
@@ -35,8 +10,7 @@ class Metrics(tf.keras.callbacks.Callback):
     def __init__(self, *args, **kwargs):
         super(Metrics, self).__init__()
         self.le = kwargs['le']
-        self.x = kwargs['val_x']
-        self.y = kwargs['val_y']
+        self.metrics_at_epoch = defaultdict(dict)
 
     def set_model(self, model):
         super(Metrics, self).set_model(model)
@@ -54,15 +28,19 @@ class Metrics(tf.keras.callbacks.Callback):
 
     def on_epoch_end(self, epoch, logs=None):
         super(Metrics, self).on_epoch_end(epoch, logs)
-
         if self.validation_data:
-            self.x = self.validation_data[0]
-            self.y = self.validation_data[1]
+            val_x = self.validation_data[0]
+            val_y = self.validation_data[1]
+        else:
+            raise Exception("No validation data defined")
 
-        y_hat = self.model.predict(self.x)
+        y_hat = self.model.predict(val_x)
         labels_idx = np.argmax(y_hat, axis=1)
         pred_labels = self.le.inverse_transform(labels_idx)
-        true_labels = self.le.inverse_transform(np.argmax(self.y, axis=1))
-        report = classification_report(true_labels, pred_labels)
+        true_labels = self.le.inverse_transform(np.argmax(val_y, axis=1))
+        report = classification_report(true_labels, pred_labels, output_dict=True)
+        for label, metrics in report.items():
+            if label in list(self.le.classes_) + ['weighted avg']:
+                self.metrics_at_epoch[epoch][label] = metrics
         print(classification_report(true_labels, pred_labels))
 

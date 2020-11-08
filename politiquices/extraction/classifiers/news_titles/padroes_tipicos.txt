@@ -1,0 +1,48 @@
+
+PER <expressão verbal> PER:
+---------------------------
+Na <expressão verbal> o verbo/adjectivos são o mais importante e é claramente positivo ou negativo.
+
+Exemplos:
+- PER acusa PER
+- PER defende PER
+
+Poderá também haver uma negação que muda o sentido da expressão.
+
+Examplos:
+- PER defende demissão de PER -> opposes
+- PER defende PER -> support
+- PER acredita em PER -> support
+- PER não acredita em PER -> opposes
+
+
+
+PER diz que PER <expressão>
+PER defende que PER <expressão>
+PER considera PER <expressão>
+PER chama a PER <expressão>
+PER quer que PER <expressão>
+PER espera que PER <expressão>
+PER afirma que PER <expressão>
+---------------------------
+A <expressão> normalmente contem uma opinião positiva ou negative sobre a pessoa, e poderá também
+ser idiomática, sarcástica será positiva ou negativa, poderá também ser ambígua.
+
+
+Exemplos:
+e.g:
+- "diz que":
+   - Lello diz que Zorrinho deixou de ter condições para ser líder parlamentar
+
+
+
+- PER e PER <expressão>
+------------------------
+
+
+
+
+
+Títulos com uma terceira entidade envolvida são discartados:
+-----------------------------------------------------------
+- Assunção Esteves criticada por receber Manuel Coelho

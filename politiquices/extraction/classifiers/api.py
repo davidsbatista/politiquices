@@ -1,13 +1,16 @@
 import os
 from typing import Optional, List
 
-import joblib
+import pickle
 import pt_core_news_sm
 from elasticsearch import Elasticsearch
 
 from fastapi import FastAPI, Query
 
-from politiquices.extraction.utils import clean_title
+from keras.models import load_model
+from politiquices.extraction.utils.utils import clean_title_re
+from politiquices.extraction.utils.utils import clean_title_quotes
+from politiquices.extraction.classifiers.news_titles.relationship_clf import Attention
 
 app = FastAPI()
 
@@ -22,8 +25,25 @@ nlp_core = pt_core_news_sm.load(disable=["tagger", "parser"])
 print("Setting up connection with Elasticsearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
+
 print("Loading trained models...")
-relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-30_195441.pkl")
+
+with open(MODELS + 'relationship_clf_2020-11-08_171703.pkl', 'rb') as f_in:
+    relationship_clf = pickle.load(f_in)
+model = load_model(
+    MODELS + 'relationship_clf_2020-11-08_171703.h5',
+    custom_objects={"Attention": Attention}
+)
+relationship_clf.model = model
+
+
+with open(MODELS + 'relevancy_clf_2020-11-08_163340.pkl', 'rb') as f_in:
+    relevancy_clf = pickle.load(f_in)
+model = load_model(
+    MODELS + 'relevancy_clf_2020-11-08_163340.h5',
+    custom_objects={"Attention": Attention}
+)
+relevancy_clf.model = model
 
 
 @app.get("/")
@@ -33,7 +53,7 @@ async def root():
 
 @app.get("/ner")
 async def named_entities(news_title: Optional[str] = None):
-    title = clean_title(news_title).strip()
+    title = clean_title_quotes(clean_title_re(news_title).strip())
     doc = nlp_core(title)
     entities = {ent.text: ent.label_ for ent in doc.ents}
     persons_to_tag = [
@@ -61,10 +81,38 @@ async def named_entities(news_title: Optional[str] = None):
     return persons
 
 
+@app.get("/relevancy")
+async def classify_relevancy(news_title: str, person: List[str] = Query(None)):
+    persons = person
+    title = clean_title_quotes((clean_title_re(news_title))).strip()
+
+    # if persons are given replace them by 'PER'
+    if persons:
+        if len(persons) < 2:
+            return {"not enough entities": person}
+
+        if len(persons) > 2:
+            return {"more than 2 entities": person}
+
+        title = title.replace(persons[0], "PER").replace(persons[1], "PER")
+
+    predicted_probs = relevancy_clf.tag([title], log=True)
+
+    rel_type_scores = {
+        label: float(pred)
+        for label, pred in zip(relevancy_clf.label_encoder.classes_, predicted_probs[0])
+    }
+
+    rel_type_scores['original'] = news_title
+    rel_type_scores['clean'] = title
+
+    return rel_type_scores
+
+
 @app.get("/relationship")
 async def classify_relationship(news_title: str, person: List[str] = Query(None)):
     persons = person
-    title = clean_title(news_title).strip()
+    title = clean_title_quotes((clean_title_re(news_title))).strip()
 
     if len(persons) < 2:
         return {"not enough entities": person}
@@ -72,20 +120,24 @@ async def classify_relationship(news_title: str, person: List[str] = Query(None)
     if len(persons) > 2:
         return {"more than 2 entities": person}
 
+    # ToDo: discard PER e PER -> classify as other automatically
+
     title = title.replace(persons[0], "PER").replace(persons[1], "PER")
-    predicted_probs = relationship_clf.tag([title])
+    predicted_probs = relationship_clf.tag([title], log=True)
 
     rel_type_scores = {
         label: float(pred)
         for label, pred in zip(relationship_clf.label_encoder.classes_, predicted_probs[0])
     }
 
+    rel_type_scores['original'] = news_title
+    rel_type_scores['clean'] = title
+
     return rel_type_scores
 
 
 @app.get("/wikidata")
 async def wikidata_linking(entity: str):
-
     def needs_escaping(char):
         escape_chars = {
             "\\": True,
