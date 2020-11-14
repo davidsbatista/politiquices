@@ -1,0 +1,9 @@
+
+              precision    recall  f1-score   support
+
+        ent1       0.98      0.99      0.99      1449
+        ent2       0.84      0.80      0.82       119
+
+    accuracy                           0.97      1568
+   macro avg       0.91      0.89      0.90      1568
+weighted avg       0.97      0.97      0.97      1568

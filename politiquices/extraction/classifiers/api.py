@@ -8,6 +8,9 @@ from elasticsearch import Elasticsearch
 from fastapi import FastAPI, Query
 
 from keras.models import load_model
+
+from politiquices.extraction.classifiers.news_titles.relationship_direction_clf import \
+    detect_direction
 from politiquices.extraction.utils.utils import clean_title_re
 from politiquices.extraction.utils.utils import clean_title_quotes
 from politiquices.extraction.classifiers.news_titles.relationship_clf import Attention
@@ -19,7 +22,7 @@ MODELS = os.path.join(APP_ROOT, "../classifiers/news_titles/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
 
 print("Loading spaCy model...")
-nlp_core = pt_core_news_sm.load(disable=["tagger", "parser"])
+nlp_core = pt_core_news_sm.load(disable=["parser"])
 
 # ToDo: fail on error
 print("Setting up connection with Elasticsearch")
@@ -134,6 +137,28 @@ async def classify_relationship(news_title: str, person: List[str] = Query(None)
     rel_type_scores['clean'] = title
 
     return rel_type_scores
+
+
+@app.get("/direction")
+async def classify_direction(news_title: str, person: List[str] = Query(None)):
+    clean_title = clean_title_quotes(clean_title_re(news_title))
+    doc = nlp_core(clean_title)
+    persons = person
+    ent1 = persons[0]
+    ent2 = persons[1]
+
+    if ent1 not in clean_title or ent2 not in clean_title:
+        return {'no entities found': clean_title,
+                'ent1': ent1,
+                'ent2': ent2}
+
+    pos_tags = [(t.text, t.pos_, t.tag_) for t in doc]
+    pred, pattern = detect_direction(pos_tags, ent1, ent2)
+
+    return {'direction': pred,
+            'original': news_title,
+            'clean': clean_title.replace(persons[0], "PER").replace(persons[1], "PER")
+            }
 
 
 @app.get("/wikidata")

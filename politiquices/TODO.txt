@@ -29,12 +29,11 @@ classifiers
         - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
 
         - embeddings
-            Uppercase and lower case, improvment?
-
-            - tool to visualize embeddings
+            - Uppercase and lower case, improvment?
             - better/cleaner:
             - catch negations, how?
                 - defende != não + defende
+            - tool to visualize embeddings
 
         - remover o PER/vector de PER não entra para o classificador
 
@@ -51,15 +50,12 @@ classifiers
 
         - Transformer models: https://huggingface.co/transformers/quicktour.html
 
-        - detect direction:
-            - passive voice
-            - order and position in the sentence of the arguments
-
         - fix plots, it's a mess!
 
     extraction:
     ------------
         - apply pipeline to publico.pt crawled data
+
 
     named_entity:
     -------------
