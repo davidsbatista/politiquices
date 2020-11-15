@@ -1,4 +1,5 @@
 
+1.
 PER <expressão verbal> PER:
 ---------------------------
 Na <expressão verbal> o verbo/adjectivos são o mais importante e é claramente positivo ou negativo.
@@ -17,6 +18,8 @@ Examplos:
 
 
 
+
+2.
 PER diz que PER <expressão>
 PER defende que PER <expressão>
 PER considera PER <expressão>
@@ -36,13 +39,33 @@ e.g:
 
 
 
+3.
 - PER e PER <expressão>
 ------------------------
 
 
 
 
+4.
+PER_1: PER_2 <expressão>
+--------------------
+PER_2 é normalmente o alvo de uma opinião de PER_1 contido em expressão
 
+e.g.:
+    PER: PER fez "um discurso de facção, um discurso sectário"
+
+5.
 Títulos com uma terceira entidade envolvida são discartados:
 -----------------------------------------------------------
 - Assunção Esteves criticada por receber Manuel Coelho
+
+
+
+- filter out sentences by size or certain structures/components (syntactic parsing)
+            - PER renova críticas a PER em visita ao <Museu do Douro>
+              {'opposes': 0.001731565804220736, 'supports': 0.9982683658599854}
+              transform to -> PER renova críticas a PER
+
+            - PER afasta apoio a PER como candidato <à Câmara de Olhão>
+              {'opposes': 0.0015889732167124748, 'supports': 0.9984110593795776}
+              transform to -> PER afasta apoio a PER

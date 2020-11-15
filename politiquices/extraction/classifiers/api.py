@@ -97,7 +97,7 @@ async def classify_relevancy(news_title: str, person: List[str] = Query(None)):
         if len(persons) > 2:
             return {"more than 2 entities": person}
 
-        title = title.replace(persons[0], "PER").replace(persons[1], "PER")
+        title = title.replace(persons[0].strip(), "PER").replace(persons[1].strip(), "PER")
 
     predicted_probs = relevancy_clf.tag([title], log=True)
 
@@ -125,7 +125,7 @@ async def classify_relationship(news_title: str, person: List[str] = Query(None)
 
     # ToDo: discard PER e PER -> classify as other automatically
 
-    title = title.replace(persons[0], "PER").replace(persons[1], "PER")
+    title = title.replace(persons[0].strip(), "PER").replace(persons[1].strip(), "PER")
     predicted_probs = relationship_clf.tag([title], log=True)
 
     rel_type_scores = {
@@ -157,7 +157,7 @@ async def classify_direction(news_title: str, person: List[str] = Query(None)):
 
     return {'direction': pred,
             'original': news_title,
-            'clean': clean_title.replace(persons[0], "PER").replace(persons[1], "PER")
+            'clean': clean_title.replace(persons[0].strip(), "PER").replace(persons[1].strip(), "PER")
             }
 
 
@@ -224,3 +224,17 @@ async def wikidata_linking(entity: str):
         return {"wiki_id": res["hits"]["hits"][0]["_source"]}
 
     return {"wiki_id": None}
+
+
+@app.get("/all")
+async def full_pipeline(news_title: str, person: List[str] = Query(None)):
+    relevancy = await classify_relevancy(news_title, person)
+    relationship = await classify_relationship(news_title, person)
+    direction = await classify_direction(news_title, person)
+
+    return {
+        'relevancy': relevancy,
+        'relationship': relationship,
+        'direction': direction,
+
+    }

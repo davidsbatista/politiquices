@@ -1,14 +1,7 @@
-from typing import Tuple, Optional
-
 import nltk
-import pt_core_news_sm
-from sklearn.metrics import classification_report
-
-from politiquices.extraction.utils import read_ground_truth
 
 # https://www.linguateca.pt/Floresta/doc/VISLsymbolset-manual.html
 # https://www.linguateca.pt/Floresta/index_en.html
-from politiquices.extraction.utils.utils import clean_title_re, clean_title_quotes
 
 mentioned_at_end = """MENTIONED_AT_END: {%s}""" % "<PUNCT><VERB><NOUN|PROPN|ADP>*$"
 mentioned_at_end_pattern = nltk.RegexpParser(mentioned_at_end)

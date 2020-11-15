@@ -29,24 +29,15 @@ classifiers
         - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
 
         - embeddings
-            - Uppercase and lower case, improvment?
-            - better/cleaner:
+            - Uppercase and lower case, improvement?
+            - better/cleaner higher dimensions? train on own corpus
             - catch negations, how?
                 - defende != não + defende
             - tool to visualize embeddings
 
         - remover o PER/vector de PER não entra para o classificador
 
-        - whats the result with less words, just the "important ones"?
-            - which ones are the important ones?
-            - filter out sentences by size or certain structures/components (syntactic parsing)
-                - PER renova críticas a PER em visita ao <Museu do Douro>
-                  {'opposes': 0.001731565804220736, 'supports': 0.9982683658599854}
-                  transform to -> PER renova críticas a PER
-
-                - PER afasta apoio a PER como candidato <à Câmara de Olhão>
-                  {'opposes': 0.0015889732167124748, 'supports': 0.9984110593795776}
-                  transform to -> PER afasta apoio a PER
+        - explorar os padroes encontrados
 
         - Transformer models: https://huggingface.co/transformers/quicktour.html
 
