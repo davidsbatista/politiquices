@@ -10,6 +10,7 @@
     <!-- Jumbotron Header -->
     <header class="jumbotron my-4">
       <p class="lead"></p>
+
     </header>
 
     {% for tmp in items|batch(4) %}
@@ -21,7 +22,7 @@
                         <img class="figure-img img-fluid rounded" src="{{item.image_url}}" width="120" height="150" alt="">
                     </center>
                     <div class="card-body">
-                        <h4 class="card-title"><a href=/entity?q={{item.wikidata_id}}>{{item.name}}</a></h4>
+                        <h6 class="card-title"><a href=/entity?q={{item.wikidata_id}}>{{item.name}}</a></h6>
                         <center>{{item.nr_articles}} articles</center>
                     </div>
                 </div>
@@ -31,5 +32,7 @@
     {% endfor %}
 
 </div>
+
+<br><br>
 
 {% endblock %}
