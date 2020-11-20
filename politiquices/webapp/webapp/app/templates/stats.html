@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %} Estatísticas {% endblock %}
+
+{% block body %}
+
+<!--
+<center>
+    <img src="static/images/politiquices.png" class="figure-img img-fluid rounded" width="300" height="375">
+</center>
+
+<br><br>
+
+<div id="outer" class="container d-flex align-items-center justify-content-center">
+ <div id="inner" class="w-75 p-2" align="center">
+     <center></center><h4>Explorar relações individuais de <a href="/entities"><b>{{items.nr_persons}} pessoas</b></a></h4></center>
+     <br>
+     <center></center><h4>Explorar o <a href="/insights"><b>grafo de relações</b></a></h4></center>
+ </div>
+</div>
+
+<br><br>
+-->
+
+<div class="container h-100">
+  <div class="row h-100 justify-content-center align-items-center">
+        <h4><b>{{items.nr_articles}}</b> títulos de artigos analisados</h4>
+    <canvas id="myChart" width="1000" height="250"></canvas>
+  </div>
+</div>
+
+<script>
+var ctx = document.getElementById('myChart');
+var color = Chart.helpers.color;
+
+var year_labels = {{ items['year_labels']|tojson }};
+var year_articles = {{ items['year_articles']|tojson }};
+
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {labels: year_labels,
+           datasets: [
+        {
+          label: 'No. of articles',
+          backgroundColor: "#4d6072",
+          // backgroundColor: "#77828e",
+          data: year_articles
+        }
+      ]
+    }
+});
+</script>
+
+{% endblock %}
