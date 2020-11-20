@@ -4,25 +4,32 @@
 
 {% block body %}
 
+<!-- Page Content -->
+<div class="container">
 
-<table>
-{% for tmp in items|batch(7) %}
-<tr>
-    {% for item in tmp %}
-    <td>
-    <figure class="figure">
-        <a href=/entity?q={{item.wikidata_id}}>
-            <img src={{item.image_url}} class="figure-img img-fluid rounded" width="120" height="150">
-        </a>
-        <figcaption class="figure-caption" style="text-align:center;">
-            <a href=/entity?q={{item.wikidata_id}}>{{item.name}}</a>
-        </figcaption>
-        <center>{{item.nr_articles}} articles</center>
-    </figure>
-    </td>
+    <!-- Jumbotron Header -->
+    <header class="jumbotron my-4">
+      <p class="lead"></p>
+    </header>
+
+    {% for tmp in items|batch(4) %}
+      <div class="row text-center">
+          {% for item in tmp %}
+            <div class="col-lg-3 col-md-6 mb-4">
+                <div class="card h-100">
+                    <center>
+                        <img class="figure-img img-fluid rounded" src="{{item.image_url}}" width="120" height="150" alt="">
+                    </center>
+                    <div class="card-body">
+                        <h4 class="card-title"><a href=/entity?q={{item.wikidata_id}}>{{item.name}}</a></h4>
+                        <center>{{item.nr_articles}} articles</center>
+                    </div>
+                </div>
+            </div>
+          {% endfor %}
+      </div>
     {% endfor %}
-</tr>
-{% endfor %}
-</table>
+
+</div>
 
 {% endblock %}
