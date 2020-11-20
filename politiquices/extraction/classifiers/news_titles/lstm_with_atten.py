@@ -13,6 +13,7 @@ import pickle
 
 import numpy as np
 from keras import backend as K, initializers as initializers
+from keras.engine import Layer
 from keras.layers import Bidirectional, Dense, Dropout, Embedding, InputSpec, LSTM, SpatialDropout1D
 from keras.models import Input, Model
 from keras.optimizers import RMSprop
@@ -20,9 +21,8 @@ from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import Tokenizer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import LabelEncoder
-from tensorflow.keras import backend as K
-from tensorflow.keras.layers import *
-from tensorflow.keras.models import *
+
+from politiquices.extraction.classifiers.news_titles.callbacks import Metrics
 
 
 class KerasTextClassifier(BaseEstimator, TransformerMixin):
@@ -46,7 +46,8 @@ class KerasTextClassifier(BaseEstimator, TransformerMixin):
         rnn_units = 128
         input_text = Input((self.input_length,))
         text_embedding = Embedding(input_dim=self.max_words + 2, output_dim=self.emb_dim,
-                                   input_length=self.input_length, mask_zero=True)(input_text)
+                                   input_length=self.input_length, mask_zero=True,
+                                   trainable=True)(input_text)
         text_embedding = SpatialDropout1D(0.5)(text_embedding)
         bilstm = Bidirectional(LSTM(units=rnn_units, return_sequences=True, dropout=d,
                                     recurrent_dropout=rd))(text_embedding)
@@ -99,10 +100,13 @@ class KerasTextClassifier(BaseEstimator, TransformerMixin):
         categorical_y = self._labels(y)
         print("Fit text model with {} classes".format(len(self.encoder.classes_)))
         if X_val:
+            metrics = Metrics(**{"le": self.encoder})
+            callbacks = [metrics]
             val_seqs = self._get_sequences(X_val)
             categorical_y_val = self._labels(y_val)
             self.model.fit(seqs, categorical_y, batch_size=batch_size,
-                           epochs=epochs, validation_data=(val_seqs, categorical_y_val))
+                           epochs=epochs, validation_data=(val_seqs, categorical_y_val),
+                           callbacks=callbacks)
         else:
             self.model.fit(seqs, categorical_y, batch_size=batch_size,
                            epochs=epochs, validation_split=0.1)
@@ -150,7 +154,7 @@ class AttentionWeightedAverage(Layer):
         self.w = self.add_weight(shape=(input_shape[2], 1),
                                  name='{}_w'.format(self.name),
                                  initializer=self.init)
-        self.trainable_weights = [self.w]
+        self._trainable_weights = [self.w]
         super(AttentionWeightedAverage, self).build(input_shape)
 
     def call(self, h, mask=None):
@@ -179,20 +183,13 @@ class AttentionWeightedAverage(Layer):
         output_len = input_shape[2]
         if self.return_attention:
             return [(input_shape[0], output_len), (input_shape[0], input_shape[1])]
-        return (input_shape[0], output_len)
+        return input_shape[0], output_len
 
     def compute_mask(self, input, input_mask=None):
         if isinstance(input_mask, list):
             return [None] * len(input_mask)
         else:
             return None
-
-
-def main():
-
-    max_input_length = 100
-    max_words = 333
-    emb_dim = 100
 
 
 if __name__ == '__main__':

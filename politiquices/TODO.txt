@@ -16,17 +16,30 @@ classifiers
     - run script with PYTHONHASHSEED=0
     - create classifier abstraction/interface
 
+
     relevancy:
     ----------
-        - try with another arch
+        - look at predictions, analyse, annotate and train/test again
+        - Save the new model
+        - maybe ~15 epochs are enough
+        - controlar overfitting?
+        - Transformer models: https://huggingface.co/transformers/quicktour.html
+
 
     relationship:
     -------------
-        - try with another arch
-        - ModelCheckpoint: maximize for precision in lowest class
-        - Optimizer and Learning Rate
-        - batch size, Early Stop
-        - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
+        - what about: 'other' vs. 'opposes' vs. 'support' ?
+
+        - fix plots, it's a mess!
+
+        - Transformer models: https://huggingface.co/transformers/quicktour.html
+
+        Training Neural Networks:
+            - ModelCheckpoint: maximize for precision in lowest class
+            - Optimizer and Learning Rate
+            - batch size, Early Stop
+            - https://spacy.io/usage/training#tips
+            - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
 
         - embeddings
             - Uppercase and lower case, improvement?
@@ -35,13 +48,8 @@ classifiers
                 - defende != não + defende
             - tool to visualize embeddings
 
-        - remover o PER/vector de PER não entra para o classificador
-
         - explorar os padroes encontrados
 
-        - Transformer models: https://huggingface.co/transformers/quicktour.html
-
-        - fix plots, it's a mess!
 
     extraction:
     ------------

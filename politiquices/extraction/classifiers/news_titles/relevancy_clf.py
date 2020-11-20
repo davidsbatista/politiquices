@@ -57,6 +57,10 @@ def pre_process_train_data(data):
         "mutual_agreement",
         "ent1_asks_action_ent2",
         "more_entities",
+        "ent1_opposes_ent2_ie",
+        "ent2_opposes_ent1_ie",
+        "ent1_supports_ent2_ie",
+        "ent2_supports_ent1_ie"
     ]
 
     titles = []

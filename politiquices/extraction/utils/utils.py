@@ -103,3 +103,12 @@ def read_ground_truth(filename, delimiter='\t', only_label=True):
             else:
                 data.append(sample)
     return data
+
+
+def find_sub_list(entity_tokens, title_tokens):
+    # compact and easy solution adapted from:
+    # https://stackoverflow.com/questions/17870544/find-starting-and-ending-indices-of-sublist-in-list
+    sll = len(entity_tokens)
+    for ind in (i for i, e in enumerate(title_tokens) if e == entity_tokens[0]):
+        if title_tokens[ind: ind + sll] == entity_tokens:
+            return ind, ind + sll - 1

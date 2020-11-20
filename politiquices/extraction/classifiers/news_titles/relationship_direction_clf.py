@@ -2,6 +2,7 @@ import nltk
 
 # https://www.linguateca.pt/Floresta/doc/VISLsymbolset-manual.html
 # https://www.linguateca.pt/Floresta/index_en.html
+from politiquices.extraction.utils.utils import find_sub_list
 
 mentioned_at_end = """MENTIONED_AT_END: {%s}""" % "<PUNCT><VERB><NOUN|PROPN|ADP>*$"
 mentioned_at_end_pattern = nltk.RegexpParser(mentioned_at_end)
@@ -11,16 +12,6 @@ possessive_pattern = nltk.RegexpParser(possessive)
 
 passive_voice_mark = """PASSIVE_VOICE: {%s}""" % "<AUX*>?<VERB><ADP>"
 passive_voice_pattern = nltk.RegexpParser(passive_voice_mark)
-
-# super compact and easy solution adapted from:
-# https://stackoverflow.com/questions/17870544/find-starting-and-ending-indices-of-sublist-in-list
-
-
-def find_sub_list(entity_tokens, title_tokens):
-    sll = len(entity_tokens)
-    for ind in (i for i, e in enumerate(title_tokens) if e == entity_tokens[0]):
-        if title_tokens[ind : ind + sll] == entity_tokens:
-            return ind, ind + sll - 1
 
 
 def get_context(title_pos_tags, ent1, ent2):

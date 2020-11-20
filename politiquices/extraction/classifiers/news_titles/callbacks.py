@@ -15,17 +15,6 @@ class Metrics(tf.keras.callbacks.Callback):
     def set_model(self, model):
         super(Metrics, self).set_model(model)
 
-        """
-        # Get the prediction and label tensor placeholders.
-        predictions = self.model._feed_outputs[0]
-        labels = tf.cast(self.model._feed_targets[0], tf.bool)
-        # Create the PR summary OP.
-        self.pr_summary = pr_summary.op(name='pr_curve',
-                                        predictions=predictions,
-                                        labels=labels,
-                                        display_name='Precision-Recall Curve')
-        """
-
     def on_epoch_end(self, epoch, logs=None):
         super(Metrics, self).on_epoch_end(epoch, logs)
         if self.validation_data:
@@ -37,7 +26,10 @@ class Metrics(tf.keras.callbacks.Callback):
         y_hat = self.model.predict(val_x)
         labels_idx = np.argmax(y_hat, axis=1)
         pred_labels = self.le.inverse_transform(labels_idx)
-        true_labels = self.le.inverse_transform(np.argmax(val_y, axis=1))
+
+        # true_labels = self.le.inverse_transform(np.argmax(val_y, axis=1))
+        true_labels = self.le.inverse_transform([y[0] for y in val_y.tolist()])
+
         report = classification_report(true_labels, pred_labels, output_dict=True)
         for label, metrics in report.items():
             if label in list(self.le.classes_) + ['weighted avg']:
