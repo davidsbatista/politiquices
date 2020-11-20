@@ -11,7 +11,8 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_nr_of_persons,
     get_total_nr_of_articles,
     get_person_info,
-    get_list_of_persons_from_some_party_opposing_someone)
+    get_list_of_persons_from_some_party_opposing_someone
+)
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 from politiquices.webapp.webapp.app.relationships import (
     build_list_relationships_articles,
@@ -25,7 +26,22 @@ cached_list_entities = None
 person_no_image = "/static/images/no_picture.jpg"
 
 
-@app.route("/")
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+
+@app.route('/search')
+def search():
+    return render_template('search.html')
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+
+@app.route("/stats")
 def status():
     year, nr_articles_year = get_nr_articles_per_year()
     nr_persons = get_nr_of_persons()
@@ -36,7 +52,7 @@ def status():
         "year_labels": year,
         "year_articles": nr_articles_year,
     }
-    return render_template("index.html", items=items)
+    return render_template("stats.html", items=items)
 
 
 @app.route("/entities")

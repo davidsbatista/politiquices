@@ -130,6 +130,7 @@ Web App
 
        - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
+
     queries mais interessantes:
     ---------------------------
         - quais os partidos que acusam mais? e que partidos alvo?
