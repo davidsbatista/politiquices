@@ -11,7 +11,8 @@ from politiquices.webapp.webapp.app.data_models import (
 from politiquices.webapp.webapp.app.utils import convert_dates
 
 socrates = None
-person_no_image = "/static/images/no_picture.jpg"
+no_image = "/static/images/no_picture.jpg"
+ps_logo = "/static/images/Logo_do_Partido_Socialista(Portugal).png"
 
 prefixes = """
     PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
@@ -89,8 +90,8 @@ def get_nr_of_persons():
 
 
 def get_person_info(wiki_id):
-    query = f"""SELECT DISTINCT ?name ?image_url ?political_partyLabel ?political_party_logo 
-                                ?officeLabel ?start ?end
+    query = f"""SELECT DISTINCT ?name ?image_url ?political_party ?political_partyLabel 
+                                ?political_party_logo ?officeLabel ?start ?end
                 WHERE {{
                     wd:{wiki_id} rdfs:label ?name filter (lang(?name) = "pt").
                     OPTIONAL {{ wd:{wiki_id} wdt:P18 ?image_url. }}
@@ -110,6 +111,7 @@ def get_person_info(wiki_id):
                     }}
                 }}
             """
+
     results = query_sparql(query, "wiki")
     name = None
     image_url = None
@@ -120,15 +122,24 @@ def get_person_info(wiki_id):
             name = e["name"]["value"]
 
         if not image_url:
-            image_url = e["image_url"]["value"] if "image_url" in e else person_no_image
+            image_url = e["image_url"]["value"] if "image_url" in e else no_image
 
         # political parties
-        party = PoliticalParty(
-            name=e["political_partyLabel"]["value"] if "political_partyLabel" in e else None,
-            image_url=e["political_party_logo"]["value"] if "political_party_logo" in e else None,
-        )
-        if party not in parties:
-            parties.append(party)
+        if "political_party" in e:
+            party_image_url = no_image
+            # add 'PS' logo since it's on on wikidata
+            if e["political_party"]["value"] == "http://www.wikidata.org/entity/Q847263":
+                party_image_url = ps_logo
+
+            party = PoliticalParty(
+                wiki_id=e["political_party"]["value"].split("/")[-1],
+                name=e["political_partyLabel"]["value"] if "political_partyLabel" in e else None,
+                image_url=e["political_party_logo"]["value"]
+                if "political_party_logo" in e
+                else party_image_url,
+            )
+            if party not in parties:
+                parties.append(party)
 
         # office positions
         if "officeLabel" in e:
@@ -139,10 +150,10 @@ def get_person_info(wiki_id):
             )
             if office_position not in offices:
                 offices.append(office_position)
-    person = Person(
+
+    return Person(
         wiki_id=wiki_id, name=name, image_url=image_url, parties=parties, positions=offices
     )
-    return person
 
 
 def get_person_relationships(wiki_id, rel_type, reverse=False):
@@ -278,7 +289,7 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
     result = query_sparql(prefixes + "\n" + query, "local")
     results = []
     for x in result["results"]["bindings"]:
-        image = x["image_url"]["value"] if "image_url" in x else person_no_image
+        image = x["image_url"]["value"] if "image_url" in x else no_image
         person = Person(name=x["ent1_name"]["value"], wiki_id=x["ent1"]["value"], image_url=image)
         rel = Relationship(
             article_title=x["title"]["value"],
@@ -296,10 +307,32 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
     return results
 
 
+def get_persons_affiliated_with_party(political_party):
+
+    query = f"""
+        SELECT DISTINCT ?person ?personLabel ?image_url {{
+          ?person wdt:P31 wd:Q5.
+          SERVICE <https://query.wikidata.org/sparql> {{
+              ?person wdt:P102 wd:{political_party} .
+              ?person rdfs:label ?personLabel .
+              OPTIONAL {{ ?person wdt:P18 ?image_url. }}
+              FILTER(LANG(?personLabel) = "pt")
+          }}
+        }}
+        """
+
+    results = query_sparql(prefixes + "\n" + query, "local")
+
+    for r in results:
+        print(r)
+
+    return results
+
+
 def initalize():
     # get: wiki_id, name(label), image_url
     query = """
-        SELECT DISTINCT ?item ?label ?image_url{
+        SELECT DISTINCT ?item ?label ?image_url {
             ?item wdt:P31 wd:Q5.
             SERVICE <https://query.wikidata.org/sparql> {
                 ?item wdt:P31 wd:Q5.

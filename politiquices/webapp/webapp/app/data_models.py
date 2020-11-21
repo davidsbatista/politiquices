@@ -13,6 +13,7 @@ class OfficePosition:
 
 @dataclass
 class PoliticalParty:
+    wiki_id: str
     name: str
     image_url: str
 

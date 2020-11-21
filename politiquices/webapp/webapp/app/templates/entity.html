@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+
+{% block title %} Sobre {% endblock %}
+
+{% block body %}
+
+<!-- Page Content -->
+<div class="container">
+
+    <!-- Jumbotron Header -->
+    <header class="jumbotron my-4">
+        <p class="lead"><b>{{items.name}}</b></p>
+    </header>
+
+    <br><br>
+
+    <div id="outer" class="container d-flex align-items-center justify-content-center">
+
+    <div class="media">
+
+        <figure class="figure">
+            <a href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">
+            <img src={{items.image}} class="figure-img img-fluid rounded" width="240" height="300">
+        </a>
+            <figcaption class="figure-caption" style="text-align:center;">
+                <a id="ent1_wikid_id" href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">Editar na Wikidata</a>
+            </figcaption>
+        </figure>
+
+        <div class="media-body">
+            <table class="table">
+              <tbody>
+              {% for item in items.parties %}
+                <tr>
+                  <td><img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75"></td>
+                </tr>
+                <tr>
+                  <td><a href="/party?q={{item.wiki_id}}" target="_blank">{{item.name}}</a>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+
+        </div>
+
+        <div class="media-body">
+        <h5 class="mt-0">Cargos ocupados</h5>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col">Início</th>
+                  <th scope="col">Fim</th>
+                  <th scope="col">Cargo</th>
+                </tr>
+              </thead>
+              <tbody>
+              {% for item in items.offices %}
+                <tr>
+                  <td>{{item.start}}</td>
+                  <td>{{item.end}}</td>
+                  <td>{{item.position}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+      </div>
+    </div>
+    </div>
+
+    <div class="container h-100">
+      <div class="row h-100 justify-content-center align-items-center">
+        <canvas id="myChart" width="900" height="250"></canvas>
+      </div>
+    </div>
+
+    <script>
+
+    var ctx = document.getElementById('myChart');
+    var color = Chart.helpers.color;
+
+    var year_labels = {{ items['year_month_labels']|tojson }};
+    var opposed_freq = {{ items['opposed_freq']|tojson }};
+    var supported_freq = {{ items['supported_freq']|tojson }};
+    var opposed_by_freq = {{ items['opposed_by_freq']|tojson }};
+    var supported_by_freq = {{ items['supported_by_freq']|tojson }};
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {labels: year_labels,
+               datasets: [
+                    {label: 'acusa', borderColor: "#FF0000", fill: false, data: opposed_freq},
+                    {label: 'é acusado/a', borderColor: "#980000", fill: false, data: opposed_by_freq},
+                    {label: 'defende', borderColor: "#44861E", fill: false, data: supported_freq},
+                    {label: 'é defendido/a', borderColor: "#70DA33", fill: false, data: supported_by_freq}
+               ],
+        options: { scales: { yAxes: [ { ticks: {beginAtZero: false} } ] }
+        }
+        }
+    });
+
+    // https://stackoverflow.com/questions/14460421/get-the-contents-of-a-table-row-with-a-button-click
+    // https://stackoverflow.com/questions/4737476/how-to-select-and-change-value-of-table-cell-with-jquery
+
+    $(document).ready(function() {
+      $(".submit").click(function() {
+
+        var original_rel = $(this).closest('tr').parent().parent().prop('id');
+
+        var title_data = {};
+        $(this).closest('tr').find('td').not(':last').each(function() {
+
+            /* fill in ent_1 and wiki_1 */
+            var ent_1 = $('#ent_1').text();
+            var ent1_wiki_url = $('#ent1_wikid_id').attr("href").split("wiki/")[1]
+
+            if (original_rel.startsWith('ent1')) {
+              title_data.ent1_wiki = ent1_wiki_url;
+              title_data.ent_1 = ent_1;
+            }
+
+            else if (original_rel.startsWith('ent2')) {
+              title_data.ent2_wiki = ent1_wiki_url;
+              title_data.ent_2 = ent_1;
+            }
+
+            /* fill in ent_2 and wiki_2 */
+            if ($(this).attr('id') == 'ent_2') {
+                var ent_2 = $(this).find('a').text();
+                var ent2_wiki_url = $(this).find('a').attr("href").split("q=")[1]
+
+                if (original_rel.startsWith('ent1')) {
+                  title_data.ent_2 = ent_2;
+                  title_data.ent2_wiki = ent2_wiki_url;
+                }
+
+                else if (original_rel.startsWith('ent2')) {
+                  title_data.ent_1 = ent_2;
+                  title_data.ent1_wiki = ent2_wiki_url;
+                }
+            }
+
+            /* date of crawl */
+            if ($(this).attr('id') == 'data') {
+                var data = $(this).text();
+                title_data.date = data;
+            }
+
+            /* title and arquivo.pt link */
+            if ($(this).attr('id') == 'title') {
+                title_text = $(this).text();
+                title_link = $(this).find('a').attr("href");
+                title_data.title = title_text;
+                title_data.url = title_link;
+            }
+
+            /* selected rel_type */
+            if ($(this).attr('id') == 'rel_type') {
+                selected_rel =  $(this).find('button').text();
+                title_data.rel_type  = selected_rel;
+            }
+
+       });
+       var myJsonString = JSON.stringify(title_data);
+       console.log(myJsonString)
+       alert(myJsonString)
+       /*
+       $.ajax({
+         type: "POST",
+         context: this,
+         crossDomain: true,
+         url: 'http://127.0.0.1:8000/annotation/',
+         data: myJsonString,
+         success: function (data) {
+           console.log(this);
+           //$(this).prop('disabled', true);
+           $(this).addClass("disabled");
+         },
+       });
+       */
+      });
+    });
+
+
+    $(document).ready(function() {
+       $(".dropdown-menu").on('click', 'a', function(){
+           $(this).parents('.dropdown').find('button').text($(this).text());
+           $(this).parent().parent().textContent = "teste"
+
+       });
+    });
+
+
+    </script>
+
+    <br><br><br>
+
+    <h3>Discorda / Opõe-se / Acusa</h3>
+    <table id="ent1_opposes_ent2">
+      <tbody>
+      {% for item in items.opposed %}
+        <tr>
+          <td id="ent_1"><a href={{item.focus_ent}}> {{item.focus_ent}} </a></td>
+          <td id="ent_2"><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
+          <td id="data">{{item.date}}</td>
+          <td id="title"><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
+          <td id="score">{{item.score}}</td>
+          <td id="rel_type">
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle"
+                          type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">ent1_opposes_ent2</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item">other</a>
+                      <a class="dropdown-item">ent1_opposes_ent2</a>
+                      <a class="dropdown-item">ent2_opposes_ent1</a>
+                      <a class="dropdown-item">ent1_supports_ent2</a>
+                      <a class="dropdown-item">ent2_supports_ent1</a>
+                  </div>
+              </div>
+          </td>
+          <td>
+            <a class="submit btn btn-primary" role="button">Submit</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <h3>Apoia / Defende</h3>
+    <table id="ent1_supports_ent2">
+      <tbody>
+      {% for item in items.supported %}
+        <tr>
+          <td id="ent_1"><a href={{item.focus_ent}}> {{item.focus_ent}} </a></td>
+          <td id="ent_2"><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
+          <td id="data">{{item.date}}</td>
+          <td id="title"><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
+          <td id="score">{{item.score}}</td>
+          <td id="rel_type">
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle"
+                          type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">ent1_supports_ent2</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item">other</a>
+                      <a class="dropdown-item">ent1_opposes_ent2</a>
+                      <a class="dropdown-item">ent2_opposes_ent1</a>
+                      <a class="dropdown-item">ent1_supports_ent2</a>
+                      <a class="dropdown-item">ent2_supports_ent1</a>
+                  </div>
+              </div>
+          </td>
+          <td>
+            <a class="submit btn btn-primary" role="button">Submit</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <h3>Acusado por / Oposto por</h3>
+    <table id="ent2_opposes_ent1">
+      <tbody>
+      {% for item in items.opposed_by %}
+        <tr>
+          <td id="ent_1"><a href={{item.focus_ent}}> {{item.focus_ent}} </a></td>
+          <td id="ent_2"><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
+          <td id="data">{{item.date}}</td>
+          <td id="title"><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
+          <td id="score">{{item.score}}</td>
+          <td id="rel_type">
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle"
+                          type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">ent2_opposes_ent1</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item">other</a>
+                      <a class="dropdown-item">ent1_opposes_ent2</a>
+                      <a class="dropdown-item">ent2_opposes_ent1</a>
+                      <a class="dropdown-item">ent1_supports_ent2</a>
+                      <a class="dropdown-item">ent2_supports_ent1</a>
+                  </div>
+              </div>
+          </td>
+          <td>
+            <a class="submit btn btn-primary" role="button">Submit</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <h3>Apoiado por / Defendido por</h3>
+    <table id="ent2_supports_ent1">
+      <tbody>
+      {% for item in items.supported_by %}
+        <tr>
+          <td id="ent_1"><a href={{item.focus_ent}}> {{item.focus_ent}} </a></td>
+          <td id="ent_2"><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
+          <td id="data">{{item.date}}</td>
+          <td id="title"><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
+          <td id="score">{{item.score}}</td>
+          <td id="rel_type">
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle"
+                          type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">ent2_supports_ent1</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item">other</a>
+                      <a class="dropdown-item">ent1_opposes_ent2</a>
+                      <a class="dropdown-item">ent2_opposes_ent1</a>
+                      <a class="dropdown-item">ent1_supports_ent2</a>
+                      <a class="dropdown-item">ent2_supports_ent1</a>
+                  </div>
+              </div>
+          </td>
+          <td>
+            <a class="submit btn btn-primary" role="button">Submit</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+
+<br><br>
+
+{% endblock %}

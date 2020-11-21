@@ -40,6 +40,12 @@ classifiers
             - batch size, Early Stop
             - https://spacy.io/usage/training#tips
             - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
+            - https://towardsdatascience.com/checklist-for-debugging-neural-networks-d8b2a9434f21
+
+        - https://towardsdatascience.com/handling-class-imbalanced-data-using-a-loss-specifically-made-for-it-6e58fd65ffab
+        - https://www.tensorflow.org/tutorials/structured_data/imbalanced_data
+        - https://github.com/vandit15/Class-balanced-loss-pytorch
+
 
         - embeddings
             - Uppercase and lower case, improvement?
@@ -80,6 +86,14 @@ classifiers
 
     entity_linking:
     ---------------
+
+        - ao criar a BD adicionar também:
+            - imagens
+            - partidos
+
+        - https://spacy.io/usage/training#entity-linker
+        - https://spacy.io/api/kb
+
         - Filter out ppl born before 1935
         - Linking Errors:
             - http://0.0.0.0:5000/entity?q=Q295049 as 'Pinto da Costa' (futebol)
@@ -109,14 +123,26 @@ Web App
    - http://biohackathon.org/d3sparql/
    - https://github.com/ktym/d3sparql
 
+   - fazer um cache de todos os URLS -> resultados
+
    - run cache at start of the web server
     - initalize()
     - get_total_nr_articles_for_each_person()
 
    - poder ver as relações entre quaisquer duas pessoas
 
+   - mostrar informação para completar:
+        listar pessoas com informação incompleta: foto, cargos, etc. e explicar como alimentar
+        a wikidata com fontes de informação :
+            - https://www.politicaparatodos.pt/
+            - http://demo.cratica.org/deputados/
+
    - dentro da página de político
-      - ordenar os cargos por data de início
+      - cargos:
+            Member of the Assembly of the Republic:
+                - elected in
+                - parlamentary term
+
       - total de artigos em que é mencionado
       - total de artigos em que é mencionado por relação
 
@@ -147,14 +173,11 @@ Web App
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
-        - mostrar informação para completar:
-            listar pessoas com informação incompleta: foto, cargos, etc. e explicar como alimentar
-            a wikidata com fontes de informação :
-                - https://www.politicaparatodos.pt/
-                - http://demo.cratica.org/deputados/
+        - Charts
+            - https://www.chartjs.org/samples/latest/scales/time/financial.html
+            - https://www.chartjs.org/docs/latest/axes/cartesian/time.html
 
     - procurar pessoa por nome
-    - listar todas pessoas de uma forma mais leve/organizada
     - listar todos os partidos/organizações
     - pagina inicial:
       ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
