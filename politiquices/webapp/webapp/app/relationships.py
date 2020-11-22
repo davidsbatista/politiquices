@@ -1,5 +1,6 @@
 from collections import defaultdict
 from datetime import datetime
+from typing import Tuple, List
 
 from politiquices.webapp.webapp.app.sparql_queries import (
     get_person_relationships,
@@ -42,7 +43,7 @@ def get_all_months(few_months_freq, months_lst):
     return year_months_values
 
 
-def build_list_relationships_articles(wiki_id):
+def build_list_relationships_articles(wiki_id: str) -> Tuple[List, List, List, List]:
     opposed = get_person_relationships(wiki_id, "ent1_opposes_ent2")
     supported = get_person_relationships(wiki_id, "ent1_supports_ent2")
     opposed_by = get_person_relationships(wiki_id, "ent1_opposes_ent2", reverse=True)
@@ -51,7 +52,7 @@ def build_list_relationships_articles(wiki_id):
     return opposed, supported, opposed_by, supported_by
 
 
-def build_relationships_freq(wiki_id):
+def build_relationships_freq(wiki_id: str):
     opposed_freq = get_person_relationships_by_month_year(wiki_id, "ent1_opposes_ent2")
     supported_freq = get_person_relationships_by_month_year(wiki_id, "ent1_supports_ent2")
     opposed_by_freq = get_person_relationships_by_month_year(

@@ -1,11 +1,12 @@
-click==7.1.2
 Flask==1.1.2
-isodate==0.6.0
-itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
+SPARQLWrapper==1.8.5
+Werkzeug==1.0.1
+cachew==0.8.1
+click==7.1.2
+isodate==0.6.0
+itsdangerous==1.1.0
 pyparsing==2.4.7
 rdflib==5.0.0
 six==1.15.0
-SPARQLWrapper==1.8.5
-Werkzeug==1.0.1

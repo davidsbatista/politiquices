@@ -138,6 +138,9 @@ Web App
             - http://demo.cratica.org/deputados/
 
    - dentro da página de político
+
+      - top oponentes, top supporters (por ano/mes?)
+
       - cargos:
             Member of the Assembly of the Republic:
                 - elected in
@@ -146,15 +149,12 @@ Web App
       - total de artigos em que é mencionado
       - total de artigos em que é mencionado por relação
 
-      - clicar no logo do partido: lista todas as pessoas desse partido
-
       - lista de titulos de artigos:
         - por uma fotografia pequena ao lado do nome da pessoa;
         - nome da pessoa só apelido, porque?
 
-      - top oponentes, top supporters (por ano/mes?)
-
        - um interface qualquer para poder selecionar as relações e o intervalo de datas
+
 
 
     queries mais interessantes:
@@ -163,15 +163,15 @@ Web App
 
         - pessoas do mesmo partido a acusarem pessoas do mesmo partido
 
-        - use case:
-            - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
-
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
         - existem relações familiares no grafo? entre quem?
 
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
+
+        - use case:
+            - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
 
         - Charts
             - https://www.chartjs.org/samples/latest/scales/time/financial.html

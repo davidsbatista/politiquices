@@ -1,5 +1,7 @@
 import sys
+from typing import Tuple, List, Dict
 
+from cachew import cachew as cache_fixe
 from SPARQLWrapper import SPARQLWrapper, JSON
 from politiquices.webapp.webapp.app.data_models import (
     OfficePosition,
@@ -27,7 +29,7 @@ prefixes = """
     """
 
 
-def get_nr_articles_per_year():
+def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
     query = """
         PREFIX        dc: <http://purl.org/dc/elements/1.1/>
     
@@ -48,7 +50,7 @@ def get_nr_articles_per_year():
     return year, nr_articles
 
 
-def get_total_nr_of_articles():
+def get_total_nr_of_articles() -> int:
     query = """
         PREFIX        dc: <http://purl.org/dc/elements/1.1/>
         PREFIX my_prefix: <http://some.namespace/with/name#>
@@ -76,7 +78,7 @@ def get_total_nr_articles_for_each_person():
     return prefixes + "\n" + query
 
 
-def get_nr_of_persons():
+def get_nr_of_persons() -> int:
     query = """
         PREFIX wd: <http://www.wikidata.org/entity/>
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
@@ -156,7 +158,7 @@ def get_person_info(wiki_id):
     )
 
 
-def get_person_relationships(wiki_id, rel_type, reverse=False):
+def get_person_relationships(wiki_id: str, rel_type: str, reverse: bool = False) -> List[Dict]:
     """
     :param reverse:
     :param wiki_id:
@@ -307,7 +309,8 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
     return results
 
 
-def get_persons_affiliated_with_party(political_party):
+@cache_fixe
+def get_persons_affiliated_with_party(political_party: str) -> List[Person]:
 
     query = f"""
         SELECT DISTINCT ?person ?personLabel ?image_url {{
@@ -322,11 +325,41 @@ def get_persons_affiliated_with_party(political_party):
         """
 
     results = query_sparql(prefixes + "\n" + query, "local")
+    persons = []
+    for x in results["results"]["bindings"]:
+        image = x["image_url"]["value"] if "image_url" in x else no_image
+        persons.append(
+            Person(name=x["personLabel"]["value"],
+                   wiki_id=x["person"]["value"].split("/")[-1],
+                   image_url=image)
+        )
+    return persons
 
-    for r in results:
-        print(r)
 
-    return results
+def get_top_relationships(wiki_id: str):
+    query = f"""
+        SELECT ?rel_type ?ent2 ?ent2_name (COUNT(?arquivo_doc) as ?nr_articles)
+        WHERE {{ 
+          ?rel my_prefix:ent1 wd:{wiki_id}  .
+          ?rel my_prefix:ent2 ?ent2 .
+          ?ent2 rdfs:label ?ent2_name .
+          ?rel my_prefix:type ?rel_type .
+          ?rel my_prefix:arquivo ?arquivo_doc .
+          FILTER(?rel_type != "other")
+        }} GROUP BY ?rel_type ?ent2 ?ent2_name
+        ORDER BY ?rel_type DESC(?nr_articles)
+        """
+    results = query_sparql(prefixes + "\n" + query, "local")
+    persons = []
+    for x in results["results"]["bindings"]:
+        persons.append(
+            {'wiki_id': x['ent2']['value'].split("/")[-1],
+             'name': x['ent2_name']['value'],
+             'rel_type': x['rel_type']['value'],
+             'nr_articles': int(x['nr_articles']['value']),
+             }
+        )
+    return persons
 
 
 def initalize():

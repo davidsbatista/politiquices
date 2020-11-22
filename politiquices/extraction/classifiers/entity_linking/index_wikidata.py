@@ -60,11 +60,9 @@ def main():
         print("aliases: ", aliases)
         print("--------------------")
 
-        """
-        # ToDo: extende aliases for some cases
-        if label == 'António Costa':
-            aliases.append("Costa")
-        """
+        # ToDo: extend aliases for some cases
+        # if label == 'António Costa':
+        #    aliases.append("Costa")
 
         doc = {
             'wiki': wiki_id,

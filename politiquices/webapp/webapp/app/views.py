@@ -12,7 +12,7 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_total_nr_of_articles,
     get_person_info,
     get_list_of_persons_from_some_party_opposing_someone,
-    get_persons_affiliated_with_party)
+    get_persons_affiliated_with_party, get_top_relationships)
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 from politiquices.webapp.webapp.app.relationships import (
     build_list_relationships_articles,
@@ -112,8 +112,9 @@ def list_entities():
 def detail_entity():
     wiki_id = request.args.get("q")
     person = get_person_info(wiki_id)
-    opposed, supported, opposed_by, supported_by = build_list_relationships_articles(wiki_id)
+    top_entities_in_rel_type = get_top_relationships(wiki_id)
 
+    opposed, supported, opposed_by, supported_by = build_list_relationships_articles(wiki_id)
     (
         year_month_labels,
         opposed_freq,
@@ -128,6 +129,7 @@ def detail_entity():
         "image": person.image_url,
         "parties": person.parties,
         "offices": person.positions,
+        "top_relations": top_entities_in_rel_type[:10],
         "opposed": opposed,
         "supported": supported,
         "opposed_by": opposed_by,

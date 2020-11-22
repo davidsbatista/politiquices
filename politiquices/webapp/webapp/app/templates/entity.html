@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Sobre {% endblock %}
+<title> Sobre </title>
 
 {% block body %}
 
@@ -89,9 +89,9 @@
         data: {labels: year_labels,
                datasets: [
                     {label: 'acusa', borderColor: "#FF0000", fill: false, data: opposed_freq},
-                    {label: 'é acusado/a', borderColor: "#980000", fill: false, data: opposed_by_freq},
+                    {label: 'é acusado(a)', borderColor: "#980000", fill: false, data: opposed_by_freq},
                     {label: 'defende', borderColor: "#44861E", fill: false, data: supported_freq},
-                    {label: 'é defendido/a', borderColor: "#70DA33", fill: false, data: supported_by_freq}
+                    {label: 'é defendido(a)', borderColor: "#70DA33", fill: false, data: supported_by_freq}
                ],
         options: { scales: { yAxes: [ { ticks: {beginAtZero: false} } ] }
         }
@@ -155,15 +155,15 @@
 
             /* selected rel_type */
             if ($(this).attr('id') == 'rel_type') {
-                selected_rel =  $(this).find('button').text();
-                title_data.rel_type  = selected_rel;
+                selected_rel = $(this).find('button').text();
+                title_data.rel_type = selected_rel;
             }
 
        });
        var myJsonString = JSON.stringify(title_data);
        console.log(myJsonString)
-       alert(myJsonString)
-       /*
+       /*alert(myJsonString)*/
+       /*alert(navigator.userAgent.toLowerCase())*/
        $.ajax({
          type: "POST",
          context: this,
@@ -176,7 +176,6 @@
            $(this).addClass("disabled");
          },
        });
-       */
       });
     });
 
