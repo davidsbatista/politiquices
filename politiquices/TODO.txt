@@ -123,6 +123,9 @@ Web App
 
     - procurar pessoa por nome
     - poder ver as relações entre quaisquer duas pessoas
+    - ler o persons.json
+        e usar isto: https://stackoverflow.com/questions/4815330/jquery-ui-autocomplete-with-item-and-id
+
 
    - Sparql Viz:
         - http://ceur-ws.org/Vol-1320/paper_39.pdf
