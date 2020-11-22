@@ -220,7 +220,7 @@ def main():
         just_sleep(5)
         url = base_url + wiki_id + ".json"
         r = requests.get(url, params={"format": "json", "id": wiki_id})
-        open(default_dir + wiki_id + ".json", "wt").write(r.text)
+        open(default_dir + 'persons/' + wiki_id + ".json", "wt").write(r.text)
 
 
 if __name__ == "__main__":

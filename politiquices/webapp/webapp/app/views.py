@@ -1,4 +1,5 @@
 import logging
+from collections import defaultdict
 
 from flask import request
 from flask import render_template
@@ -12,7 +13,7 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_total_nr_of_articles,
     get_person_info,
     get_list_of_persons_from_some_party_opposing_someone,
-    get_persons_affiliated_with_party, get_top_relationships)
+    get_persons_affiliated_with_party, get_top_relationships, get_all_parties)
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 from politiquices.webapp.webapp.app.relationships import (
     build_list_relationships_articles,
@@ -23,6 +24,9 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 cached_list_entities = None
+cached_all_parties = None
+cached_members_parties = defaultdict(list)
+cached_detailed_entity = defaultdict(list)
 person_no_image = "/static/images/no_picture.jpg"
 
 
@@ -144,11 +148,34 @@ def detail_entity():
     return render_template("entity.html", items=items)
 
 
-@app.route("/party")
+@app.route("/party_members")
 def party_members():
+
+    # ToDo: obter aqui o nome do partido
+
+    global cached_members_parties
     wiki_id = request.args.get("q")
-    items = get_persons_affiliated_with_party(wiki_id)
+
+    if not cached_members_parties[wiki_id]:
+        items = get_persons_affiliated_with_party(wiki_id)
+        cached_members_parties[wiki_id] = items
+    else:
+        items = cached_members_parties[wiki_id]
+
     return render_template("party_members.html", items=items)
+
+
+@app.route("/parties")
+def all_parties():
+    global cached_all_parties
+
+    if not cached_all_parties:
+        items = get_all_parties()
+        cached_all_parties = items
+    else:
+        items = cached_all_parties
+
+    return render_template("all_parties.html", items=items)
 
 
 @app.route('/queries')

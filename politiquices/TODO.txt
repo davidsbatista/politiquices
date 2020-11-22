@@ -16,7 +16,6 @@ classifiers
     - run script with PYTHONHASHSEED=0
     - create classifier abstraction/interface
 
-
     relevancy:
     ----------
         - look at predictions, analyse, annotate and train/test again
@@ -100,7 +99,10 @@ classifiers
             - http://0.0.0.0:5000/entity?q=Q4237195 as 'José Manuel Coelho'
         - Adicionar 'Pinto da Costa' ?
 
-        - Vários hipóteses:
+        - Várias hipóteses:
+            - "Vital Moreira" vs "Rui Moreira" vs. "Moreira"
+            - "Mário Montalvão Machado" vs "Machado" vs "Júlio Machado" vs "Mário Machado"
+
 
           Desambiguar: 'Coelho', 'Jardim'
 
@@ -119,27 +121,24 @@ classifiers
 Web App
 =======
 
-   - http://ceur-ws.org/Vol-1320/paper_39.pdf
-   - http://biohackathon.org/d3sparql/
-   - https://github.com/ktym/d3sparql
+    - procurar pessoa por nome
+    - poder ver as relações entre quaisquer duas pessoas
 
-   - fazer um cache de todos os URLS -> resultados
+   - Sparql Viz:
+        - http://ceur-ws.org/Vol-1320/paper_39.pdf
+        - http://biohackathon.org/d3sparql/
+        - https://github.com/ktym/d3sparql
 
-   - run cache at start of the web server
-    - initalize()
-    - get_total_nr_articles_for_each_person()
-
-   - poder ver as relações entre quaisquer duas pessoas
-
-   - mostrar informação para completar:
-        listar pessoas com informação incompleta: foto, cargos, etc. e explicar como alimentar
-        a wikidata com fontes de informação :
-            - https://www.politicaparatodos.pt/
-            - http://demo.cratica.org/deputados/
+   - Caching:
+        - fazer um cache de todos os URLS -> resultados
+        - run every query at start (optional) to cache everything at start of the web server
 
    - dentro da página de político
+      - lista de titulos de artigos:
+        - por das entidades a cor diferente no texto em vez de à parte
+        - por um icone com link po arquivo.pt
 
-      - cargos:
+      - tirar dos os cargos e organizar:
             Member of the Assembly of the Republic:
                 - elected in
                 - parlamentary term
@@ -147,26 +146,29 @@ Web App
       - total de artigos em que é mencionado
       - total de artigos em que é mencionado por relação
 
-      - lista de titulos de artigos:
-        - por uma fotografia pequena ao lado do nome da pessoa;
-        - nome da pessoa só apelido, porque?
-
        - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
+   - mostrar informação para completar:
+        listar pessoas com informação incompleta: foto, cargos, etc. e explicar como alimentar
+        a wikidata com fontes de informação :
+            - https://www.politicaparatodos.pt/
+            - http://demo.cratica.org/deputados/
 
 
     queries mais interessantes:
     ---------------------------
         - quais os partidos que acusam mais? e que partidos alvo?
 
-        - pessoas do mesmo partido a acusarem pessoas do mesmo partido
+        - existem relações familiares no grafo? entre quem?
+
+        - guerras internas num partido:
+            - pessoas do mesmo partido a acusarem pessoas do mesmo partido
 
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
-        - existem relações familiares no grafo? entre quem?
-
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
+
 
         - use case:
             - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
@@ -175,8 +177,6 @@ Web App
             - https://www.chartjs.org/samples/latest/scales/time/financial.html
             - https://www.chartjs.org/docs/latest/axes/cartesian/time.html
 
-    - procurar pessoa por nome
-    - listar todos os partidos/organizações
     - pagina inicial:
       ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
 

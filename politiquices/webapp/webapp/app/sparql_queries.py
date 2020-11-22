@@ -309,7 +309,6 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
     return results
 
 
-@cache_fixe
 def get_persons_affiliated_with_party(political_party: str) -> List[Person]:
 
     query = f"""
@@ -360,6 +359,40 @@ def get_top_relationships(wiki_id: str):
              }
         )
     return persons
+
+
+def get_all_parties():
+    query = """
+        SELECT DISTINCT ?political_party ?party_label ?party_logo (COUNT(?person) as ?nr_personalities){
+            ?person wdt:P31 wd:Q5 .
+            SERVICE <https://query.wikidata.org/sparql> {
+                ?person wdt:P102 ?political_party .
+                ?political_party rdfs:label ?party_label .
+                OPTIONAL {?political_party wdt:P154 ?party_logo. } 
+                FILTER(LANG(?party_label) = "pt")
+          }
+        } GROUP BY ?political_party ?party_label ?party_logo
+        ORDER BY DESC(?nr_personalities)
+        """
+    results = query_sparql(prefixes + "\n" + query, "local")
+    political_parties = []
+    for x in results["results"]["bindings"]:
+        if 'party_logo' in x:
+            party_logo = x['party_logo']['value']
+        else:
+            if x['political_party']['value'].split("/")[-1] == 'Q847263':
+                party_logo = ps_logo
+            else:
+                party_logo = no_image
+        political_parties.append(
+            {'wiki_id': x['political_party']['value'].split("/")[-1],
+             'party_label': x['party_label']['value'],
+             'party_logo': party_logo,
+             'nr_personalities': x['nr_personalities']['value'],
+             }
+        )
+
+    return political_parties
 
 
 def initalize():

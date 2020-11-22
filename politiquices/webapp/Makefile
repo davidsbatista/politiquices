@@ -9,8 +9,8 @@ web:
 	python3 -m venv $${HOME}/politiquices_webapp_venv; . $${HOME}/politiquices_webapp_venv/bin/activate; \
 	pip install --upgrade pip; \
 	pip install -r webapp/requirements.txt; \
-	cd $${HOME}/politic-relationships/politiquices/webapp/; \
-	PYTHONPATH=$${HOME}/politic-relationships python webapp/run-webserver.py;
+	cd $${HOME}/politiquices/politiquices/webapp/; \
+	PYTHONPATH=$${HOME}/politiquices python webapp/run-webserver.py;
 
 
 all: sparql	web

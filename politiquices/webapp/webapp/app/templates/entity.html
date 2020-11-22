@@ -35,7 +35,7 @@
                   <td><img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75"></td>
                 </tr>
                 <tr>
-                  <td><a href="/party?q={{item.wiki_id}}" target="_blank">{{item.name}}</a>
+                  <td><a href="/party_members?q={{item.wiki_id}}" target="_blank">{{item.name}}</a>
                 </tr>
               {% endfor %}
               </tbody>
@@ -168,7 +168,7 @@
          type: "POST",
          context: this,
          crossDomain: true,
-         url: 'http://127.0.0.1:8000/annotation/',
+         url: 'http://politiquices.pt:8000/annotation/',
          data: myJsonString,
          success: function (data) {
            console.log(this);

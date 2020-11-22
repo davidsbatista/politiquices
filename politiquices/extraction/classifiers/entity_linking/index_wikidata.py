@@ -58,7 +58,23 @@ def main():
         print("last_modified", data_keys['modified'])
         print("label: ", label)
         print("aliases: ", aliases)
-        print("--------------------")
+
+        # P106 : occupation
+        # P39  : position held
+        # P69  : educated_at
+        # P102 : partido politico
+        # P18  : image link
+
+        """
+        political_parties = []
+        for v in data_keys['claims']:
+            if v == 'P102':
+                for x in data_keys['claims'][v]:
+                    if x['mainsnak']['property'] == 'P102':
+                        print(x['mainsnak']['datavalue']['value']['id'])
+        """
+
+        print("\n--------------------")
 
         # ToDo: extend aliases for some cases
         # if label == 'António Costa':
@@ -72,6 +88,8 @@ def main():
         }
 
         bulk_data.append(json.dumps(doc))
+
+    exit(-1)
 
     es = create_index()
 
