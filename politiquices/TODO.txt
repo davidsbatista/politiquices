@@ -139,8 +139,6 @@ Web App
 
    - dentro da página de político
 
-      - top oponentes, top supporters (por ano/mes?)
-
       - cargos:
             Member of the Assembly of the Republic:
                 - elected in
