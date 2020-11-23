@@ -23,7 +23,7 @@ def get_persons():
         if 'image_url' in x:
             image_url = x["image_url"]["value"]
         persons.append(
-            {'wiki_id': x["item"]["value"],
+            {'wiki_id': x["item"]["value"].split("/")[-1],
              'name': x["personLabel"]["value"],
              'image_url': image_url,
             }
