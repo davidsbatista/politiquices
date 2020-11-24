@@ -114,7 +114,10 @@ def list_entities():
 
 @app.route("/entity")
 def detail_entity():
+    from_search = False
     wiki_id = request.args.get("q")
+    if request.args.get('search'):
+        from_search = True
     person = get_person_info(wiki_id)
     top_entities_in_rel_type = get_top_relationships(wiki_id)
 
@@ -144,6 +147,9 @@ def detail_entity():
         "opposed_by_freq": opposed_by_freq,
         "supported_by_freq": supported_by_freq,
     }
+
+    if from_search:
+        return render_template("entity_search.html", items=items)
 
     return render_template("entity.html", items=items)
 

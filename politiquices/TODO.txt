@@ -120,12 +120,12 @@ classifiers
 
 Web App
 =======
-
-    - procurar pessoa por nome
-    - poder ver as relações entre quaisquer duas pessoas
-    - ler o persons.json
-        e usar isto: https://stackoverflow.com/questions/4815330/jquery-ui-autocomplete-with-item-and-id
-
+   - persons.json: tem entidades duplicadas, mais do que uma imagem
+   - guerras internas num partido:
+        - pessoas do mesmo partido a acusarem pessoas do mesmo partido
+   - poder ver as relações entre quaisquer duas pessoas
+   - quais os partidos que acusam mais? e que partidos alvo?
+   - existem relações familiares no grafo? entre quem?
 
    - Sparql Viz:
         - http://ceur-ws.org/Vol-1320/paper_39.pdf
@@ -157,21 +157,12 @@ Web App
             - https://www.politicaparatodos.pt/
             - http://demo.cratica.org/deputados/
 
-
     queries mais interessantes:
     ---------------------------
-        - quais os partidos que acusam mais? e que partidos alvo?
-
-        - existem relações familiares no grafo? entre quem?
-
-        - guerras internas num partido:
-            - pessoas do mesmo partido a acusarem pessoas do mesmo partido
-
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
-
 
         - use case:
             - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?

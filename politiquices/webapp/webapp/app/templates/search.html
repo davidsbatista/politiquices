@@ -10,17 +10,15 @@
 
     <!-- Jumbotron Header -->
     <header class="jumbotron my-3">
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <script>
 
-      <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-  <script>
-
-		/*
-		 * jQuery UI Autocomplete: Using Label-Value Pairs
-		 * https://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html
-     https://github.com/salmanarshad2000/demos/blob/v1.0.4/jquery-ui-autocomplete/using-label-value-pairs.html
-		 */
+    /*
+     * jQuery UI Autocomplete: Using Label-Value Pairs
+     * https://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html
+     * https://github.com/salmanarshad2000/demos/blob/v1.0.4/jquery-ui-autocomplete/using-label-value-pairs.html
+     */
 
     nomes = [];
     $.getJSON("static/persons.json", function(json_data){
@@ -49,11 +47,37 @@
       });
     });
 
-  </script>
-    <p>Personalidade<br>
-    <input id="autocomplete" type="text" placeholder="Personalidade">
-    <input id="autocomplete-value" type="text" name="wiki"></p>
+    $(document).ready ( function () {
+        $(document).on ("click", "#btn", function () {
+            var wiki_id = $('#autocomplete-value').val();
+            var data = { q: wiki_id, search: true};
+            $.ajax({
+              type: 'get',
+              data: data,
+              url: '/entity',
+              error: function () {
+                alert("There was an error processing this page.");
+                return false;
+              },
+              complete: function (output) {
+                $('#entityResults').html(output.responseText);
+              }
+            });
+        });
+    });
 
+    </script>
+        <form class="container-fluid justify-content-center align-items-center">
+        <input type="hidden" id="autocomplete-value" type="text" name="wiki">
+        <div class="control-group">
+            <div class="controls controls-row row-fluid col-xs-4">
+                <input id="autocomplete" class="span10" type="text" placeholder="Personalidade" />
+                <button type="button" id='btn' class="btn btn-primary btn-sm">Pesquisar</button>
+            </div>
+        </div>
+        </form>
+        </header>
+    <!--
     <div id="inner" class="w-85 p-2" align="left">
        <br>
        <h5><a href="/queries?q=example_1"><b>Personalidades do PS que acusaram ou se oposeram a José Sócrates</b></a></h5>
@@ -61,6 +85,10 @@
        <h5><b>Listar relações familiares existentes no grafo</b></h5>
        <br>
      </div>
+    -->
+    <div id="entityResults" class="w-85 p-2" align="left">
+    </div>
+
 
     </header>
 
