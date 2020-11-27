@@ -87,8 +87,10 @@ classifiers
     ---------------
 
         - ao criar a BD adicionar também:
+            - indexar todos os RDF de personalidades e partidos ?
             - imagens
             - partidos
+
 
         - https://spacy.io/usage/training#entity-linker
         - https://spacy.io/api/kb
@@ -120,9 +122,17 @@ classifiers
 
 Web App
 =======
+
+   - indexar todos os RDF de personalidades e partidos ?
    - persons.json: tem entidades duplicadas, mais do que uma imagem
+
    - guerras internas num partido:
         - pessoas do mesmo partido a acusarem pessoas do mesmo partido
+
+   - quem acusou/apoiou <personalidade_com_um_cargo>
+        - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
+        - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
+
    - poder ver as relações entre quaisquer duas pessoas
    - quais os partidos que acusam mais? e que partidos alvo?
    - existem relações familiares no grafo? entre quem?

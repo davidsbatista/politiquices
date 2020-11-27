@@ -1,3 +1,4 @@
+import os
 import json
 import sys
 
@@ -55,16 +56,16 @@ portuguese_persons_occupations = """
 
 # all portuguese political parties
 portuguese_political_parties = """
-    SELECT DISTINCT ?party ?partyLabel ?logo ?inception ?disbanded
+    SELECT DISTINCT ?wiki_id ?partyLabel ?logo ?inception ?disbanded
     WHERE {
-      ?party wdt:P31 wd:Q7278;
+      ?wiki_id wdt:P31 wd:Q7278;
              wdt:P17 wd:Q45.
       OPTIONAL {
-        ?party wdt:P154 ?logo.
+        ?wiki_id wdt:P154 ?logo.
       }
       OPTIONAL {
-        ?party wdt:P576 ?disbanded.
-        ?party wdt:P571 ?inception.
+        ?wiki_id wdt:P576 ?disbanded.
+        ?wiki_id wdt:P571 ?inception.
       }
       SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". }
     } ORDER BY ?partyLabel
@@ -72,22 +73,22 @@ portuguese_political_parties = """
 
 # portuguese banks or banks with headquarters in Lisbon
 portuguese_banks = """
-    SELECT DISTINCT ?bank ?bankLabel WHERE {
+    SELECT DISTINCT ?wiki_id ?bankLabel WHERE {
       { 
         VALUES ?bank_related_instances {wd:Q837171 wd:Q806718}
-        ?bank wdt:P452 ?bank_related_instances;
+        ?wiki_id wdt:P452 ?bank_related_instances;
           rdfs:label ?bankLabel.
-        ?bank wdt:P17 wd:Q45.
+        ?wiki_id wdt:P17 wd:Q45.
       }
       UNION {
-         ?bank wdt:P452 wd:Q806718;
+         ?wiki_id wdt:P452 wd:Q806718;
           rdfs:label ?bankLabel.
-        ?bank wdt:P159 wd:Q597
+        ?wiki_id wdt:P159 wd:Q597
       }
       UNION {
-         ?bank wdt:P31 wd:Q848507;
+         ?wiki_id wdt:P31 wd:Q848507;
           rdfs:label ?bankLabel.
-        ?bank wdt:P159 wd:Q597
+        ?wiki_id wdt:P159 wd:Q597
       }
 
       FILTER((LANG(?bankLabel)) = "pt")
@@ -108,10 +109,10 @@ portuguese_municipalities = """
 
 # all public portuguese enterprises
 portuguese_public_enterprises = """
-    SELECT DISTINCT ?enterprise ?enterpriseLabel ?x WHERE {
-        ?enterprise wdt:P31 wd:Q270791;
+    SELECT DISTINCT ?wiki_id ?enterpriseLabel ?x WHERE {
+        ?wiki_id wdt:P31 wd:Q270791;
           rdfs:label ?enterpriseLabel.
-        ?enterprise wdt:P17 wd:Q45;
+        ?wiki_id wdt:P17 wd:Q45;
       FILTER((LANG(?enterpriseLabel)) = "pt")
     }
     ORDER BY (?enterpriseLabel)
@@ -182,45 +183,70 @@ def load_from_list(fname):
     return wiki_ids_urls
 
 
+def download(ids_to_retrieve, e_type='per', default_dir="wiki_jsons", file_format='json'):
+    base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
+    type_dir = 'persons' if e_type == 'per' else 'parties'
+    for idx, wiki_id in enumerate(set(ids_to_retrieve)):
+        print(str(idx) + "/" + str(len(set(ids_to_retrieve))))
+        just_sleep(5)
+        r = requests.get(base_url, params={"format": file_format, "id": wiki_id})
+        f_name = os.path.join(default_dir, type_dir, wiki_id + "." + file_format)
+        open(f_name, "wt").write(r.text)
+
+
+def gather_ids_to_download(queries, e_type='org', add=None, remove=None):
+    """
+    Get the wiki ids for all relevant entities
+    """
+    endpoint_url = "https://query.wikidata.org/sparql"
+    relevant_persons_ids = []
+
+    value = 'person' if e_type == 'per' else 'wiki_id'
+
+    for query in queries:
+        results = get_results(endpoint_url, query)
+        for r in results["results"]["bindings"]:
+            print(r)
+        wiki_ids = [r[value]["value"].split("/")[-1] for r in results["results"]["bindings"]]
+        relevant_persons_ids.extend(wiki_ids)
+    print(f'{len(relevant_persons_ids)} entities gathered from SPARQL queries')
+    if add:
+        print(f'{len(add)} manually selected entities to be added')
+        relevant_persons_ids.extend(add)
+    if remove:
+        print(f'{len(remove)} manually selected entities to be removed')
+        for el in remove:
+            if el in relevant_persons_ids:
+                relevant_persons_ids.remove(el)
+                print("Removed ", el)
+
+    print(f'{len(relevant_persons_ids)} entities to be loaded')
+
+    return relevant_persons_ids
+
+
 def main():
+    """""
+    # get persons
     queries = [
         affiliated_with_relevant_political_party,
         get_relevant_persons_based_on_public_office_positions(),
         portuguese_persons_occupations,
     ]
-
     to_load = load_from_list('entities_to_add.txt')
     to_remove = load_from_list('entities_to_remove.txt')
+    entities_ids = gather_ids_to_download(queries, to_load, to_remove)
+    download(entities_ids, e_type='per', default_dir='wiki_ttl', file_format='ttl')
+    """""
 
-    base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
-    endpoint_url = "https://query.wikidata.org/sparql"
-    relevant_persons_ids = []
-    default_dir = "wiki_jsons/"
-
-    # get the wiki ids for all relevant persons
-    for query in queries:
-        results = get_results(endpoint_url, query)
-        wiki_ids = [r["person"]["value"].split("/")[-1] for r in results["results"]["bindings"]]
-        relevant_persons_ids.extend(wiki_ids)
-
-    print(f'{len(relevant_persons_ids)} entities gathered from SPARQL queries')
-    print(f'{len(to_load)} manually selected entities to be added')
-    print(f'{len(to_remove)} manually selected entities to be removed')
-    relevant_persons_ids.extend(to_load)
-    for el in to_remove:
-        if el in relevant_persons_ids:
-            relevant_persons_ids.remove(el)
-            print("Removed ", el)
-
-    print(f'{len(relevant_persons_ids)} entities to be loaded')
-
-    # get detailed information for each person
-    for idx, wiki_id in enumerate(set(relevant_persons_ids)):
-        print(str(idx) + "/" + str(len(set(relevant_persons_ids))))
-        just_sleep(5)
-        url = base_url + wiki_id + ".json"
-        r = requests.get(url, params={"format": "json", "id": wiki_id})
-        open(default_dir + 'persons/' + wiki_id + ".json", "wt").write(r.text)
+    # get organisations
+    queries = [
+        portuguese_political_parties,
+        portuguese_banks,
+        portuguese_public_enterprises,
+    ]
+    entities_ids = gather_ids_to_download(queries)
+    download(entities_ids, e_type='org', default_dir='wiki_ttl', file_format='ttl')
 
 
 if __name__ == "__main__":
