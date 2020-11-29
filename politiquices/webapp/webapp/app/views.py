@@ -100,10 +100,14 @@ def list_entities():
         article_counts = query_sparql(get_total_nr_articles_for_each_person(), "local")
         for e in article_counts["results"]["bindings"]:
             wiki_id = e["person"]["value"].split("/")[-1]
-            nr_articles = int(e["count"]["value"])
-            items_as_dict[wiki_id]["nr_articles"] = nr_articles
+            if wiki_id in items_as_dict:
+                nr_articles = int(e["count"]["value"])
+                items_as_dict[wiki_id]["nr_articles"] = nr_articles
 
         items = sorted(list(items_as_dict.values()), key=lambda x: x["nr_articles"], reverse=True)
+
+        print(f"{nr_entities} entities mentioned in titles")
+
         cached_list_entities = items
 
     else:

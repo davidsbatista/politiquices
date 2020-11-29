@@ -2,22 +2,20 @@ import json
 
 from politiquices.webapp.webapp.app.sparql_queries import query_sparql, prefixes
 
+wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
+
 
 def get_persons():
-    query = """
-        SELECT DISTINCT ?personLabel ?item ?image_url {
+    query = f"""
+        SELECT DISTINCT ?personLabel ?item ?image_url {{
             ?item wdt:P31 wd:Q5 # get all human entities from the local graph
-            SERVICE <https://query.wikidata.org/sparql> {
-                OPTIONAL { ?item wdt:P18 ?image_url. }
-                ?item rdfs:label ?personLabel
-                SERVICE wikibase:label { 
-                    bd:serviceParam wikibase:language "pt". 
-                    ?item rdfs:label ?personLabel 
-                }
-            }
-        }
+            SERVICE <{wikidata_endpoint}> {{
+                OPTIONAL {{ ?item wdt:P18 ?image_url. }}
+                ?item rdfs:label ?personLabel FILTER(LANG(?name)="pt") .
+            }}
+        }}
     """
-    result = query_sparql(prefixes + "\n" + query, "local")
+    result = query_sparql(prefixes + "\n" + query)
     persons = []
     for x in result["results"]["bindings"]:
         image_url = None

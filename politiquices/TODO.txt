@@ -122,8 +122,8 @@ classifiers
 
 Web App
 =======
+   - rever o politiquices.ttl
 
-   - indexar todos os RDF de personalidades e partidos ?
    - persons.json: tem entidades duplicadas, mais do que uma imagem
 
    - guerras internas num partido:
@@ -190,6 +190,7 @@ Web App
 
 SPARQL DB
 =========
+    - text index in SPARQL: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
     - how to get SPARQL results with empty subject for repeated statements, i.e.: image + all offices ?
     - use OR in FILTER to avoid doing two queries:
             https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
@@ -201,3 +202,6 @@ SPARQL DB
    Federated queries:
       - http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/
       - https://stackoverflow.com/questions/53012303/using-wikidata-label-service-in-federated-queries
+
+    https://www.wikidata.org/wiki/Wikidata:Glossary
+    https://www.wikidata.org/wiki/Wikidata:Glossary#Statement

@@ -1,8 +1,13 @@
-
 sparql:
-	# start the SPARQL server and load the generated triples
-	docker build -t fuseki-docker fuseki-docker/
-	docker run -d -p 3030:3030 -v $(shell pwd)/triples:/usr/share/data fuseki-docker --file=/usr/share/data/sample.ttl /arquivo
+	# start a container running fuseki-docker, mapping:
+	#	- port 3030 on the host to port 3030 on container
+	#
+	# 	NOTE: this takes a while, around 10min:
+	#		  build: first it just builds the image copying the big ttl files
+	#			run: builds TBD files and starts the fuski-service
+	docker build -t fuseki-docker fuseki-docker
+	docker run -dit -p 3030:3030 fuseki-docker /init.sh  # --tdb2 # --config=/fuseki/config.ttl
+
 
 web:
 	# create the python venv and launch the webapp
@@ -14,4 +19,3 @@ web:
 
 
 all: sparql	web
-

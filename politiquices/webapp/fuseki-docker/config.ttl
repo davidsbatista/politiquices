@@ -1,0 +1,36 @@
+@prefix :        <#> .
+@prefix fuseki:  <http://jena.apache.org/fuseki#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix tdb:     <http://jena.hpl.hp.com/2008/tdb#> .
+@prefix ja:      <http://jena.hpl.hp.com/2005/11/Assembler#> .
+
+
+<#service_politiquices> rdf:type fuseki:Service ;
+                      rdfs:label "TDB politiquices" ;
+                     fuseki:name "politiquices" ;
+             fuseki:serviceQuery "query" ;
+                  fuseki:dataset <#tdb_ds_politiquices> .
+
+<#tdb_ds_politiquices> rdf:type tdb:DatasetTDB ;
+                   tdb:location "/fuseki/politiquices" .
+
+<#service_wikidata> rdf:type fuseki:Service ;
+                  rdfs:label "TDB wikidata" ;
+                 fuseki:name "wikidata" ;
+         fuseki:serviceQuery "query" ;
+              fuseki:dataset <#tdb_ds_wikidata> .
+
+<#tdb_ds_wikidata> rdf:type tdb:DatasetTDB ;
+               tdb:location "/fuseki/wikidata/" .
+
+# ToDo: name the graphs and used NAMED and or GRAPH
+# https://stackoverflow.com/questions/26121947/query-multiple-tdb-datasets
+# query for names: https://jena.apache.org/documentation/fuseki2/soh.html#soh-sparql-query
+# https://github.com/SemanticComputing/fuseki-docker/blob/master/assembler.ttl
+#:g1 a tdb:GraphTDB ;
+#  tdb:dataset :ds1 ;
+#  tdb:graphName foo:the-dataset .
+
+#<#tdbGraph> a tdb:GraphTDB ;
+#tdb:dataset <#tdb_dataset_politiquices> .

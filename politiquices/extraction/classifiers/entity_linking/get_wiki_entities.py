@@ -179,18 +179,18 @@ def get_results(endpoint_url, sarpql_query):
 
 def load_from_list(fname):
     with open(fname, 'rt') as f_in:
-        wiki_ids_urls = [line.split(',')[0].split("/")[-1] for line in f_in]
+        wiki_ids_urls = [line.split(',')[0].split("/")[-1].strip()
+                         for line in f_in if not line.startswith('#')]
     return wiki_ids_urls
 
 
-def download(ids_to_retrieve, e_type='per', default_dir="wiki_jsons", file_format='json'):
+def download(ids_to_retrieve, default_dir="wiki_jsons", file_format='json'):
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
-    type_dir = 'persons' if e_type == 'per' else 'parties'
     for idx, wiki_id in enumerate(set(ids_to_retrieve)):
         print(str(idx) + "/" + str(len(set(ids_to_retrieve))))
         just_sleep(5)
         r = requests.get(base_url, params={"format": file_format, "id": wiki_id})
-        f_name = os.path.join(default_dir, type_dir, wiki_id + "." + file_format)
+        f_name = os.path.join(default_dir, wiki_id + "." + file_format)
         open(f_name, "wt").write(r.text)
 
 
@@ -205,8 +205,6 @@ def gather_ids_to_download(queries, e_type='org', add=None, remove=None):
 
     for query in queries:
         results = get_results(endpoint_url, query)
-        for r in results["results"]["bindings"]:
-            print(r)
         wiki_ids = [r[value]["value"].split("/")[-1] for r in results["results"]["bindings"]]
         relevant_persons_ids.extend(wiki_ids)
     print(f'{len(relevant_persons_ids)} entities gathered from SPARQL queries')
@@ -245,8 +243,9 @@ def main():
         portuguese_banks,
         portuguese_public_enterprises,
     ]
-    entities_ids = gather_ids_to_download(queries)
-    download(entities_ids, e_type='org', default_dir='wiki_ttl', file_format='ttl')
+    to_load = load_from_list('entities_to_add.txt')
+    entities_ids = gather_ids_to_download(queries, add=to_load)
+    download(entities_ids, default_dir='wiki_ttl', file_format='ttl')
 
 
 if __name__ == "__main__":

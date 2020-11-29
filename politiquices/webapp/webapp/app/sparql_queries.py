@@ -12,21 +12,34 @@ from politiquices.webapp.webapp.app.data_models import (
 )
 from politiquices.webapp.webapp.app.utils import convert_dates
 
+wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
+
 socrates = None
 no_image = "/static/images/no_picture.jpg"
 ps_logo = "/static/images/Logo_do_Partido_Socialista(Portugal).png"
 
-prefixes = """
-    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX        bd:  <http://www.bigdata.com/rdf#>
-    PREFIX  wikibase:  <http://wikiba.se/ontology#>
+politiquices_prefixes = """    
     PREFIX        dc: <http://purl.org/dc/elements/1.1/>
     PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX my_prefix: <http://some.namespace/with/name#>
     PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
     PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
     """
+
+wikidata_prefixes = """
+    PREFIX        wd: <http://www.wikidata.org/entity/>
+    PREFIX       wds: <http://www.wikidata.org/entity/statement/>
+    PREFIX       wdv: <http://www.wikidata.org/value/>
+    PREFIX       wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX  wikibase: <http://wikiba.se/ontology#>
+    PREFIX         p: <http://www.wikidata.org/prop/>
+    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX        bd: <http://www.bigdata.com/rdf#>
+    """
+
+prefixes = politiquices_prefixes + wikidata_prefixes
 
 
 def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
@@ -92,29 +105,36 @@ def get_nr_of_persons() -> int:
 
 
 def get_person_info(wiki_id):
-    query = f"""SELECT DISTINCT ?name ?image_url ?political_party ?political_partyLabel 
-                                ?political_party_logo ?officeLabel ?start ?end
+    query = f"""SELECT ?name ?office ?office_label ?start ?end ?image_url ?political_party_logo 
+                       ?political_party ?political_party_label 
                 WHERE {{
-                    wd:{wiki_id} rdfs:label ?name filter (lang(?name) = "pt").
+                    
+                    wd:{wiki_id} rdfs:label ?name 
+                        FILTER(LANG(?name)="pt") .
+                    
                     OPTIONAL {{ wd:{wiki_id} wdt:P18 ?image_url. }}
-                    OPTIONAL {{ 
-                        wd:{wiki_id} p:P102 ?political_partyStmnt. 
-                        ?political_partyStmnt ps:P102 ?political_party. 
-                        OPTIONAL {{ ?political_party wdt:P154 ?political_party_logo. }}
-                    }}
+                    
                     OPTIONAL {{
                         wd:{wiki_id} p:P39 ?officeStmnt.
                         ?officeStmnt ps:P39 ?office.
-                        OPTIONAL {{ ?officeStmnt pq:P580 ?start. }}
-                        OPTIONAL {{ ?officeStmnt pq:P582 ?end. }}
+                        ?office rdfs:label ?office_label 
+                            FILTER(LANG(?office_label)="pt")
                     }}
-                    SERVICE wikibase:label {{
-                        bd:serviceParam wikibase:language "pt". 
+                    
+                    OPTIONAL {{ ?officeStmnt pq:P580 ?start. }}                
+                    OPTIONAL {{ ?officeStmnt pq:P582 ?end. }}                    
+                    OPTIONAL {{
+                        wd:{wiki_id} p:P102 ?political_partyStmnt.
+                        ?political_partyStmnt ps:P102 ?political_party.
+                        ?political_party rdfs:label ?political_party_label 
+                            FILTER(LANG(?political_party_label)="pt").
+                        OPTIONAL {{ ?political_party wdt:P154 ?political_party_logo. }}
                     }}
                 }}
             """
 
-    results = query_sparql(query, "wiki")
+    results = query_sparql(prefixes + "\n" + query, "wiki")
+
     name = None
     image_url = None
     parties = []
@@ -135,7 +155,7 @@ def get_person_info(wiki_id):
 
             party = PoliticalParty(
                 wiki_id=e["political_party"]["value"].split("/")[-1],
-                name=e["political_partyLabel"]["value"] if "political_partyLabel" in e else None,
+                name=e["political_party_label"]["value"] if "political_party_label" in e else None,
                 image_url=e["political_party_logo"]["value"]
                 if "political_party_logo" in e
                 else party_image_url,
@@ -144,11 +164,11 @@ def get_person_info(wiki_id):
                 parties.append(party)
 
         # office positions
-        if "officeLabel" in e:
+        if "office_label" in e:
             office_position = OfficePosition(
                 start=convert_dates(e["start"]["value"]) if "start" in e else None,
                 end=convert_dates(e["end"]["value"]) if "end" in e else None,
-                position=e["officeLabel"]["value"],
+                position=e["office_label"]["value"],
             )
             if office_position not in offices:
                 offices.append(office_position)
@@ -276,7 +296,7 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
                          dc:date ?date.
             ?ent1 rdfs:label ?ent1_name .
             
-            SERVICE <https://query.wikidata.org/sparql> {{
+            SERVICE <{wikidata_endpoint}> {{
                 ?ent1 wdt:P102 wd:{party};
                       rdfs:label ?personLabel.
                 FILTER(LANG(?personLabel) = "pt")
@@ -314,7 +334,7 @@ def get_persons_affiliated_with_party(political_party: str) -> List[Person]:
     query = f"""
         SELECT DISTINCT ?person ?personLabel ?image_url {{
           ?person wdt:P31 wd:Q5.
-          SERVICE <https://query.wikidata.org/sparql> {{
+          SERVICE <{wikidata_endpoint}> {{
               ?person wdt:P102 wd:{political_party} .
               ?person rdfs:label ?personLabel .
               OPTIONAL {{ ?person wdt:P18 ?image_url. }}
@@ -328,9 +348,11 @@ def get_persons_affiliated_with_party(political_party: str) -> List[Person]:
     for x in results["results"]["bindings"]:
         image = x["image_url"]["value"] if "image_url" in x else no_image
         persons.append(
-            Person(name=x["personLabel"]["value"],
-                   wiki_id=x["person"]["value"].split("/")[-1],
-                   image_url=image)
+            Person(
+                name=x["personLabel"]["value"],
+                wiki_id=x["person"]["value"].split("/")[-1],
+                image_url=image,
+            )
         )
     return persons
 
@@ -352,44 +374,52 @@ def get_top_relationships(wiki_id: str):
     persons = []
     for x in results["results"]["bindings"]:
         persons.append(
-            {'wiki_id': x['ent2']['value'].split("/")[-1],
-             'name': x['ent2_name']['value'],
-             'rel_type': x['rel_type']['value'],
-             'nr_articles': int(x['nr_articles']['value']),
-             }
+            {
+                "wiki_id": x["ent2"]["value"].split("/")[-1],
+                "name": x["ent2_name"]["value"],
+                "rel_type": x["rel_type"]["value"],
+                "nr_articles": int(x["nr_articles"]["value"]),
+            }
         )
     return persons
 
 
 def get_all_parties():
-    query = """
-        SELECT DISTINCT ?political_party ?party_label ?party_logo (COUNT(?person) as ?nr_personalities){
+    query = f"""
+        SELECT DISTINCT ?political_party ?party_label ?party_logo 
+                        (COUNT(?person) as ?nr_personalities){{
             ?person wdt:P31 wd:Q5 .
-            SERVICE <https://query.wikidata.org/sparql> {
+            SERVICE <{wikidata_endpoint}> {{
                 ?person wdt:P102 ?political_party .
                 ?political_party rdfs:label ?party_label .
-                OPTIONAL {?political_party wdt:P154 ?party_logo. } 
+                OPTIONAL {{?political_party wdt:P154 ?party_logo. }} 
                 FILTER(LANG(?party_label) = "pt")
-          }
-        } GROUP BY ?political_party ?party_label ?party_logo
+          }}
+        }} GROUP BY ?political_party ?party_label ?party_logo
         ORDER BY DESC(?nr_personalities)
         """
+
     results = query_sparql(prefixes + "\n" + query, "local")
     political_parties = []
     for x in results["results"]["bindings"]:
-        if 'party_logo' in x:
-            party_logo = x['party_logo']['value']
+
+        print(x)
+        print("\n")
+
+        if "party_logo" in x:
+            party_logo = x["party_logo"]["value"]
         else:
-            if x['political_party']['value'].split("/")[-1] == 'Q847263':
+            if x["political_party"]["value"].split("/")[-1] == "Q847263":
                 party_logo = ps_logo
             else:
                 party_logo = no_image
         political_parties.append(
-            {'wiki_id': x['political_party']['value'].split("/")[-1],
-             'party_label': x['party_label']['value'],
-             'party_logo': party_logo,
-             'nr_personalities': x['nr_personalities']['value'],
-             }
+            {
+                "wiki_id": x["political_party"]["value"].split("/")[-1],
+                "party_label": x["party_label"]["value"],
+                "party_logo": party_logo,
+                "nr_personalities": x["nr_personalities"]["value"],
+            }
         )
 
     return political_parties
@@ -397,30 +427,27 @@ def get_all_parties():
 
 def initalize():
     # get: wiki_id, name(label), image_url
-    query = """
-        SELECT DISTINCT ?item ?label ?image_url {
+    query = f"""
+        SELECT DISTINCT ?item ?label ?image_url {{
             ?item wdt:P31 wd:Q5.
-            SERVICE <https://query.wikidata.org/sparql> {
-                ?item wdt:P31 wd:Q5.
-                OPTIONAL { ?item wdt:P18 ?image_url. }
-                SERVICE wikibase:label { 
-                    bd:serviceParam wikibase:language "pt". 
-                    ?item rdfs:label ?label }
-                }
-            }
+            SERVICE <{wikidata_endpoint}> {{
+                ?item rdfs:label ?label .
+                FILTER(LANG(?label) = "pt")
+                OPTIONAL {{ ?item wdt:P18 ?image_url. }}                
+                }}
+            }}
         ORDER BY ?label
         """
+
     return prefixes + "\n" + query
 
 
 def query_sparql(query, endpoint):
+
     if endpoint == "wiki":
-        endpoint_url = "https://query.wikidata.org/sparql"
+        endpoint_url = wikidata_endpoint
     elif endpoint == "local":
-        endpoint_url = "http://0.0.0.0:3030/arquivo/query"
-    else:
-        print("endpoint not valid")
-        return None
+        endpoint_url = "http://0.0.0.0:3030/politiquices/query"
 
     # ToDo: see user agent policy: https://w.wiki/CX6
     user_agent = "Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
