@@ -403,9 +403,6 @@ def get_all_parties():
     political_parties = []
     for x in results["results"]["bindings"]:
 
-        print(x)
-        print("\n")
-
         if "party_logo" in x:
             party_logo = x["party_logo"]["value"]
         else:

@@ -85,13 +85,6 @@ classifiers
 
     entity_linking:
     ---------------
-
-        - ao criar a BD adicionar também:
-            - indexar todos os RDF de personalidades e partidos ?
-            - imagens
-            - partidos
-
-
         - https://spacy.io/usage/training#entity-linker
         - https://spacy.io/api/kb
 
