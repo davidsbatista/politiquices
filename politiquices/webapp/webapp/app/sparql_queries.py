@@ -1,5 +1,6 @@
 import sys
-from typing import Tuple, List, Dict
+from collections import defaultdict
+from typing import Tuple, List, Dict, Any
 
 from cachew import cachew as cache_fixe
 from SPARQLWrapper import SPARQLWrapper, JSON
@@ -52,7 +53,7 @@ def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
         GROUP BY (YEAR(?date) AS ?year)
         ORDER BY ?year
         """
-    result = query_sparql(prefixes + "\n" + query, "local")
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
     year = []
     nr_articles = []
 
@@ -72,21 +73,23 @@ def get_total_nr_of_articles() -> int:
             ?x my_prefix:arquivo ?y .
         }
         """
-    results = query_sparql(prefixes + "\n" + query, "local")
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
     return results["results"]["bindings"][0]["nr_articles"]["value"]
 
 
 def get_total_nr_articles_for_each_person():
     query = """
         SELECT ?person_name ?person (COUNT(*) as ?count){
-            ?person rdfs:label ?person_name .
-            ?person wdt:P31 wd:Q5 .
-            {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
-            ?rel my_prefix:arquivo ?arquivo_doc .
-            ?arquivo_doc dc:title ?title .
-            }
+          ?person wdt:P31 wd:Q5 ;
+                  rdfs:label ?person_name .            
+          {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
+           ?rel my_prefix:type ?rel_type 
+             FILTER(?rel_type!="other") .
+          ?rel my_prefix:arquivo ?arquivo_doc .
+          ?arquivo_doc dc:title ?title .
+        }
         GROUP BY ?person_name ?person
-        ORDER BY DESC (?count)
+        ORDER BY DESC (?count) ASC (?person_name)
         """
     return prefixes + "\n" + query
 
@@ -100,7 +103,7 @@ def get_nr_of_persons() -> int:
             ?x wdt:P31 wd:Q5
             } 
         """
-    results = query_sparql(prefixes + "\n" + query, "local")
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
     return results["results"]["bindings"][0]["nr_persons"]["value"]
 
 
@@ -133,7 +136,7 @@ def get_person_info(wiki_id):
                 }}
             """
 
-    results = query_sparql(prefixes + "\n" + query, "wiki")
+    results = query_sparql(prefixes + "\n" + query, "wikidata")
 
     name = None
     image_url = None
@@ -178,155 +181,144 @@ def get_person_info(wiki_id):
     )
 
 
-def get_person_relationships(wiki_id: str, rel_type: str, reverse: bool = False) -> List[Dict]:
-    """
-    :param reverse:
-    :param wiki_id:
-    :param rel_type: ent1_opposes_ent2, ent1_support_ent2,
-    :return:
-    """
-
-    # set the order of the relationship, by default wiki_id is ent1
-    arg_order = f"""
-                ?rel my_prefix:ent1 wd:{wiki_id} .
-                ?rel my_prefix:ent1_str ?focus_ent .
-                ?rel my_prefix:ent2 ?other_ent .
-                ?rel my_prefix:ent2_str ?other_ent_name .
-                """
-
-    # otherwise swap arguments
-    if reverse:
-        arg_order = f"""
-                    ?rel my_prefix:ent2 wd:{wiki_id} .
-                    ?rel my_prefix:ent2_str ?focus_ent .
-                    ?rel my_prefix:ent1 ?other_ent .
-                    ?rel my_prefix:ent1_str ?other_ent_name .
-                    """
-
+def get_person_relationships(wiki_id):
     query = f"""
-        SELECT DISTINCT ?arquivo_doc ?date ?title ?score ?focus_ent ?other_ent ?other_ent_name
+        SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
         WHERE {{
-          {arg_order}
-          
-          ?rel my_prefix:type ?rel_type;
-               my_prefix:score ?score.
-          ?rel my_prefix:arquivo ?arquivo_doc .
-          
-          ?arquivo_doc dc:title ?title .
-          ?arquivo_doc dc:date  ?date .
-          
-          FILTER (?rel_type = "{rel_type}")
-        }}
-        ORDER BY ASC(?score)
+         {{ ?rel my_prefix:ent1 wd:{wiki_id} }} UNION {{?rel my_prefix:ent2 wd:{wiki_id} }}
+        
+            ?rel my_prefix:type ?rel_type;
+                 my_prefix:score ?score.
+    
+             ?rel my_prefix:ent1 ?ent1 ;
+                  my_prefix:ent2 ?ent2 ;
+                  my_prefix:ent1_str ?ent1_str ;
+                  my_prefix:ent2_str ?ent2_str ;
+                  my_prefix:arquivo ?arquivo_doc .
+         
+              ?arquivo_doc dc:title ?title ;
+                           dc:date  ?date .
+            }}
+            ORDER BY ASC(?score)
         """
 
-    results = query_sparql(prefixes + "\n" + query, "local")
-    relations = []
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    relations = defaultdict(list)
 
     for e in results["results"]["bindings"]:
-        rel = {
-            "url": e["arquivo_doc"]["value"],
-            "title": e["title"]["value"],
-            "score": str(e["score"]["value"])[0:5],
-            "date": e["date"]["value"].split("T")[0],
-            "focus_ent": e["focus_ent"]["value"],
-            "other_ent_url": "entity?q=" + e["other_ent"]["value"].split("/")[-1],
-            "other_ent_name": e["other_ent_name"]["value"],
-        }
-        relations.append(rel)
+        ent1_wiki = e["ent1"]["value"].split("/")[-1].strip()
+        ent2_wiki = e["ent2"]["value"].split("/")[-1].strip()
+
+        if e["rel_type"]["value"] == "ent1_supports_ent2":
+
+            if wiki_id == ent1_wiki:
+                rel_type = "supports"
+                other_ent_url = ent2_wiki
+                other_ent_name = e["ent2_str"]["value"].split("/")[-1]
+                focus_ent = e["ent1_str"]["value"].split("/")[-1]
+
+            elif wiki_id == ent2_wiki:
+                rel_type = "supported_by"
+                other_ent_url = ent1_wiki
+                other_ent_name = e["ent1_str"]["value"].split("/")[-1]
+                focus_ent = e["ent2_str"]["value"].split("/")[-1]
+
+        elif e["rel_type"]["value"] == "ent1_opposes_ent2":
+
+            if wiki_id == ent1_wiki:
+                rel_type = "opposes"
+                other_ent_url = ent2_wiki
+                other_ent_name = e["ent2_str"]["value"].split("/")[-1]
+                focus_ent = e["ent1_str"]["value"].split("/")[-1]
+
+            elif wiki_id == ent2_wiki:
+                rel_type = "opposed_by"
+                other_ent_url = ent1_wiki
+                other_ent_name = e["ent1_str"]["value"].split("/")[-1]
+                focus_ent = e["ent2_str"]["value"].split("/")[-1]
+
+        elif e["rel_type"]["value"] == "ent2_supports_ent1":
+
+            if wiki_id == ent2_wiki:
+                rel_type = "supports"
+                other_ent_url = ent1_wiki
+                other_ent_name = e["ent1_str"]["value"].split("/")[-1]
+                focus_ent = e["ent2_str"]["value"].split("/")[-1]
+
+            elif wiki_id == ent1_wiki:
+                rel_type = "supported_by"
+                other_ent_url = ent2_wiki
+                other_ent_name = e["ent2_str"]["value"].split("/")[-1]
+                focus_ent = e["ent1_str"]["value"].split("/")[-1]
+
+        elif e["rel_type"]["value"] == "ent2_opposes_ent1":
+
+            if wiki_id == ent2_wiki:
+                rel_type = "opposes"
+                other_ent_url = ent1_wiki
+                other_ent_name = e["ent1_str"]["value"].split("/")[-1]
+                focus_ent = e["ent2_str"]["value"].split("/")[-1]
+
+            elif wiki_id == ent1_wiki:
+                rel_type = "opposed_by"
+                other_ent_url = ent2_wiki
+                other_ent_name = e["ent2_str"]["value"].split("/")[-1]
+                focus_ent = e["ent1_str"]["value"].split("/")[-1]
+
+        elif e["rel_type"]["value"] == "other":
+            continue
+            # ToDo: mostrar, podem depois ser corrigidas/anotadas
+
+        else:
+            raise Exception(e["rel_type"]["value"] + 'not known')
+
+        relations[rel_type].append({
+                "url": e["arquivo_doc"]["value"],
+                "title": e["title"]["value"],
+                "score": str(e["score"]["value"])[0:5],
+                "date": e["date"]["value"].split("T")[0],
+                "focus_ent": focus_ent,
+                "other_ent_url": "entity?q=" + other_ent_url,
+                "other_ent_name": other_ent_name,
+            })
 
     return relations
 
 
-def get_person_relationships_by_month_year(wiki_id, rel_type, reverse=False):
-
-    # set the order of the relationship, by default wiki_id is ent1
-    arg_order = f"""
-                ?rel my_prefix:ent1 wd:{wiki_id} .
-                ?rel my_prefix:ent2 ?other_ent .
-                """
-
-    # otherwise swap arguments
-    if reverse:
-        arg_order = f"""
-                    ?rel my_prefix:ent2 wd:{wiki_id} .
-                    ?rel my_prefix:ent1 ?other_ent .
-                    """
+def get_person_rels_by_month_year(wiki_id, rel_type, ent='ent1'):
 
     query = f"""
-        SELECT ?year ?month (COUNT(?arquivo_doc) as ?nr_articles)
+        SELECT DISTINCT ?year ?month (COUNT(?arquivo_doc) as ?nr_articles)
         WHERE {{
-          {arg_order}
-          ?rel my_prefix:type ?rel_type .
-          ?other_ent rdfs:label ?other_ent_name .
-          ?rel my_prefix:arquivo ?arquivo_doc .
-          ?arquivo_doc dc:title ?title .
-          ?arquivo_doc dc:date  ?date .
-          FILTER (?rel_type = "{rel_type}")
+
+              ?rel my_prefix:{ent} wd:{wiki_id} .
+              ?rel my_prefix:type ?rel_type ;
+                   my_prefix:score ?score.
+
+              FILTER (?rel_type = "{rel_type}")
+
+              ?rel my_prefix:ent1 ?ent1 ;
+                   my_prefix:ent2 ?ent2 ;
+                   my_prefix:ent1_str ?ent1_str ;
+                   my_prefix:ent2_str ?ent2_str ;
+                   my_prefix:arquivo ?arquivo_doc .
+            
+              ?arquivo_doc dc:title ?title ;
+                           dc:date  ?date .
         }}
-        GROUP BY (YEAR(?date) AS ?year) (MONTH(?date) AS ?month)
-        ORDER BY ?year
-        """
-    result = query_sparql(prefixes + "\n" + query, "local")
+    GROUP BY (YEAR(?date) AS ?year) (MONTH(?date) AS ?month)
+    ORDER BY ?year
+    """
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+
     # dicts are insertion ordered
     year_month_articles = dict()
     for x in result["results"]["bindings"]:
         year = x["year"]["value"]
         month = x["month"]["value"]
         year_month_articles[(str(year) + "-" + str(month))] = int(x["nr_articles"]["value"])
+
     return year_month_articles
-
-
-def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", party="Q847263"):
-
-    global socrates
-
-    if socrates:
-        return socrates
-
-    query = f"""        
-        SELECT DISTINCT ?ent1 ?ent1_name ?image_url ?arquivo_doc ?date ?title ?score
-        WHERE {{
-            ?rel my_prefix:type "ent1_opposes_ent2";
-                 my_prefix:ent2 wd:{wiki_id};
-                 my_prefix:ent1 ?ent1;
-                 my_prefix:score ?score;
-                 my_prefix:arquivo ?arquivo_doc .
-            ?arquivo_doc dc:title ?title;
-                         dc:date ?date.
-            ?ent1 rdfs:label ?ent1_name .
-            
-            SERVICE <{wikidata_endpoint}> {{
-                ?ent1 wdt:P102 wd:{party};
-                      rdfs:label ?personLabel.
-                FILTER(LANG(?personLabel) = "pt")
-                OPTIONAL {{ ?ent1 wdt:P18 ?image_url. }}
-                SERVICE wikibase:label {{ 
-                    bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label 
-                }}
-            }}
-        }}
-        ORDER BY DESC(?date) ASC(?score)
-        """
-    result = query_sparql(prefixes + "\n" + query, "local")
-    results = []
-    for x in result["results"]["bindings"]:
-        image = x["image_url"]["value"] if "image_url" in x else no_image
-        person = Person(name=x["ent1_name"]["value"], wiki_id=x["ent1"]["value"], image_url=image)
-        rel = Relationship(
-            article_title=x["title"]["value"],
-            article_url=x["arquivo_doc"]["value"],
-            article_date=x["date"]["value"].split("T")[0],
-            rel_type=RelationshipType.ent1_opposes_ent2,
-            rel_score=x["score"]["value"][0:5],
-            ent1=person,
-            ent2=Person(wiki_id=wiki_id),
-        )
-        results.append(rel)
-
-    socrates = results
-
-    return results
 
 
 def get_persons_affiliated_with_party(political_party: str) -> List[Person]:
@@ -343,7 +335,7 @@ def get_persons_affiliated_with_party(political_party: str) -> List[Person]:
         }}
         """
 
-    results = query_sparql(prefixes + "\n" + query, "local")
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
     persons = []
     for x in results["results"]["bindings"]:
         image = x["image_url"]["value"] if "image_url" in x else no_image
@@ -353,33 +345,6 @@ def get_persons_affiliated_with_party(political_party: str) -> List[Person]:
                 wiki_id=x["person"]["value"].split("/")[-1],
                 image_url=image,
             )
-        )
-    return persons
-
-
-def get_top_relationships(wiki_id: str):
-    query = f"""
-        SELECT ?rel_type ?ent2 ?ent2_name (COUNT(?arquivo_doc) as ?nr_articles)
-        WHERE {{ 
-          ?rel my_prefix:ent1 wd:{wiki_id}  .
-          ?rel my_prefix:ent2 ?ent2 .
-          ?ent2 rdfs:label ?ent2_name .
-          ?rel my_prefix:type ?rel_type .
-          ?rel my_prefix:arquivo ?arquivo_doc .
-          FILTER(?rel_type != "other")
-        }} GROUP BY ?rel_type ?ent2 ?ent2_name
-        ORDER BY ?rel_type DESC(?nr_articles)
-        """
-    results = query_sparql(prefixes + "\n" + query, "local")
-    persons = []
-    for x in results["results"]["bindings"]:
-        persons.append(
-            {
-                "wiki_id": x["ent2"]["value"].split("/")[-1],
-                "name": x["ent2_name"]["value"],
-                "rel_type": x["rel_type"]["value"],
-                "nr_articles": int(x["nr_articles"]["value"]),
-            }
         )
     return persons
 
@@ -399,7 +364,7 @@ def get_all_parties():
         ORDER BY DESC(?nr_personalities)
         """
 
-    results = query_sparql(prefixes + "\n" + query, "local")
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
     political_parties = []
     for x in results["results"]["bindings"]:
 
@@ -439,11 +404,91 @@ def initalize():
     return prefixes + "\n" + query
 
 
+# ToDo: not being used
+def get_top_relationships(wiki_id: str):
+    query = f"""
+        SELECT ?rel_type ?ent2 ?ent2_name (COUNT(?arquivo_doc) as ?nr_articles)
+        WHERE {{ 
+          ?rel my_prefix:ent1 wd:{wiki_id}  .
+          ?rel my_prefix:ent2 ?ent2 .
+          ?ent2 rdfs:label ?ent2_name .
+          ?rel my_prefix:type ?rel_type .
+          ?rel my_prefix:arquivo ?arquivo_doc .
+          FILTER(?rel_type != "other")
+        }} GROUP BY ?rel_type ?ent2 ?ent2_name
+        ORDER BY ?rel_type DESC(?nr_articles)
+        """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    persons = []
+    for x in results["results"]["bindings"]:
+        persons.append(
+            {
+                "wiki_id": x["ent2"]["value"].split("/")[-1],
+                "name": x["ent2_name"]["value"],
+                "rel_type": x["rel_type"]["value"],
+                "nr_articles": int(x["nr_articles"]["value"]),
+            }
+        )
+    return persons
+
+
+# ToDo: not being used
+def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", party="Q847263"):
+    global socrates
+
+    if socrates:
+        return socrates
+
+    query = f"""        
+        SELECT DISTINCT ?ent1 ?ent1_name ?image_url ?arquivo_doc ?date ?title ?score
+        WHERE {{
+            ?rel my_prefix:type "ent1_opposes_ent2";
+                 my_prefix:ent2 wd:{wiki_id};
+                 my_prefix:ent1 ?ent1;
+                 my_prefix:score ?score;
+                 my_prefix:arquivo ?arquivo_doc .
+            ?arquivo_doc dc:title ?title;
+                         dc:date ?date.
+            ?ent1 rdfs:label ?ent1_name .
+
+            SERVICE <{wikidata_endpoint}> {{
+                ?ent1 wdt:P102 wd:{party};
+                      rdfs:label ?personLabel.
+                FILTER(LANG(?personLabel) = "pt")
+                OPTIONAL {{ ?ent1 wdt:P18 ?image_url. }}
+                SERVICE wikibase:label {{ 
+                    bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label 
+                }}
+            }}
+        }}
+        ORDER BY DESC(?date) ASC(?score)
+        """
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = []
+    for x in result["results"]["bindings"]:
+        image = x["image_url"]["value"] if "image_url" in x else no_image
+        person = Person(name=x["ent1_name"]["value"], wiki_id=x["ent1"]["value"], image_url=image)
+        rel = Relationship(
+            article_title=x["title"]["value"],
+            article_url=x["arquivo_doc"]["value"],
+            article_date=x["date"]["value"].split("T")[0],
+            rel_type=RelationshipType.ent1_opposes_ent2,
+            rel_score=x["score"]["value"][0:5],
+            ent1=person,
+            ent2=Person(wiki_id=wiki_id),
+        )
+        results.append(rel)
+
+    socrates = results
+
+    return results
+
+
 def query_sparql(query, endpoint):
 
-    if endpoint == "wiki":
+    if endpoint == "wikidata":
         endpoint_url = wikidata_endpoint
-    elif endpoint == "local":
+    elif endpoint == "politiquices":
         endpoint_url = "http://0.0.0.0:3030/politiquices/query"
 
     # ToDo: see user agent policy: https://w.wiki/CX6

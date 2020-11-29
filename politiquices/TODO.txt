@@ -117,8 +117,6 @@ Web App
 =======
    - rever o politiquices.ttl
 
-   - persons.json: tem entidades duplicadas, mais do que uma imagem
-
    - guerras internas num partido:
         - pessoas do mesmo partido a acusarem pessoas do mesmo partido
 

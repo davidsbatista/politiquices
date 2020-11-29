@@ -1,11 +1,7 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 from datetime import datetime
-from typing import Tuple, List
 
-from politiquices.webapp.webapp.app.sparql_queries import (
-    get_person_relationships,
-    get_person_relationships_by_month_year,
-)
+from politiquices.webapp.webapp.app.sparql_queries import get_person_rels_by_month_year
 
 
 def monthlist_fast(start, end):
@@ -43,24 +39,37 @@ def get_all_months(few_months_freq, months_lst):
     return year_months_values
 
 
-def build_list_relationships_articles(wiki_id: str) -> Tuple[List, List, List, List]:
-    opposed = get_person_relationships(wiki_id, "ent1_opposes_ent2")
-    supported = get_person_relationships(wiki_id, "ent1_supports_ent2")
-    opposed_by = get_person_relationships(wiki_id, "ent1_opposes_ent2", reverse=True)
-    supported_by = get_person_relationships(wiki_id, "ent1_supports_ent2", reverse=True)
-
-    return opposed, supported, opposed_by, supported_by
-
-
 def build_relationships_freq(wiki_id: str):
-    opposed_freq = get_person_relationships_by_month_year(wiki_id, "ent1_opposes_ent2")
-    supported_freq = get_person_relationships_by_month_year(wiki_id, "ent1_supports_ent2")
-    opposed_by_freq = get_person_relationships_by_month_year(
-        wiki_id, "ent1_opposes_ent2", reverse=True
-    )
-    supported_by_freq = get_person_relationships_by_month_year(
-        wiki_id, "ent1_supports_ent2", reverse=True
-    )
+
+    # supports
+    supported_freq_one = get_person_rels_by_month_year(wiki_id, 'ent1_supports_ent2', ent='ent1')
+    supported_freq_two = get_person_rels_by_month_year(wiki_id, 'ent2_supports_ent1', ent='ent2')
+    supported_freq_sum = Counter(supported_freq_one) + Counter(supported_freq_two)
+    supported_freq = {k: supported_freq_sum[k] for k in sorted(supported_freq_sum)}
+
+    # opposes
+    opposed_freq_one = get_person_rels_by_month_year(wiki_id, 'ent1_opposes_ent2', ent='ent1')
+    opposed_freq_two = get_person_rels_by_month_year(wiki_id, 'ent2_opposes_ent1', ent='ent2')
+    opposed_freq_sum = Counter(opposed_freq_one) + Counter(opposed_freq_two)
+    opposed_freq = {k: opposed_freq_sum[k] for k in sorted(opposed_freq_sum)}
+
+    # supported_by
+    supported_by_freq_one = get_person_rels_by_month_year(wiki_id, 'ent2_supports_ent1', ent='ent1')
+    supported_by_freq_two = get_person_rels_by_month_year(wiki_id, 'ent1_supports_ent2', ent='ent2')
+    supported_by_freq_sum = Counter(supported_by_freq_one) + Counter(supported_by_freq_two)
+    supported_by_freq = {k: supported_by_freq_sum[k] for k in sorted(supported_by_freq_sum)}
+
+    # opposed_by
+    opposed_by_freq_one = get_person_rels_by_month_year(wiki_id, 'ent2_opposes_ent1', ent='ent1')
+    opposed_by_freq_two = get_person_rels_by_month_year(wiki_id, 'ent1_opposes_ent2', ent='ent2')
+    opposed_by_freq_sum = Counter(opposed_by_freq_one) + Counter(opposed_by_freq_two)
+    opposed_by_freq = {k: opposed_by_freq_sum[k] for k in sorted(opposed_by_freq_sum)}
+
+    print("supported_freq   : ", supported_freq)
+    print("opposed_freq     : ", supported_freq)
+    print("supported_by_freq: ", supported_by_freq)
+    print("opposed_by_freq  : ", opposed_by_freq)
+    print()
 
     min_date, max_date = find_maximum_interval(
         opposed_freq, supported_freq, opposed_by_freq, supported_by_freq
@@ -80,5 +89,5 @@ def build_relationships_freq(wiki_id: str):
     supported_freq = list(supported_freq_month.values())
     opposed_by_freq = list(opposed_by_freq_month.values())
     supported_by_freq = list(supported_by_freq_month.values())
-
+    
     return year_month_labels, opposed_freq, supported_freq, opposed_by_freq, supported_by_freq
