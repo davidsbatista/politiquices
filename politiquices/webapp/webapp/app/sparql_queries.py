@@ -356,8 +356,11 @@ def get_persons_affiliated_with_party(political_party: str):
         if not party_name:
             party_name = x['partyLabel']['value']
 
-        if not party_logo and x['political_party_logo']['value']:
-            party_logo = x['political_party_logo']['value']
+        if not party_logo:
+            if 'political_party_logo' in x:
+                party_logo = x['political_party_logo']['value']
+            else:
+                party_logo = no_image
 
         image = x["image_url"]["value"] if "image_url" in x else no_image
         persons.append(
