@@ -31,13 +31,13 @@
     $(function() {
 			$("#autocomplete").autocomplete({
 				source: nomes,
-        focus: function(event, ui) {
+				focus: function(event, ui) {
 					// prevent autocomplete from updating the textbox
 					event.preventDefault();
 					// manually update the textbox
 					$(this).val(ui.item.label);
 				},
-        select: function(event, ui) {
+				select: function(event, ui) {
 					// prevent autocomplete from updating the textbox
 					event.preventDefault();
 					// manually update the textbox and hidden field
@@ -67,6 +67,7 @@
     });
 
     </script>
+        <h4><p>Selecionar uma personalidade</p></h4>
         <form class="container-fluid justify-content-center align-items-center">
         <input type="hidden" id="autocomplete-value" type="text" name="wiki">
         <div class="control-group">
@@ -77,12 +78,23 @@
         </div>
         </form>
         </header>
-
       <div id="entityResults" class="w-85 p-2" align="left">
     </div>
 
-
+    <header class="jumbotron my-3">
+        <h4><p>Personalidade acusada por membros do mesmo partido?</p></h4>
+        <form class="container-fluid justify-content-center align-items-center">
+        <input type="hidden" id="autocomplete-value" type="text" name="wiki">
+        <div class="control-group">
+            <div class="controls controls-row row-fluid col-xs-4">
+                <input id="autocomplete" class="span10" type="text" placeholder="Personalidade" />
+                <input id="autocomplete" class="span10" type="text" placeholder="Partido" />
+                <button type="button" id='btn' class="btn btn-primary btn-sm">Seleccionar</button>
+            </div>
+        </div>
+        </form>
     </header>
+
 
   </div>
 

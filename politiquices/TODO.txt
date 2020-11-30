@@ -88,7 +88,7 @@ classifiers
         - https://spacy.io/usage/training#entity-linker
         - https://spacy.io/api/kb
 
-        - Filter out ppl born before 1935
+
         - Linking Errors:
             - http://0.0.0.0:5000/entity?q=Q295049 as 'Pinto da Costa' (futebol)
             - http://0.0.0.0:5000/entity?q=Q4237195 as 'José Manuel Coelho'
@@ -115,14 +115,14 @@ classifiers
 
 Web App
 =======
-   - rever o politiquices.ttl
 
-   - guerras internas num partido:
-        - pessoas do mesmo partido a acusarem pessoas do mesmo partido
+   - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
 
-   - quem acusou/apoiou <personalidade_com_um_cargo>
-        - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
-        - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
+    - pessoas do mesmo partido a acusarem pessoas do mesmo partido: DONE
+
+    - quem acusou/apoiou <personalidade_com_um_cargo>
+         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
+         - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
 
    - poder ver as relações entre quaisquer duas pessoas
    - quais os partidos que acusam mais? e que partidos alvo?

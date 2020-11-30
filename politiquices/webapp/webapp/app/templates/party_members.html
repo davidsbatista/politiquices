@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Personalidades de XXXX {% endblock %}
+{% block title %} Personalidades do {{ name }} {% endblock %}
 
 {% block body %}
 
@@ -9,7 +9,8 @@
 
     <!-- Jumbotron Header -->
     <header class="jumbotron my-4">
-      <p class="lead"></p>
+      <h4><b>{{ name }}</b></h4>
+        <img class="figure-img img-fluid rounded" src="{{logo}}" width="120" height="150" alt="">
     </header>
 
     {% for tmp in items|batch(4) %}

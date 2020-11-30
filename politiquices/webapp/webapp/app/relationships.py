@@ -65,12 +65,6 @@ def build_relationships_freq(wiki_id: str):
     opposed_by_freq_sum = Counter(opposed_by_freq_one) + Counter(opposed_by_freq_two)
     opposed_by_freq = {k: opposed_by_freq_sum[k] for k in sorted(opposed_by_freq_sum)}
 
-    print("supported_freq   : ", supported_freq)
-    print("opposed_freq     : ", supported_freq)
-    print("supported_by_freq: ", supported_by_freq)
-    print("opposed_by_freq  : ", opposed_by_freq)
-    print()
-
     min_date, max_date = find_maximum_interval(
         opposed_freq, supported_freq, opposed_by_freq, supported_by_freq
     )

@@ -14,7 +14,8 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_person_info,
     get_list_of_persons_from_some_party_opposing_someone,
     get_persons_affiliated_with_party, get_top_relationships, get_all_parties,
-    get_person_relationships)
+    get_person_relationships
+)
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 from politiquices.webapp.webapp.app.relationships import build_relationships_freq
 
@@ -25,6 +26,8 @@ cached_list_entities = None
 cached_all_parties = None
 cached_members_parties = defaultdict(list)
 cached_detailed_entity = defaultdict(list)
+cached_party_name = defaultdict(str)
+cached_party_logo = defaultdict(str)
 person_no_image = "/static/images/no_picture.jpg"
 
 
@@ -159,19 +162,20 @@ def detail_entity():
 
 @app.route("/party_members")
 def party_members():
-
-    # ToDo: obter aqui o nome do partido
-
     global cached_members_parties
     wiki_id = request.args.get("q")
 
     if not cached_members_parties[wiki_id]:
-        items = get_persons_affiliated_with_party(wiki_id)
-        cached_members_parties[wiki_id] = items
+        persons, party_name, party_logo = get_persons_affiliated_with_party(wiki_id)
+        cached_members_parties[wiki_id] = persons
+        cached_party_name[wiki_id] = party_name
+        cached_party_logo[wiki_id] = party_logo
     else:
-        items = cached_members_parties[wiki_id]
+        persons = cached_members_parties[wiki_id]
+        party_name = cached_party_name[wiki_id]
+        party_logo = cached_party_logo[wiki_id]
 
-    return render_template("party_members.html", items=items)
+    return render_template("party_members.html", items=persons, name=party_name, logo=party_logo)
 
 
 @app.route("/parties")

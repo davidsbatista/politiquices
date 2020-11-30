@@ -321,32 +321,55 @@ def get_person_rels_by_month_year(wiki_id, rel_type, ent='ent1'):
     return year_month_articles
 
 
-def get_persons_affiliated_with_party(political_party: str) -> List[Person]:
+def get_persons_affiliated_with_party(political_party: str):
 
     query = f"""
-        SELECT DISTINCT ?person ?personLabel ?image_url {{
+        SELECT DISTINCT ?partyLabel ?political_party_logo ?person ?personLabel ?image_url {{
           ?person wdt:P31 wd:Q5.
           SERVICE <{wikidata_endpoint}> {{
+              wd:{political_party} rdfs:label ?partyLabel FILTER(LANG(?partyLabel) = "pt") .
+              OPTIONAL {{ wd:{political_party} wdt:P154 ?political_party_logo. }}
               ?person wdt:P102 wd:{political_party} .
-              ?person rdfs:label ?personLabel .
+              ?person rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
               OPTIONAL {{ ?person wdt:P18 ?image_url. }}
-              FILTER(LANG(?personLabel) = "pt")
+              
           }}
-        }}
+        }} 
+        ORDER BY ?personLabel
         """
 
     results = query_sparql(prefixes + "\n" + query, "politiquices")
     persons = []
+    party_name = None
+    party_logo = None
+
+    # add 'PS' logo since it's on on wikidata
+    if political_party == 'Q847263':
+        party_logo = ps_logo
+
+    seen = set()
     for x in results["results"]["bindings"]:
+        wiki_id = x["personLabel"]["value"]
+        if wiki_id in seen:
+            continue
+
+        if not party_name:
+            party_name = x['partyLabel']['value']
+
+        if not party_logo and x['political_party_logo']['value']:
+            party_logo = x['political_party_logo']['value']
+
         image = x["image_url"]["value"] if "image_url" in x else no_image
         persons.append(
             Person(
-                name=x["personLabel"]["value"],
+                name=wiki_id,
                 wiki_id=x["person"]["value"].split("/")[-1],
                 image_url=image,
             )
         )
-    return persons
+        seen.add(wiki_id)
+
+    return persons, party_name, party_logo
 
 
 def get_all_parties():
@@ -455,10 +478,7 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
                 ?ent1 wdt:P102 wd:{party};
                       rdfs:label ?personLabel.
                 FILTER(LANG(?personLabel) = "pt")
-                OPTIONAL {{ ?ent1 wdt:P18 ?image_url. }}
-                SERVICE wikibase:label {{ 
-                    bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label 
-                }}
+                OPTIONAL {{ ?ent1 wdt:P18 ?image_url. }}                
             }}
         }}
         ORDER BY DESC(?date) ASC(?score)
