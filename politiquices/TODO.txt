@@ -116,26 +116,27 @@ classifiers
 Web App
 =======
 
-   - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
+    Bugs:
+       - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
 
-    - pessoas do mesmo partido a acusarem pessoas do mesmo partido: DONE
+    SPARQL queries:
+        DONE:
+            - pessoas do mesmo partido a acusarem pessoas do mesmo partido
+        ToDo:
+            - fazer agregação de personaldiades por cargos, membros do governo, ocupações, educação
 
-    - quem acusou/apoiou <personalidade_com_um_cargo>
-         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
-         - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
+            - quem acusou/apoiou <personalidade_com_um_cargo>
+                - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
+                - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
 
-   - poder ver as relações entre quaisquer duas pessoas
-   - quais os partidos que acusam mais? e que partidos alvo?
-   - existem relações familiares no grafo? entre quem?
+            - poder ver as relações entre quaisquer duas pessoas
+            - quais os partidos que acusam mais? e que partidos alvo?
+            - existem relações familiares no grafo? entre quem?
 
    - Sparql Viz:
         - http://ceur-ws.org/Vol-1320/paper_39.pdf
         - http://biohackathon.org/d3sparql/
         - https://github.com/ktym/d3sparql
-
-   - Caching:
-        - fazer um cache de todos os URLS -> resultados
-        - run every query at start (optional) to cache everything at start of the web server
 
    - dentro da página de político
       - lista de titulos de artigos:
