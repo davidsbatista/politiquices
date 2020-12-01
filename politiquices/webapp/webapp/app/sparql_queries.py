@@ -1,3 +1,4 @@
+import json
 import sys
 from collections import defaultdict
 from typing import Tuple, List, Dict, Any
@@ -505,6 +506,29 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
     socrates = results
 
     return results
+
+
+def get_party_of_entity(wiki_id):
+
+    query = f"""
+        SELECT DISTINCT ?party ?party_label {{
+            wd:{wiki_id} wdt:P31 wd:Q5.
+            SERVICE <http://0.0.0.0:3030/wikidata/query> {{ 
+                wd:{wiki_id} p:P102 ?partyStmnt .
+                ?partyStmnt ps:P102 ?party.
+                ?party rdfs:label ?party_label FILTER(LANG(?party_label)="pt") .  
+            }}  
+        }}
+        """
+
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    parties = []
+    for x in result["results"]["bindings"]:
+        parties.append(
+            {'wiki_id': x['party']['value'].split("/")[-1],
+             'name': x['party_label']['value']}
+        )
+    return parties
 
 
 def query_sparql(query, endpoint):

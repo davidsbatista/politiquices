@@ -257,17 +257,23 @@
     PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
     PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
-    SELECT DISTINCT ?personLabel ?occupation_label ?educatedAt_label
+    SELECT DISTINCT ?personLabel ?occupation_label ?educatedAt_label ?position_label
     WHERE {
       
-      wd:Q784504 rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
+      wd:Q182367 rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
       
-      wd:Q784504 p:P106 ?occupationStmnt .
+      wd:Q182367 p:P106 ?occupationStmnt .
       ?occupationStmnt ps:P106 ?occupation .
       ?occupation rdfs:label ?occupation_label FILTER(LANG(?occupation_label) = "pt").
       
-      wd:Q784504 p:P69 ?educatedAtStmnt .
+      wd:Q182367 p:P69 ?educatedAtStmnt .
       ?educatedAtStmnt ps:P69 ?educatedAt .
       ?educatedAt rdfs:label ?educatedAt_label FILTER(LANG(?educatedAt_label) = "pt").
+      
+      wd:Q182367 p:P39 ?positionStmnt .
+      ?positionStmnt ps:P39 ?position .
+      ?position rdfs:label ?position_label FILTER(LANG(?position_label) = "pt").
+    
     
     }
+    LIMIT 100
