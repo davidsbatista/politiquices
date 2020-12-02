@@ -123,7 +123,8 @@ Web App
         DONE:
             - pessoas do mesmo partido a acusarem pessoas do mesmo partido
         ToDo:
-            - fazer agregação de personaldiades por cargos, membros do governo, ocupações, educação
+            - timeline de contradições entre duas personalidades
+            - fazer agregação de personalidades por cargos, membros do governo, ocupações, educação
 
             - quem acusou/apoiou <personalidade_com_um_cargo>
                 - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador

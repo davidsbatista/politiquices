@@ -209,5 +209,6 @@ def queries():
     query_nr = request.args.get("q")
     person_wiki_id = request.args.get("entity")
     party_wiki_id = request.args.get("party")
+    # ToDo: pass name of person and partu name to template
     results = get_list_of_persons_from_some_party_opposing_someone(person_wiki_id, party_wiki_id)
     return render_template("template_one.html", items=results)
