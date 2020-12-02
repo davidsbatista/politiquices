@@ -1,9 +1,8 @@
-import json
 import sys
 from collections import defaultdict
-from typing import Tuple, List, Dict, Any
+from typing import Tuple, List
 
-from cachew import cachew as cache_fixe
+from functools import lru_cache
 from SPARQLWrapper import SPARQLWrapper, JSON
 from politiquices.webapp.webapp.app.data_models import (
     OfficePosition,
@@ -44,6 +43,7 @@ wikidata_prefixes = """
 prefixes = politiquices_prefixes + wikidata_prefixes
 
 
+@lru_cache
 def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
     query = """
         PREFIX        dc: <http://purl.org/dc/elements/1.1/>
@@ -65,6 +65,7 @@ def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
     return year, nr_articles
 
 
+@lru_cache
 def get_total_nr_of_articles() -> int:
     query = """
         PREFIX        dc: <http://purl.org/dc/elements/1.1/>
@@ -78,6 +79,7 @@ def get_total_nr_of_articles() -> int:
     return results["results"]["bindings"][0]["nr_articles"]["value"]
 
 
+@lru_cache
 def get_total_nr_articles_for_each_person():
     query = """
         SELECT ?person_name ?person (COUNT(*) as ?count){
@@ -95,6 +97,7 @@ def get_total_nr_articles_for_each_person():
     return prefixes + "\n" + query
 
 
+@lru_cache
 def get_nr_of_persons() -> int:
     query = """
         PREFIX wd: <http://www.wikidata.org/entity/>
@@ -108,6 +111,7 @@ def get_nr_of_persons() -> int:
     return results["results"]["bindings"][0]["nr_persons"]["value"]
 
 
+@lru_cache
 def get_person_info(wiki_id):
     query = f"""SELECT ?name ?office ?office_label ?start ?end ?image_url ?political_party_logo 
                        ?political_party ?political_party_label 
@@ -182,6 +186,7 @@ def get_person_info(wiki_id):
     )
 
 
+@lru_cache
 def get_person_relationships(wiki_id):
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
@@ -286,6 +291,7 @@ def get_person_relationships(wiki_id):
     return relations
 
 
+@lru_cache
 def get_person_rels_by_month_year(wiki_id, rel_type, ent='ent1'):
 
     query = f"""
@@ -322,6 +328,7 @@ def get_person_rels_by_month_year(wiki_id, rel_type, ent='ent1'):
     return year_month_articles
 
 
+@lru_cache
 def get_persons_affiliated_with_party(political_party: str):
 
     query = f"""
@@ -376,6 +383,7 @@ def get_persons_affiliated_with_party(political_party: str):
     return persons, party_name, party_logo
 
 
+@lru_cache
 def get_all_parties():
     query = f"""
         SELECT DISTINCT ?political_party ?party_label ?party_logo 
@@ -414,8 +422,8 @@ def get_all_parties():
     return political_parties
 
 
+@lru_cache
 def initalize():
-    # get: wiki_id, name(label), image_url
     query = f"""
         SELECT DISTINCT ?item ?label ?image_url {{
             ?item wdt:P31 wd:Q5.
@@ -459,12 +467,8 @@ def get_top_relationships(wiki_id: str):
     return persons
 
 
-# ToDo: not being used
-def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", party="Q847263"):
-    global socrates
-
-    if socrates:
-        return socrates
+@lru_cache
+def get_list_of_persons_from_some_party_opposing_someone(wiki_id, party):
 
     query = f"""        
         SELECT DISTINCT ?ent1 ?ent1_name ?image_url ?arquivo_doc ?date ?title ?score
@@ -491,7 +495,11 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
     results = []
     for x in result["results"]["bindings"]:
         image = x["image_url"]["value"] if "image_url" in x else no_image
-        person = Person(name=x["ent1_name"]["value"], wiki_id=x["ent1"]["value"], image_url=image)
+
+        person = Person(name=x["ent1_name"]["value"],
+                        wiki_id=x["ent1"]["value"].split("/")[-1],
+                        image_url=image)
+
         rel = Relationship(
             article_title=x["title"]["value"],
             article_url=x["arquivo_doc"]["value"],
@@ -503,11 +511,10 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id="Q182367", part
         )
         results.append(rel)
 
-    socrates = results
-
     return results
 
 
+@lru_cache
 def get_party_of_entity(wiki_id):
 
     query = f"""

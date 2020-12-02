@@ -109,7 +109,7 @@
 
         $(document).on ("click", "#btn_two", function () {
             var entity_wiki_id = $('#autocomplete_two-value').val();
-            var party_wiki_id = $('autocomplete_two-partido-value').val();
+            var party_wiki_id = $('#autocomplete_two-partido-value').val();
             var data = { entity: entity_wiki_id, party: party_wiki_id};
             $.ajax({
               type: 'get',
@@ -138,14 +138,12 @@
         </div>
         </form>
         </header>
-      <div id="entityResults" class="w-85 p-2" align="left">
-    </div>
 
     <header class="jumbotron my-3">
         <h4><p>Personalidade acusada por membros do mesmo partido?</p></h4>
         <form class="container-fluid justify-content-center align-items-center">
-        <input id="autocomplete_two-value" type="text" name="wiki">
-        <input id="autocomplete_two-partido-value" type="text" name="wiki">
+        <input id="autocomplete_two-value" type="hidden" name="wiki">
+        <input id="autocomplete_two-partido-value" type="hidden" name="wiki">
         <div class="control-group">
             <div class="controls controls-row row-fluid col-xs-4">
                 <input id="autocomplete_two" class="span10" type="text" placeholder="Personalidade" />
@@ -155,6 +153,8 @@
         </div>
         </form>
     </header>
+
+    <div id="entityResults" class="w-85 p-2" align="left"></div>
 
   </div>
 

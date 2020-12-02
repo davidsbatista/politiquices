@@ -196,6 +196,10 @@ def all_parties():
 def get_person_party():
     person_wiki_id = request.args.get("entity")
     parties = get_party_of_entity(person_wiki_id)
+
+    if not parties:
+        return 'None'
+
     # ToDo: handle the case with several parties/other things
     return jsonify(parties[0])
 
@@ -204,12 +208,6 @@ def get_person_party():
 def queries():
     query_nr = request.args.get("q")
     person_wiki_id = request.args.get("entity")
-    party_wiki_id = request.args.get("party_wiki_id")
-    print(person_wiki_id)
-    print(party_wiki_id)
-    results = get_list_of_persons_from_some_party_opposing_someone(
-        wiki_id=person_wiki_id,
-        party=party_wiki_id
-    )
-
+    party_wiki_id = request.args.get("party")
+    results = get_list_of_persons_from_some_party_opposing_someone(person_wiki_id, party_wiki_id)
     return render_template("template_one.html", items=results)
