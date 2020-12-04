@@ -98,6 +98,7 @@
         }
     });
 
+    // adpated from:
     // https://stackoverflow.com/questions/14460421/get-the-contents-of-a-table-row-with-a-button-click
     // https://stackoverflow.com/questions/4737476/how-to-select-and-change-value-of-table-cell-with-jquery
 
@@ -105,38 +106,26 @@
       $(".submit").click(function() {
 
         var original_rel = $(this).closest('tr').parent().parent().prop('id');
-
         var title_data = {};
+        var entities = {};
+
         $(this).closest('tr').find('td').not(':last').each(function() {
 
-            /* fill in ent_1 and wiki_1 */
-            var ent_1 = $('#ent_1').text();
-            var ent1_wiki_url = $('#ent1_wikid_id').attr("href").split("wiki/")[1]
-
-            if (original_rel.startsWith('ent1')) {
-              title_data.ent1_wiki = ent1_wiki_url;
-              title_data.ent_1 = ent_1;
+            /* ent_1 and wiki_1 */
+            if ($(this).attr('id') == 'ent_1') {
+              var ent1 = $(this).find('a').text();
+              var ent1_wiki_url = $('#ent1_wikid_id').attr("href").split("wiki/")[1];
+              entities.ent1 = ent1;
+              entities.ent1_wiki_url = ent1_wiki_url;
             }
 
-            else if (original_rel.startsWith('ent2')) {
-              title_data.ent2_wiki = ent1_wiki_url;
-              title_data.ent_2 = ent_1;
-            }
-
-            /* fill in ent_2 and wiki_2 */
+            /* ent_2 and wiki_2 */
             if ($(this).attr('id') == 'ent_2') {
-                var ent_2 = $(this).find('a').text();
-                var ent2_wiki_url = $(this).find('a').attr("href").split("q=")[1]
+                var ent2 = $(this).find('a').text();
+                var ent2_wiki_url = $(this).find('a').attr("href").split("q=")[1];
+                entities.ent2 = ent2;
+                entities.ent2_wiki_url = ent2_wiki_url;
 
-                if (original_rel.startsWith('ent1')) {
-                  title_data.ent_2 = ent_2;
-                  title_data.ent2_wiki = ent2_wiki_url;
-                }
-
-                else if (original_rel.startsWith('ent2')) {
-                  title_data.ent_1 = ent_2;
-                  title_data.ent1_wiki = ent2_wiki_url;
-                }
             }
 
             /* date of crawl */
@@ -158,8 +147,22 @@
                 selected_rel = $(this).find('button').text();
                 title_data.rel_type = selected_rel;
             }
-
        });
+
+       if ((original_rel.startsWith('ent1') && selected_rel.startsWith('ent2')) ||
+       (original_rel.startsWith('ent2') && selected_rel.startsWith('ent1')))  {
+         title_data.ent_1 = entities.ent2;
+         title_data.ent1_wiki = entities.ent2_wiki_url;
+         title_data.ent_2 = entities.ent1;
+         title_data.ent2_wiki = entities.ent1_wiki_url;
+       }
+       else {
+         title_data.ent_1 = entities.ent1;
+         title_data.ent1_wiki = entities.ent1_wiki_url;
+         title_data.ent_2 = entities.ent2;
+         title_data.ent2_wiki = entities.ent2_wiki_url;
+       }
+
        var myJsonString = JSON.stringify(title_data);
        console.log(myJsonString)
        /*alert(myJsonString)*/
@@ -172,13 +175,11 @@
          data: myJsonString,
          success: function (data) {
            console.log(this);
-           //$(this).prop('disabled', true);
            $(this).addClass("disabled");
          },
        });
       });
     });
-
 
     $(document).ready(function() {
        $(".dropdown-menu").on('click', 'a', function(){
