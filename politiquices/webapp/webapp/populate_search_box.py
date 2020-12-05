@@ -8,6 +8,21 @@ from politiquices.webapp.webapp.app.sparql_queries import query_sparql, prefixes
 
 wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
 
+parties_query = """
+        SELECT DISTINCT ?political_party ?party_label ?party_logo (COUNT(?person) as ?nr_personalities) {
+            ?person wdt:P31 wd:Q5 .
+            SERVICE <http://0.0.0.0:3030/wikidata/query> {
+                ?person wdt:P102 ?political_party .
+                ?political_party rdfs:label ?party_label .
+                OPTIONAL {?political_party wdt:P154 ?party_logo. }
+                FILTER(LANG(?party_label) = "pt")
+          }
+        } 
+        GROUP BY ?political_party ?party_label ?party_logo
+        HAVING (COUNT(?person) > 2)
+        ORDER BY DESC(?nr_personalities)
+        """
+
 
 def get_persons():
     query = f"""

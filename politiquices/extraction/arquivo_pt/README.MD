@@ -23,8 +23,8 @@
     data/domains_crawled_dates.json
 
 
-3. From a list of domains and crawl dates (`data/domains.txt`, `domains_crawled_dates.json`) and
-   from a list of persons/entities (`data/entities_names.txt`), query arquivo.pt API and collect
+3. From a list of domains (`data/domains.txt`), crawl dates (`domains_crawled_dates.json`) and
+   a list of persons/entities (`data/entities_names.txt`), query arquivo.pt API and collect
    the news titles:
 
 

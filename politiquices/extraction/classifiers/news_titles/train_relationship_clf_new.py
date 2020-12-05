@@ -1,16 +1,10 @@
-import json
 import re
 from collections import Counter
 
 from sklearn.metrics import classification_report
 from sklearn.model_selection import StratifiedKFold
-from politiquices.extraction.classifiers.news_titles.embeddings_utils import get_embeddings
+
 from politiquices.extraction.classifiers.news_titles.lstm_with_atten import KerasTextClassifier
-from politiquices.extraction.classifiers.news_titles.relationship_clf import (
-    RelationshipClassifier,
-    pre_process_train_data,
-    LSTMAtt,
-)
 from politiquices.extraction.utils import read_ground_truth
 from politiquices.extraction.utils.utils import clean_title_quotes, clean_title_re
 
@@ -38,18 +32,16 @@ def pre_process_train_data(data):
     labels = []
 
     for d in data:
-        titles.append((clean_title_quotes((clean_title_re(d["title"]))), d["ent1"], d["ent2"]))
         if d["label"] not in other:
             labels.append(d["label"])
-        else:
-            labels.append("other")
+            titles.append((clean_title_quotes((clean_title_re(d["title"]))), d["ent1"], d["ent2"]))
 
     new_labels = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in labels]
 
     print("\nSamples per class:")
     for k, v in Counter(new_labels).items():
         print(k, "\t", v)
-    print("\nTotal nr. messages:\t", len(data))
+    print("\nTotal nr. messages:\t", len(titles))
     print("\n")
 
     # replace entity name by 'PER'
@@ -59,18 +51,9 @@ def pre_process_train_data(data):
 
 
 def main():
-    data_publico = read_ground_truth(
-        "../../../../data/annotated/publico_politica.tsv", only_label=True
-    )
-
-    # extract only support
-    data_arquivo = read_ground_truth("../../../../data/annotated/arquivo.tsv", only_label=True)
-    # arquivo_supports = [x for x in data_arquivo if "supports" in x["label"]]
+    data_publico = read_ground_truth("../../../../data/annotated/publico_politica.tsv")
+    data_arquivo = read_ground_truth("../../../../data/annotated/arquivo.tsv")
     docs, labels = pre_process_train_data(data_arquivo + data_publico)
-
-    # print("Loading embeddings...")
-    # word2embedding, word2index = get_embeddings(filename='skip_s100_small.txt')
-    # word2embedding, word2index = get_embeddings()
 
     skf = StratifiedKFold(n_splits=2, random_state=42, shuffle=True)
     fold_n = 0
@@ -85,23 +68,24 @@ def main():
             input_length=max_length,
             n_classes=len(set(labels)),
             max_words=15000,
-            emb_dim=100
+            emb_dim=50
         )
-        kclf.fit(x_train, y_train, X_val=x_test, y_val=y_test, epochs=25, batch_size=16)
+        kclf.fit(x_train, y_train, X_val=x_test, y_val=y_test, epochs=15, batch_size=16)
 
         predictions = kclf.encoder.inverse_transform(kclf.predict(x_test))
         print(classification_report(y_test, predictions))
 
-        # keras_model = model.train(x_train, y_train, word2index, word2embedding, x_test, y_test)
-        # model.save(keras_model, fold=str(fold_n))
-        # model.model = keras_model
-        # report_str, misclassifications, correct_classifications = model.evaluate(x_test, y_test)
-
         fold_n += 1
 
-    # model = LSTMAtt(directional=False, epochs=15)
-    # keras_model = model.train(docs, labels, word2index, word2embedding, None, None)
-    # model.save(keras_model)
+    max_length = max([len(x) for x in docs])
+    kclf = KerasTextClassifier(
+        input_length=max_length,
+        n_classes=len(set(labels)),
+        max_words=150000,
+        emb_dim=50
+    )
+    kclf.fit(docs, labels, epochs=15, batch_size=8)
+    kclf.save(path="trained_models/relationship_clf")
 
 
 if __name__ == "__main__":

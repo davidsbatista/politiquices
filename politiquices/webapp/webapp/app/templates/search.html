@@ -4,21 +4,17 @@
 
 {% block body %}
 
-
-  <!-- Page Content -->
   <div class="container">
 
-    <!-- Jumbotron Header -->
-    <header class="jumbotron my-3">
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-        <script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
 
     /*
-     * jQuery UI Autocomplete: Using Label-Value Pairs
-     * https://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html
-     * https://github.com/salmanarshad2000/demos/blob/v1.0.4/jquery-ui-autocomplete/using-label-value-pairs.html
-     */
+    * jQuery UI Autocomplete: Using Label-Value Pairs
+    * https://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html
+    * https://github.com/salmanarshad2000/demos/blob/v1.0.4/jquery-ui-autocomplete/using-label-value-pairs.html
+    */
 
     nomes = [];
     $.getJSON("static/persons.json", function(json_data){
@@ -28,29 +24,38 @@
         };
     });
 
+    parties = [];
+    $.getJSON("static/parties.json", function(json_data){
+        for (var i = 0, len = json_data.length; i < len; i++) {
+            var party = {label: json_data[i].name, value: json_data[i].wiki_id};
+            parties.push(party);
+        };
+    });
+
+    /* Personalidade */
     $(function() {
-			$("#autocomplete").autocomplete({
-				source: nomes,
-				focus: function(event, ui) {
-					// prevent autocomplete from updating the textbox
-					event.preventDefault();
-					// manually update the textbox
-					$(this).val(ui.item.label);
-				},
-				select: function(event, ui) {
-					// prevent autocomplete from updating the textbox
-					event.preventDefault();
-					// manually update the textbox and hidden field
-					$(this).val(ui.item.label);
-					$("#autocomplete-value").val(ui.item.value);
-				}
+      $("#autocomplete").autocomplete({
+        source: nomes,
+        focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox and hidden field
+            $(this).val(ui.item.label);
+            $("#autocomplete-value").val(ui.item.value);
+        }
       });
     });
 
+    /* Personalidade acusada por membros do mesmo partido */
     $(function() {
       $("#autocomplete_two").autocomplete({
         source: nomes,
-
         focus: function(event, ui) {
           // prevent autocomplete from updating the textbox
           event.preventDefault();
@@ -89,6 +94,46 @@
       });
     });
 
+    /* Relações de um membros de um partido para uma pessoa */
+    $(function() {
+      $("#autocomplete_three_partido").autocomplete({
+        source: parties,
+        focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox and hidden field
+            $(this).val(ui.item.label);
+            $("#autocomplete_three_partido_value").val(ui.item.value);
+        }
+      });
+    });
+
+    $(function() {
+      $("#autocomplete_three_pessoa").autocomplete({
+        source: nomes,
+        focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox and hidden field
+            $(this).val(ui.item.label);
+            $("#autocomplete_three_pessoa_value").val(ui.item.value);
+        }
+      });
+    });
+
+
     $(document).ready ( function () {
         $(document).on ("click", "#btn_one", function () {
             var wiki_id = $('#autocomplete-value').val();
@@ -124,9 +169,19 @@
               }
             });
         });
+
+        $(document).ready(function() {
+           $(".dropdown-menu").on('click', 'a', function(){
+             $(this).parents('.dropdown').find('#dropdownMenuLink').text($(this).text());
+           });
+        });
+
+
     });
 
     </script>
+
+    <header class="jumbotron my-3">
         <h4><p>Ver relações uma personalidade</p></h4>
         <form class="container-fluid justify-content-center align-items-center">
         <input type="hidden" id="autocomplete-value" type="text" name="wiki">
@@ -137,10 +192,11 @@
             </div>
         </div>
         </form>
-        </header>
+    </header>
 
     <header class="jumbotron my-3">
         <h4><p>Personalidade acusada por membros do mesmo partido?</p></h4>
+        <h6>e.g.: 'Quem dentro do PS se opôs a José Sócrates?'</h6>
         <form class="container-fluid justify-content-center align-items-center">
         <input id="autocomplete_two-value" type="hidden" name="wiki">
         <input id="autocomplete_two-partido-value" type="hidden" name="wiki">
@@ -152,6 +208,37 @@
             </div>
         </div>
         </form>
+    </header>
+
+    <header class="jumbotron my-3">
+        <h4><p>Relações de um membros de um partido para uma pessoa?</p></h4>
+        <h6>e.g.: 'Que personalidades do BE se oposeram a Jerónimo de Sousa?'</h6>
+        <br>
+        <form class="container-fluid justify-content-center align-items-center">
+          <input id="autocomplete_three_partido_value" type="hidden" name="wiki">
+          <input id="autocomplete_three_pessoa_value" type="hidden" name="wiki">
+
+          <div class="control-group">
+              <div class="controls controls-row row-fluid col-xs-4">
+                  <input id="autocomplete_three_partido" class="span10" type="text" placeholder="Partido" />
+
+                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opoe-se</a>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                      <a class="dropdown-item" href="#">Apoia</a>
+                      <a class="dropdown-item" href="#">Opoe-se</a>
+                    </div>
+
+
+                  <input id="autocomplete_three_pessoa" class="span10" type="text" placeholder="Personalidade" />
+                  <button type="button" id='btn_three' class="btn btn-primary btn-sm">Seleccionar</button>
+                </div>
+          </div>
+        </form>
+
+
+
+
+
     </header>
 
     <div id="entityResults" class="w-85 p-2" align="left"></div>

@@ -33,6 +33,16 @@ def main():
         predictions = kclf.encoder.inverse_transform(kclf.predict(x_test))
         print(classification_report(y_test, predictions))
 
+    max_length = max([len(x) for x in docs])
+    kclf = KerasTextClassifier(
+        input_length=max_length,
+        n_classes=len(set(labels)),
+        max_words=150000,
+        emb_dim=50
+    )
+    kclf.fit(docs, labels, epochs=15, batch_size=8)
+    kclf.save(path="trained_models/relevancy_clf")
+
 
 if __name__ == "__main__":
     main()

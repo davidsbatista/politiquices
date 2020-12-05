@@ -27,8 +27,8 @@ class Metrics(tf.keras.callbacks.Callback):
         labels_idx = np.argmax(y_hat, axis=1)
         pred_labels = self.le.inverse_transform(labels_idx)
 
-        # true_labels = self.le.inverse_transform(np.argmax(val_y, axis=1))
-        true_labels = self.le.inverse_transform([y[0] for y in val_y.tolist()])
+        true_labels = self.le.inverse_transform(np.argmax(val_y, axis=1))     # old method
+        # true_labels = self.le.inverse_transform([y[0] for y in val_y.tolist()]) # KerasTxtClf
 
         report = classification_report(true_labels, pred_labels, output_dict=True)
         for label, metrics in report.items():

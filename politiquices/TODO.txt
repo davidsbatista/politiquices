@@ -85,6 +85,7 @@ classifiers
 
     entity_linking:
     ---------------
+        - https://github.com/TheScienceMuseum/elastic-wikidata
         - https://spacy.io/usage/training#entity-linker
         - https://spacy.io/api/kb
 
@@ -115,6 +116,11 @@ classifiers
 
 Web App
 =======
+
+    UI:
+        - mete uma margem em cima pequena entre a foto e o bordo do cartão
+        - faz com que todo o cartão seja clicável (em vez de só o nome, como está agora)
+        - https://github.com/prabhuignoto/react-chrono
 
     - mostrar um snippet da notícia, é preciso sacar toda?
 
@@ -171,6 +177,9 @@ Web App
 
         - use case:
             - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
+
+            - do genero "deixa ca ver quem é que do bloco já disse mal do jerónimo"
+
 
         - Charts
             - https://www.chartjs.org/samples/latest/scales/time/financial.html

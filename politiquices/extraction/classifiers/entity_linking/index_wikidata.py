@@ -89,8 +89,6 @@ def main():
 
         bulk_data.append(json.dumps(doc))
 
-    exit(-1)
-
     es = create_index()
 
     print("Bulk indexing")
