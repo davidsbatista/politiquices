@@ -1,7 +1,9 @@
 import csv
+import operator
 import sys
 from collections import defaultdict
 from datetime import datetime
+from itertools import groupby
 
 from jsonlines import jsonlines
 from rdflib import Graph
@@ -9,6 +11,52 @@ from rdflib import BNode, URIRef, Literal, Namespace, XSD, SKOS
 from rdflib.namespace import DC, RDFS
 
 from classes import Person, Article, Relationship
+
+
+def remove_duplicates():
+    # read the articles a sorted them by original domain and title
+    articles = []
+    for entry in processed_titles(sys.argv[1]):
+        original_url = "/".join(entry["linkToArchive"].split("/")[5:])
+        articles.append(
+            (
+                original_url,
+                entry["title"],
+                entry["tstamp"],
+                entry["linkToArchive"],
+                entry["entities"],
+                entry["ent_1"],
+                entry["ent_2"],
+                entry["scores"],
+            )
+        )
+
+    # original_url, title, tstamp, link, entities, ent_1, ent_2, scores
+    sorted_articles = sorted(articles, key=operator.itemgetter(0, 1))
+
+    print(f'{len(sorted_articles)} articles')
+
+    # group by original domain and title, from the group take the oldest one
+    unique = []
+    for k, g in groupby(sorted_articles, operator.itemgetter(0, 1)):
+        arts = list(g)
+        earliest = sorted(arts, key=operator.itemgetter(2))[0]
+
+        result = {
+            'title': earliest[1],
+            'tstamp': earliest[2],
+            'linkToArchive': earliest[3],
+            'entities': earliest[4],
+            'ent_1': earliest[5],
+            'ent_2': earliest[6],
+            'scores': earliest[7]
+        }
+
+        unique.append(result)
+
+    print(f'{len(unique)} unique articles')
+
+    return unique
 
 
 def read_csv_data(file_name):
@@ -31,7 +79,7 @@ def extract_date(crawled_date: str):
     hour = crawled_date[8:10]
     minute = crawled_date[10:12]
     second = crawled_date[12:14]
-    date_str = f'{year}-{month}-{day}T{hour}:{minute}:{second}'
+    date_str = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
     # date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
     return date_str
 
@@ -54,17 +102,17 @@ def build_person(wikidata_id, name, persons):
         )
 
 
-def process_classified_titles(f_in):
+def process_classified_titles(titles):
     persons = defaultdict(Person)
     relationships = []
     articles = []
 
-    for title in processed_titles(f_in):
+    for title in titles:
 
-        e1_wiki = title["ent_1"]['wiki'] if title["ent_1"] else None
-        e2_wiki = title["ent_2"]['wiki'] if title["ent_2"] else None
+        e1_wiki = title["ent_1"]["wiki"] if title["ent_1"] else None
+        e2_wiki = title["ent_2"]["wiki"] if title["ent_2"] else None
 
-        scores = [(k, v) for k, v in title['scores'].items()]
+        scores = [(k, v) for k, v in title["scores"].items()]
         rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
 
         person_1 = title["entities"][0]
@@ -81,11 +129,15 @@ def process_classified_titles(f_in):
         p2_name = person_2
         build_person(p2_id, p2_name, persons)
 
-        # ToDo: keep track of an hash of title + domain, if seen again, keep the oldest one
         relationships.append(
             Relationship(
-                url=url, rel_type=rel_type[0], rel_score=rel_type[1], ent1=p1_id, ent2=p2_id,
-                ent1_str=person_1, ent2_str=person_2
+                url=url,
+                rel_type=rel_type[0],
+                rel_score=rel_type[1],
+                ent1=p1_id,
+                ent2=p2_id,
+                ent1_str=person_1,
+                ent2_str=person_2,
             )
         )
 
@@ -175,7 +227,7 @@ def populate_graph(articles, persons, relationships):
     # print out the entire Graph in the RDF Turtle format
     # "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
     date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-    f_name = f'politiquices_{date_time}.ttl'
+    f_name = f"politiquices_{date_time}.ttl"
     g.serialize(destination=f_name, format="turtle")
     print("graph has {} statements.".format(len(g)))
     print()
@@ -185,7 +237,9 @@ def populate_graph(articles, persons, relationships):
 
 
 def main():
-    articles, persons, relationships = process_classified_titles(sys.argv[1])
+
+    unique = remove_duplicates()
+    articles, persons, relationships = process_classified_titles(unique)
     populate_graph(articles, persons, relationships)
 
 

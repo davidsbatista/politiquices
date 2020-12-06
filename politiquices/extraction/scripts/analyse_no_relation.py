@@ -8,8 +8,6 @@ from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
 nlp = pt_core_news_sm.load()
 nlp.disable = ["tagger", "parser"]
 
-expressoes = ["críticas", "acusações", "ataques", "ataque", "apoio", "apelo", "contra"]
-
 
 def main():
 
@@ -18,6 +16,8 @@ def main():
 
     with jsonlines.open('titles_processed_no_relation.jsonl', 'r') as f_in:
         titles = list(f_in)
+
+    f_results = jsonlines.open('results.tsv', 'w')
 
     for t in titles:
         persons = rule_ner.tag(t['title'])
@@ -33,11 +33,13 @@ def main():
         if len(persons_wiki) < 2:
             continue
 
-        if any(x in t['title'] for x in expressoes):
-            print(t['title'])
-            print(persons)
-            # print(persons_wiki)
-            # print()
+        result = {
+            "title": t['title'],
+            "entities": persons,
+            "wiki": persons_wiki
+        }
+
+        f_results.write(result)
 
 
 if __name__ == '__main__':

@@ -13,6 +13,12 @@ arquivo_pt:
 classifiers
 ===========
 
+    - new approach:
+        - NER
+        - EntityLinking
+        - detecte relationship
+        - detecte direction
+
     - run script with PYTHONHASHSEED=0
     - create classifier abstraction/interface
 
