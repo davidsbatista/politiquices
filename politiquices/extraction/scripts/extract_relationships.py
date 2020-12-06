@@ -1,13 +1,16 @@
 import os
 import sys
+import pickle
 from functools import lru_cache
 
 import numpy as np
 from elasticsearch import Elasticsearch
 from jsonlines import jsonlines
+from keras.models import load_model
 
 from politiquices.extraction.classifiers.news_titles.lstm_with_atten import KerasTextClassifier
 from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
+from politiquices.extraction.classifiers.news_titles.relationship_clf import Attention
 from politiquices.extraction.utils import clean_title_re, clean_title_quotes
 
 from timer import Timer
@@ -16,14 +19,46 @@ APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 MODELS = os.path.join(APP_ROOT, "../classifiers/news_titles/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
 
-# print("Loading relationship classifier...")
-# relationship_clf = joblib.load(MODELS + "relationship_clf_2020-10-17_001401.pkl")
-
-# print("Loading relevancy classifier...")
-# relevancy_clf = joblib.load(MODELS + "relationship_clf_2020-10-17_001401.pkl")
 
 print("Setting up connection with Elasticsearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
+
+
+def read_normal_models():
+    # ToDo
+    pass
+
+
+def read_att_normal_models():
+    print("Loading relevancy classifier...")
+    with open(MODELS + "relevancy_clf_2020-12-05_160642.pkl", "rb") as f_in:
+        relevancy_clf = pickle.load(f_in)
+    model = load_model(
+        MODELS + "relevancy_clf_2020-12-05_160642.h5", custom_objects={"Attention": Attention}
+    )
+    relevancy_clf.model = model
+
+    print("Loading relationship classifier...")
+    with open(MODELS + "relationship_clf_2020-12-05_164644.pkl", "rb") as f_in:
+        relationship_clf = pickle.load(f_in)
+    model = load_model(
+        MODELS + "relationship_clf_2020-12-05_164644.h5", custom_objects={"Attention": Attention}
+    )
+    relationship_clf.model = model
+
+    return relationship_clf, relevancy_clf
+
+
+def read_avg_weighted_att_models():
+    print("Loading relevancy classifier...")
+    relevancy_clf = KerasTextClassifier()
+    relevancy_clf.load(MODELS + "relevancy_clf")
+
+    print("Loading relationship classifier...")
+    relationship_clf = KerasTextClassifier()
+    relationship_clf.load(MODELS + "relationship_clf")
+
+    return relationship_clf, relevancy_clf
 
 
 @lru_cache(maxsize=500000)
@@ -82,7 +117,7 @@ def entity_linking(entity):
 
     entity_clean = mappings.get(sanitized, sanitized)
     entity_query = " AND ".join([token.strip() for token in entity_clean.split()])
-    print(entity, "\t", sanitized, "\t", entity_query)
+    # print(entity, "\t", sanitized, "\t", entity_query)
     res = es.search(index="politicians", body={"query": {"query_string": {"query": entity_query}}})
 
     if res["hits"]["hits"]:
@@ -96,13 +131,8 @@ def main():
     # set up the NER system
     rule_ner = RuleBasedNer()
 
-    print("Loading relevancy classifier...")
-    relevancy_clf = KerasTextClassifier()
-    relevancy_clf.load(MODELS + "relevancy_clf")
-
-    print("Loading relationship classifier...")
-    relationship_clf = KerasTextClassifier()
-    relationship_clf.load(MODELS + "relationship_clf")
+    # relationship_clf, relevancy_clf = read_avg_weighted_att_models()
+    relationship_clf, relevancy_clf = read_att_normal_models()
 
     # open files for logging and later diagnostic
     no_relation = jsonlines.open("titles_processed_no_relation.jsonl", mode="w")
@@ -114,31 +144,45 @@ def main():
     count = 0
     with jsonlines.open(sys.argv[1]) as f_in:
         for line in f_in:
-
             count += 1
             if count % 1000 == 0:
                 print(count)
-                no_relation.flush()
-                no_entities.flush()
-                more_entities.flush()
-                no_wiki.flush()
-                processed.flush()
 
             try:
                 cleaned_title = clean_title_quotes(clean_title_re(line["title"]))
             except Exception as e:
                 print(e)
-                print("failed to clean ---> ", line['title'])
+                print("failed to clean ---> ", line["title"])
 
-            with Timer(name='relevancy'):
-                predicted_probs = relevancy_clf.predict_proba([cleaned_title])[0]
-                pred_labels = relevancy_clf.encoder.inverse_transform([np.argmax(predicted_probs)])
-                relevancy_scores = {
-                    label: float(pred)
-                    for label, pred in zip(relevancy_clf.encoder.classes_, predicted_probs)
-                }
-
+            # read_avg_weighted_att_models
+            """
+            predicted_probs = relevancy_clf.predict_proba([cleaned_title])[0]
+            pred_labels = relevancy_clf.encoder.inverse_transform([np.argmax(predicted_probs)])
+            relevancy_scores = {
+                label: float(pred)
+                for label, pred in zip(relevancy_clf.encoder.classes_, predicted_probs)
+            }
+            
             if pred_labels != ["relevant"]:
+            no_relation.write(
+                {
+                    "title": cleaned_title,
+                    "scores": relevancy_scores,
+                    "linkToArchive": line["linkToArchive"],
+                    "tstamp": line["tstamp"],
+                }
+            )
+            continue                
+            """
+
+            # read_att_normal_models
+            predicted_probs = relevancy_clf.tag([cleaned_title])[0]
+            relevancy_scores = {
+                label: float(pred)
+                for label, pred in zip(relevancy_clf.label_encoder.classes_, predicted_probs)
+            }
+
+            if relevancy_scores["relevant"] < 0.5:
                 no_relation.write(
                     {
                         "title": cleaned_title,
@@ -149,25 +193,36 @@ def main():
                 )
                 continue
 
-            with Timer(name='ner'):
-                persons = rule_ner.tag(cleaned_title)
+            persons = rule_ner.tag(cleaned_title)
 
             if len(persons) == 2:
-                with Timer(name='relationship'):
-                    title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")
-                    predicted_probs = relationship_clf.predict_proba([title_PER])
-                    rel_type_scores = {
-                        label: float(pred)
-                        for label, pred in zip(
-                            relationship_clf.encoder.classes_, predicted_probs[0]
-                        )
-                    }
 
-                with Timer(name='entity_linking'):
-                    entity = entity_linking(persons[0])
-                    ent_1 = entity["wiki_id"] if entity["wiki_id"] else None
-                    entity = entity_linking(persons[1])
-                    ent_2 = entity["wiki_id"] if entity["wiki_id"] else None
+                title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")
+
+                # read_att_normal_models
+                predicted_probs = relationship_clf.tag([title_PER])
+                rel_type_scores = {
+                    label: float(pred)
+                    for label, pred in zip(
+                        relationship_clf.label_encoder.classes_, predicted_probs[0]
+                    )
+                }
+
+                # read_avg_weighted_att_models
+                """
+                predicted_probs = relationship_clf.predict_proba([title_PER])
+                rel_type_scores = {
+                    label: float(pred)
+                    for label, pred in zip(
+                        relationship_clf.encoder.classes_, predicted_probs[0]
+                    )
+                }
+                """
+
+                entity = entity_linking(persons[0])
+                ent_1 = entity["wiki_id"] if entity["wiki_id"] else None
+                entity = entity_linking(persons[1])
+                ent_2 = entity["wiki_id"] if entity["wiki_id"] else None
 
                 print(entity_linking.cache_info())
 

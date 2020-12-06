@@ -18,10 +18,15 @@ def get_context(title_pos_tags, ent1, ent2):
     ent1_tokens = ent1.split()
     ent2_tokens = ent2.split()
     title_text = [t[0] for t in title_pos_tags]
-    ent1_start, ent1_end = find_sub_list(ent1_tokens, title_text)
-    ent2_start, ent2_end = find_sub_list(ent2_tokens, title_text)
+    ent1_interval = find_sub_list(ent1_tokens, title_text)
+    if ent1_interval:
+        ent1_start, ent1_end = ent1_interval
+        ent2_interval = find_sub_list(ent2_tokens, title_text)
+        if ent2_interval:
+            ent2_start, ent2_end = ent2_interval
+            return title_pos_tags[ent1_start: ent2_end + 1]
 
-    return title_pos_tags[ent1_start: ent2_end + 1]
+    return None
 
 
 def detect_direction(pos_tags, ent1, ent2):
@@ -35,6 +40,9 @@ def detect_direction(pos_tags, ent1, ent2):
                 return "ent2_rel_ent1", patterns_found
 
     context = get_context(pos_tags, ent1, ent2)
+
+    if not context:
+        return "ent1_rel_ent2", None
 
     # ataque|acusações|apoio|apelo de <ent2>
     valid_nouns = ["críticas", "acusações", "ataques", "ataque", "apoio", "apelo"]

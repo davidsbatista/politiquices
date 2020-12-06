@@ -4,8 +4,8 @@ from sklearn.model_selection import StratifiedKFold
 
 from politiquices.extraction.classifiers.news_titles.embeddings_utils import get_embeddings
 from politiquices.extraction.classifiers.news_titles.relevancy_clf import (
-    RelevancyClassifier,
     pre_process_train_data,
+    LSTMAtt,
 )
 from politiquices.extraction.utils import read_ground_truth
 
@@ -80,8 +80,9 @@ def main():
         fold_n += 1
     """
 
-    model = RelevancyClassifier(directional=False, epochs=15)
-    model.train(x_train=docs, y_train=labels, word2index=word2index, word2embedding=word2embedding)
+    model = LSTMAtt(directional=False, epochs=15)
+    keras_model = model.train(docs, labels, word2index, word2embedding, None, None)
+    model.save(keras_model)
 
 
 if __name__ == "__main__":

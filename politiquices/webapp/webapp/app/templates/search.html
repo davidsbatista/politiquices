@@ -170,12 +170,33 @@
             });
         });
 
-        $(document).ready(function() {
-           $(".dropdown-menu").on('click', 'a', function(){
-             $(this).parents('.dropdown').find('#dropdownMenuLink').text($(this).text());
-           });
+        $(document).on ("click", "#btn_three", function () {
+            var entity_wiki_id = $('#autocomplete_three_partido_value').val();
+            var party_wiki_id = $('#autocomplete_three_partido_value').val();
+            var data = { entity: entity_wiki_id, party: party_wiki_id};
+
+            alert(data);
+
+            $.ajax({
+              type: 'get',
+              data: data,
+              url: '/',
+              error: function () {
+                alert("There was an error processing this page.");
+                return false;
+              },
+              complete: function (output) {
+                $('#entityResults').html(output.responseText);
+              }
+            });
         });
 
+        $(document).ready(function() {
+           $(".dropdown-menu").on('click', 'a', function(){
+             alert($(this).text());
+             //$(this).parent().text($(this).text());
+           });
+        });
 
     });
 
@@ -211,23 +232,22 @@
     </header>
 
     <header class="jumbotron my-3">
-        <h4><p>Relações de um membros de um partido para uma pessoa?</p></h4>
+        <h4><p>Relações entre membros de um partido e uma determinada personalidade?</p></h4>
         <h6>e.g.: 'Que personalidades do BE se oposeram a Jerónimo de Sousa?'</h6>
         <br>
         <form class="container-fluid justify-content-center align-items-center">
-          <input id="autocomplete_three_partido_value" type="hidden" name="wiki">
-          <input id="autocomplete_three_pessoa_value" type="hidden" name="wiki">
+          <input id="autocomplete_three_partido_value" type="text" name="wiki">
+          <input id="autocomplete_three_pessoa_value" type="text" name="wiki">
 
           <div class="control-group">
               <div class="controls controls-row row-fluid col-xs-4">
                   <input id="autocomplete_three_partido" class="span10" type="text" placeholder="Partido" />
 
                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opoe-se</a>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      <a class="dropdown-item" href="#">Apoia</a>
-                      <a class="dropdown-item" href="#">Opoe-se</a>
-                    </div>
-
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        <a class="dropdown-item" href="#">Apoia</a>
+                        <a class="dropdown-item" href="#">Opoe-se</a>
+                      </div>
 
                   <input id="autocomplete_three_pessoa" class="span10" type="text" placeholder="Personalidade" />
                   <button type="button" id='btn_three' class="btn btn-primary btn-sm">Seleccionar</button>

@@ -12,16 +12,12 @@ from politiquices.extraction.utils import read_ground_truth
 
 
 def main():
-    data_publico = read_ground_truth(
-        "../../../../data/annotated/publico_politica.tsv", only_label=True
-    )
+    data_publico = read_ground_truth("../../../../data/annotated/publico_politica.tsv")
 
     # extract only support
-    data_arquivo = read_ground_truth("../../../../data/annotated/arquivo.tsv", only_label=True)
+    data_arquivo = read_ground_truth("../../../../data/annotated/arquivo.tsv")
     arquivo_supports = [x for x in data_arquivo if "supports" in x["label"]]
-    data_webapp = read_ground_truth(
-        "../annotations_from_webapp.csv", delimiter=",", only_label=True
-    )
+    data_webapp = read_ground_truth("../annotations_from_webapp.csv", delimiter=",",)
     data_webapp_supports = [x for x in data_webapp if "supports" in x["label"]]
     docs, labels = pre_process_train_data(arquivo_supports + data_publico + data_webapp_supports)
 

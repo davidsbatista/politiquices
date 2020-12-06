@@ -1,6 +1,7 @@
 import csv
 import sys
 from collections import defaultdict
+from datetime import datetime
 
 from jsonlines import jsonlines
 from rdflib import Graph
@@ -63,13 +64,6 @@ def process_classified_titles(f_in):
         e1_wiki = title["ent_1"]['wiki'] if title["ent_1"] else None
         e2_wiki = title["ent_2"]['wiki'] if title["ent_2"] else None
 
-        # if no wiki links are present discard
-        # ToDo: remove this once there's a model for entity linking that can return None, i.e.,
-        #       entity not present in KB
-        if not (e1_wiki and e2_wiki):
-            print("no wiki links")
-            continue
-
         scores = [(k, v) for k, v in title['scores'].items()]
         rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
 
@@ -87,6 +81,7 @@ def process_classified_titles(f_in):
         p2_name = person_2
         build_person(p2_id, p2_name, persons)
 
+        # ToDo: keep track of an hash of title + domain, if seen again, keep the oldest one
         relationships.append(
             Relationship(
                 url=url, rel_type=rel_type[0], rel_score=rel_type[1], ent1=p1_id, ent2=p2_id,
@@ -116,7 +111,7 @@ def populate_graph(articles, persons, relationships):
     # linked-data vocabularies
     # https://lov.linkeddata.es/dataset/lov/
 
-    print("\nadding Persons")
+    print("adding Persons")
     # add Person triples: <wiki_URI, SKOS.prefLabel, name>
     for wikidata_id, person in persons.items():
 
@@ -179,9 +174,11 @@ def populate_graph(articles, persons, relationships):
 
     # print out the entire Graph in the RDF Turtle format
     # "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
-    print(g.serialize(format="turtle").decode("utf-8"))
-    g.serialize(destination="sample.ttl", format="turtle")
+    date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    f_name = f'politiquices_{date_time}.ttl'
+    g.serialize(destination=f_name, format="turtle")
     print("graph has {} statements.".format(len(g)))
+    print()
     print("persons      : ", len(persons))
     print("articles     : ", len(articles))
     print("relationships: ", len(relationships))
@@ -189,11 +186,6 @@ def populate_graph(articles, persons, relationships):
 
 def main():
     articles, persons, relationships = process_classified_titles(sys.argv[1])
-
-    print("persons      : ", len(persons))
-    print("articles     : ", len(articles))
-    print("relationships: ", len(relationships))
-
     populate_graph(articles, persons, relationships)
 
 

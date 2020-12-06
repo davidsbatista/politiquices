@@ -81,6 +81,7 @@ classifiers
         - Remove from patterns:
             - 'Maria da'
             - {"title": "\"Rui Pedro Soares \"\"disponível\"\" para ser dono do Sol\"", "entities": ["Rui", "Pedro Soares"]
+            http://0.0.0.0:5000/entity?q=Q10365338
 
 
     entity_linking:
