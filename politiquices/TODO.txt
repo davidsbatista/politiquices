@@ -16,8 +16,8 @@ classifiers
     - new approach:
         - NER
         - EntityLinking
-        - detecte relationship
-        - detecte direction
+        - detect relationship
+        - detect direction
 
     - run script with PYTHONHASHSEED=0
     - create classifier abstraction/interface

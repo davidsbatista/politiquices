@@ -14,9 +14,13 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_total_nr_of_articles,
     get_person_info,
     get_list_of_persons_from_some_party_opposing_someone,
-    get_persons_affiliated_with_party, get_top_relationships, get_all_parties,
+    get_persons_affiliated_with_party,
+    get_top_relationships,
+    get_all_parties,
     get_person_relationships,
-    get_party_of_entity)
+    get_party_of_entity,
+    get_list_of_persons_from_some_party_relation_with_someone,
+)
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 from politiquices.webapp.webapp.app.relationships import build_relationships_freq
 
@@ -32,19 +36,19 @@ cached_party_logo = defaultdict(str)
 person_no_image = "/static/images/no_picture.jpg"
 
 
-@app.route('/')
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
 
 
-@app.route('/search')
+@app.route("/search")
 def search():
-    return render_template('search.html')
+    return render_template("search.html")
 
 
-@app.route('/about')
+@app.route("/about")
 def about():
-    return render_template('about.html')
+    return render_template("about.html")
 
 
 @app.route("/stats")
@@ -122,11 +126,11 @@ def list_entities():
 def detail_entity():
     from_search = False
     wiki_id = request.args.get("q")
-    if request.args.get('search'):
+    if request.args.get("search"):
         from_search = True
 
     person = get_person_info(wiki_id)
-    top_entities_in_rel_type = get_top_relationships(wiki_id)   # ToDo: not being shown
+    top_entities_in_rel_type = get_top_relationships(wiki_id)  # ToDo: not being shown
     relationships_articles = get_person_relationships(wiki_id)
 
     (
@@ -143,11 +147,11 @@ def detail_entity():
         "image": person.image_url,
         "parties": person.parties,
         "offices": person.positions,
-        "top_relations": top_entities_in_rel_type[:10],     # ToDo: not being shown
-        "opposed": relationships_articles['opposes'],
-        "supported": relationships_articles['supports'],
-        "opposed_by": relationships_articles['opposed_by'],
-        "supported_by": relationships_articles['supported_by'],
+        "top_relations": top_entities_in_rel_type[:10],  # ToDo: not being shown
+        "opposed": relationships_articles["opposes"],
+        "supported": relationships_articles["supports"],
+        "opposed_by": relationships_articles["opposed_by"],
+        "supported_by": relationships_articles["supported_by"],
         "year_month_labels": year_month_labels,
         "opposed_freq": opposed_freq,
         "supported_freq": supported_freq,
@@ -192,23 +196,45 @@ def all_parties():
     return render_template("all_parties.html", items=items)
 
 
-@app.route('/person_party')
+@app.route("/person_party")
 def get_person_party():
     person_wiki_id = request.args.get("entity")
     parties = get_party_of_entity(person_wiki_id)
 
     if not parties:
-        return 'None'
+        return "None"
 
     # ToDo: handle the case with several parties/other things
     return jsonify(parties[0])
 
 
-@app.route('/queries')
+@app.route("/queries")
 def queries():
-    query_nr = request.args.get("q")
-    person_wiki_id = request.args.get("entity")
-    party_wiki_id = request.args.get("party")
-    # ToDo: pass name of person and partu name to template
-    results = get_list_of_persons_from_some_party_opposing_someone(person_wiki_id, party_wiki_id)
-    return render_template("template_one.html", items=results)
+
+    print(request.args)
+    query_nr = request.args.get("query_nr")
+
+    if query_nr == "one":
+        person_wiki_id = request.args.get("entity")
+        party_wiki_id = request.args.get("party")
+        # ToDo: pass name of person and party name to template
+        results = get_list_of_persons_from_some_party_opposing_someone(
+            person_wiki_id, party_wiki_id
+        )
+        return render_template("template_one.html", items=results)
+
+    if query_nr == "two":
+        person_wiki_id = request.args.get("entity")
+        party_wiki_id = request.args.get("party")
+        relationship = request.args.get("relationship")
+
+        if relationship == "opoe-se":
+            rel = "ent1_opposes_ent2"
+        elif relationship == "apoia":
+            rel = "ent1_supports_ent2"
+
+        results = get_list_of_persons_from_some_party_relation_with_someone(
+            person_wiki_id, party_wiki_id, rel
+        )
+
+        return render_template("template_one.html", items=results)
