@@ -47,7 +47,7 @@ async def create_item(item: Item, request: Request):
     print(client_ip)
 
     with open('annotations_from_webapp.csv', mode='a+') as f_out:
-        writer = csv.writer(f_out, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        writer = csv.writer(f_out, delimiter=',', quoting=csv.QUOTE_MINIMAL)
 
         row = [item.title.strip(), item.rel_type.strip(), item.date.strip(), item.url.strip(),
                item.ent_1.strip(), item.ent_2.strip(), base_url+item.ent1_wiki.strip(),
