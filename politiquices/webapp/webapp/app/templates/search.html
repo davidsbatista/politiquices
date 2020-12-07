@@ -155,7 +155,7 @@
         $(document).on ("click", "#btn_two", function () {
             var entity_wiki_id = $('#autocomplete_two-value').val();
             var party_wiki_id = $('#autocomplete_two-partido-value').val();
-            var data = { entity: entity_wiki_id, party: party_wiki_id};
+            var data = { query_nr: 'one', entity: entity_wiki_id, party: party_wiki_id};
             $.ajax({
               type: 'get',
               data: data,
@@ -171,16 +171,19 @@
         });
 
         $(document).on ("click", "#btn_three", function () {
-            var entity_wiki_id = $('#autocomplete_three_partido_value').val();
+            var entity_wiki_id = $('#autocomplete_three_pessoa_value').val();
             var party_wiki_id = $('#autocomplete_three_partido_value').val();
-            var data = { entity: entity_wiki_id, party: party_wiki_id};
-
-            alert(data);
+            var e = document.getElementById("dropdownMenuButton");
+            var data = { query_nr: 'two',
+                         entity: entity_wiki_id,
+                         party: party_wiki_id,
+                         relationship: e.textContent
+                       };
 
             $.ajax({
               type: 'get',
               data: data,
-              url: '/',
+              url: '/queries',
               error: function () {
                 alert("There was an error processing this page.");
                 return false;
@@ -193,8 +196,7 @@
 
         $(document).ready(function() {
            $(".dropdown-menu").on('click', 'a', function(){
-             alert($(this).text());
-             //$(this).parent().text($(this).text());
+             $(this).parents('.dropdown').find('button').text($(this).text());
            });
         });
 
@@ -236,19 +238,24 @@
         <h6>e.g.: 'Que personalidades do BE se oposeram a Jerónimo de Sousa?'</h6>
         <br>
         <form class="container-fluid justify-content-center align-items-center">
-          <input id="autocomplete_three_partido_value" type="text" name="wiki">
-          <input id="autocomplete_three_pessoa_value" type="text" name="wiki">
+          <input id="autocomplete_three_partido_value" type="hidden" name="wiki">
+          <input id="autocomplete_three_pessoa_value" type="hidden" name="wiki">
 
           <div class="control-group">
               <div class="controls controls-row row-fluid col-xs-4">
                   <input id="autocomplete_three_partido" class="span10" type="text" placeholder="Partido" />
 
-                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Opoe-se</a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="#">Apoia</a>
-                        <a class="dropdown-item" href="#">Opoe-se</a>
-                      </div>
+                    <div class="dropdown">
+                      <button class="btn btn-secondary dropdown-toggle" type="button"
+                              id="dropdownMenuButton" data-toggle="dropdown"
+                              aria-haspopup="true" aria-expanded="false">opoe-se</button>
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item">opoe-se</a>
+                          <a class="dropdown-item">apoia</a>
+                    </div>
 
+
+                </div>
                   <input id="autocomplete_three_pessoa" class="span10" type="text" placeholder="Personalidade" />
                   <button type="button" id='btn_three' class="btn btn-primary btn-sm">Seleccionar</button>
                 </div>
