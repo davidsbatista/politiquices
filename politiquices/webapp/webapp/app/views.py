@@ -230,7 +230,7 @@ def queries():
 
         if relationship == "opoe-se":
             rel = "ent1_opposes_ent2"
-        elif relationship == "supports":
+        elif relationship == "apoia":
             rel = "ent1_supports_ent2"
 
         results = get_list_of_persons_from_some_party_relation_with_someone(
