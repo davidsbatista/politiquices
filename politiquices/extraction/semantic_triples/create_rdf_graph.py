@@ -59,6 +59,47 @@ def remove_duplicates():
     return unique
 
 
+def remove_duplicates_same_domain(unique):
+    articles = []
+    for entry in unique:
+        original_url = "/".join(entry["linkToArchive"].split("/")[5:])
+        articles.append(
+            (
+                original_url,
+                entry["title"],
+                entry["tstamp"],
+                entry["linkToArchive"],
+                entry["entities"],
+                entry["ent_1"],
+                entry["ent_2"],
+                entry["scores"],
+            )
+        )
+
+    # original_url, title, tstamp, link, entities, ent_1, ent_2, scores
+    sorted_articles = sorted(articles, key=operator.itemgetter(1))
+
+    # group by original title, from the group take the oldest one
+    articles_unique = []
+    for k, g in groupby(sorted_articles, operator.itemgetter(1)):
+        arts = list(g)
+        earliest = sorted(arts, key=operator.itemgetter(2))[0]
+        result = {
+            'title': earliest[1],
+            'tstamp': earliest[2],
+            'linkToArchive': earliest[3],
+            'entities': earliest[4],
+            'ent_1': earliest[5],
+            'ent_2': earliest[6],
+            'scores': earliest[7]
+        }
+        articles_unique.append(result)
+
+    print(f'{len(articles_unique)} unique articles')
+
+    return articles_unique
+
+
 def read_csv_data(file_name):
     with open(file_name, "rt") as f_in:
         tsv_reader = csv.reader(f_in, delimiter="\t")
@@ -237,8 +278,14 @@ def populate_graph(articles, persons, relationships):
 
 
 def main():
+    # ToDo: add args to receive annotated data and automatically extracted data
 
+    # remove exact duplicates (i.e., title + url, only crawl data is different)
     unique = remove_duplicates()
+
+    # remove 'exact' duplicates (i.e., title + crawl date same, one url is sub-domain of other)
+    unique = remove_duplicates_same_domain(unique)
+
     articles, persons, relationships = process_classified_titles(unique)
     populate_graph(articles, persons, relationships)
 

@@ -141,6 +141,9 @@ Web App
             - timeline de contradições entre duas personalidades
             - fazer agregação de personalidades por cargos, membros do governo, ocupações, educação
 
+            - listar todos os membros do Governo X
+            - listar todos os que já foram Ministros <qq cena>
+
             - quem acusou/apoiou <personalidade_com_um_cargo>
                 - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
                 - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
@@ -154,11 +157,6 @@ Web App
         - http://biohackathon.org/d3sparql/
         - https://github.com/ktym/d3sparql
 
-   - dentro da página de político
-      - lista de titulos de artigos:
-        - por das entidades a cor diferente no texto em vez de à parte
-        - por um icone com link po arquivo.pt
-
       - tirar dos cargos e organizar:
             Member of the Assembly of the Republic:
                 - elected in
@@ -169,11 +167,13 @@ Web App
 
        - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
+
    - mostrar informação para completar:
         listar pessoas com informação incompleta: foto, cargos, etc. e explicar como alimentar
         a wikidata com fontes de informação :
             - https://www.politicaparatodos.pt/
             - http://demo.cratica.org/deputados/
+
 
     queries mais interessantes:
     ---------------------------
