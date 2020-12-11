@@ -40,7 +40,7 @@ def titles_no_entities(f_name):
 
 
 def entities_no_wiki_link():
-    with jsonlines.open('titles_processed_no_wiki_id.jsonl', 'r') as f_in:
+    with jsonlines.open('extraction_spacy_small/titles_processed_no_wiki_id.jsonl', 'r') as f_in:
         no_wiki_link = []
         for entry in f_in:
             if entry['ent_1'] is None:
@@ -51,7 +51,7 @@ def entities_no_wiki_link():
 
 
 def entities_no_relation():
-    with jsonlines.open('titles_processed_no_relation.jsonl', 'r') as f_in:
+    with jsonlines.open('extraction_spacy_small/titles_processed_no_relation.jsonl', 'r') as f_in:
         no_relation_pairs_titles = defaultdict(list)
         no_relation_pairs_count = []
 

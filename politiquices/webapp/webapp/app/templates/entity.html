@@ -111,35 +111,25 @@
 
         $(this).closest('tr').find('td').not(':last').each(function() {
 
-            /* ent_1 and wiki_1 */
-            if ($(this).attr('id') == 'ent_1') {
-              var ent1 = $(this).find('a').text();
-              var ent1_wiki_url = $('#ent1_wikid_id').attr("href").split("wiki/")[1];
+            /* ent_1, wiki_1 and ent_2, wiki_2, title and arquivo.pt link */
+            if ($(this).attr('id') == 'title') {
+              title_data.url = $(this).find('#link').attr("href");
+              title_data.title = $(this).find('#link').attr("data-title");
+
+              var ent1 = $(this).find('#ent_1').text();
+              var ent1_wiki_url = $(this).find('#ent_1').attr("href").split("q=")[1];
+              var ent2 = $(this).find('#ent_2').text();
+              var ent2_wiki_url = $(this).find('#ent_2').attr("href").split("q=")[1];
               entities.ent1 = ent1;
               entities.ent1_wiki_url = ent1_wiki_url;
-            }
-
-            /* ent_2 and wiki_2 */
-            if ($(this).attr('id') == 'ent_2') {
-                var ent2 = $(this).find('a').text();
-                var ent2_wiki_url = $(this).find('a').attr("href").split("q=")[1];
-                entities.ent2 = ent2;
-                entities.ent2_wiki_url = ent2_wiki_url;
-
+              entities.ent2 = ent2;
+              entities.ent2_wiki_url = ent2_wiki_url;
             }
 
             /* date of crawl */
             if ($(this).attr('id') == 'data') {
                 var data = $(this).text();
                 title_data.date = data;
-            }
-
-            /* title and arquivo.pt link */
-            if ($(this).attr('id') == 'title') {
-                title_text = $(this).text();
-                title_link = $(this).find('a').attr("href");
-                title_data.title = title_text;
-                title_data.url = title_link;
             }
 
             /* selected rel_type */
@@ -197,10 +187,11 @@
       <tbody>
       {% for item in items.opposed %}
         <tr>
-          <td id="ent_1"><a href={{item.focus_ent}}> {{item.focus_ent}} </a></td>
-          <td id="ent_2"><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
           <td id="data">{{item.date}}</td>
-          <td id="title"><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank"><img src="/static/images/color_vertical.svg" width="39.8" height="20"></a>
+          </td>
           <td id="score">{{item.score}}</td>
           <td id="rel_type">
               <div class="dropdown">
@@ -233,10 +224,11 @@
       <tbody>
       {% for item in items.supported %}
         <tr>
-          <td id="ent_1"><a href={{item.focus_ent}}> {{item.focus_ent}} </a></td>
-          <td id="ent_2"><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
           <td id="data">{{item.date}}</td>
-          <td id="title"><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank"><img src="/static/images/color_vertical.svg" width="39.8" height="20"></a>
+          </td>
           <td id="score">{{item.score}}</td>
           <td id="rel_type">
               <div class="dropdown">
@@ -264,15 +256,16 @@
 
     <br><br>
 
-    <h3>Acusado por / Oposto por</h3>
+    <h3>Acusado(a) por / Oposto(a) por</h3>
     <table id="ent2_opposes_ent1">
       <tbody>
       {% for item in items.opposed_by %}
         <tr>
-          <td id="ent_1"><a href={{item.focus_ent}}> {{item.focus_ent}} </a></td>
-          <td id="ent_2"><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
           <td id="data">{{item.date}}</td>
-          <td id="title"><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank"><img src="/static/images/color_vertical.svg" width="39.8" height="20"></a>
+          </td>
           <td id="score">{{item.score}}</td>
           <td id="rel_type">
               <div class="dropdown">
@@ -300,15 +293,16 @@
 
     <br><br>
 
-    <h3>Apoiado por / Defendido por</h3>
+    <h3>Apoiado(a) por / Defendido(a) por</h3>
     <table id="ent2_supports_ent1">
       <tbody>
       {% for item in items.supported_by %}
         <tr>
-          <td id="ent_1"><a href={{item.focus_ent}}> {{item.focus_ent}} </a></td>
-          <td id="ent_2"><a href={{item.other_ent_url}}> {{item.other_ent_name}} </a></td>
           <td id="data">{{item.date}}</td>
-          <td id="title"><a href={{item.url}} target="_blank"> {{item.title}} </a></td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank"><img src="/static/images/color_vertical.svg" width="39.8" height="20"></a>
+          </td>
           <td id="score">{{item.score}}</td>
           <td id="rel_type">
               <div class="dropdown">

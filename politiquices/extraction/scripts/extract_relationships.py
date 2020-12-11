@@ -135,11 +135,11 @@ def main():
     relationship_clf, relevancy_clf = read_att_normal_models()
 
     # open files for logging and later diagnostic
-    no_relation = jsonlines.open("titles_processed_no_relation.jsonl", mode="w")
-    no_entities = jsonlines.open("titles_processed_no_entities.jsonl", mode="w")
-    more_entities = jsonlines.open("titles_processed_more_entities.jsonl", mode="w")
-    no_wiki = jsonlines.open("titles_processed_no_wiki_id.jsonl", mode="w")
-    processed = jsonlines.open("titles_processed.jsonl", mode="w")
+    no_relation = jsonlines.open("extraction_spacy_small/titles_processed_no_relation.jsonl", mode="w")
+    no_entities = jsonlines.open("extraction_spacy_small/titles_processed_no_entities.jsonl", mode="w")
+    more_entities = jsonlines.open("extraction_spacy_small/titles_processed_more_entities.jsonl", mode="w")
+    no_wiki = jsonlines.open("extraction_spacy_small/titles_processed_no_wiki_id.jsonl", mode="w")
+    processed = jsonlines.open("extraction_spacy_small/titles_processed.jsonl", mode="w")
 
     count = 0
     with jsonlines.open(sys.argv[1]) as f_in:

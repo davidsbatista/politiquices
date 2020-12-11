@@ -42,7 +42,9 @@ async def create_item(item: Item, request: Request):
     client_ip = request.client.host
     print(item.ent_1.strip(), item.ent1_wiki.strip())
     print(item.ent_2.strip(), item.ent2_wiki.strip())
-    print(item.date.strip(), item.title.strip(), item.url.strip())
+    print(item.date.strip())
+    print(item.title.strip())
+    print(item.url.strip())
     print(item.rel_type.strip())
     print(client_ip)
 

@@ -122,6 +122,20 @@ def list_entities():
     return render_template("all_entities.html", items=items)
 
 
+def make_title_linkable(r, wiki_id):
+    # add link to focus entity
+    link_one = r['title'].replace(
+        r['focus_ent'],
+        '<a id="ent_1" href="entity?q=' + wiki_id + '">' + r['focus_ent'] + '</a>'
+    )
+    # add link to other entity page
+    title_link = link_one.replace(
+        r['other_ent_name'],
+        '<a id="ent_2" href=' + r['other_ent_url'] + '>' + r['other_ent_name'] + '</a>'
+    )
+    r['title_clickable'] = title_link
+
+
 @app.route("/entity")
 def detail_entity():
     from_search = False
@@ -132,6 +146,19 @@ def detail_entity():
     person = get_person_info(wiki_id)
     top_entities_in_rel_type = get_top_relationships(wiki_id)  # ToDo: not being shown
     relationships_articles = get_person_relationships(wiki_id)
+
+    # make titles with entities all clicklable
+    for r in relationships_articles["opposes"]:
+        make_title_linkable(r, wiki_id)
+
+    for r in relationships_articles["supports"]:
+        make_title_linkable(r, wiki_id)
+
+    for r in relationships_articles["opposed_by"]:
+        make_title_linkable(r, wiki_id)
+
+    for r in relationships_articles["supported_by"]:
+        make_title_linkable(r, wiki_id)
 
     (
         year_month_labels,

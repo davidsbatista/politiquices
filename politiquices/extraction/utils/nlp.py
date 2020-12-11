@@ -1,6 +1,4 @@
 import networkx as nx
-import pt_core_news_sm
-nlp = pt_core_news_sm.load()
 
 
 def expand_contractions(title):

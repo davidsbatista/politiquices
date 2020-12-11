@@ -14,7 +14,7 @@ def main():
     # set up the NER system
     rule_ner = RuleBasedNer()
 
-    with jsonlines.open('titles_processed_no_relation.jsonl', 'r') as f_in:
+    with jsonlines.open('extraction_spacy_small/titles_processed_no_relation.jsonl', 'r') as f_in:
         titles = list(f_in)
 
     f_results = jsonlines.open('results.tsv', 'w')

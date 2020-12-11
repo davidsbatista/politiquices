@@ -9,10 +9,10 @@ nlp.disable = ["tagger", "parser", "ner"]
 
 
 def main():
-    with jsonlines.open('titles_processed.jsonl', 'r') as f_in:
+    with jsonlines.open('extraction_spacy_small/titles_processed.jsonl', 'r') as f_in:
         titles = list(f_in)
 
-    processed = jsonlines.open("titles_processed_with_direction.jsonl", mode="w")
+    processed = jsonlines.open("extraction_spacy_small/titles_processed_with_direction.jsonl", mode="w")
     for title in titles:
         doc = nlp(title['title'])
         pos_tags = [(t.text, t.pos_, t.tag_) for t in doc]
