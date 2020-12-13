@@ -26,3 +26,8 @@
    
       
         python evaluate_entity_linking.py
+
+
+# Index wikidata in local SPARQL instance
+
+    cat wiki_ttl/* | bzip2 -c > ../../../webapp/fuseki-docker/fuseki-data/wikidata_org_2020-12-13.ttl.bz2

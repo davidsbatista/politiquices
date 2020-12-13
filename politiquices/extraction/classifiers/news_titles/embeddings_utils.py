@@ -1,10 +1,10 @@
 import numpy as np
-import pt_core_news_sm
+import pt_core_news_lg
 from keras.layers import Embedding
 
 from politiquices.extraction.utils import get_time_str
 
-nlp = pt_core_news_sm.load()
+nlp = pt_core_news_lg.load()
 
 
 def load_fasttext_embeddings(file):

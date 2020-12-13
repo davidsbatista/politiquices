@@ -188,9 +188,11 @@ def download(ids_to_retrieve, default_dir="wiki_jsons", file_format='json'):
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
     for idx, wiki_id in enumerate(set(ids_to_retrieve)):
         print(str(idx) + "/" + str(len(set(ids_to_retrieve))))
+        f_name = os.path.join(default_dir, wiki_id + "." + file_format)
+        if os.path.exists(f_name):
+            continue
         just_sleep(3)
         r = requests.get(base_url, params={"format": file_format, "id": wiki_id})
-        f_name = os.path.join(default_dir, wiki_id + "." + file_format)
         open(f_name, "wt").write(r.text)
 
 

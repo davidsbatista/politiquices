@@ -73,12 +73,7 @@ def main():
                     if x['mainsnak']['property'] == 'P102':
                         print(x['mainsnak']['datavalue']['value']['id'])
         """
-
         print("\n--------------------")
-
-        # ToDo: extend aliases for some cases
-        # if label == 'António Costa':
-        #    aliases.append("Costa")
 
         doc = {
             'wiki': wiki_id,

@@ -1,4 +1,4 @@
-import pt_core_news_sm
+import pt_core_news_lg
 
 from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
 
@@ -68,7 +68,7 @@ samples = [
 
 
 def main():
-    nlp_ner = pt_core_news_sm.load(disable=["tagger", "parser"])
+    nlp_ner = pt_core_news_lg.load(disable=["tagger", "parser"])
     rule_ner = RuleBasedNer()
 
     print(rule_ner.ner.pipeline)

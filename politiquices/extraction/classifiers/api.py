@@ -2,7 +2,7 @@ import os
 from typing import Optional, List
 
 import pickle
-import pt_core_news_sm
+import pt_core_news_lg
 from elasticsearch import Elasticsearch
 
 from fastapi import FastAPI, Query
@@ -22,7 +22,7 @@ MODELS = os.path.join(APP_ROOT, "../classifiers/news_titles/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
 
 print("Loading spaCy model...")
-nlp_core = pt_core_news_sm.load(disable=["parser"])
+nlp_core = pt_core_news_lg.load(disable=["parser"])
 
 # ToDo: fail on error
 print("Setting up connection with Elasticsearch")

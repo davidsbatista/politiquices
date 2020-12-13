@@ -1,4 +1,4 @@
-import pt_core_news_sm
+import pt_core_news_lg
 from sklearn.metrics import classification_report
 
 from politiquices.extraction.classifiers.news_titles.relationship_direction_clf import detect_direction
@@ -10,7 +10,7 @@ from politiquices.extraction.utils.utils import (
 
 
 def main():
-    nlp = pt_core_news_sm.load()
+    nlp = pt_core_news_lg.load()
     nlp.disable = ["tagger", "parser", "ner"]
 
     data_publico = read_ground_truth("../../../../data/annotated/publico_politica.tsv", only_label=True)

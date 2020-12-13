@@ -32,6 +32,11 @@ class RuleBasedNer:
         res = es.search(index="politicians",
                         body={"query": {"match_all": {}},
                               "size": 2000})
+
+        for r in res['hits']['hits']:
+            if r['_source']['label'] is None:
+                print(r)
+
         all_names = sorted([r['_source']['label'] for r in res['hits']['hits']])
 
         """

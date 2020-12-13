@@ -126,16 +126,20 @@ def main():
     # set up the NER system
     rule_ner = RuleBasedNer()
 
+    # load named-entities that should be ignored
+    with open('ner_ignore.txt', 'rt') as f_in:
+        ner_ignore = [line.strip() for line in f_in.readlines()]
+
     # relationship_clf, relevancy_clf = read_avg_weighted_att_models()
     relationship_clf, relevancy_clf = read_att_normal_models()
 
     # open files for logging and later diagnostic
-    no_relation = jsonlines.open("titles_processed_no_relation.jsonl", mode="w")
     no_entities = jsonlines.open("titles_processed_no_entities.jsonl", mode="w")
     more_entities = jsonlines.open("titles_processed_more_entities.jsonl", mode="w")
     no_wiki = jsonlines.open("titles_processed_no_wiki_id.jsonl", mode="w")
     processed = jsonlines.open("titles_processed.jsonl", mode="w")
     ner_linked = jsonlines.open("ner_linked.jsonl", mode="w")
+    ner_ignored = jsonlines.open("ner_ignored.jsonl", mode="w")
 
     count = 0
     with jsonlines.open(sys.argv[1]) as f_in:
@@ -146,14 +150,17 @@ def main():
             if count % 1000 == 0:
                 print(count)
 
-            # maybe this can be removed
+            # maybe this can be removed or logged on other script, e.g.: prepare for extraction
             try:
                 cleaned_title = clean_title_quotes(clean_title_re(line["title"]))
             except Exception as e:
                 print(e)
-                print("failed to clean ---> ", line["title"])
+                failed_to_clean.write({line["title"]})
 
             persons = rule_ner.tag(cleaned_title)
+            if any(person in persons for person in ner_ignore):
+                ner_ignored.write({"title": cleaned_title, "entities": persons})
+                continue
 
             if len(persons) == 2:
 

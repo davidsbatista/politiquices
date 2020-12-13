@@ -1,8 +1,8 @@
-import pt_core_news_sm
+import pt_core_news_lg
 
-from politiquices.extraction.utils import read_ground_truth, clean_title
+from politiquices.extraction.utils import read_ground_truth, clean_title_re
 
-nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
+nlp = pt_core_news_lg.load(disable=["tagger", "parser"])
 
 
 def main():
@@ -21,7 +21,7 @@ def main():
         print(x['ent2'])
         print()
         """
-        tp, fp, fn = evaluate_ner(clean_title(x['title']), [x['ent1'], x['ent2']])
+        tp, fp, fn = evaluate_ner(clean_title_re(x['title']), [x['ent1'], x['ent2']])
         tp_total += tp
         fp_total += fp
         fn_total += fn

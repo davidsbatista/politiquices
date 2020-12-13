@@ -52,6 +52,9 @@ def main():
     cleaning = 0
 
     to_extract = jsonlines.open("titles_to_be_processed.jsonl", mode="w")
+    failed_to_clean = jsonlines.open("failed_to_clean.jsonl", mode="w")
+    other_topics_log = jsonlines.open("failed_to_clean.jsonl", mode="w")
+    too_short_log = jsonlines.open("too_short.jsonl", mode="w")
 
     for entry in crawled_data():
 
@@ -59,25 +62,24 @@ def main():
 
         if re.match(url_other_topic, entry["linkToArchive"], flags=re.IGNORECASE):
             other_topics += 1
-            # print("other topics ---> ", entry["linkToArchive"])
+            other_topics_log.write({'title': entry["title"], 'link': entry["linkToArchive"]})
             continue
 
         if any(keyword in entry["title"] for keyword in title_keywords_ignore):
             other_topics += 1
-            # print("other topics ---> ", entry["title"])
+            other_topics_log.write({'title': entry["title"], 'link': entry["linkToArchive"]})
             continue
 
         try:
             cleaned_title = clean_title_quotes(clean_title_re(entry["title"]))
         except Exception as e:
             cleaning += 1
-            # print(e)
-            # print("failed to clean ---> ", entry["title"])
+            failed_to_clean.write({'title': entry["title"], 'exception': str(e)})
             continue
 
         if len(cleaned_title.split()) <= 4:
             too_short += 1
-            # print("too short ---> ", entry["title"])
+            too_short_log.write({'title': entry["title"]})
             continue
 
         title_hash = mmh3.hash(cleaned_title, signed=False)
@@ -96,6 +98,9 @@ def main():
     print("other_topics   : ", other_topics)
     print("considered     : ", considered)
     to_extract.close()
+    failed_to_clean.close()
+    too_short_log.close()
+    other_topics_log.close()
 
 
 if __name__ == "__main__":

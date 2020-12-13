@@ -13,12 +13,6 @@ arquivo_pt:
 classifiers
 ===========
 
-    - new approach:
-        - NER
-        - EntityLinking
-        - detect relationship
-        - detect direction
-
     - run script with PYTHONHASHSEED=0
     - create classifier abstraction/interface
 
@@ -79,7 +73,7 @@ classifiers
 
 
         - Not tagging full entity
-            - 'Maria da'
+            - 'Maria da'                    http://0.0.0.0:5000/entity?q=Q10291438
             - ["Rui", "Pedro Soares"]
 
 
@@ -103,6 +97,16 @@ classifiers
 
 Web App
 =======
+
+    - mostrar mais relações:
+        - apoia/defende c/ as duas direções
+        - acusa/opoem-se c/ as duas direções
+
+        uma ultima secção com "outras":
+        - outras
+
+    -
+
 
     UI:
         - mete uma margem em cima pequena entre a foto e o bordo do cartão
@@ -153,6 +157,8 @@ Web App
         a wikidata com fontes de informação :
             - https://www.politicaparatodos.pt/
             - http://demo.cratica.org/deputados/
+            - http://casacomum.org/cc/pesqArquivo?termo=ana+gomes&facetFilterFundo=26
+            - https://www.parlamento.pt/DeputadoGP/Paginas/Deputados_ef.aspx
 
 
     queries mais interessantes:
