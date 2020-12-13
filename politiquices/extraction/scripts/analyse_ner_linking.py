@@ -1,7 +1,7 @@
 import jsonlines
 from collections import defaultdict
 
-from politiquices.extraction.scripts.extract_relationships_v2 import entity_linking
+from politiquices.extraction.scripts.extract_relationships import entity_linking
 
 
 def count_non_linked(entries):
@@ -31,6 +31,10 @@ def see_highly_ambiguous(entries):
                 matches[entity]['label'] = e['wiki']['label']
                 matches[entity]['freq'] = len(results)
                 seen.add(entity)
+
+    for m in sorted(matches.items(), key=lambda x: x[1]['freq'], reverse=True):
+        e = m[0]
+        print(e, '\t', matches[e]['freq'], '\t', matches[e]['label'])
 
 
 def main():

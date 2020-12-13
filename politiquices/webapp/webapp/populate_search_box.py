@@ -62,6 +62,7 @@ def get_persons():
 
 def main():
     data = get_persons()
+    print(f'{len(data)} found')
     with open("persons.json", "wt") as f_out:
         json.dump(data, f_out, indent=True, sort_keys="True")
 

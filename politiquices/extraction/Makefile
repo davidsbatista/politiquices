@@ -8,7 +8,7 @@ dev:
 	python3 -m venv $${HOME}/politiquices_extraction_venv; . $${HOME}/politiquices_extraction_venv/bin/activate; \
 	pip install --upgrade pip > /dev/null; \
 	pip install -r requirements.txt > /dev/null; \
-	export PYTHONPATH=$HOME/politic-relationships; \
+	export PYTHONPATH=$HOME/politiquices/; \
 
 	@echo "Development environment setup done to activate run:"
 	@echo "\`source ~/politiquices_extraction_venv/bin/activate\`"
