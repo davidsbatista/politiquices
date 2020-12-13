@@ -4,7 +4,7 @@ import re
 from elasticsearch import Elasticsearch
 from spacy.pipeline import EntityRuler
 
-import pt_core_news_sm
+import pt_core_news_lg
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -124,7 +124,7 @@ class RuleBasedNer:
         return patterns
 
     def build_ner(self):
-        nlp = pt_core_news_sm.load(disable=["tagger", "parser"])
+        nlp = pt_core_news_lg.load(disable=["tagger", "parser"])
         self.patterns.append({'label': 'PER', 'pattern': 'Marinho e Pinto'})
         self.patterns.append({'label': 'PER', 'pattern': 'Ribeiro e Castro'})
         ruler_person_entities = EntityRuler(nlp, overwrite_ents=False)

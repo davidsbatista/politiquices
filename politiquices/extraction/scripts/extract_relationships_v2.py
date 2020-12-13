@@ -3,30 +3,34 @@ import sys
 import pickle
 from functools import lru_cache
 
+
 from elasticsearch import Elasticsearch
 from jsonlines import jsonlines
 from keras.models import load_model
 
-from politiquices.extraction.classifiers.news_titles.lstm_with_atten import KerasTextClassifier
 from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
 from politiquices.extraction.classifiers.news_titles.relationship_clf import Attention
+from politiquices.extraction.classifiers.news_titles.relationship_direction_clf import \
+    detect_direction
 from politiquices.extraction.utils import clean_title_re, clean_title_quotes
+
+import pt_core_news_lg
+
+print("Loading spaCy NLP model")
+nlp = pt_core_news_lg.load()
+nlp.disable = ["tagger", "parser", "ner"]
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 MODELS = os.path.join(APP_ROOT, "../classifiers/news_titles/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
 
-
 print("Setting up connection with Elasticsearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
 
-def read_normal_models():
-    # ToDo
-    pass
-
-
 def read_att_normal_models():
+
+    """
     print("Loading relevancy classifier...")
     with open(MODELS + "relevancy_clf_2020-12-05_160642.pkl", "rb") as f_in:
         relevancy_clf = pickle.load(f_in)
@@ -34,6 +38,7 @@ def read_att_normal_models():
         MODELS + "relevancy_clf_2020-12-05_160642.h5", custom_objects={"Attention": Attention}
     )
     relevancy_clf.model = model
+    """
 
     print("Loading relationship classifier...")
     with open(MODELS + "relationship_clf_2020-12-05_164644.pkl", "rb") as f_in:
@@ -43,23 +48,11 @@ def read_att_normal_models():
     )
     relationship_clf.model = model
 
-    return relationship_clf, relevancy_clf
-
-
-def read_avg_weighted_att_models():
-    print("Loading relevancy classifier...")
-    relevancy_clf = KerasTextClassifier()
-    relevancy_clf.load(MODELS + "relevancy_clf")
-
-    print("Loading relationship classifier...")
-    relationship_clf = KerasTextClassifier()
-    relationship_clf.load(MODELS + "relationship_clf")
-
-    return relationship_clf, relevancy_clf
+    return relationship_clf, None
 
 
 @lru_cache(maxsize=500000)
-def entity_linking(entity):
+def entity_linking(entity, all_results=False):
     def needs_escaping(char):
         escape_chars = {
             "\\": True,
@@ -118,7 +111,12 @@ def entity_linking(entity):
     res = es.search(index="politicians", body={"query": {"query_string": {"query": entity_query}}})
 
     if res["hits"]["hits"]:
+        if all_results:
+            return res["hits"]["hits"]
         return {"wiki_id": res["hits"]["hits"][0]["_source"]}
+
+    if all_results:
+        return []
 
     return {"wiki_id": None}
 
@@ -132,71 +130,44 @@ def main():
     relationship_clf, relevancy_clf = read_att_normal_models()
 
     # open files for logging and later diagnostic
-    no_relation = jsonlines.open("extraction_spacy_small/titles_processed_no_relation.jsonl", mode="w")
-    no_entities = jsonlines.open("extraction_spacy_small/titles_processed_no_entities.jsonl", mode="w")
-    more_entities = jsonlines.open("extraction_spacy_small/titles_processed_more_entities.jsonl", mode="w")
-    no_wiki = jsonlines.open("extraction_spacy_small/titles_processed_no_wiki_id.jsonl", mode="w")
-    processed = jsonlines.open("extraction_spacy_small/titles_processed.jsonl", mode="w")
+    no_relation = jsonlines.open("titles_processed_no_relation.jsonl", mode="w")
+    no_entities = jsonlines.open("titles_processed_no_entities.jsonl", mode="w")
+    more_entities = jsonlines.open("titles_processed_more_entities.jsonl", mode="w")
+    no_wiki = jsonlines.open("titles_processed_no_wiki_id.jsonl", mode="w")
+    processed = jsonlines.open("titles_processed.jsonl", mode="w")
+    ner_linked = jsonlines.open("ner_linked.jsonl", mode="w")
 
     count = 0
     with jsonlines.open(sys.argv[1]) as f_in:
         for line in f_in:
+
             count += 1
+
             if count % 1000 == 0:
                 print(count)
 
+            # maybe this can be removed
             try:
                 cleaned_title = clean_title_quotes(clean_title_re(line["title"]))
             except Exception as e:
                 print(e)
                 print("failed to clean ---> ", line["title"])
 
-            # read_avg_weighted_att_models
-            """
-            predicted_probs = relevancy_clf.predict_proba([cleaned_title])[0]
-            pred_labels = relevancy_clf.encoder.inverse_transform([np.argmax(predicted_probs)])
-            relevancy_scores = {
-                label: float(pred)
-                for label, pred in zip(relevancy_clf.encoder.classes_, predicted_probs)
-            }
-            
-            if pred_labels != ["relevant"]:
-            no_relation.write(
-                {
-                    "title": cleaned_title,
-                    "scores": relevancy_scores,
-                    "linkToArchive": line["linkToArchive"],
-                    "tstamp": line["tstamp"],
-                }
-            )
-            continue                
-            """
-
-            # read_att_normal_models
-            predicted_probs = relevancy_clf.tag([cleaned_title])[0]
-            relevancy_scores = {
-                label: float(pred)
-                for label, pred in zip(relevancy_clf.label_encoder.classes_, predicted_probs)
-            }
-
-            if relevancy_scores["relevant"] < 0.5:
-                no_relation.write(
-                    {
-                        "title": cleaned_title,
-                        "scores": relevancy_scores,
-                        "linkToArchive": line["linkToArchive"],
-                        "tstamp": line["tstamp"],
-                    }
-                )
-                continue
-
             persons = rule_ner.tag(cleaned_title)
 
             if len(persons) == 2:
 
+                # NER
                 title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")
 
-                # read_att_normal_models
+                # entity linking
+                entity = entity_linking(persons[0])
+                ent_1 = entity["wiki_id"] if entity["wiki_id"] else None
+                entity = entity_linking(persons[1])
+                ent_2 = entity["wiki_id"] if entity["wiki_id"] else None
+                print(entity_linking.cache_info())
+
+                # relationship classification
                 predicted_probs = relationship_clf.tag([title_PER])
                 rel_type_scores = {
                     label: float(pred)
@@ -205,30 +176,22 @@ def main():
                     )
                 }
 
-                # read_avg_weighted_att_models
-                """
-                predicted_probs = relationship_clf.predict_proba([title_PER])
-                rel_type_scores = {
-                    label: float(pred)
-                    for label, pred in zip(
-                        relationship_clf.encoder.classes_, predicted_probs[0]
-                    )
-                }
-                """
+                # detect relationship direction
+                doc = nlp(cleaned_title)
+                pos_tags = [(t.text, t.pos_, t.tag_) for t in doc]
+                pred, pattern = detect_direction(pos_tags, persons[0], persons[1])
 
-                entity = entity_linking(persons[0])
-                ent_1 = entity["wiki_id"] if entity["wiki_id"] else None
-                entity = entity_linking(persons[1])
-                ent_2 = entity["wiki_id"] if entity["wiki_id"] else None
-
-                print(entity_linking.cache_info())
+                new_scores = dict()
+                for k, v in rel_type_scores.items():
+                    predicted = pred.replace('rel', k)
+                    new_scores[predicted] = v
 
                 result = {
                     "title": cleaned_title,
                     "entities": persons,
                     "ent_1": ent_1,
                     "ent_2": ent_2,
-                    "scores": rel_type_scores,
+                    "scores": new_scores,
                     "linkToArchive": line["linkToArchive"],
                     "tstamp": line["tstamp"],
                 }
@@ -237,6 +200,9 @@ def main():
                     no_wiki.write(result)
                 else:
                     processed.write(result)
+
+                ner_linked.write({"ner": persons[0], "wiki": result['ent_1']})
+                ner_linked.write({"ner": persons[1], "wiki": result['ent_2']})
 
             elif len(persons) > 2:
                 more_entities.write({"title": cleaned_title, "entities": persons})

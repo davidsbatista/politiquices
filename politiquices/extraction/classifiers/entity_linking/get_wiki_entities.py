@@ -41,8 +41,8 @@ portuguese_persons_occupations = """
     SELECT DISTINCT ?person ?personLabel ?date_of_birth
     WHERE {
       ?person wdt:P27 wd:Q45.
-      { VALUES ?ocupations { wd:Q1930187 wd:Q16533 wd:Q188094 wd:Q40348 
-                             wd:Q212238  wd:Q82955 wd:Q43845 wd:Q806798}} .
+      { VALUES ?ocupations { wd:Q16533 wd:Q188094 wd:Q40348 
+                             wd:Q212238  wd:Q82955 wd:Q43845 wd:Q806798 }} .
       ?person wdt:P106 ?ocupations .
       ?person wdt:P569 ?date_of_birth .
       ?person rdfs:label ?personLabel.
@@ -188,44 +188,50 @@ def download(ids_to_retrieve, default_dir="wiki_jsons", file_format='json'):
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
     for idx, wiki_id in enumerate(set(ids_to_retrieve)):
         print(str(idx) + "/" + str(len(set(ids_to_retrieve))))
-        just_sleep(5)
+        just_sleep(3)
         r = requests.get(base_url, params={"format": file_format, "id": wiki_id})
         f_name = os.path.join(default_dir, wiki_id + "." + file_format)
         open(f_name, "wt").write(r.text)
 
 
-def gather_ids_to_download(queries, e_type='org', add=None, remove=None):
+def gather_wiki_ids(queries, e_type='org', to_add=None, to_remove=None):
     """
     Get the wiki ids for all relevant entities
     """
     endpoint_url = "https://query.wikidata.org/sparql"
-    relevant_persons_ids = []
+    relevant_ids = []
 
     value = 'person' if e_type == 'per' else 'wiki_id'
 
     for query in queries:
         results = get_results(endpoint_url, query)
+        just_sleep(3)
         wiki_ids = [r[value]["value"].split("/")[-1] for r in results["results"]["bindings"]]
-        relevant_persons_ids.extend(wiki_ids)
-    print(f'{len(relevant_persons_ids)} entities gathered from SPARQL queries')
-    if add:
-        print(f'{len(add)} manually selected entities to be added')
-        relevant_persons_ids.extend(add)
-    if remove:
-        print(f'{len(remove)} manually selected entities to be removed')
-        for el in remove:
-            if el in relevant_persons_ids:
-                relevant_persons_ids.remove(el)
+        relevant_ids.extend(wiki_ids)
+
+    print(f'{len(relevant_ids)} entities gathered from SPARQL queries')
+
+    if to_add:
+        print(f'{len(to_add)} manually selected entities to be added')
+        relevant_ids.extend(to_add)
+
+    if to_remove:
+        print(f'{len(to_remove)} manually selected entities to be removed')
+        for el in to_remove:
+            if el in relevant_ids:
+                relevant_ids.remove(el)
                 print("Removed ", el)
 
-    print(f'{len(relevant_persons_ids)} entities to be loaded')
+    # eliminate duplicates
+    unique_relevant_ids = list(set(relevant_ids))
+    print(f'{len(unique_relevant_ids)} unique entities to be loaded')
 
-    return relevant_persons_ids
+    return unique_relevant_ids
 
 
 def main():
-    """""
     # get persons
+    print("Persons")
     queries = [
         affiliated_with_relevant_political_party,
         get_relevant_persons_based_on_public_office_positions(),
@@ -233,19 +239,20 @@ def main():
     ]
     to_load = load_from_list('entities_to_add.txt')
     to_remove = load_from_list('entities_to_remove.txt')
-    entities_ids = gather_ids_to_download(queries, to_load, to_remove)
-    download(entities_ids, e_type='per', default_dir='wiki_ttl', file_format='ttl')
-    """""
+    entities_ids_per = gather_wiki_ids(queries, e_type='per', to_add=to_load, to_remove=to_remove)
 
     # get organisations
+    print("\nOrganisations")
     queries = [
         portuguese_political_parties,
         portuguese_banks,
         portuguese_public_enterprises,
     ]
-    to_load = load_from_list('entities_to_add.txt')
-    entities_ids = gather_ids_to_download(queries, add=to_load)
+    entities_ids_org = gather_wiki_ids(queries)
+    entities_ids = set(entities_ids_per + entities_ids_org)
+    print(f"\nDownloading {len(entities_ids)} unique ids")
     download(entities_ids, default_dir='wiki_ttl', file_format='ttl')
+    download(entities_ids, default_dir='wiki_jsons', file_format='json')
 
 
 if __name__ == "__main__":

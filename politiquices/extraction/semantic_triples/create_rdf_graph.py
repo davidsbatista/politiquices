@@ -121,8 +121,14 @@ def extract_date(crawled_date: str):
     minute = crawled_date[10:12]
     second = crawled_date[12:14]
     date_str = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
-    # date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ")
-    return date_str
+
+    if int(year) > 2020:
+        raise ValueError(date_str)
+    try:
+        date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
+        return date_str
+    except ValueError as e:
+        raise e
 
 
 def build_person(wikidata_id, name, persons):
@@ -160,7 +166,11 @@ def process_classified_titles(titles):
         person_2 = title["entities"][1]
         news_title = title["title"]
         url = title["linkToArchive"]
-        crawled_date = extract_date(title["tstamp"])
+        try:
+            crawled_date = extract_date(title["tstamp"])
+        except ValueError as e:
+            print(url, '\t', e)
+            continue
 
         p1_id = e1_wiki
         p1_name = person_1

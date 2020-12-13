@@ -39,7 +39,7 @@ classifiers
 
         - Transformer models: https://huggingface.co/transformers/quicktour.html
 
-        Training Neural Networks:
+        - Training Neural Networks:
             - ModelCheckpoint: maximize for precision in lowest class
             - Optimizer and Learning Rate
             - batch size, Early Stop
@@ -65,29 +65,22 @@ classifiers
     extraction:
     ------------
         - apply pipeline to publico.pt crawled data
+        - apply as well to publico CHAVE collection
 
 
     named_entity:
     -------------
-        - RuleBasedNER class: good results with rules + statistical classifier
-
-        - linking:
-            Rui Moreira?
-
-        - Remove identified as PER:
+        - Wrongly stuff identified as PER:
             - 'Presidente'
-            -  'Neto' -> Neto de Rui Nabeiro explica como o grupo criou a Delta Q.
-            - 'Eduardo Catrog'	2015-12-21	Eduardo Marçal Grilo: "O país não resiste a este pingue-pongue" http://127.0.0.1:5000/entity?q=Q10327054
-            -  'Maio'	2011-03-28	Pedro Passos Coelho quer eleições a 29 de Maio
-            -  'Viana'	2015-05-28	"Passos diz que estaleiros de Viana foram ""erro do passado"" que acabou bem"
-            -  'Passos Coelho'	2015-11-05	Passos Coelho - Passos diz que compete aos reguladores tomar decisões sobre lesados do BES - Economi
-            -  'Maio'	2011-03-29	Passos Coelho defende eleições a 29 de Maio para superar crise política - Notícia Sapo - SAPO Notíci
+            - 'Câmara'      http://127.0.0.1:5000/entity?q=Q85179710
+            - 'nÃ³s'        http://127.0.0.1:5000/entity?q=Q9594512
+            - 'Maio'	    http://0.0.0.0:5000/entity?q=Q10270601
+            - 'Viana'	    http://0.0.0.0:5000/entity?q=Q10321659
 
 
-        - Remove from patterns:
+        - Not tagging full entity
             - 'Maria da'
-            - {"title": "\"Rui Pedro Soares \"\"disponível\"\" para ser dono do Sol\"", "entities": ["Rui", "Pedro Soares"]
-            http://0.0.0.0:5000/entity?q=Q10365338
+            - ["Rui", "Pedro Soares"]
 
 
     entity_linking:
@@ -96,29 +89,16 @@ classifiers
         - https://spacy.io/usage/training#entity-linker
         - https://spacy.io/api/kb
 
-
         - Linking Errors:
-            - http://0.0.0.0:5000/entity?q=Q295049 as 'Pinto da Costa' (futebol)
-            - http://0.0.0.0:5000/entity?q=Q4237195 as 'José Manuel Coelho'
-        - Adicionar 'Pinto da Costa' ?
+            - http://0.0.0.0:5000/entity?q=Q295049    as 'Pinto da Costa' (futebol)
+            - http://0.0.0.0:5000/entity?q=Q4237195   as 'José Manuel Coelho'
 
         - Várias hipóteses:
-            - "Vital Moreira" vs "Rui Moreira" vs. "Moreira"
-            - "Mário Montalvão Machado" vs "Machado" vs "Júlio Machado" vs "Mário Machado"
-
-
-          Desambiguar: 'Coelho', 'Jardim'
-
-        {"title": "Coelho de novo na CNE para apresentar provas para processar Jardim",
-         "linkToArchive": "https://arquivo.pt/wayback/20140515050338/http://sol.sapo.pt/noticia/27885",
-         "tstamp": "20140515050338"}
-         "entities": ["Coelho", "Jardim"],
-
-         "ent_1": {"wiki": "Q4237195", "last_modified": "2020-08-19T09:59:45Z",
-                    "label": "José Dias Coelho", "aliases": ["Dias Coelho"]},
-
-         "ent_2": {"wiki": "Q10305694", "last_modified": "2020-10-12T14:57:48Z",
-                   "label": "Jardim Gonçalves", "aliases": ["Jorge Jardim Gonçalves"]},
+            - "Moreira" -> "Vital Moreira", "Rui Moreira"
+            - "Mário Montalvão Machado" -> "Machado", "Júlio Machado", "Mário Machado"
+            - "Jardim" -> Jardim Gonçalves, Alberto João Jardim
+            - "Coelho" -> Jorge Coelho, José Dias Coelho
+            - "Carrilho" ->  Maria Carrilho, Manuel Maria Carrilho
 
 
 Web App

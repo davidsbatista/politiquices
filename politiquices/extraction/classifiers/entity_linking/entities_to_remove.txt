@@ -13,3 +13,8 @@ https://www.wikidata.org/wiki/Q9619550,António Louçã
 https://www.wikidata.org/wiki/Q9619550,Alexandre Relvas
 https://www.wikidata.org/wiki/Q10365336,rui tovar
 https://www.wikidata.org/wiki/Q10334555,Mário Ventura
+https://www.wikidata.org/wiki/Q10365338,Rui Unas
+https://www.wikidata.org/wiki/Q13471235,Bruno de Carvalho
+https://www.wikidata.org/wiki/Q13471235,Luís Filipe Vieira
+https://www.wikidata.org/wiki/Q9697198,Carlos Manuel Corvelo Pereira Rodrigues
+https://www.wikidata.org/wiki/Q10261673,Cristina Ferreira
