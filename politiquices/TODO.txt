@@ -79,6 +79,12 @@ classifiers
 
     entity_linking:
     ---------------
+        - Tentar primeiro: "Carlos Pereira" apenas se não houver resultados
+          senão houver resultados "Carlos AND Pereira"
+
+        - usar o 'linkToExtractedText' e encontrar ocurrências de 'Albuquerque' e coleccionar
+          as palavras em Capital antes ou depois
+
         - https://github.com/TheScienceMuseum/elastic-wikidata
         - https://spacy.io/usage/training#entity-linker
         - https://spacy.io/api/kb

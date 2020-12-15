@@ -1,3 +1,5 @@
+import sys
+
 import jsonlines
 from collections import defaultdict
 
@@ -38,7 +40,7 @@ def see_highly_ambiguous(entries):
 
 
 def main():
-    with jsonlines.open('ner_linked.jsonl') as f_in:
+    with jsonlines.open(sys.argv[1]) as f_in:
         entries = list(f_in)
     # count_non_linked(entries)
     see_highly_ambiguous(entries)

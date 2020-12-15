@@ -36,6 +36,7 @@ def runner(domains, query):
 
 def query_arquivo(query, domain, timeout=10, n_attempts=10):
 
+    # ToDo: add 'linkToExtractedText' and get the text
     params = {
         "q": query,
         "from": domains_crawled_dates[domain]['first_crawl'],
@@ -46,7 +47,6 @@ def query_arquivo(query, domain, timeout=10, n_attempts=10):
         "type": "html",
         "fields": "title, tstamp, linkToArchive",
     }
-    # ToDo: log this query?
 
     for i in range(n_attempts):
         if i > 0:
