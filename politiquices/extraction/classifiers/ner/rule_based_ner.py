@@ -8,22 +8,15 @@ import pt_core_news_lg
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-"""
-patterns = [
-    {"label": "PER", "pattern": [{"TEXT": "Durão"}, {"TEXT": "Barroso"}], "id": "Q1232"},
-    {"label": "PER", "pattern": [{"TEXT": "Durão"}], "id": "Q1232"},
-    {"label": "PER", "pattern": [{"TEXT": "Barroso"}], "id": "Q1232"},
-]
-"""
-
 
 class RuleBasedNer:
+
     def __init__(self):
         self.entities_file = os.path.join(APP_ROOT, "PER_entities.txt")
         self.connectors = ['do', 'da', 'de', 'dos']
         self.file_names = self._get_names_file(self.entities_file)
         self.kb_names = self._get_names_kb()
-        self.patterns = self.build_patterns()
+        self.patterns = self.build_token_patterns()
         self.ner = self.build_ner()
 
     @staticmethod
@@ -37,13 +30,9 @@ class RuleBasedNer:
             if r['_source']['label'] is None:
                 print(r)
 
-        all_names = sorted([r['_source']['label'] for r in res['hits']['hits']])
-
-        """
-        with open('kb_names.txt', 'wt') as f_out:
-            for name in sorted(all_names):
-                f_out.write(name+'\n')
-        """
+        all_names = sorted([r['_source']['label'] for r in res['hits']['hits']],
+                           key=lambda x: len(x),
+                           reverse=True)
 
         return all_names
 
@@ -58,7 +47,7 @@ class RuleBasedNer:
         for token in name.split():
             yield {"TEXT": token}
 
-    def build_patterns(self):
+    def build_token_patterns(self):
         names = set()
         patterns = []
 
@@ -68,7 +57,7 @@ class RuleBasedNer:
             name_parts = name_clean.split()
             names.add(name_clean)
 
-            # as is
+            # exactly as it is
             p = {"label": "PER", "pattern": list(self.dict_entry(name))}
             patterns.append(p)
 
@@ -79,48 +68,11 @@ class RuleBasedNer:
                 p = {"label": "PER", "pattern": list(self.dict_entry(name))}
                 patterns.append(p)
 
-            """
-            # skip second name
-            if len(name_parts) > 3:
-                end = ' '.join(name_parts[len(name_parts) - 2:])
-                name = name_parts[0] + ' ' + end
-                names.add(name)
-                p = {"label": "PER", "pattern": list(self.dict_entry(name))}
-                patterns.append(p)
-
-            # last 3 names
-            if len(name_parts) > 3:
-                last_three = name_parts[-3:]
-                if any(x == last_three[0] for x in self.connectors):
-                    last_three = last_three[1:]
-                name = ' '.join(last_three)
-                names.add(name)
-                p = {"label": "PER", "pattern": list(self.dict_entry(name))}
-                patterns.append(p)
-
-            # last 2 names
-            if len(name_parts) > 3:
-                last_two = name_parts[-2:]
-                if any(x == last_two[0] for x in self.connectors):
-                    last_two = last_two[1:]
-
-                if len(last_two) >= 2:
-                    name = ' '.join(last_two)
-                    names.add(name)
-                    p = {"label": "PER", "pattern": list(self.dict_entry(name))}
-                    patterns.append(p)
-                else:
-                    print("discarded: ", name_parts)
-            """
-
+        # add some hand picked examples
         for name in self.file_names:
             names.add(name)
             p = {"label": "PER", "pattern": list(self.dict_entry(name))}
             patterns.append(p)
-
-        with open('kb_names_arranged.txt', 'wt') as f_out:
-            for name in sorted(names):
-                f_out.write(name + '\n')
 
         with open('kb_names_patterns.txt', 'wt') as f_out:
             for p in patterns:
@@ -129,13 +81,21 @@ class RuleBasedNer:
         return patterns
 
     def build_ner(self):
+        # load spaCy PT (large) model and disable part-of-speech tagging and syntactic parsing
         nlp = pt_core_news_lg.load(disable=["tagger", "parser"])
+
+        # hard code some entities, note this are phrase patterns
         self.patterns.append({'label': 'PER', 'pattern': 'Marinho e Pinto'})
         self.patterns.append({'label': 'PER', 'pattern': 'Ribeiro e Castro'})
+
+        # add rule-based Entity Recognizer which don't overwrites entities recognized by the model
         ruler_person_entities = EntityRuler(nlp, overwrite_ents=False)
         ruler_person_entities.add_patterns(self.patterns)
         ruler_person_entities.name = 'person_entities'
+
+        # runs before the ner
         nlp.add_pipe(ruler_person_entities, before="ner")
+
         return nlp
 
     def tag(self, title, all_entities=False):
@@ -155,4 +115,4 @@ class RuleBasedNer:
         if all_entities:
             return entities, persons
 
-        return persons
+        return None, persons

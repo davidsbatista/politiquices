@@ -20,6 +20,9 @@ url_keywords_ignore = [
     "vida",
     "humor",
     "tv",
+    "triatlo",
+    "sporting",
+    # "medalhas"
 ]
 url_other_topic = ".*(" + "|".join(url_keywords_ignore) + ").*"
 
@@ -29,6 +32,7 @@ title_keywords_ignore = [
     "Concerto de Bolso",
     "Celebridades",
     "Liga dos Campeões",
+    "Sporting",
 ]
 
 
@@ -97,6 +101,7 @@ def main():
     print("too_short      : ", too_short)
     print("other_topics   : ", other_topics)
     print("considered     : ", considered)
+
     to_extract.close()
     failed_to_clean.close()
     too_short_log.close()

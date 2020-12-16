@@ -4,17 +4,18 @@ Ahmed
 Alberto
 Alexandrm
 Ana
+André André
 Angela
 Angola-Portugal
 António
 Bento
 Bruno
 Carlos
-Cristina
 Cecília
 Changri-la
 Christieâs
 Cláudia
+Cristina
 Daniel
 David
 Diana
@@ -42,9 +43,10 @@ Juiz-relator
 Luis
 Luís
 Lídia
-Manuel
 Magalhães
+Manuel
 Maria
+Maria da
 Marta
 Max
 Meireles
@@ -54,6 +56,7 @@ Moodys
 Moreira
 Mota-Engil
 Nuno
+O. O
 PPR"s
 PSD-Madeira
 Pai
@@ -72,6 +75,7 @@ Rodrigues
 Rui
 S&P
 Sarkozy-Merkel
+Sociedade
 SonorgÃ¡s
 Sotheby"s
 Susana
@@ -81,3 +85,4 @@ Tavares
 Vítor
 Xavier
 britÃ¢nico
+da Silva

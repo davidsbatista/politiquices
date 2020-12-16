@@ -61,22 +61,6 @@ classifiers
         - apply pipeline to publico.pt crawled data
         - apply as well to publico CHAVE collection
 
-
-    named_entity:
-    -------------
-        - Wrongly stuff identified as PER:
-            - 'Presidente'
-            - 'Câmara'      http://127.0.0.1:5000/entity?q=Q85179710
-            - 'nÃ³s'        http://127.0.0.1:5000/entity?q=Q9594512
-            - 'Maio'	    http://0.0.0.0:5000/entity?q=Q10270601
-            - 'Viana'	    http://0.0.0.0:5000/entity?q=Q10321659
-
-
-        - Not tagging full entity
-            - 'Maria da'                    http://0.0.0.0:5000/entity?q=Q10291438
-            - ["Rui", "Pedro Soares"]
-
-
     entity_linking:
     ---------------
         - Tentar primeiro: "Carlos Pereira" apenas se não houver resultados
@@ -85,9 +69,7 @@ classifiers
         - usar o 'linkToExtractedText' e encontrar ocurrências de 'Albuquerque' e coleccionar
           as palavras em Capital antes ou depois
 
-        - https://github.com/TheScienceMuseum/elastic-wikidata
-        - https://spacy.io/usage/training#entity-linker
-        - https://spacy.io/api/kb
+        - fazer uma avaliação com o novo dataset (e o velho)
 
         - Linking Errors:
             - http://0.0.0.0:5000/entity?q=Q295049    as 'Pinto da Costa' (futebol)
@@ -100,6 +82,11 @@ classifiers
             - "Coelho" -> Jorge Coelho, José Dias Coelho
             - "Carrilho" ->  Maria Carrilho, Manuel Maria Carrilho
 
+        - Software
+            - https://github.com/TheScienceMuseum/elastic-wikidata
+            - https://spacy.io/usage/training#entity-linker
+            - https://spacy.io/api/kb
+
 
 Web App
 =======
@@ -110,9 +97,6 @@ Web App
 
         uma ultima secção com "outras":
         - outras
-
-    -
-
 
     UI:
         - mete uma margem em cima pequena entre a foto e o bordo do cartão

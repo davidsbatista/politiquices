@@ -43,6 +43,15 @@ def main():
             wiki_id = file.split(".json")[0]
             data_keys = data['entities'][wiki_id]
 
+        # discard anything whose type is unknown
+        if 'P31' not in data_keys['claims']:
+            continue
+
+        # discard anything whose type is not a human
+        ent_type = data_keys['claims']['P31'][0]['mainsnak']['datavalue']['value']['id']
+        if ent_type != 'Q5':
+            continue
+
         if 'pt' in data_keys['labels']:
             label = data_keys['labels']['pt']['value']
         else:
@@ -68,7 +77,7 @@ def main():
         """
         political_parties = []
         for v in data_keys['claims']:
-            if v == 'P102':
+            if v == 'P31':
                 for x in data_keys['claims'][v]:
                     if x['mainsnak']['property'] == 'P102':
                         print(x['mainsnak']['datavalue']['value']['id'])

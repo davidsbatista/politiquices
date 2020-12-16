@@ -149,7 +149,7 @@ def build_person(wikidata_id, name, persons):
         )
 
 
-def process_classified_titles(titles, parties):
+def process_classified_titles(titles):
     persons = defaultdict(Person)
     relationships = []
     articles = []
@@ -158,10 +158,6 @@ def process_classified_titles(titles, parties):
 
         e1_wiki = title["ent_1"]["wiki"]
         e2_wiki = title["ent_2"]["wiki"]
-
-        # don't create triples with entities which are parties
-        if e1_wiki in parties or e2_wiki in parties:
-            continue
 
         scores = [(k, v) for k, v in title["scores"].items()]
         rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
@@ -295,16 +291,13 @@ def main():
 
     # ToDo: add args to receive annotated data and automatically extracted data
 
-    with open('political_parties.txt') as f_in:
-        parties = [line.split("/")[-1].strip() for line in f_in.readlines()]
-
     # remove exact duplicates (i.e., title + url, only crawl data is different)
     unique = remove_duplicates()
 
     # remove 'exact' duplicates (i.e., title + crawl date same, one url is sub-domain of other)
     unique = remove_duplicates_same_domain(unique)
 
-    articles, persons, relationships = process_classified_titles(unique, parties)
+    articles, persons, relationships = process_classified_titles(unique)
     populate_graph(articles, persons, relationships)
 
 

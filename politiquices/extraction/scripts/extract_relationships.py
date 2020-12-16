@@ -53,6 +53,7 @@ def read_att_normal_models():
 
 @lru_cache(maxsize=500000)
 def entity_linking(entity, all_results=False):
+
     def needs_escaping(char):
         escape_chars = {
             "\\": True,
@@ -160,6 +161,9 @@ def main():
 
                 # NER
                 title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")
+
+                # ToDo: before entity linking try to expand the named-entity
+                # https://arquivo.pt/textextracted?m=<original_url>/<crawl_date>
 
                 # entity linking
                 entity = entity_linking(persons[0])

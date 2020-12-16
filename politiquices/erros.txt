@@ -1,4 +1,18 @@
+
+Was this really in 2011?
+-----------------------
 https://arquivo.pt/wayback/20110129062413/http://www.dn.pt/inicio/interior.aspx?content_id=604332
+
+
+wrong dates/in the future
+-------------------------
+https://arquivo.pt/wayback/55551008080333/http://www.rtp.pt/noticias/index.php?article=511108&tm=9&layout=123&visual=61 	 5555-10-08T08:03:33
+https://arquivo.pt/wayback/10903173542/https://www.publico.pt/2018/09/01/politica/noticia/miseravel-e-a-ignorancia-responde-alvaro-amaro-a-rui-moreira-1842755 	 time data '1090-31-73T54:2:' does not match format '%Y-%m-%dT%H:%M:%S'
+https://arquivo.pt/wayback/50201108071450/http://www.dnoticias.pt/actualidade/politica/542995-cavaco-recebe-passos-no-dia-em-que-psd-cds-ps-e-pcp-reunem-orgaos-nacion 	 5020-11-08T07:14:50
+https://arquivo.pt/wayback/20800127055218/http://www.dn.pt/politica/interior/barreto-alegre-e-rosas-lamentam-morte-de-amigo-3760688.html 	 2080-01-27T05:52:18
+https://arquivo.pt/wayback/540124192454/http://expresso.sapo.pt/manuel-alegre-cavaco-deixa-passar-tudo=f837511 	 5401-24-19T24:54:
+https://arquivo.pt/wayback/223235712/http://noticias.sapo.pt/lusa/artigo/11995802.html 	 2232-35-71T2::
+
 
 https://arquivo.pt/wayback/360128072736/https://www.dn.pt/lusa/interior/amp/europeias-rangel-apela-ao-voto-util-no-psd-para-derrotar-antonio-costa--10917759.htm
 19 Maio 2019 — 22:10
