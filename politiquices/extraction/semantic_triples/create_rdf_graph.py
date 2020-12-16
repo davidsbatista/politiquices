@@ -1,6 +1,8 @@
 import csv
 import operator
 import sys
+import argparse
+
 from collections import defaultdict
 from datetime import datetime
 from itertools import groupby
@@ -13,10 +15,10 @@ from rdflib.namespace import DC, RDFS
 from classes import Person, Article, Relationship
 
 
-def remove_duplicates():
+def remove_duplicates(f_name):
     # read the articles a sorted them by original domain and title
     articles = []
-    for entry in processed_titles(sys.argv[1]):
+    for entry in processed_titles(f_name):
         original_url = "/".join(entry["linkToArchive"].split("/")[5:])
         articles.append(
             (
@@ -113,22 +115,30 @@ def processed_titles(filename):
             yield line
 
 
-def extract_date(crawled_date: str):
-    year = crawled_date[0:4]
-    month = crawled_date[4:6]
-    day = crawled_date[6:8]
-    hour = crawled_date[8:10]
-    minute = crawled_date[10:12]
-    second = crawled_date[12:14]
-    date_str = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
+def extract_date(crawled_date: str, args):
+    if args.arquivo:
+        year = crawled_date[0:4]
+        month = crawled_date[4:6]
+        day = crawled_date[6:8]
+        hour = crawled_date[8:10]
+        minute = crawled_date[10:12]
+        second = crawled_date[12:14]
+        date_str = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
 
-    if int(year) > 2020:
-        raise ValueError(date_str)
-    try:
-        date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
-        return date_str
-    except ValueError as e:
-        raise e
+        if int(year) > 2020:
+            raise ValueError(date_str)
+        try:
+            _ = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
+            return date_str
+        except ValueError as e:
+            raise e
+
+    elif args.publico:
+        try:
+            date_obj = datetime.strptime(crawled_date, "%Y-%m-%d %H:%M:%S")
+            return datetime.strftime(date_obj, '%Y-%m-%d')
+        except ValueError as e:
+            raise e
 
 
 def build_person(wikidata_id, name, persons):
@@ -149,7 +159,7 @@ def build_person(wikidata_id, name, persons):
         )
 
 
-def process_classified_titles(titles):
+def process_classified_titles(titles, args):
     persons = defaultdict(Person)
     relationships = []
     articles = []
@@ -167,7 +177,7 @@ def process_classified_titles(titles):
         news_title = title["title"]
         url = title["linkToArchive"]
         try:
-            crawled_date = extract_date(title["tstamp"])
+            crawled_date = extract_date(title["tstamp"], args)
         except ValueError as e:
             print(url, '\t', e)
             continue
@@ -287,17 +297,50 @@ def populate_graph(articles, persons, relationships):
     print("relationships: ", len(relationships))
 
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
+def parse_args():
+    # ToDo:
+    #   - add args to receive annotated data and automatically extracted data
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--publico",
+                        help="parse output from publico.pt",
+                        type=str2bool,
+                        nargs='?',
+                        const=True, default=False)
+    parser.add_argument("--arquivo", help="parse output from arquivo.pt")
+    parser.add_argument("-i", "--input", help="input JSONL file")
+    args = parser.parse_args()
+    return args
+
+
 def main():
+    args = parse_args()
 
-    # ToDo: add args to receive annotated data and automatically extracted data
+    unique = []
 
-    # remove exact duplicates (i.e., title + url, only crawl data is different)
-    unique = remove_duplicates()
+    if args.arquivo:
+        # remove exact duplicates (i.e., title + url, only crawl data is different)
+        unique = remove_duplicates(args.input)
 
-    # remove 'exact' duplicates (i.e., title + crawl date same, one url is sub-domain of other)
-    unique = remove_duplicates_same_domain(unique)
+        # remove 'exact' duplicates (i.e., title + crawl date same, one url is sub-domain of other)
+        unique = remove_duplicates_same_domain(unique)
 
-    articles, persons, relationships = process_classified_titles(unique)
+    if args.publico:
+        unique = []
+        for entry in processed_titles(args.input):
+            unique.append(entry)
+
+    articles, persons, relationships = process_classified_titles(unique, args)
     populate_graph(articles, persons, relationships)
 
 

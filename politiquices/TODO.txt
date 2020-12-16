@@ -63,12 +63,9 @@ classifiers
 
     entity_linking:
     ---------------
-        - Tentar primeiro: "Carlos Pereira" apenas se não houver resultados
-          senão houver resultados "Carlos AND Pereira"
-
-        - usar o 'linkToExtractedText' e encontrar ocurrências de 'Albuquerque' e coleccionar
-          as palavras em Capital antes ou depois
-
+        - primeiro: "Carlos Pereira" apenas se não houver resultados "Carlos AND Pereira"
+        - usar o 'linkToExtractedText' e encontrar todas as ocurrências de 'Albuquerque' e
+          coleccionar as palavras em capital antes ou depois
         - fazer uma avaliação com o novo dataset (e o velho)
 
         - Linking Errors:
