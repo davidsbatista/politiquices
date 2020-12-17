@@ -134,6 +134,12 @@ def make_title_linkable(r, wiki_id):
         '<a id="ent_2" href=' + r['other_ent_url'] + '>' + r['other_ent_name'] + '</a>'
     )
     r['title_clickable'] = title_link
+    if r['url'].startswith('http://publico.pt'):
+        r['link_image'] = "/static/images/114px-Logo_publico.png"
+        r['image_width'] = "20"
+    else:
+        r['link_image'] = "/static/images/color_vertical.svg"
+        r['image_width'] = "39.8"
 
 
 @app.route("/entity")
