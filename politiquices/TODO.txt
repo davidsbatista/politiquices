@@ -158,9 +158,6 @@ Web App
         - use case:
             - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
 
-            - do genero "deixa ca ver quem é que do bloco já disse mal do jerónimo"
-
-
         - Charts
             - https://www.chartjs.org/samples/latest/scales/time/financial.html
             - https://www.chartjs.org/docs/latest/axes/cartesian/time.html

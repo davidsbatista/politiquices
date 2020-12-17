@@ -20,7 +20,7 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_person_relationships,
     get_party_of_entity,
     get_list_of_persons_from_some_party_relation_with_someone,
-)
+    get_entities_without_image)
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 from politiquices.webapp.webapp.app.relationships import build_relationships_freq
 
@@ -239,6 +239,12 @@ def get_person_party():
 
     # ToDo: handle the case with several parties/other things
     return jsonify(parties[0])
+
+
+@app.route("/complete")
+def complete():
+    result = get_entities_without_image()
+    return render_template("incomplete_entities.html", items=result)
 
 
 @app.route("/queries")

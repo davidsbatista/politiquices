@@ -514,8 +514,8 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id, party):
     return results
 
 
+@lru_cache
 def get_list_of_persons_from_some_party_relation_with_someone(wiki_id, party, relation):
-
     query = f"""        
         SELECT DISTINCT ?ent1 ?ent1_name ?image_url ?arquivo_doc ?date ?title ?score
         WHERE {{
@@ -567,7 +567,7 @@ def get_party_of_entity(wiki_id):
     query = f"""
         SELECT DISTINCT ?party ?party_label {{
             wd:{wiki_id} wdt:P31 wd:Q5.
-            SERVICE <http://0.0.0.0:3030/wikidata/query> {{ 
+            SERVICE <{wikidata_endpoint}> {{ 
                 wd:{wiki_id} p:P102 ?partyStmnt .
                 ?partyStmnt ps:P102 ?party.
                 ?party rdfs:label ?party_label FILTER(LANG(?party_label)="pt") .  
@@ -585,13 +585,35 @@ def get_party_of_entity(wiki_id):
     return parties
 
 
+@lru_cache
+def get_entities_without_image():
+    query = f"""
+        SELECT DISTINCT ?item ?label ?image_url {{
+            ?item wdt:P31 wd:Q5.
+                SERVICE <{wikidata_endpoint}> {{
+                ?item rdfs:label ?label .
+                FILTER(LANG(?label) = "pt")
+                FILTER NOT EXISTS {{ ?item wdt:P18 ?image_url. }}
+          }}
+          }}
+        ORDER BY ?label
+        """
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    entities = []
+    for x in result["results"]["bindings"]:
+        entities.append(
+            {'wikidata_id': x['item']['value'].split("/")[-1],
+             'label': x['label']['value']}
+        )
+    return entities
+
+
 def query_sparql(query, endpoint):
 
     if endpoint == "wikidata":
         endpoint_url = wikidata_endpoint
     elif endpoint == "politiquices":
         endpoint_url = "http://0.0.0.0:3030/politiquices/query"
-
     # ToDo: see user agent policy: https://w.wiki/CX6
     user_agent = "Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
