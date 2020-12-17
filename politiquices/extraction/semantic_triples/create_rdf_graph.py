@@ -1,5 +1,6 @@
 import csv
 import operator
+import re
 import sys
 import argparse
 
@@ -115,8 +116,9 @@ def processed_titles(filename):
             yield line
 
 
-def extract_date(crawled_date: str, args):
-    if args.arquivo:
+def extract_date(crawled_date: str, url, publico_url=False):
+
+    if not publico_url:
         year = crawled_date[0:4]
         month = crawled_date[4:6]
         day = crawled_date[6:8]
@@ -128,12 +130,12 @@ def extract_date(crawled_date: str, args):
         if int(year) > 2020:
             raise ValueError(date_str)
         try:
-            _ = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
-            return date_str
+            date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
+            return datetime.strftime(date_obj, '%Y-%m-%d')
         except ValueError as e:
             raise e
 
-    elif args.publico:
+    elif publico_url:
         try:
             date_obj = datetime.strptime(crawled_date, "%Y-%m-%d %H:%M:%S")
             return datetime.strftime(date_obj, '%Y-%m-%d')
@@ -159,12 +161,14 @@ def build_person(wikidata_id, name, persons):
         )
 
 
-def process_classified_titles(titles, args):
+def process_classified_titles(titles):
     persons = defaultdict(Person)
     relationships = []
     articles = []
 
     for title in titles:
+
+        publico_url = False
 
         e1_wiki = title["ent_1"]["wiki"]
         e2_wiki = title["ent_2"]["wiki"]
@@ -174,10 +178,35 @@ def process_classified_titles(titles, args):
 
         person_1 = title["entities"][0]
         person_2 = title["entities"][1]
-        news_title = title["title"]
+        news_title = title["title"].strip()
         url = title["linkToArchive"]
+
+        if url == 'None' or url == '\\N':
+            continue
+
+        publico_pt = ['http://economia.publico.pt/', 'https://economia.publico.pt/',
+                      'http://publico.pt/', 'https://publico.pt/',
+                      'http://www.publico.pt/', 'https://www.publico.pt/']
+
+        if any(url.startswith(x) for x in publico_pt):
+            publico_url = True
+
+        # special case to transform publico.pt urls to: http://publico.pt/<news_id>
+        if publico_url:
+
+            news_id = url.split("-")[-1].replace('?all=1', '')
+
+            if not re.match(r'^[0-9]+$', news_id):
+                news_id_ = news_id.split("_")[-1]
+                news_id = news_id_.replace(".1",'')
+
+            if not re.match(r'^[0-9]+$', news_id):
+                raise ValueError("invalid publico.pt id: ", news_id)
+
+            url = 'http://publico.pt/'+news_id
+
         try:
-            crawled_date = extract_date(title["tstamp"], args)
+            crawled_date = extract_date(title["tstamp"], url, publico_url=publico_url)
         except ValueError as e:
             print(url, '\t', e)
             continue
@@ -209,7 +238,7 @@ def process_classified_titles(titles, args):
     return articles, persons, relationships
 
 
-def populate_graph(articles, persons, relationships):
+def populate_graph(articles, persons, relationships, args):
     g = Graph()
 
     ns1 = Namespace("http://some.namespace/with/name#")
@@ -267,7 +296,7 @@ def populate_graph(articles, persons, relationships):
     #   <url, DC.data, date)
     for article in articles:
         g.add((URIRef(article.url), DC.title, Literal(article.title, lang="pt")))
-        g.add((URIRef(article.url), DC.date, Literal(article.crawled_date, datatype=XSD.dateTime)))
+        g.add((URIRef(article.url), DC.date, Literal(article.crawled_date, datatype=XSD.date)))
 
     print("adding Relationships")
     # add relationships as Blank Node:
@@ -309,39 +338,33 @@ def str2bool(v):
 
 
 def parse_args():
-    # ToDo:
-    #   - add args to receive annotated data and automatically extracted data
     parser = argparse.ArgumentParser()
     parser.add_argument("--publico",
-                        help="parse output from publico.pt",
-                        type=str2bool,
-                        nargs='?',
-                        const=True, default=False)
-    parser.add_argument("--arquivo", help="parse output from arquivo.pt")
-    parser.add_argument("-i", "--input", help="input JSONL file")
+                        help="input JSONL file with publico.pt results")
+    parser.add_argument("--arquivo",
+                        help="input JSONL file with arquivo.pt results")
     args = parser.parse_args()
     return args
 
 
 def main():
     args = parse_args()
+    arquivo_articles = []
+    publico_articles = []
 
-    unique = []
-
+    # remove duplicates from arquivo.pt crawled news
     if args.arquivo:
         # remove exact duplicates (i.e., title + url, only crawl data is different)
-        unique = remove_duplicates(args.input)
+        unique = remove_duplicates(args.arquivo)
 
         # remove 'exact' duplicates (i.e., title + crawl date same, one url is sub-domain of other)
-        unique = remove_duplicates_same_domain(unique)
+        arquivo_articles = remove_duplicates_same_domain(unique)
 
     if args.publico:
-        unique = []
-        for entry in processed_titles(args.input):
-            unique.append(entry)
+        publico_articles = [entry for entry in processed_titles(args.publico)]
 
-    articles, persons, relationships = process_classified_titles(unique, args)
-    populate_graph(articles, persons, relationships)
+    articles, persons, relationships = process_classified_titles(publico_articles+arquivo_articles)
+    populate_graph(articles, persons, relationships, args)
 
 
 if __name__ == "__main__":
