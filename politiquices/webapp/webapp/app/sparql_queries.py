@@ -14,6 +14,7 @@ from politiquices.webapp.webapp.app.data_models import (
 from politiquices.webapp.webapp.app.utils import convert_dates
 
 wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
+live_wikidata = "https://query.wikidata.org/sparql"
 
 socrates = None
 no_image = "/static/images/no_picture.jpg"
@@ -585,12 +586,11 @@ def get_party_of_entity(wiki_id):
     return parties
 
 
-@lru_cache
 def get_entities_without_image():
     query = f"""
         SELECT DISTINCT ?item ?label ?image_url {{
             ?item wdt:P31 wd:Q5.
-                SERVICE <{wikidata_endpoint}> {{
+                SERVICE <{live_wikidata}> {{
                 ?item rdfs:label ?label .
                 FILTER(LANG(?label) = "pt")
                 FILTER NOT EXISTS {{ ?item wdt:P18 ?image_url. }}
@@ -605,6 +605,7 @@ def get_entities_without_image():
             {'wikidata_id': x['item']['value'].split("/")[-1],
              'label': x['label']['value']}
         )
+    print(len(entities), 'entities retrieved')
     return entities
 
 
@@ -612,8 +613,10 @@ def query_sparql(query, endpoint):
 
     if endpoint == "wikidata":
         endpoint_url = wikidata_endpoint
+
     elif endpoint == "politiquices":
         endpoint_url = "http://0.0.0.0:3030/politiquices/query"
+
     # ToDo: see user agent policy: https://w.wiki/CX6
     user_agent = "Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
