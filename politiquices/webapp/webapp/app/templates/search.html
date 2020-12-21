@@ -8,8 +8,8 @@
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
 
+    <script>
     /*
     * jQuery UI Autocomplete: Using Label-Value Pairs
     * https://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html
@@ -133,7 +133,48 @@
       });
     });
 
+    /* Relações entre duas personalidades */
+    $(function() {
+      $("#autocomplete_per_one").autocomplete({
+        source: nomes,
+        focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox and hidden field
+            $(this).val(ui.item.label);
+            $("#autocomplete_per_one-value").val(ui.item.value);
+        }
+      });
+    });
+
+    $(function() {
+      $("#autocomplete_per_two").autocomplete({
+        source: nomes,
+        focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox and hidden field
+            $(this).val(ui.item.label);
+            $("#autocomplete_per_two-value").val(ui.item.value);
+        }
+      });
+    });
+
+
     $(document).ready ( function () {
+
         $(document).on ("click", "#btn_one", function () {
             var wiki_id = $('#autocomplete-value').val();
             var data = { q: wiki_id, search: true};
@@ -198,6 +239,25 @@
              $(this).parents('.dropdown').find('button').text($(this).text());
            });
         });
+
+        $(document).on ("click", "#btn_four", function () {
+            var wiki_id_one = $('#autocomplete_per_one-value').val();
+            var wiki_id_two = $('#autocomplete_per_two-value').val();
+            var data = { query_nr: 'three', e1: wiki_id_one, e2: wiki_id_two};
+            $.ajax({
+              type: 'get',
+              data: data,
+              url: '/queries',
+              error: function () {
+                alert("There was an error processing this page.");
+                return false;
+              },
+              complete: function (output) {
+                $('#entityResults').html(output.responseText);
+              }
+            });
+        });
+
 
     });
 
@@ -265,6 +325,21 @@
 
 
 
+    </header>
+
+    <header class="jumbotron my-3">
+        <h4><p>Todas as relações entre duas personalidades</p></h4>
+        <form class="container-fluid justify-content-center align-items-center">
+        <input id="autocomplete_per_one-value" type="hidden" name="wiki">
+        <input id="autocomplete_per_two-value" type="hidden" name="wiki">
+        <div class="control-group">
+            <div class="controls controls-row row-fluid col-xs-4">
+                <input id="autocomplete_per_one" class="span10" type="text" placeholder="Personalidade" />
+                <input id="autocomplete_per_two" class="span10" type="text" placeholder="Personalidade" />
+                <button type="button" id='btn_four' class="btn btn-primary btn-sm">Seleccionar</button>
+            </div>
+        </div>
+        </form>
     </header>
 
     <div id="entityResults" class="w-85 p-2" align="left"></div>

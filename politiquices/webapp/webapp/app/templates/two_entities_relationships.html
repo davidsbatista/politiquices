@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %} {{items.e1_name}} vs. {{items.e2_name}} {% endblock %}
+
+{% block body %}
+
+<!-- Page Content -->
+<div class="container">
+
+    <!-- Jumbotron Header -->
+    <header class="jumbotron my-4">
+        <!--<p class="lead"><b>{{items.e1_name}} vs. {{items.e2_name}}</b></p>-->
+    </header>
+
+    <h3>Relações</h3>
+    <table >
+      <tbody>
+      {% for item in items %}
+        <tr>
+          <td id="data">{{item.date}}</td>
+          <td id="title">{{item.title}}</td>
+          <td id="score">{{item.score}}</td>
+          <td id="rel_type">{{item.rel_type}}</td>
+          <!--
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank"><img src="{{item.link_image}}" width="{{item.image_width}}" height="20"></a>
+          <td id="rel_type">
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle"
+                          type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">ent1_opposes_ent2</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item">other</a>
+                      <a class="dropdown-item">ent1_opposes_ent2</a>
+                      <a class="dropdown-item">ent2_opposes_ent1</a>
+                      <a class="dropdown-item">ent1_supports_ent2</a>
+                      <a class="dropdown-item">ent2_supports_ent1</a>
+                  </div>
+              </div>
+          </td>
+          <td>
+            <a class="submit btn btn-primary" role="button">Submit</a>
+          </td>
+          -->
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+</div>
+
+<br><br>
+
+{% endblock %}

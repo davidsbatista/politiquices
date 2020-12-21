@@ -71,6 +71,8 @@ classifiers
         - Linking Errors:
             - http://0.0.0.0:5000/entity?q=Q295049    as 'Pinto da Costa' (futebol)
             - http://0.0.0.0:5000/entity?q=Q4237195   as 'José Manuel Coelho'
+            - http://politiquices.pt:5000/entity?q=Q9620197
+            - http://politiquices.pt:5000/entity?q=Q4684253
 
         - Várias hipóteses:
             - "Moreira" -> "Vital Moreira", "Rui Moreira"
@@ -88,20 +90,35 @@ classifiers
 Web App
 =======
 
+    - alterar os namespaces para 'politiquices.pt'
+
     - mostrar mais relações:
         - apoia/defende c/ as duas direções
         - acusa/opoem-se c/ as duas direções
 
-        uma ultima secção com "outras":
+    uma ultima secção com "outras":
         - outras
+
+    - escolher um partido e ver as acusações + suporte internos
+
+    - carregar a lista de partidos para o autocomplete no arranque
+
+    - Agregacoes:
+        - Governo
+        - Assembleias
+        - Profissao
+        - Educacao
 
     UI:
         - mete uma margem em cima pequena entre a foto e o bordo do cartão
         - faz com que todo o cartão seja clicável (em vez de só o nome, como está agora)
         - https://github.com/prabhuignoto/react-chrono
+        -
+
 
     Bugs:
        - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
+
 
     SPARQL queries:
         ToDo:
@@ -115,7 +132,6 @@ Web App
                 - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
                 - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
 
-            - poder ver as relações entre quaisquer duas pessoas
             - quais os partidos que acusam mais? e que partidos alvo?
             - existem relações familiares no grafo? entre quem?
 

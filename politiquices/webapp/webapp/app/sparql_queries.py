@@ -16,7 +16,6 @@ from politiquices.webapp.webapp.app.utils import convert_dates
 wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
 live_wikidata = "https://query.wikidata.org/sparql"
 
-socrates = None
 no_image = "/static/images/no_picture.jpg"
 ps_logo = "/static/images/Logo_do_Partido_Socialista(Portugal).png"
 
@@ -442,6 +441,7 @@ def initalize():
     return prefixes + "\n" + query
 
 
+@lru_cache
 def get_top_relationships(wiki_id: str):
 
     base_link = "entity?q="
@@ -642,6 +642,58 @@ def get_entities_without_image():
         )
     print(len(entities), "entities retrieved")
     return entities
+
+
+@lru_cache
+def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
+    query = f"""
+        SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
+        WHERE {{
+          {{
+          ?rel my_prefix:ent1 wd:{wiki_id_one};
+               my_prefix:ent2 wd:{wiki_id_two};       
+               my_prefix:type ?rel_type;
+               my_prefix:score ?score;
+               my_prefix:arquivo ?arquivo_doc;
+               my_prefix:ent1 ?ent1;
+               my_prefix:ent2 ?ent2;
+               my_prefix:ent1_str ?ent1_str;
+               my_prefix:ent2_str ?ent2_str.
+          ?arquivo_doc dc:title ?title ;
+                       dc:date  ?date .
+              }} UNION {{
+          ?rel my_prefix:ent2 wd:{wiki_id_one};
+               my_prefix:ent1 wd:{wiki_id_two};       
+               my_prefix:type ?rel_type;
+               my_prefix:score ?score;
+               my_prefix:arquivo ?arquivo_doc;
+               my_prefix:ent1 ?ent1;
+               my_prefix:ent2 ?ent2;
+               my_prefix:ent1_str ?ent1_str;
+               my_prefix:ent2_str ?ent2_str.
+          ?arquivo_doc dc:title ?title ;
+                       dc:date  ?date .
+            }}
+        }}
+        ORDER BY ASC(?date)
+        """
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    relationships = []
+    for x in result["results"]["bindings"]:
+        relationships.append(
+            {'url': x['arquivo_doc']['value'],
+             'date': x['date']['value'],
+             'title': x['title']['value'],
+             'rel_type': x['rel_type']['value'],
+             'score': x['score']['value'],
+             'ent1': x['ent1']['value'],
+             'ent1_str': x['ent1_str']['value'],
+             'ent2': x['ent2']['value'],
+             'ent2_str': x['ent2_str']['value'],
+             }
+        )
+
+    return relationships
 
 
 def query_sparql(query, endpoint):

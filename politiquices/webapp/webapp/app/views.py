@@ -1,6 +1,4 @@
-import json
 import logging
-from collections import defaultdict
 
 from flask import request, jsonify
 from flask import render_template
@@ -20,19 +18,13 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_person_relationships,
     get_party_of_entity,
     get_list_of_persons_from_some_party_relation_with_someone,
-    get_entities_without_image)
+    get_entities_without_image, get_relationships_between_two_entities)
 from politiquices.webapp.webapp.app.sparql_queries import initalize
 from politiquices.webapp.webapp.app.relationships import build_relationships_freq
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
-cached_list_entities = None
-cached_all_parties = None
-cached_members_parties = defaultdict(list)
-cached_detailed_entity = defaultdict(list)
-cached_party_name = defaultdict(str)
-cached_party_logo = defaultdict(str)
 person_no_image = "/static/images/no_picture.jpg"
 
 
@@ -67,57 +59,48 @@ def status():
 
 @app.route("/entities")
 def list_entities():
-    global cached_list_entities
-    """
-    ToDo: run this on the Makefile, just after the server is launched and cache
-    """
+    # ToDo: run this on the Makefile, just after the server is launched and cache
 
-    if not cached_list_entities:
-        print("Getting entities extra info from wikidata.org")
-        entities = query_sparql(initalize(), "politiquices")
-        persons = set()
-        items_as_dict = dict()
-        nr_entities = len(entities["results"]["bindings"])
+    print("Getting entities extra info from wikidata.org")
+    entities = query_sparql(initalize(), "politiquices")
+    persons = set()
+    items_as_dict = dict()
+    nr_entities = len(entities["results"]["bindings"])
 
-        print(f"{nr_entities} retrieved")
+    print(f"{nr_entities} retrieved")
 
-        for e in entities["results"]["bindings"]:
+    for e in entities["results"]["bindings"]:
 
-            # this is just avoid duplicate entities, same entity with two labels
-            # ToDo: see how to fix this with a SPARQL query
-            url = e["item"]["value"]
-            if url in persons:
-                continue
-            persons.add(url)
+        # this is just avoid duplicate entities, same entity with two labels
+        # ToDo: see how to fix this with a SPARQL query
+        url = e["item"]["value"]
+        if url in persons:
+            continue
+        persons.add(url)
 
-            name = e["label"]["value"]
-            image_url = e["image_url"]["value"] if "image_url" in e else person_no_image
+        name = e["label"]["value"]
+        image_url = e["image_url"]["value"] if "image_url" in e else person_no_image
 
-            wiki_id = url.split("/")[-1]
+        wiki_id = url.split("/")[-1]
 
-            items_as_dict[wiki_id] = {
-                "wikidata_url": url,
-                "wikidata_id": wiki_id,
-                "name": name,
-                "nr_articles": 0,
-                "image_url": image_url,
-            }
+        items_as_dict[wiki_id] = {
+            "wikidata_url": url,
+            "wikidata_id": wiki_id,
+            "name": name,
+            "nr_articles": 0,
+            "image_url": image_url,
+        }
 
-        article_counts = query_sparql(get_total_nr_articles_for_each_person(), "politiquices")
-        for e in article_counts["results"]["bindings"]:
-            wiki_id = e["person"]["value"].split("/")[-1]
-            if wiki_id in items_as_dict:
-                nr_articles = int(e["count"]["value"])
-                items_as_dict[wiki_id]["nr_articles"] = nr_articles
+    article_counts = query_sparql(get_total_nr_articles_for_each_person(), "politiquices")
+    for e in article_counts["results"]["bindings"]:
+        wiki_id = e["person"]["value"].split("/")[-1]
+        if wiki_id in items_as_dict:
+            nr_articles = int(e["count"]["value"])
+            items_as_dict[wiki_id]["nr_articles"] = nr_articles
 
-        items = sorted(list(items_as_dict.values()), key=lambda x: x["nr_articles"], reverse=True)
+    items = sorted(list(items_as_dict.values()), key=lambda x: x["nr_articles"], reverse=True)
 
-        print(f"{nr_entities} entities mentioned in titles")
-
-        cached_list_entities = items
-
-    else:
-        items = cached_list_entities
+    print(f"{nr_entities} entities mentioned in titles")
 
     return render_template("all_entities.html", items=items)
 
@@ -200,32 +183,14 @@ def detail_entity():
 
 @app.route("/party_members")
 def party_members():
-    global cached_members_parties
     wiki_id = request.args.get("q")
-
-    if not cached_members_parties[wiki_id]:
-        persons, party_name, party_logo = get_persons_affiliated_with_party(wiki_id)
-        cached_members_parties[wiki_id] = persons
-        cached_party_name[wiki_id] = party_name
-        cached_party_logo[wiki_id] = party_logo
-    else:
-        persons = cached_members_parties[wiki_id]
-        party_name = cached_party_name[wiki_id]
-        party_logo = cached_party_logo[wiki_id]
-
+    persons, party_name, party_logo = get_persons_affiliated_with_party(wiki_id)
     return render_template("party_members.html", items=persons, name=party_name, logo=party_logo)
 
 
 @app.route("/parties")
 def all_parties():
-    global cached_all_parties
-
-    if not cached_all_parties:
-        items = get_all_parties()
-        cached_all_parties = items
-    else:
-        items = cached_all_parties
-
+    items = get_all_parties()
     return render_template("all_parties.html", items=items)
 
 
@@ -277,3 +242,9 @@ def queries():
         )
 
         return render_template("template_one.html", items=results)
+
+    if query_nr == 'three':
+        person_one = request.args.get("e1")
+        person_two = request.args.get("e2")
+        results = get_relationships_between_two_entities(person_one, person_two)
+        return render_template("two_entities_relationships.html", items=results)

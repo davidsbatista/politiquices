@@ -34,6 +34,7 @@ title_keywords_ignore = [
     "Celebridades",
     "Liga dos Campeões",
     "Sporting",
+    "FC Porto"
 ]
 
 
