@@ -277,9 +277,10 @@ def get_person_relationships(wiki_id):
             # ToDo: mostrar, podem depois ser corrigidas/anotadas
 
         else:
-            raise Exception(e["rel_type"]["value"] + 'not known')
+            raise Exception(e["rel_type"]["value"] + "not known")
 
-        relations[rel_type].append({
+        relations[rel_type].append(
+            {
                 "url": e["arquivo_doc"]["value"],
                 "title": e["title"]["value"],
                 "score": str(e["score"]["value"])[0:5],
@@ -287,13 +288,14 @@ def get_person_relationships(wiki_id):
                 "focus_ent": focus_ent,
                 "other_ent_url": "entity?q=" + other_ent_url,
                 "other_ent_name": other_ent_name,
-            })
+            }
+        )
 
     return relations
 
 
 @lru_cache
-def get_person_rels_by_month_year(wiki_id, rel_type, ent='ent1'):
+def get_person_rels_by_month_year(wiki_id, rel_type, ent="ent1"):
 
     query = f"""
         SELECT DISTINCT ?year ?month (COUNT(?arquivo_doc) as ?nr_articles)
@@ -353,7 +355,7 @@ def get_persons_affiliated_with_party(political_party: str):
     party_logo = None
 
     # add 'PS' logo since it's on on wikidata
-    if political_party == 'Q847263':
+    if political_party == "Q847263":
         party_logo = ps_logo
 
     seen = set()
@@ -363,11 +365,11 @@ def get_persons_affiliated_with_party(political_party: str):
             continue
 
         if not party_name:
-            party_name = x['partyLabel']['value']
+            party_name = x["partyLabel"]["value"]
 
         if not party_logo:
-            if 'political_party_logo' in x:
-                party_logo = x['political_party_logo']['value']
+            if "political_party_logo" in x:
+                party_logo = x["political_party_logo"]["value"]
             else:
                 party_logo = no_image
 
@@ -440,8 +442,11 @@ def initalize():
     return prefixes + "\n" + query
 
 
-# ToDo: not being used
 def get_top_relationships(wiki_id: str):
+
+    base_link = "entity?q="
+
+    persons_ent1 = defaultdict(list)
     query = f"""
         SELECT ?rel_type ?ent2 ?ent2_name (COUNT(?arquivo_doc) as ?nr_articles)
         WHERE {{ 
@@ -455,17 +460,49 @@ def get_top_relationships(wiki_id: str):
         ORDER BY ?rel_type DESC(?nr_articles)
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
-    persons = []
     for x in results["results"]["bindings"]:
-        persons.append(
+        persons_ent1[x["rel_type"]["value"]].append(
             {
-                "wiki_id": x["ent2"]["value"].split("/")[-1],
+                "wiki_id": "entity?q="+x["ent2"]["value"].split("/")[-1],
                 "name": x["ent2_name"]["value"],
-                "rel_type": x["rel_type"]["value"],
                 "nr_articles": int(x["nr_articles"]["value"]),
             }
         )
-    return persons
+
+    persons_ent2 = defaultdict(list)
+    query = f"""
+        SELECT ?rel_type ?ent1 ?ent1_name (COUNT(?arquivo_doc) as ?nr_articles)
+        WHERE {{ 
+          ?rel my_prefix:ent1 ?ent1  .
+          ?ent1 rdfs:label ?ent1_name .
+          ?rel my_prefix:ent2 wd:{wiki_id}  .
+          ?rel my_prefix:type ?rel_type .
+          ?rel my_prefix:arquivo ?arquivo_doc .
+          FILTER(?rel_type != "other")
+        }}
+        GROUP BY ?rel_type ?ent1 ?ent1_name
+        ORDER BY ?rel_type DESC(?nr_articles)
+        """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    for x in results["results"]["bindings"]:
+        persons_ent2[x["rel_type"]["value"]].append(
+            {
+                "wiki_id": "entity?q="+x["ent1"]["value"].split("/")[-1],
+                "name": x["ent1_name"]["value"],
+                "nr_articles": int(x["nr_articles"]["value"]),
+            }
+        )
+
+    who_person_opposes = [x for x in persons_ent1['ent1_opposes_ent2']]
+    who_person_supports = [x for x in persons_ent1['ent1_supports_ent2']]
+    who_opposes_person = [x for x in persons_ent2['ent1_opposes_ent2']]
+    who_supports_person = [x for x in persons_ent2['ent1_supports_ent2']]
+
+    return {'who_person_opposes': who_person_opposes,
+            'who_person_supports': who_person_supports,
+            'who_opposes_person': who_opposes_person,
+            'who_supports_person': who_supports_person
+            }
 
 
 @lru_cache
@@ -497,9 +534,9 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id, party):
     for x in result["results"]["bindings"]:
         image = x["image_url"]["value"] if "image_url" in x else no_image
 
-        person = Person(name=x["ent1_name"]["value"],
-                        wiki_id=x["ent1"]["value"].split("/")[-1],
-                        image_url=image)
+        person = Person(
+            name=x["ent1_name"]["value"], wiki_id=x["ent1"]["value"].split("/")[-1], image_url=image
+        )
 
         rel = Relationship(
             article_title=x["title"]["value"],
@@ -544,9 +581,9 @@ def get_list_of_persons_from_some_party_relation_with_someone(wiki_id, party, re
     for x in result["results"]["bindings"]:
         image = x["image_url"]["value"] if "image_url" in x else no_image
 
-        person = Person(name=x["ent1_name"]["value"],
-                        wiki_id=x["ent1"]["value"].split("/")[-1],
-                        image_url=image)
+        person = Person(
+            name=x["ent1_name"]["value"], wiki_id=x["ent1"]["value"].split("/")[-1], image_url=image
+        )
 
         rel = Relationship(
             article_title=x["title"]["value"],
@@ -580,8 +617,7 @@ def get_party_of_entity(wiki_id):
     parties = []
     for x in result["results"]["bindings"]:
         parties.append(
-            {'wiki_id': x['party']['value'].split("/")[-1],
-             'name': x['party_label']['value']}
+            {"wiki_id": x["party"]["value"].split("/")[-1], "name": x["party_label"]["value"]}
         )
     return parties
 
@@ -602,10 +638,9 @@ def get_entities_without_image():
     entities = []
     for x in result["results"]["bindings"]:
         entities.append(
-            {'wikidata_id': x['item']['value'].split("/")[-1],
-             'label': x['label']['value']}
+            {"wikidata_id": x["item"]["value"].split("/")[-1], "label": x["label"]["value"]}
         )
-    print(len(entities), 'entities retrieved')
+    print(len(entities), "entities retrieved")
     return entities
 
 

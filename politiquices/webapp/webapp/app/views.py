@@ -150,7 +150,7 @@ def detail_entity():
         from_search = True
 
     person = get_person_info(wiki_id)
-    top_entities_in_rel_type = get_top_relationships(wiki_id)  # ToDo: not being shown
+    top_entities_in_rel_type = get_top_relationships(wiki_id)
     relationships_articles = get_person_relationships(wiki_id)
 
     # make titles with entities all clicklable
@@ -180,7 +180,7 @@ def detail_entity():
         "image": person.image_url,
         "parties": person.parties,
         "offices": person.positions,
-        "top_relations": top_entities_in_rel_type[:10],  # ToDo: not being shown
+        "top_relations": top_entities_in_rel_type,
         "opposed": relationships_articles["opposes"],
         "supported": relationships_articles["supports"],
         "opposed_by": relationships_articles["opposed_by"],

@@ -100,14 +100,10 @@ Web App
         - faz com que todo o cartão seja clicável (em vez de só o nome, como está agora)
         - https://github.com/prabhuignoto/react-chrono
 
-    - mostrar um snippet da notícia, é preciso sacar toda?
-
     Bugs:
        - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
 
     SPARQL queries:
-        DONE:
-            - pessoas do mesmo partido a acusarem pessoas do mesmo partido
         ToDo:
             - timeline de contradições entre duas personalidades
             - fazer agregação de personalidades por cargos, membros do governo, ocupações, educação
@@ -128,11 +124,6 @@ Web App
         - http://biohackathon.org/d3sparql/
         - https://github.com/ktym/d3sparql
 
-      - tirar dos cargos e organizar:
-            Member of the Assembly of the Republic:
-                - elected in
-                - parlamentary term
-
       - total de artigos em que é mencionado
       - total de artigos em que é mencionado por relação
 
@@ -140,7 +131,7 @@ Web App
 
 
    - mostrar informação para completar:
-        listar pessoas com informação incompleta: foto, cargos, etc. e explicar como alimentar
+        listar pessoas com informação incompleta: cargos, etc. e explicar como alimentar
         a wikidata com fontes de informação :
             - https://www.politicaparatodos.pt/
             - http://demo.cratica.org/deputados/
@@ -173,7 +164,7 @@ SPARQL DB
 =========
     - text index in SPARQL: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
     - use OR in FILTER to avoid doing two queries:
-            https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
+        https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
 
    Getting statements values:
       - https://stackoverflow.com/questions/54974504/sparql-question-how-to-return-property-labels-and-associated-date-qualifiers-fr
@@ -181,7 +172,6 @@ SPARQL DB
 
    Federated queries:
       - http://sulab.org/2017/07/integrating-wikidata-and-other-linked-data-sources-federated-sparql-queries/
-      - https://stackoverflow.com/questions/53012303/using-wikidata-label-service-in-federated-queries
 
     https://www.wikidata.org/wiki/Wikidata:Glossary
     https://www.wikidata.org/wiki/Wikidata:Glossary#Statement

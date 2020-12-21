@@ -19,6 +19,7 @@ url_keywords_ignore = [
     "foto",
     "vida",
     "humor",
+    "blogues/Opinio",
     "tv",
     "triatlo",
     "sporting",

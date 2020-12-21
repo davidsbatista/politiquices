@@ -277,3 +277,134 @@
     
     }
     LIMIT 100
+
+
+
+### All the governments based on the persons 
+
+    PREFIX         p: <http://www.wikidata.org/prop/>
+    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    
+    SELECT DISTINCT ?cabinet ?cabinetLabel WHERE {
+      ?person wdt:P31 wd:Q5;
+              wdt:P27 wd:Q45;
+              p:P39 ?officeStmnt.
+      ?officeStmnt ps:P39 ?office.
+      OPTIONAL { ?officeStmnt pq:P580 ?start. }
+      OPTIONAL { ?officeStmnt pq:P582 ?end. }  
+      ?officeStmnt pq:P5054 ?cabinet. 
+      ?cabinet ?x ?y.
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
+    } ORDER BY ?start
+
+
+
+### All parliaments
+
+    PREFIX         p: <http://www.wikidata.org/prop/>
+    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX        wd: <http://www.wikidata.org/entity/>
+    
+    SELECT DISTINCT ?parlamentary_term ?parlamentary_termLabel ?start ?end WHERE {
+      ?parlamentary_term wdt:P31 wd:Q15238777;
+                         wdt:P17 wd:Q45;
+                         wdt:P571 ?start;
+                         wdt:P582 ?end.
+    
+    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
+    } 
+    ORDER BY DESC (?start)
+    
+
+### All members of a parliament
+
+    PREFIX         p: <http://www.wikidata.org/prop/>
+    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX        wd: <http://www.wikidata.org/entity/>
+    
+    SELECT DISTINCT ?person ?personLabel WHERE {
+      ?person wdt:P31 wd:Q5;
+              wdt:P27 wd:Q45;
+              p:P39 ?officeStmnt.
+      
+      ?officeStmnt ps:P39 ?office.
+      ?officeStmnt pq:P2937 wd:Q25431189. 
+    
+      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
+    } 
+    ORDER BY DESC (?start)
+    
+
+### All position grouped by count
+
+    PREFIX         p: <http://www.wikidata.org/prop/>
+    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX 		  wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    
+    SELECT DISTINCT ?position_label (COUNT(?person) AS ?n)
+    WHERE {
+      ?person wdt:P31 wd:Q5;
+           rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
+      ?person p:P39 ?positionStmnt .
+      ?positionStmnt ps:P39 ?position .
+      ?position rdfs:label ?position_label FILTER(LANG(?position_label) = "pt").
+    }
+    GROUP BY ?position_label
+    HAVING (?n>1)
+    ORDER BY DESC (?n)
+
+
+### All occupation grouped by count
+
+    PREFIX         p: <http://www.wikidata.org/prop/>
+    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX 		  wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    
+    SELECT DISTINCT ?occupation_label (COUNT(?person) AS ?n)
+    WHERE {
+      ?person wdt:P31 wd:Q5;
+           rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
+      ?person p:P106 ?occupationStmnt .
+      ?occupationStmnt ps:P106 ?occupation .
+      ?occupation rdfs:label ?occupation_label FILTER(LANG(?occupation_label) = "pt").
+    }
+    GROUP BY ?occupation_label
+    HAVING (?n>1)
+    ORDER BY DESC (?n)
+
+
+### All 'Governo Constitucional de Portugal'
+
+
+    PREFIX         p: <http://www.wikidata.org/prop/>
+    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX 		  wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    
+    SELECT DISTINCT ?cabinet ?cabinetLabel (COUNT(?person) as ?n)
+    WHERE {
+      ?person wdt:P31 wd:Q5;
+              rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
+      ?person p:P39 ?officeStmnt .
+      ?officeStmnt ps:P39 ?office .
+      ?officeStmnt pq:P5054 ?cabinet.
+      ?cabinet rdfs:label ?cabinetLabel FILTER(LANG(?cabinetLabel) = "pt") .
+    }
+    group by ?cabinet ?cabinetLabel
+    ORDER BY DESC (?n)
