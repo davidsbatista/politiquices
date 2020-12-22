@@ -19,7 +19,7 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_party_of_entity,
     get_list_of_persons_from_some_party_relation_with_someone,
     get_entities_without_image, get_relationships_between_two_entities)
-from politiquices.webapp.webapp.app.sparql_queries import initalize
+from politiquices.webapp.webapp.app.sparql_queries import all_entities
 from politiquices.webapp.webapp.app.relationships import build_relationships_freq
 
 logger = logging.getLogger(__name__)
@@ -62,7 +62,7 @@ def list_entities():
     # ToDo: run this on the Makefile, just after the server is launched and cache
 
     print("Getting entities extra info from wikidata.org")
-    entities = query_sparql(initalize(), "politiquices")
+    entities = query_sparql(all_entities(), "politiquices")
     persons = set()
     items_as_dict = dict()
     nr_entities = len(entities["results"]["bindings"])
@@ -106,6 +106,7 @@ def list_entities():
 
 
 def make_title_linkable(r, wiki_id):
+
     # add link to focus entity
     link_one = r['title'].replace(
         r['focus_ent'],
@@ -117,6 +118,7 @@ def make_title_linkable(r, wiki_id):
         '<a id="ent_2" href=' + r['other_ent_url'] + '>' + r['other_ent_name'] + '</a>'
     )
     r['title_clickable'] = title_link
+
     if r['url'].startswith('http://publico.pt'):
         r['link_image'] = "/static/images/114px-Logo_publico.png"
         r['image_width'] = "20"
@@ -212,6 +214,31 @@ def complete():
     return render_template("incomplete_entities.html", items=result)
 
 
+def make_title_linkable_2_entities(r):
+
+    ent1_wikid_id = r['ent1'].split("/")[-1]
+    link_one = r['title'].replace(
+        r['ent1_str'],
+        '<a id="ent_1" href="entity?q=' + ent1_wikid_id + '">' + r['ent1_str'] + '</a>'
+    )
+
+    ent2_wikid_id = r['ent2'].split("/")[-1]
+    title_link = link_one.replace(
+        r['ent2_str'],
+        '<a id="ent_2" href="entity?q=' + ent2_wikid_id + '">' + r['ent2_str'] + '</a>'
+    )
+
+    r['title_clickable'] = title_link
+
+    if r['url'].startswith('http://publico.pt'):
+        r['link_image'] = "/static/images/114px-Logo_publico.png"
+        r['image_width'] = "20"
+
+    else:
+        r['link_image'] = "/static/images/color_vertical.svg"
+        r['image_width'] = "39.8"
+
+
 @app.route("/queries")
 def queries():
 
@@ -247,4 +274,8 @@ def queries():
         person_one = request.args.get("e1")
         person_two = request.args.get("e2")
         results = get_relationships_between_two_entities(person_one, person_two)
+
+        for r in results:
+            make_title_linkable_2_entities(r)
+
         return render_template("two_entities_relationships.html", items=results)

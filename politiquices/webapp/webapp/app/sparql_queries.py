@@ -425,7 +425,7 @@ def get_all_parties():
 
 
 @lru_cache
-def initalize():
+def all_entities():
     query = f"""
         SELECT DISTINCT ?item ?label ?image_url {{
             ?item wdt:P31 wd:Q5.
@@ -443,8 +443,6 @@ def initalize():
 
 @lru_cache
 def get_top_relationships(wiki_id: str):
-
-    base_link = "entity?q="
 
     persons_ent1 = defaultdict(list)
     query = f"""
@@ -685,7 +683,7 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
              'date': x['date']['value'],
              'title': x['title']['value'],
              'rel_type': x['rel_type']['value'],
-             'score': x['score']['value'],
+             'score': x["score"]["value"][0:5],
              'ent1': x['ent1']['value'],
              'ent1_str': x['ent1_str']['value'],
              'ent2': x['ent2']['value'],
@@ -711,5 +709,50 @@ def query_sparql(query, endpoint):
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
+
+    print("------------------------------------------------")
+    print("get_total_nr_of_articles")
+    print(get_total_nr_of_articles.cache_info())
+    print()
+    print("get_total_nr_articles_for_each_person")
+    print(get_total_nr_articles_for_each_person.cache_info())
+    print()
+    print("get_nr_of_persons")
+    print(get_nr_of_persons.cache_info())
+    print()
+    print("get_person_info")
+    print(get_person_info.cache_info())
+    print()
+    print("get_person_relationships")
+    print(get_person_relationships.cache_info())
+    print()
+    print("get_nr_articles_per_year")
+    print(get_nr_articles_per_year.cache_info())
+    print()
+    print("get_persons_affiliated_with_party")
+    print(get_persons_affiliated_with_party.cache_info())
+    print()
+    print("get_all_parties()")
+    print(get_all_parties.cache_info())
+    print()
+    print("all_entities")
+    print(all_entities.cache_info())
+    print()
+    print("get_top_relationships")
+    print(get_top_relationships.cache_info())
+    print()
+    print("get_list_of_persons_from_some_party_opposing_someone.cache_info()")
+    print(get_list_of_persons_from_some_party_opposing_someone.cache_info())
+    print()
+    print("get_list_of_persons_from_some_party_relation_with_someone")
+    print(get_list_of_persons_from_some_party_relation_with_someone.cache_info())
+    print()
+    print("get_party_of_entity")
+    print(get_party_of_entity.cache_info())
+    print()
+    print("get_relationships_between_two_entities.cache_info()")
+    print(get_relationships_between_two_entities.cache_info())
+    print()
+    print("------------------------------------------------")
 
     return results

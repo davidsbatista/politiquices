@@ -74,7 +74,6 @@
     </div>
 
     <script>
-
     var ctx = document.getElementById('myChart');
     var color = Chart.helpers.color;
 
@@ -176,8 +175,6 @@
            $(this).parents('.dropdown').find('button').text($(this).text());
        });
     });
-
-
     </script>
 
     <br><br><br>
@@ -254,7 +251,6 @@
           <td id="title">
             {{item.title_clickable|safe}}
             <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank"><img src="{{item.link_image}}" width="{{item.image_width}}" height="20"></a>
-
           <td id="score">{{item.score}}</td>
           <td id="rel_type">
               <div class="dropdown">

@@ -103,6 +103,8 @@ Web App
 
     - carregar a lista de partidos para o autocomplete no arranque
 
+    - unificar HTML de entity + entity search
+
     - Agregacoes:
         - Governo
         - Assembleias
@@ -113,7 +115,6 @@ Web App
         - mete uma margem em cima pequena entre a foto e o bordo do cartão
         - faz com que todo o cartão seja clicável (em vez de só o nome, como está agora)
         - https://github.com/prabhuignoto/react-chrono
-        -
 
 
     Bugs:
