@@ -8,10 +8,9 @@ from jsonlines import jsonlines
 from keras.models import load_model
 
 from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
-from politiquices.extraction.classifiers.news_titles.relationship_clf import Attention
+from politiquices.extraction.classifiers.news_titles.models.relationship_clf import Attention
 from politiquices.extraction.classifiers.news_titles.relationship_direction_clf import \
     detect_direction
-from politiquices.extraction.utils import clean_title_re, clean_title_quotes
 
 import pt_core_news_lg
 

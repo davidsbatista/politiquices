@@ -29,7 +29,6 @@ def clean_title_quotes(title):
 def clean_title_re(title):
 
     title = title.replace("DN Online:", "").strip()
-
     parts = re.split(r"\s[|–>-]\s", title)
 
     if len(parts) == 2:

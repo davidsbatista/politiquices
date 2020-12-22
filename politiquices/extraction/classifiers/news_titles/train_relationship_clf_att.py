@@ -1,10 +1,5 @@
-import json
-
-from sklearn.model_selection import StratifiedKFold
-
-from politiquices.extraction.classifiers.news_titles.embeddings_utils import get_embeddings
-from politiquices.extraction.classifiers.news_titles.relationship_clf import (
-    RelationshipClassifier,
+from politiquices.extraction.classifiers.news_titles.models.embeddings_utils import get_embeddings
+from politiquices.extraction.classifiers.news_titles.models.relationship_clf import (
     pre_process_train_data,
     LSTMAtt,
 )

@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from politiquices.extraction.utils import print_cm
 from politiquices.extraction.utils.utils import read_ground_truth
-from politiquices.extraction.classifiers.news_titles.relationship_clf import pre_process_train_data
+from politiquices.extraction.classifiers.news_titles.models.relationship_clf import pre_process_train_data
 
 from transformers import DistilBertTokenizer, TFDistilBertModel
 from transformers import TFDistilBertForSequenceClassification, DistilBertConfig
@@ -19,12 +19,11 @@ import tensorflow as tf
 distil_bert = "distilbert-base-uncased"
 
 from transformers import T5Tokenizer
-from transformers import TFT5Model, TFT5ForConditionalGeneration
+from transformers import TFT5ForConditionalGeneration
 
 
 def classify_with_pre_trained():
     # model = "neuralmind/bert-base-portuguese-cased"
-    from transformers import AutoTokenizer  # Or BertTokenizer
 
     config = DistilBertConfig(num_labels=3)
     config.output_hidden_states = False

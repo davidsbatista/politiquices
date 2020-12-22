@@ -1,17 +1,17 @@
-mmh3
-pydantic
-fastapi
-matplotlib
-networkx
-requests
 Keras==2.3.1
 SPARQLWrapper==1.8.5
+elasticsearch>=7.0.0,<8.0.0
+fastapi
 joblib==0.15.1
+jsonlines
+matplotlib
+mmh3
+networkx
 numpy==1.18.4
-pt-core-news-sm @ https://github.com/explosion/spacy-models/releases/download/pt_core_news_sm-2.2.5/pt_core_news_sm-2.2.5.tar.gz
+pt-core-news-lg @ https://github.com/explosion/spacy-models/releases/download/pt_core_news_lg-2.3.0/pt_core_news_lg-2.3.0.tar.gz
+pydantic
+requests
 scikit-learn==0.23.1
 spacy==2.2.4
 tensorflow==2.2.0
-elasticsearch>=7.0.0,<8.0.0
 uvicorn
-jsonlines

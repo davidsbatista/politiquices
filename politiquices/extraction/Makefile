@@ -5,7 +5,7 @@
 dev:
 	@echo "Starting to build the development environment"
 
-	python3 -m venv $${HOME}/politiquices_extraction_venv; . $${HOME}/politiquices_extraction_venv/bin/activate; \
+	virtualenv -p /usr/local/opt/python\@3.8/libexec/bin $${HOME}/politiquices_extraction_venv; . $${HOME}/politiquices_extraction_venv/bin/activate; \
 	pip install --upgrade pip > /dev/null; \
 	pip install -r requirements.txt > /dev/null; \
 	export PYTHONPATH=$HOME/politiquices/; \

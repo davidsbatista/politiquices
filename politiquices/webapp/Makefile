@@ -14,7 +14,8 @@ sparql:
 
 web:
 	# create the python venv and launch the webapp
-	python3 -m venv $${HOME}/politiquices_webapp_venv; . $${HOME}/politiquices_webapp_venv/bin/activate; \
+	# virtualenv -p /usr/local/opt/python\@3.8/libexec/bin $${HOME}/politiquices_extraction_venv; . $${HOME}/politiquices_extraction_venv/bin/activate; \
+	# python3 -m venv $${HOME}/politiquices_webapp_venv; . $${HOME}/politiquices_webapp_venv/bin/activate; \
 	pip install --upgrade pip; \
 	pip install -r webapp/requirements.txt; \
 	cd $${HOME}/politiquices/politiquices/webapp/; \
