@@ -339,10 +339,8 @@ def str2bool(v):
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--publico",
-                        help="input JSONL file with publico.pt results")
-    parser.add_argument("--arquivo",
-                        help="input JSONL file with arquivo.pt results")
+    parser.add_argument("--publico", help="input JSONL file with publico.pt results")
+    parser.add_argument("--arquivo", help="input JSONL file with arquivo.pt results")
     args = parser.parse_args()
     return args
 

@@ -7,6 +7,7 @@ jsonlines
 matplotlib
 mmh3
 networkx
+nltk==3.5
 numpy==1.18.4
 pt-core-news-lg @ https://github.com/explosion/spacy-models/releases/download/pt_core_news_lg-2.3.0/pt_core_news_lg-2.3.0.tar.gz
 pydantic

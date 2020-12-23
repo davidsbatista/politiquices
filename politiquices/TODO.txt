@@ -93,6 +93,9 @@ Web App
     uma ultima secção com "outras":
         - outras
 
+    - Tens personalidade A vs personalidade B e Tens personalidade  A vs Personalidades de partido B.
+      Podes acrscentar Personalidades de partido A vs Personalidades de partido B
+
     - escolher um partido e ver as acusações + suporte internos
 
     - unificar HTML de entity + entity search

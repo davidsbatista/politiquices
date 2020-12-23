@@ -145,4 +145,4 @@ class RelationshipClassifier:
 
     def save(self):
         date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-        joblib.dump(self, f"trained_models/relationship_clf_{date_time}.pkl")
+        joblib.dump(self, f"trained_models/relationship_clf_{date_time}.joblib")
