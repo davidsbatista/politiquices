@@ -57,7 +57,7 @@ def main():
     titles, labels = pre_process_train_data(data_publico + data_arquivo + data_webapp)
 
     print("Loading embeddings...")
-    word2embedding, word2index = get_embeddings("skip_s100_small.txt")
+    word2embedding, word2index = get_embeddings()
 
     skf = StratifiedKFold(n_splits=2, random_state=42, shuffle=True)
     fold_n = 0
@@ -66,7 +66,7 @@ def main():
         x_test = [doc for idx, doc in enumerate(titles) if idx in test_index]
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
-        model = RelationshipClassifier(epochs=1)
+        model = RelationshipClassifier(epochs=15)
         model.train(x_train, y_train, word2index, word2embedding, x_val=x_test, y_val=y_test)
 
         report_str, misclassifications, correct = model.evaluate(x_test, y_test)

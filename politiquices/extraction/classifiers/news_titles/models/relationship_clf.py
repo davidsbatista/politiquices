@@ -88,6 +88,7 @@ class RelationshipClassifier:
             val_data = (x_val_vec_padded, y_val_vec)
 
         # ToDo: plot loss graphs on train and test
+        # ToDo: add callbacks
         if val_data:
             self.history = model.fit(
                 x_train_vec_padded, y_train_vec, validation_data=val_data, epochs=self.epochs
