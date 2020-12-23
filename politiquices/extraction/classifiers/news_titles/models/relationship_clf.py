@@ -64,13 +64,14 @@ class RelationshipClassifier:
         le = LabelEncoder()
         y_train_encoded = le.fit_transform(y_train)
         y_train_vec = to_categorical(y_train_encoded, num_classes=None)
-        y_val_encoded = le.transform(y_val)
-        y_val_vec = to_categorical(y_val_encoded)
+        if y_val:
+            y_val_encoded = le.transform(y_val)
+            y_val_vec = to_categorical(y_val_encoded)
 
         print("Shape of train data tensor:", x_train_vec_padded.shape)
         print("Shape of train label tensor:", y_train_vec.shape)
         self.num_classes = y_train_vec.shape[1]
-        if x_val:
+        if x_val and y_val:
             print("Shape of val data tensor:", x_val_vec_padded.shape)
             print("Shape of val label tensor:", y_val_vec.shape)
 
@@ -82,12 +83,20 @@ class RelationshipClassifier:
         print("embeddings_matrix: ", embeddings_matrix.shape)
 
         model = self.get_model(embedding_layer)
-        val_data = (x_val_vec_padded, y_val_vec)
+        val_data = None
+        if x_val and y_val:
+            val_data = (x_val_vec_padded, y_val_vec)
 
         # ToDo: plot loss graphs on train and test
-        self.history = model.fit(
-            x_train_vec_padded, y_train_vec, validation_data=val_data, epochs=self.epochs
-        )
+        if val_data:
+            self.history = model.fit(
+                x_train_vec_padded, y_train_vec, validation_data=val_data, epochs=self.epochs
+            )
+        else:
+            self.history = model.fit(
+                x_train_vec_padded, y_train_vec, validation_split=0.1, epochs=self.epochs
+            )
+
         self.model = model
         self.word2index = word2index
         self.label_encoder = le
@@ -108,6 +117,13 @@ class RelationshipClassifier:
 
         x_predicted_probs = self.tag(x_test)
 
+        scores = []
+        for preds in x_predicted_probs:
+            rel_type_scores = {
+                label: float(score) for score, label in zip(preds, self.label_encoder.classes_)
+            }
+            scores.append(rel_type_scores)
+
         labels_idx = np.argmax(x_predicted_probs, axis=1)
         pred_labels = self.label_encoder.inverse_transform(labels_idx)
         print("\n" + classification_report(y_test, pred_labels))
@@ -118,11 +134,11 @@ class RelationshipClassifier:
 
         misclassifications = []
         correct = []
-        for title, pred_y, true_y in zip(x_test, pred_labels, y_test):
+        for title, pred_y, true_y, score in zip(x_test, pred_labels, y_test, scores):
             if pred_y != true_y:
-                misclassifications.append([title, pred_y, true_y])
+                misclassifications.append([title, pred_y, true_y, score])
             else:
-                correct.append([title, pred_y, true_y])
+                correct.append([title, pred_y, true_y, score])
 
         return report_str, misclassifications, correct
 

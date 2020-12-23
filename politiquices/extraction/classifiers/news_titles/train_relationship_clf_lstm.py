@@ -57,7 +57,7 @@ def main():
     titles, labels = pre_process_train_data(data_publico + data_arquivo + data_webapp)
 
     print("Loading embeddings...")
-    word2embedding, word2index = get_embeddings()
+    word2embedding, word2index = get_embeddings("skip_s100_small.txt")
 
     skf = StratifiedKFold(n_splits=2, random_state=42, shuffle=True)
     fold_n = 0
@@ -66,7 +66,7 @@ def main():
         x_test = [doc for idx, doc in enumerate(titles) if idx in test_index]
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
-        model = RelationshipClassifier(epochs=2)
+        model = RelationshipClassifier(epochs=1)
         model.train(x_train, y_train, word2index, word2embedding, x_val=x_test, y_val=y_test)
 
         report_str, misclassifications, correct = model.evaluate(x_test, y_test)
@@ -76,34 +76,26 @@ def main():
         pred_support_true_oppose = []
         pred_other_true_oppose = []
         pred_other_true_support = []
-        other = []
-        opposes = []
-        supports = []
 
-        for title, pred_y, true_y, scores in misclassifications:
+        for entry in misclassifications:
+            title, pred_y, true_y, scores = entry
             if pred_y == "opposes":
                 if true_y == "supports":
                     pred_oppose_true_support.append((title, scores))
                 if true_y == "other":
                     pred_oppose_true_other.append((title, scores))
-                if true_y == 'opposes':
-                    opposes.append((title, scores))
 
             elif pred_y == "supports":
                 if true_y == "other":
                     pred_support_true_other.append((title, scores))
                 if true_y == "opposes":
                     pred_support_true_oppose.append((title, scores))
-                if true_y == 'supports':
-                    supports.append((title, scores))
 
             elif pred_y == "other":
                 if true_y == "supports":
                     pred_other_true_support.append((title, scores))
                 if true_y == "opposes":
                     pred_other_true_oppose.append((title, scores))
-                if true_y == 'other':
-                    other.append((title, scores))
 
         with open(f"report_fold_{fold_n}", "wt") as f_out:
             f_out.write(report_str)
@@ -138,20 +130,33 @@ def main():
             for title in sorted(pred_other_true_oppose, key=lambda x: x[1]["other"]):
                 f_out.write(title[0] + "\t" + str(title[1]) + "\n\n")
 
+        other = []
+        opposes = []
+        supports = []
+
+        for entry in correct:
+            title, pred_y, true_y, scores = entry
+            if true_y == 'supports':
+                supports.append((title, scores))
+            elif true_y == 'opposes':
+                opposes.append((title, scores))
+            elif true_y == 'other':
+                other.append((title, scores))
+
         with open(f"report_correct_fold_{fold_n}", "wt") as f_out:
             f_out.write("""PREDICTED: 'supports' \t TRUE: 'supports'\n""")
             f_out.write("--------------------------------------------\n")
-            for title in sorted(supports):
+            for title in supports:
                 f_out.write(title[0] + "\t" + str(title[1]) + "\n\n")
             f_out.write("\n\n")
             f_out.write("""PREDICTED: 'opposes' \t TRUE: 'opposes'\n""")
             f_out.write("--------------------------------------------\n")
-            for title in sorted(opposes):
+            for title in opposes:
                 f_out.write(title[0] + "\t" + str(title[1]) + "\n\n")
             f_out.write("\n\n")
             f_out.write("""PREDICTED: 'other' \t TRUE: 'other'\n""")
             f_out.write("--------------------------------------------\n")
-            for title in sorted(other):
+            for title in other:
                 f_out.write(title[0] + "\t" + str(title[1]) + "\n\n")
 
         fold_n += 1
