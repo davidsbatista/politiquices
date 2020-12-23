@@ -1,14 +1,12 @@
-from datetime import datetime
-
 import joblib
 import numpy as np
+from datetime import datetime
 
 from keras import Input, Model
 from keras.layers import Bidirectional, Dense, LSTM
 from keras.utils import to_categorical
 from keras_preprocessing.sequence import pad_sequences
 from keras.backend import categorical_crossentropy
-
 
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
@@ -22,6 +20,7 @@ from politiquices.extraction.classifiers.news_titles.models.embeddings_utils imp
 
 
 class RelationshipClassifier:
+
     def __init__(self, epochs=20):
         self.epochs = epochs
         self.max_input_length = None
@@ -43,8 +42,10 @@ class RelationshipClassifier:
 
         return model
 
-    def train(self, x_train, y_train, x_val, y_val, word2index, word2embedding):
+    def train(self, x_train, y_train, word2index, word2embedding, x_val=None, y_val=None):
         x_train_vec = vectorize_titles(word2index, x_train, save_tokenized=False, save_missed=False)
+        if x_val:
+            x_val_vec = vectorize_titles(word2index, x_val, save_tokenized=False, save_missed=False)
 
         # get the max sentence length, needed for padding
         self.max_input_length = max([len(x) for x in x_train_vec])
@@ -54,14 +55,24 @@ class RelationshipClassifier:
         x_train_vec_padded = pad_sequences(
             x_train_vec, maxlen=self.max_input_length, padding="post", truncating="post"
         )
+        if x_val:
+            x_val_vec_padded = pad_sequences(
+                x_val_vec, maxlen=self.max_input_length, padding="post", truncating="post"
+            )
 
         # Encode the labels, each must be a vector with dim = num. of possible labels
         le = LabelEncoder()
         y_train_encoded = le.fit_transform(y_train)
         y_train_vec = to_categorical(y_train_encoded, num_classes=None)
+        y_val_encoded = le.transform(y_val)
+        y_val_vec = to_categorical(y_val_encoded)
+
         print("Shape of train data tensor:", x_train_vec_padded.shape)
         print("Shape of train label tensor:", y_train_vec.shape)
         self.num_classes = y_train_vec.shape[1]
+        if x_val:
+            print("Shape of val data tensor:", x_val_vec_padded.shape)
+            print("Shape of val label tensor:", y_val_vec.shape)
 
         # create the embedding layer
         embeddings_matrix = create_embeddings_matrix(word2embedding, word2index)
@@ -71,9 +82,12 @@ class RelationshipClassifier:
         print("embeddings_matrix: ", embeddings_matrix.shape)
 
         model = self.get_model(embedding_layer)
+        val_data = (x_val_vec_padded, y_val_vec)
 
         # ToDo: plot loss graphs on train and test
-        self.history = model.fit(x_train_vec_padded, y_train_vec, epochs=self.epochs)
+        self.history = model.fit(
+            x_train_vec_padded, y_train_vec, validation_data=val_data, epochs=self.epochs
+        )
         self.model = model
         self.word2index = word2index
         self.label_encoder = le
@@ -103,11 +117,14 @@ class RelationshipClassifier:
         print()
 
         misclassifications = []
+        correct = []
         for title, pred_y, true_y in zip(x_test, pred_labels, y_test):
             if pred_y != true_y:
                 misclassifications.append([title, pred_y, true_y])
+            else:
+                correct.append([title, pred_y, true_y])
 
-        return report_str, misclassifications
+        return report_str, misclassifications, correct
 
     def save(self):
         date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
