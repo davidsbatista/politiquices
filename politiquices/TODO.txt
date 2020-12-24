@@ -57,9 +57,13 @@ classifiers
 
     entity_linking:
     ---------------
-        - primeiro: "Carlos Pereira" apenas se não houver resultados "Carlos AND Pereira"
-        - usar o 'linkToExtractedText' e encontrar todas as ocurrências de 'Albuquerque' e
-          coleccionar as palavras em capital antes ou depois
+        - adicionar um campo com os nomes em ANSI (sem acentos)
+
+        - primeiro: "Carlos Pereira" -> label
+        - se não houver resultados:
+            - usar o 'linkToExtractedText' e encontrar todas as ocurrências de 'Albuquerque' e coleccionar as palavras em capital antes ou depois
+            - "Carlos AND Pereira" c/ todos os fields tirar o de maior score
+
         - fazer uma avaliação com o novo dataset (e o velho)
 
         - Linking Errors:

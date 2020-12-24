@@ -21,6 +21,9 @@ https://www.wikidata.org/wiki/Q16019,Wolfgang Schäuble
 https://www.wikidata.org/wiki/Q463533,Michel Temer
 https://www.wikidata.org/wiki/Q294460,Mario Draghi
 https://www.wikidata.org/wiki/Q11665,Ramos Horta
+https://www.wikidata.org/wiki/Q1253,Ban Ki Moon
+https://www.wikidata.org/wiki/Q10272593,Emídio Rangel
+https://www.wikidata.org/wiki/Q1567582,Miguel Sousa Tavares
 # political parties
 http://www.wikidata.org/entity/Q595575
 http://www.wikidata.org/entity/Q847263

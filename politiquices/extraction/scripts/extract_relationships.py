@@ -3,9 +3,8 @@ import os
 import argparse
 import joblib
 import pickle
-from functools import lru_cache
 
-from elasticsearch import Elasticsearch
+import requests
 from jsonlines import jsonlines
 from keras.models import load_model
 
@@ -24,9 +23,6 @@ nlp.disable = ["tagger", "parser", "ner"]
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 MODELS = os.path.join(APP_ROOT, "../classifiers/news_titles/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
-
-print("Setting up connection with Elasticsearch")
-es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
 
 def read_lstm_models():
@@ -48,77 +44,6 @@ def read_att_normal_models():
     return relationship_clf, None
 
 
-@lru_cache(maxsize=500000)
-def entity_linking(entity, all_results=False):
-
-    def needs_escaping(char):
-        escape_chars = {
-            "\\": True,
-            "+": True,
-            "-": True,
-            "!": True,
-            "(": True,
-            ")": True,
-            ":": True,
-            "^": True,
-            "[": True,
-            "]": True,
-            '"': True,
-            "{": True,
-            "}": True,
-            "~": True,
-            "*": True,
-            "?": True,
-            "|": True,
-            "&": True,
-            "/": True,
-        }
-        return escape_chars.get(char, False)
-
-    # ToDo: add more from PER_entities.txt
-    mappings = {
-        "Carrilho": "Manuel Maria Carrilho",
-        "Costa": "António Costa",
-        "Durão": "Durão Barroso",
-        "Ferreira de o Amaral": "Joaquim Ferreira do Amaral",
-        "Jerónimo": "Jerónimo de Sousa",
-        "Marcelo": "Marcelo Rebelo de Sousa",
-        "Marques Mendes": "Luís Marques Mendes",
-        "Menezes": "Luís Filipe Menezes",
-        "Moura Guedes": "Manuela Moura Guedes",
-        "Nobre": "Fernando Nobre",
-        "Portas": "Paulo Portas",
-        "Rebelo de Sousa": "Marcelo Rebelo de Sousa",
-        "Relvas": "Miguel Relvas",
-        "Santana": "Pedro Santana Lopes",
-        "Santos Silva": "Augusto Santos Silva",
-        "Soares": "Mário Soares",
-        "Sousa Tavares": "Miguel Sousa Tavares",
-    }
-
-    sanitized = ""
-    for character in entity:
-        if needs_escaping(character):
-            sanitized += "\\%s" % character
-        else:
-            sanitized += character
-
-    entity_clean = mappings.get(sanitized, sanitized)
-    entity_query = " AND ".join([token.strip() for token in entity_clean.split()])
-    # print(entity, "\t", sanitized, "\t", entity_query)
-    res = es.search(index="politicians", body={"query": {"query_string": {"query": entity_query}}})
-
-    if res["hits"]["hits"]:
-        if all_results:
-            return res["hits"]["hits"]
-        return {"wiki_id": res["hits"]["hits"][0]["_source"]}
-
-    if all_results:
-        return []
-
-    return {"wiki_id": None}
-
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--publico", help="input is publico.pt crawled titles")
@@ -126,6 +51,19 @@ def parse_args():
     parser.add_argument("--chave", help="input is from Linguateca CHAVE collection")
     args = parser.parse_args()
     return args
+
+
+def get_text(url):
+    original_url = '/'.join(url.split("/")[5:])
+    crawl_date = url.split("/")[4]
+    base_url = "https://arquivo.pt/textextracted"
+    params = {'m': original_url+'/'+crawl_date}
+    try:
+        response = requests.request("GET", base_url, params=params)
+        if response.status_code == '200':
+            return response.text
+    except Exception as e:
+        raise e
 
 
 def extract(args):
@@ -192,7 +130,11 @@ def extract(args):
                 # https://arquivo.pt/textextracted?m=<original_url>/<crawl_date>
 
                 # entity linking
-                entity = entity_linking(persons[0])
+                entity1_candidates = entity_linking(persons[0], all_results=True)
+                print(persons[0], len(entity1_candidates))
+                entity2_candidates = entity_linking(persons[1], all_results=True)
+                print(persons[1], len(entity1_candidates))
+
                 ent_1 = entity["wiki_id"] if entity["wiki_id"] else None
                 entity = entity_linking(persons[1])
                 ent_2 = entity["wiki_id"] if entity["wiki_id"] else None
