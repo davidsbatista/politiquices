@@ -2,7 +2,7 @@ from functools import lru_cache
 
 from elasticsearch import Elasticsearch
 
-print("Setting up connection with Elasticsearch")
+print("Setting up connection with ElasticSearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
 
@@ -34,8 +34,14 @@ def entity_linking(entity, all_results=False):
         return escape_chars.get(char, False)
 
     mappings = {
+        "António Costa": "António Luís Santos da Costa",
+        "Costa": "António Luís Santos da Costa",
+
         "Carrilho": "Manuel Maria Carrilho",
-        "Costa": "António Costa",
+
+        "Cavaco Silva": 'Aníbal Cavaco Silva',
+        "Cavaco": 'Aníbal Cavaco Silva',
+
         "Durão": "Durão Barroso",
         "Ferreira de o Amaral": "Joaquim Ferreira do Amaral",
         "Jerónimo": "Jerónimo de Sousa",

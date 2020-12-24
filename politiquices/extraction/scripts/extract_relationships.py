@@ -4,10 +4,10 @@ import argparse
 import joblib
 import pickle
 
-import requests
 from jsonlines import jsonlines
 from keras.models import load_model
 
+from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import entity_linking
 from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
 from politiquices.extraction.classifiers.news_titles.models.lstm_with_atten import Attention
 from politiquices.extraction.classifiers.news_titles.relationship_direction_clf import \
@@ -32,7 +32,6 @@ def read_lstm_models():
 
 
 def read_att_normal_models():
-
     print("Loading relationship classifier...")
     with open(MODELS + "relationship_clf_2020-12-05_164644.pkl", "rb") as f_in:
         relationship_clf = pickle.load(f_in)
@@ -51,19 +50,6 @@ def parse_args():
     parser.add_argument("--chave", help="input is from Linguateca CHAVE collection")
     args = parser.parse_args()
     return args
-
-
-def get_text(url):
-    original_url = '/'.join(url.split("/")[5:])
-    crawl_date = url.split("/")[4]
-    base_url = "https://arquivo.pt/textextracted"
-    params = {'m': original_url+'/'+crawl_date}
-    try:
-        response = requests.request("GET", base_url, params=params)
-        if response.status_code == '200':
-            return response.text
-    except Exception as e:
-        raise e
 
 
 def extract(args):

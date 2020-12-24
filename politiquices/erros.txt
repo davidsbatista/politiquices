@@ -24,5 +24,12 @@ https://arquivo.pt/wayback/40615004258/https://www.jn.pt/economia/interior/passo
 
 uploads de fotos
 ----------------
-
 https://commons.wikimedia.org/w/index.php?title=Special:ListFiles/Dsbatista&ilshowall=1
+
+
+
+hard cases with entity linking
+------------------------------
+
+https://arquivo.pt/wayback/20180215063933/http://expresso.sapo.pt/politica/2018-02-11-Bravo-Adolfo-as-reacoes-dos-politicos-a-entrevista-de-Mesquita-Nunes
+"Bravo, Adolfo!": as reações dos políticos à entrevista de Mesquita Nunes

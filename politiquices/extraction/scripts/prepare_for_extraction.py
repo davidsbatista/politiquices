@@ -4,7 +4,7 @@ import re
 import jsonlines
 import mmh3
 
-from politiquices.extraction.utils import clean_title_re, clean_title_quotes
+from politiquices.extraction.utils.utils import clean_title_re, clean_title_quotes
 
 arquivo_data = "../../../data/crawled"
 
