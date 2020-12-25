@@ -1,17 +1,18 @@
 import json
 import argparse
+import jsonlines
 from collections import defaultdict
 
-import jsonlines
+from nltk.tokenize import sent_tokenize, word_tokenize
 
-from nltk.tokenize import sent_tokenize
-from nltk.tokenize import word_tokenize
-
-from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import entity_linking
+from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import query_kb
 from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
 from politiquices.extraction.utils.utils import clean_title_quotes, clean_title_re
-from politiquices.extraction.scripts.utils import get_text
+from politiquices.extraction.scripts.utils import get_text, get_text_newspaper
 from politiquices.extraction.scripts.prepare_for_extraction import title_keywords_ignore
+
+# set up the NER system
+rule_ner = RuleBasedNer()
 
 
 def parse_args():
@@ -23,7 +24,7 @@ def parse_args():
     return args
 
 
-def expand_entities(entity, text):
+def expand_entities_v1(entity, text):
     expanded = defaultdict(int)
     entity_tokens = word_tokenize(entity)
     for sentence in sent_tokenize(text, language='portuguese'):
@@ -40,7 +41,6 @@ def expand_entities(entity, text):
                 tks_bef = sentence_tokens[start_idx:start]
                 bef = [tk for tk in tks_bef if tk.istitle() and tk]
                 end_idx = len(sentence_tokens) if end >= len(sentence_tokens) - 2 else end + 2
-                print(end, end_idx)
                 tks_aft = sentence_tokens[end:end_idx]
                 aft = [tk for tk in tks_aft if tk.istitle()]
                 if bef or aft:
@@ -49,11 +49,53 @@ def expand_entities(entity, text):
     return expanded
 
 
+def expand_entities_v2(entity, text):
+    all_entities, persons = rule_ner.tag(text)
+    expanded = [p for p in persons if entity in p and entity != p]
+    return expanded
+
+
+def entity_linking(entity, url):
+    candidates = query_kb(entity, all_results=True)
+
+    if len(candidates) == 1:
+        # print("case 1 -> ", candidates[0])
+        return candidates[0]
+
+    if len(candidates) > 1:
+        full_match_label = []
+
+        for e in candidates:
+            if e['label'] == entity:
+                full_match_label.append(e)
+
+        if len(full_match_label) == 1:
+            # print("case 2 -> ", full_match_label[0])
+            return full_match_label[0]
+
+        else:
+            text = get_text_newspaper(url)
+            print(url)
+            expanded_entity = expand_entities_v2(entity, text)
+            if len(expanded_entity) > 1:
+                print("case 3 -> ", expanded_entity)
+            else:
+                candidates = query_kb(entity, all_results=True)
+                print("new candidates:")
+                for e in candidates:
+                    print(e)
+                if len(candidates) == 1:
+                    # print("case 1 -> ", candidates[0])
+                    return candidates[0]
+
+
+
+    else:
+        return None
+
+
 def main():
     args = parse_args()
-
-    # set up the NER system
-    rule_ner = RuleBasedNer()
 
     # load named-entities that should be ignored
     with open('ner_ignore.txt', 'rt') as f_in:
@@ -103,26 +145,7 @@ def main():
             if len(persons) == 2:
 
                 # entity linking
-                entity1_candidates = entity_linking(persons[0], all_results=True)
-                entity2_candidates = entity_linking(persons[1], all_results=True)
-
-                if len(entity1_candidates) > 1:
-                    print(url)
-                    print(cleaned_title)
-                    print(persons)
-                    print(persons[0], len(entity1_candidates))
-                    full_match_label = []
-                    for e in entity1_candidates:
-                        if e['label'] == persons[0]:
-                            full_match_label.append(e)
-                    if len(full_match_label) == 1:
-                        print(full_match_label[0])
-                    else:
-                        text = get_text(url)
-                        expanded_entity = expand_entities(persons[0], text)
-                        print()
-                        print(expanded_entity)
-                    print("\n\n------------------")
+                entity1_wiki = entity_linking(persons[0], url)
 
                 # NER
                 # title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")

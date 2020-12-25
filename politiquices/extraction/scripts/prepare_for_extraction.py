@@ -20,6 +20,8 @@ url_keywords_ignore = [
     "vida",
     "humor",
     "blogues/Opinio",
+    "dn.sapo.pt/galerias/videos/",
+    "dn.sapo.pt/cartaz/",
     "tv",
     "triatlo",
     "sporting",

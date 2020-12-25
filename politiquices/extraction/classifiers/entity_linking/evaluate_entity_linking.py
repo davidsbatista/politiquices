@@ -1,5 +1,5 @@
 import sys
-from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import entity_linking
+from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import query_kb
 from politiquices.extraction.utils.utils import read_ground_truth, write_iterator_to_file
 
 ent_string = []
@@ -16,7 +16,7 @@ def main():
             entity_id = x["ent1_id"]
             ent_string.append(entity_str)
             ent_true.append(entity_id)
-            res = entity_linking(entity_str, all_results=True)
+            res = query_kb(entity_str, all_results=True)
             if len(res) == 1:
                 ent_pred.append(res[0]['wiki'])
                 ent_string_pred.append(res[0]['label'])
@@ -34,7 +34,7 @@ def main():
             entity_id = x["ent2_id"]
             ent_string.append(entity_str)
             ent_true.append(entity_id)
-            res = entity_linking(entity_str, all_results=True)
+            res = query_kb(entity_str, all_results=True)
             if len(res) == 1:
                 ent_pred.append(res[0]['wiki'])
                 ent_string_pred.append(res[0]['label'])

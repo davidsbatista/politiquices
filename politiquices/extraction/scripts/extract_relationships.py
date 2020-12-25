@@ -7,7 +7,7 @@ import pickle
 from jsonlines import jsonlines
 from keras.models import load_model
 
-from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import entity_linking
+from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import query_kb
 from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
 from politiquices.extraction.classifiers.news_titles.models.lstm_with_atten import Attention
 from politiquices.extraction.classifiers.news_titles.relationship_direction_clf import \
@@ -116,15 +116,15 @@ def extract(args):
                 # https://arquivo.pt/textextracted?m=<original_url>/<crawl_date>
 
                 # entity linking
-                entity1_candidates = entity_linking(persons[0], all_results=True)
+                entity1_candidates = query_kb(persons[0], all_results=True)
                 print(persons[0], len(entity1_candidates))
-                entity2_candidates = entity_linking(persons[1], all_results=True)
+                entity2_candidates = query_kb(persons[1], all_results=True)
                 print(persons[1], len(entity1_candidates))
 
                 ent_1 = entity["wiki_id"] if entity["wiki_id"] else None
-                entity = entity_linking(persons[1])
+                entity = query_kb(persons[1])
                 ent_2 = entity["wiki_id"] if entity["wiki_id"] else None
-                print(entity_linking.cache_info())
+                print(query_kb.cache_info())
 
                 # relationship classification
                 predicted_probs = relationship_clf.tag([title_PER])

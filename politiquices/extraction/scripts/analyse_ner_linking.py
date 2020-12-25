@@ -3,7 +3,7 @@ import sys
 import jsonlines
 from collections import defaultdict
 
-from politiquices.extraction.scripts.extract_relationships import entity_linking
+from politiquices.extraction.scripts.extract_relationships import query_kb
 
 
 def count_non_linked(entries):
@@ -28,7 +28,7 @@ def see_highly_ambiguous(entries):
                 continue
             entity = e['ner']
             if len(entity.split()) == 2:
-                results = entity_linking(entity, all_results=True)
+                results = query_kb(entity, all_results=True)
                 matches[entity]['wiki'] = e['wiki']['wiki']
                 matches[entity]['label'] = e['wiki']['label']
                 matches[entity]['freq'] = len(results)

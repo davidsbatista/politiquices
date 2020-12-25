@@ -1,9 +1,10 @@
 import json
 import requests
+from newspaper import Article
 
 
-def get_text_from_file(url):
-    with open('extracted_texts.jsonl', 'rt') as f_in:
+def get_text_from_file(url, f_name='extracted_texts.jsonl'):
+    with open(f_name, 'rt') as f_in:
         for line in f_in:
             entry = json.loads(line)
             if entry['url'] == url:
@@ -32,11 +33,16 @@ def get_text(url):
 
 
 def get_text_newspaper(url):
-    pass
-    """
-    url = "https://arquivo.pt/noFrame/replay/20190215190414/https://jornaleconomico.sapo.pt/noticias/inqueritoenergia-vieira-da-silva-delegou-em-zorrinho-mas-subscreve-decisoes-401616"
-    article = Article(url)
+    if text := get_text_from_file(url, f_name='extracted_texts_newspaper.jsonl'):
+        print("cache hit!")
+        return text
+    url_no_frame = url.replace('/wayback/', '/noFrame/replay/')
+    article = Article(url_no_frame)
+    print("downloading: ", url_no_frame)
     article.download()
     article.parse()
-    article.text
-    """
+    entry = {'url': url, 'text': article.text}
+    with open('extracted_texts_newspaper.jsonl', 'a') as f_out:
+        f_out.write(json.dumps(entry) + '\n')
+
+    return article.text

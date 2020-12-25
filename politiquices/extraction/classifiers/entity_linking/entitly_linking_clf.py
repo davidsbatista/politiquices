@@ -7,7 +7,7 @@ es = Elasticsearch([{"host": "localhost", "port": 9200}])
 
 
 @lru_cache(maxsize=2000)
-def entity_linking(entity, all_results=False):
+def query_kb(entity, all_results=False):
 
     def needs_escaping(char):
         escape_chars = {
