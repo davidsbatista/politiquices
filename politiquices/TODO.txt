@@ -57,7 +57,12 @@ classifiers
 
     entity_linking:
     ---------------
-        - adicionar um campo com os nomes em ANSI (sem acentos)
+        - remove stuff from ner_ignore
+        - matche com acentos/sema centos
+            - adicionar um campo com os nomes em ANSI (sem acentos)
+        - case 3:
+            - case 3 ->  ['Durão Barroso', 'José Manuel Durão Barroso']
+
 
         - fazer uma avaliação com o novo dataset (e o velho)
 

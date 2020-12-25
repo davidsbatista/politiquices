@@ -34,7 +34,6 @@ def get_text(url):
 
 def get_text_newspaper(url):
     if text := get_text_from_file(url, f_name='extracted_texts_newspaper.jsonl'):
-        print("cache hit!")
         return text
     url_no_frame = url.replace('/wayback/', '/noFrame/replay/')
     article = Article(url_no_frame)

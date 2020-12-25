@@ -55,40 +55,64 @@ def expand_entities_v2(entity, text):
     return expanded
 
 
+def filter_perfect_matches(entity, candidates):
+    # filter only for those whose label or aliases are a perfect match
+    matches = []
+    for c in candidates:
+        if entity == c['label']:
+            matches.append(c)
+        else:
+            if 'aliases' in c and c['aliases'] is not None:
+                for alias in c['aliases']:
+                    if entity == alias:
+                        matches.append(c)
+
+    return matches
+
+
 def entity_linking(entity, url):
+
     candidates = query_kb(entity, all_results=True)
 
     if len(candidates) == 1:
-        # print("case 1 -> ", candidates[0])
         return candidates[0]
 
     if len(candidates) > 1:
-        full_match_label = []
-
-        for e in candidates:
-            if e['label'] == entity:
-                full_match_label.append(e)
-
+        full_match_label = filter_perfect_matches(entity.strip(), candidates)
         if len(full_match_label) == 1:
-            # print("case 2 -> ", full_match_label[0])
             return full_match_label[0]
 
         else:
             text = get_text_newspaper(url)
-            print(url)
             expanded_entity = expand_entities_v2(entity, text)
-            if len(expanded_entity) > 1:
-                print("case 3 -> ", expanded_entity)
-            else:
-                candidates = query_kb(entity, all_results=True)
-                print("new candidates:")
+            if len(expanded_entity) == 0:
+                print(url)
+                print(entity)
+                print("case 1 -> ", expanded_entity)
                 for e in candidates:
                     print(e)
-                if len(candidates) == 1:
-                    # print("case 1 -> ", candidates[0])
-                    return candidates[0]
 
+            if len(expanded_entity) == 1:
+                full_match_label = filter_perfect_matches(expanded_entity[0], candidates)
+                if len(full_match_label) == 1:
+                    return full_match_label[0]
+                else:
+                    # ToDo: make new query
+                    print(url)
+                    print(entity)
+                    print("case 2 -> ", expanded_entity)
+                    for e in candidates:
+                        print(e)
 
+            if len(expanded_entity) > 1:
+                # ToDo: try to merge/disambiguate further
+                print(url)
+                print(entity)
+                print("case 3 -> ", expanded_entity)
+                for e in candidates:
+                    print(e)
+
+            print("\n------")
 
     else:
         return None

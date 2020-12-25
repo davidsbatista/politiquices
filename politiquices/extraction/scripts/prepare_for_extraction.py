@@ -25,7 +25,6 @@ url_keywords_ignore = [
     "tv",
     "triatlo",
     "sporting",
-    # "medalhas"
 ]
 url_other_topic = ".*(" + "|".join(url_keywords_ignore) + ").*"
 
