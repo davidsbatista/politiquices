@@ -321,6 +321,81 @@
       </tbody>
     </table>
 
+    <br><br>
+
+    <h3>Other</h3>
+    <table id="ent1_other_ent2">
+      <tbody>
+      {% for item in items.other %}
+        <tr>
+          <td id="data">{{item.date}}</td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank"><img src="{{item.link_image}}" width="{{item.image_width}}" height="20"></a>
+          </td>
+          <td id="score">{{item.score}}</td>
+          <td id="rel_type">
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle"
+                          type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">other</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item">other</a>
+                      <a class="dropdown-item">ent1_opposes_ent2</a>
+                      <a class="dropdown-item">ent2_opposes_ent1</a>
+                      <a class="dropdown-item">ent1_supports_ent2</a>
+                      <a class="dropdown-item">ent2_supports_ent1</a>
+                  </div>
+              </div>
+          </td>
+          <td>
+            <a class="submit btn btn-primary" role="button">Submit</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <h3>Other By</h3>
+    <table id="ent2_other_ent1">
+      <tbody>
+      {% for item in items.other_by %}
+        <tr>
+          <td id="data">{{item.date}}</td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank"><img src="{{item.link_image}}" width="{{item.image_width}}" height="20"></a>
+          </td>
+          <td id="score">{{item.score}}</td>
+          <td id="rel_type">
+              <div class="dropdown">
+                  <button class="btn btn-secondary dropdown-toggle"
+                          type="button" id="dropdownMenuButton"
+                          data-toggle="dropdown"
+                          aria-haspopup="true"
+                          aria-expanded="false">other</button>
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <a class="dropdown-item">other</a>
+                      <a class="dropdown-item">ent1_opposes_ent2</a>
+                      <a class="dropdown-item">ent2_opposes_ent1</a>
+                      <a class="dropdown-item">ent1_supports_ent2</a>
+                      <a class="dropdown-item">ent2_supports_ent1</a>
+                  </div>
+              </div>
+          </td>
+          <td>
+            <a class="submit btn btn-primary" role="button">Submit</a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+
 </div>
 
 <br><br>

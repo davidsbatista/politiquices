@@ -151,6 +151,12 @@ def detail_entity():
     for r in relationships_articles["supported_by"]:
         make_title_linkable(r, wiki_id)
 
+    for r in relationships_articles["other"]:
+        make_title_linkable(r, wiki_id)
+
+    for r in relationships_articles["other_by"]:
+        make_title_linkable(r, wiki_id)
+
     (
         year_month_labels,
         opposed_freq,
@@ -170,6 +176,8 @@ def detail_entity():
         "supported": relationships_articles["supports"],
         "opposed_by": relationships_articles["opposed_by"],
         "supported_by": relationships_articles["supported_by"],
+        "other": relationships_articles["other"],
+        "other_by": relationships_articles["other_by"],
         "year_month_labels": year_month_labels,
         "opposed_freq": opposed_freq,
         "supported_freq": supported_freq,

@@ -1,6 +1,6 @@
 import json
 import requests
-from newspaper import Article
+from newspaper import Article, ArticleException
 
 
 def get_text_from_file(url, f_name='extracted_texts.jsonl'):
@@ -37,11 +37,15 @@ def get_text_newspaper(url):
         return text
     url_no_frame = url.replace('/wayback/', '/noFrame/replay/')
     article = Article(url_no_frame)
-    print("downloading: ", url_no_frame)
-    article.download()
-    article.parse()
-    entry = {'url': url, 'text': article.text}
-    with open('extracted_texts_newspaper.jsonl', 'a') as f_out:
-        f_out.write(json.dumps(entry) + '\n')
-
+    try:
+        print("downloading: ", url_no_frame)
+        article.download()
+        article.parse()
+        entry = {'url': url, 'text': article.text}
+        with open('extracted_texts_newspaper.jsonl', 'a') as f_out:
+            f_out.write(json.dumps(entry) + '\n')
+    except ArticleException as e:
+        print(e)
+        with open('download_error.txt', 'a+') as f_out:
+            f_out.write(url+'\t'+url_no_frame+'\n')
     return article.text

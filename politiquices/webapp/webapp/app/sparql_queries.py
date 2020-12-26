@@ -186,7 +186,6 @@ def get_person_info(wiki_id):
     )
 
 
-@lru_cache
 def get_person_relationships(wiki_id):
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
@@ -271,12 +270,36 @@ def get_person_relationships(wiki_id):
                 other_ent_name = e["ent2_str"]["value"].split("/")[-1]
                 focus_ent = e["ent1_str"]["value"].split("/")[-1]
 
-        elif e["rel_type"]["value"] == "other":
-            continue
-            # ToDo: mostrar, podem depois ser corrigidas/anotadas
+        elif e["rel_type"]["value"] == "ent1_other_ent2":
+
+            if wiki_id == ent1_wiki:
+                rel_type = "other"
+                other_ent_url = ent2_wiki
+                other_ent_name = e["ent2_str"]["value"].split("/")[-1]
+                focus_ent = e["ent1_str"]["value"].split("/")[-1]
+
+            elif wiki_id == ent2_wiki:
+                rel_type = "other_by"
+                other_ent_url = ent1_wiki
+                other_ent_name = e["ent1_str"]["value"].split("/")[-1]
+                focus_ent = e["ent2_str"]["value"].split("/")[-1]
+
+        elif e["rel_type"]["value"] == "ent2_other_ent1":
+
+            if wiki_id == ent2_wiki:
+                rel_type = "other"
+                other_ent_url = ent1_wiki
+                other_ent_name = e["ent1_str"]["value"].split("/")[-1]
+                focus_ent = e["ent2_str"]["value"].split("/")[-1]
+
+            elif wiki_id == ent1_wiki:
+                rel_type = "other_by"
+                other_ent_url = ent2_wiki
+                other_ent_name = e["ent2_str"]["value"].split("/")[-1]
+                focus_ent = e["ent1_str"]["value"].split("/")[-1]
 
         else:
-            raise Exception(e["rel_type"]["value"] + "not known")
+            raise Exception(e["rel_type"]["value"] + " not known")
 
         relations[rel_type].append(
             {
@@ -441,7 +464,6 @@ def all_entities():
     return prefixes + "\n" + query
 
 
-@lru_cache
 def get_top_relationships(wiki_id: str):
 
     persons_ent1 = defaultdict(list)
@@ -710,6 +732,7 @@ def query_sparql(query, endpoint):
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
 
+    """
     print("------------------------------------------------")
     print("get_total_nr_of_articles")
     print(get_total_nr_of_articles.cache_info())
@@ -754,5 +777,6 @@ def query_sparql(query, endpoint):
     print(get_relationships_between_two_entities.cache_info())
     print()
     print("------------------------------------------------")
+    """
 
     return results

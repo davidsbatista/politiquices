@@ -8,6 +8,12 @@ https://www.wikidata.org/wiki/Q3186200,Joe Berardo
 https://www.wikidata.org/wiki/Q456034,Isabel dos Santos
 https://www.wikidata.org/wiki/Q23778050,João Miguel Tavares
 https://www.wikidata.org/wiki/Q91901804,José Júlio Pereira Gomes
+https://www.wikidata.org/wiki/Q10272593,Emídio Rangel
+https://www.wikidata.org/wiki/Q1567582,Miguel Sousa Tavares
+https://www.wikidata.org/wiki/Q60780752,Mário Machado
+https://www.wikidata.org/wiki/Q13581707,Bárbara Guimarães
+https://www.wikidata.org/wiki/Q5041962,Carlos Cruz
+https://www.wikidata.org/wiki/Q312831,Eduardo Souto de Moura (arquitecto)
 https://www.wikidata.org/wiki/Q3052772,Macron
 https://www.wikidata.org/wiki/Q76,Obama
 https://www.wikidata.org/wiki/Q7747,Putin
@@ -22,8 +28,7 @@ https://www.wikidata.org/wiki/Q463533,Michel Temer
 https://www.wikidata.org/wiki/Q294460,Mario Draghi
 https://www.wikidata.org/wiki/Q11665,Ramos Horta
 https://www.wikidata.org/wiki/Q1253,Ban Ki Moon
-https://www.wikidata.org/wiki/Q10272593,Emídio Rangel
-https://www.wikidata.org/wiki/Q1567582,Miguel Sousa Tavares
+https://www.wikidata.org/wiki/Q264766, Theresa May
 # political parties
 http://www.wikidata.org/entity/Q595575
 http://www.wikidata.org/entity/Q847263

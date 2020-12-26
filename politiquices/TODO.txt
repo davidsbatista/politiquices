@@ -41,7 +41,6 @@ classifiers
         - https://www.tensorflow.org/tutorials/structured_data/imbalanced_data
         - https://github.com/vandit15/Class-balanced-loss-pytorch
 
-
         - embeddings
             - Uppercase and lower case, improvement?
             - better/cleaner higher dimensions? train on own corpus
@@ -51,39 +50,45 @@ classifiers
 
         - explorar os padroes encontrados
 
+
     extraction:
     ------------
         - apply as well to publico CHAVE collection
 
-    entity_linking:
-    ---------------
+    named entity recognition
+    ------------------------
+    'Cavaco Silva nomeou cunhada para assessorar antiga primeira-dama Maria Cavaco Silva'
+    -> 'Cavaco Silva'
+    -> 'Maria Cavaco Silva'
+
+    entity_linking
+    --------------
+        case 2: ?
+        case 3:
+           - ['Joe Berardo', 'senhor Berardo', 'José Berardo'],
+           - ['Joe Berardo', 'Sr. Berardo', 'sr. Berardo', 'Parabéns sr. Berardo'],
+           - ['Joe Berardo', 'José Berardo']
+
         - remove stuff from ner_ignore
+
         - matche com acentos/sema centos
             - adicionar um campo com os nomes em ANSI (sem acentos)
-        - case 3:
-            - case 3 ->  ['Durão Barroso', 'José Manuel Durão Barroso']
-
 
         - fazer uma avaliação com o novo dataset (e o velho)
 
         - Linking Errors:
+            - https://www.wikidata.org/wiki/Q10334488 "Mário Machado" (PNR)
             - http://0.0.0.0:5000/entity?q=Q295049    as 'Pinto da Costa' (futebol)
-            - http://0.0.0.0:5000/entity?q=Q4237195   as 'José Manuel Coelho'
-            - http://politiquices.pt:5000/entity?q=Q9620197
-            - http://politiquices.pt:5000/entity?q=Q4684253
+            - "Bárbara" -> http://0.0.0.0:5000/entity?q=Q3321239 ??
+            - http://0.0.0.0:5000/entity?q=Q10308688 "Souto Moura" (arquitecto e juíz)
 
         - Várias hipóteses:
-            - "Moreira" -> "Vital Moreira", "Rui Moreira"
             - "Mário Montalvão Machado" -> "Machado", "Júlio Machado", "Mário Machado"
-            - "Jardim" -> Jardim Gonçalves, Alberto João Jardim
-            - "Coelho" -> Jorge Coelho, José Dias Coelho
-            - "Carrilho" ->  Maria Carrilho, Manuel Maria Carrilho
 
         - Software
             - https://github.com/TheScienceMuseum/elastic-wikidata
             - https://spacy.io/usage/training#entity-linker
             - https://spacy.io/api/kb
-
 
 Web App
 =======
@@ -93,9 +98,6 @@ Web App
     - mostrar mais relações:
         - apoia/defende c/ as duas direções
         - acusa/opoem-se c/ as duas direções
-
-    uma ultima secção com "outras":
-        - outras
 
     - Tens personalidade A vs personalidade B e Tens personalidade  A vs Personalidades de partido B.
       Podes acrscentar Personalidades de partido A vs Personalidades de partido B

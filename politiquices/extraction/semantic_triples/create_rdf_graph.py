@@ -20,13 +20,13 @@ def remove_duplicates(f_name):
     # read the articles a sorted them by original domain and title
     articles = []
     for entry in processed_titles(f_name):
-        original_url = "/".join(entry["linkToArchive"].split("/")[5:])
+        original_url = "/".join(entry["url"].split("/")[5:])
         articles.append(
             (
                 original_url,
                 entry["title"],
-                entry["tstamp"],
-                entry["linkToArchive"],
+                entry["date"],
+                entry["url"],
                 entry["entities"],
                 entry["ent_1"],
                 entry["ent_2"],
@@ -47,8 +47,8 @@ def remove_duplicates(f_name):
 
         result = {
             'title': earliest[1],
-            'tstamp': earliest[2],
-            'linkToArchive': earliest[3],
+            'date': earliest[2],
+            'url': earliest[3],
             'entities': earliest[4],
             'ent_1': earliest[5],
             'ent_2': earliest[6],
@@ -65,13 +65,13 @@ def remove_duplicates(f_name):
 def remove_duplicates_same_domain(unique):
     articles = []
     for entry in unique:
-        original_url = "/".join(entry["linkToArchive"].split("/")[5:])
+        original_url = "/".join(entry["url"].split("/")[5:])
         articles.append(
             (
                 original_url,
                 entry["title"],
-                entry["tstamp"],
-                entry["linkToArchive"],
+                entry["date"],
+                entry["url"],
                 entry["entities"],
                 entry["ent_1"],
                 entry["ent_2"],
@@ -89,8 +89,8 @@ def remove_duplicates_same_domain(unique):
         earliest = sorted(arts, key=operator.itemgetter(2))[0]
         result = {
             'title': earliest[1],
-            'tstamp': earliest[2],
-            'linkToArchive': earliest[3],
+            'date': earliest[2],
+            'url': earliest[3],
             'entities': earliest[4],
             'ent_1': earliest[5],
             'ent_2': earliest[6],
@@ -179,7 +179,7 @@ def process_classified_titles(titles):
         person_1 = title["entities"][0]
         person_2 = title["entities"][1]
         news_title = title["title"].strip()
-        url = title["linkToArchive"]
+        url = title["url"]
 
         if url == 'None' or url == '\\N':
             continue
@@ -206,7 +206,7 @@ def process_classified_titles(titles):
             url = 'http://publico.pt/'+news_id
 
         try:
-            crawled_date = extract_date(title["tstamp"], url, publico_url=publico_url)
+            crawled_date = extract_date(title["date"], url, publico_url=publico_url)
         except ValueError as e:
             print(url, '\t', e)
             continue
@@ -347,6 +347,13 @@ def parse_args():
 
 def main():
     args = parse_args()
+
+    print(args)
+
+    if not args.publico and not args.arquivo:
+        # ToDo: print help
+        exit(-1)
+
     arquivo_articles = []
     publico_articles = []
 

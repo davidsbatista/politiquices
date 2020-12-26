@@ -1,17 +1,15 @@
 import json
 import argparse
-import jsonlines
-from collections import defaultdict
 
-from nltk.tokenize import sent_tokenize, word_tokenize
+import jsonlines
 
 from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import query_kb
 from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
 from politiquices.extraction.utils.utils import clean_title_quotes, clean_title_re
-from politiquices.extraction.scripts.utils import get_text, get_text_newspaper
-from politiquices.extraction.scripts.prepare_for_extraction import title_keywords_ignore
+from politiquices.extraction.scripts.utils import get_text_newspaper
 
-# set up the NER system
+
+# set up the custom NER system
 rule_ner = RuleBasedNer()
 
 
@@ -24,31 +22,6 @@ def parse_args():
     return args
 
 
-def expand_entities_v1(entity, text):
-    expanded = defaultdict(int)
-    entity_tokens = word_tokenize(entity)
-    for sentence in sent_tokenize(text, language='portuguese'):
-        if entity in sentence:
-            sentence_tokens = word_tokenize(sentence)
-            print(sentence, len(sentence_tokens))
-            matched_idx = [(i, i + len(entity_tokens))
-                           for i in range(len(sentence_tokens))
-                           if sentence_tokens[i:i + len(entity_tokens)] == entity_tokens]
-            for matched_pair in matched_idx:
-                start = matched_pair[0]
-                end = matched_pair[1]
-                start_idx = 0 if start <= 2 else start-2
-                tks_bef = sentence_tokens[start_idx:start]
-                bef = [tk for tk in tks_bef if tk.istitle() and tk]
-                end_idx = len(sentence_tokens) if end >= len(sentence_tokens) - 2 else end + 2
-                tks_aft = sentence_tokens[end:end_idx]
-                aft = [tk for tk in tks_aft if tk.istitle()]
-                if bef or aft:
-                    expanded[' '.join(bef + entity_tokens + aft)] += 1
-
-    return expanded
-
-
 def expand_entities_v2(entity, text):
     all_entities, persons = rule_ner.tag(text)
     expanded = [p for p in persons if entity in p and entity != p]
@@ -57,15 +30,21 @@ def expand_entities_v2(entity, text):
 
 def filter_perfect_matches(entity, candidates):
     # filter only for those whose label or aliases are a perfect match
+
+    # ToDo: clean entity
+    clean = ['dr.', 'sr.']
+
     matches = []
     for c in candidates:
         if entity == c['label']:
-            matches.append(c)
+            return [c]
         else:
             if 'aliases' in c and c['aliases'] is not None:
                 for alias in c['aliases']:
-                    if entity == alias:
-                        matches.append(c)
+                    print(entity.lower(), alias.lower())
+                    print(entity.lower() == alias.lower())
+                    if entity.lower() == alias.lower():
+                        return [c]
 
     return matches
 
@@ -73,6 +52,7 @@ def filter_perfect_matches(entity, candidates):
 def entity_linking(entity, url):
 
     candidates = query_kb(entity, all_results=True)
+    no_wiki = jsonlines.open('no_wiki_id.jsonl', 'a')
 
     if len(candidates) == 1:
         return candidates[0]
@@ -86,35 +66,50 @@ def entity_linking(entity, url):
             text = get_text_newspaper(url)
             expanded_entity = expand_entities_v2(entity, text)
             if len(expanded_entity) == 0:
-                print(url)
-                print(entity)
-                print("case 1 -> ", expanded_entity)
-                for e in candidates:
-                    print(e)
+                no_wiki.write({"entity": entity, "expanded": expanded_entity, "url": url})
+                return None
 
             if len(expanded_entity) == 1:
                 full_match_label = filter_perfect_matches(expanded_entity[0], candidates)
                 if len(full_match_label) == 1:
                     return full_match_label[0]
                 else:
-                    # ToDo: make new query
-                    print(url)
+                    candidates = query_kb(expanded_entity[0], all_results=True)
+                    full_match_label = filter_perfect_matches(expanded_entity[0], candidates)
+                    print(full_match_label)
+                    if len(full_match_label) == 1:
+                        return full_match_label[0]
+                    print('\n'+url)
                     print(entity)
                     print("case 2 -> ", expanded_entity)
                     for e in candidates:
                         print(e)
+                    no_wiki.write({"entity": entity, "expanded": expanded_entity, "url": url})
+                    return None
 
             if len(expanded_entity) > 1:
                 # ToDo: try to merge/disambiguate further
-                print(url)
+                if len(expanded_entity) == 2:
+                    new_entity = None
+                    if expanded_entity[0] in expanded_entity[1]:
+                        new_entity = expanded_entity[1]
+                    if expanded_entity[1] in expanded_entity[0]:
+                        new_entity = expanded_entity[0]
+                    if new_entity:
+                        full_match_label = filter_perfect_matches(new_entity, candidates)
+                        if len(full_match_label) == 1:
+                            return full_match_label[0]
+
+                print('\n'+url)
                 print(entity)
-                print("case 3 -> ", expanded_entity)
+                print("case 3 -> ", expanded_entity, len(expanded_entity))
                 for e in candidates:
                     print(e)
-
-            print("\n------")
+                no_wiki.write({"entity": entity, "expanded": expanded_entity, "url": url})
+                return None
 
     else:
+        no_wiki.write({"entity": entity, "expanded": 'no_candidates', "url": url})
         return None
 
 
@@ -131,8 +126,11 @@ def main():
         f_name = args.arquivo
     elif args.chave:
         f_name = args.chave
+    else:
+        print(args)
+        exit(-1)
 
-    ner_linked = jsonlines.open("ner_linked.jsonl", mode="w")
+    # open files for logging and later diagnostic
     ner_ignored = jsonlines.open("ner_ignored.jsonl", mode="w")
 
     count = 0
@@ -156,23 +154,19 @@ def main():
                 print(count)
 
             cleaned_title = clean_title_quotes(clean_title_re(title))
+
+            # named-entity recognition
             all_entities, persons = rule_ner.tag(cleaned_title)
 
-            if any(x in cleaned_title for x in title_keywords_ignore):
-                continue
-
-            # ToDo: before entity linking try to expand the named-entity
+            # ignore certain 'person' entities
             if any(person in persons for person in ner_ignore):
                 ner_ignored.write({"title": cleaned_title, "entities": persons})
                 continue
 
             if len(persons) == 2:
-
                 # entity linking
                 entity1_wiki = entity_linking(persons[0], url)
-
-                # NER
-                # title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")
+                entity2_wiki = entity_linking(persons[1], url)
 
 
 if __name__ == "__main__":

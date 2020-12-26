@@ -65,9 +65,13 @@ def build_relationships_freq(wiki_id: str):
     opposed_by_freq_sum = Counter(opposed_by_freq_one) + Counter(opposed_by_freq_two)
     opposed_by_freq = {k: opposed_by_freq_sum[k] for k in sorted(opposed_by_freq_sum)}
 
-    min_date, max_date = find_maximum_interval(
-        opposed_freq, supported_freq, opposed_by_freq, supported_by_freq
-    )
+    if len(opposed_freq) == len(supported_freq) == len(opposed_by_freq) == len(supported_by_freq) == 0:
+        max_date = '2019-01'
+        min_date = '2001-01'
+    else:
+        min_date, max_date = find_maximum_interval(
+            opposed_freq, supported_freq, opposed_by_freq, supported_by_freq
+        )
 
     min_date_obj = datetime.strptime(min_date, "%Y-%m")
     max_date_obj = datetime.strptime(max_date, "%Y-%m")

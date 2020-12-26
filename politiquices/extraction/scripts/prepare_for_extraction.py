@@ -19,13 +19,11 @@ url_keywords_ignore = [
     "foto",
     "vida",
     "humor",
-    "blogues/Opinio",
-    "dn.sapo.pt/galerias/videos/",
-    "dn.sapo.pt/cartaz/",
     "tv",
     "triatlo",
     "sporting",
 ]
+
 url_other_topic = ".*(" + "|".join(url_keywords_ignore) + ").*"
 
 title_keywords_ignore = [
@@ -38,6 +36,12 @@ title_keywords_ignore = [
     "FC Porto"
 ]
 
+ignore_url = [
+    "/opiniao/",
+    "blogues/Opinio",
+    "dn.sapo.pt/galerias/videos/",
+    "dn.sapo.pt/cartaz/",
+]
 
 already_seen = set()
 
@@ -66,6 +70,11 @@ def main():
     for entry in crawled_data():
 
         total += 1
+
+        if any(x in entry["linkToArchive"] for x in ignore_url):
+            other_topics += 1
+            other_topics_log.write({'title': entry["title"], 'link': entry["linkToArchive"]})
+            continue
 
         if re.match(url_other_topic, entry["linkToArchive"], flags=re.IGNORECASE):
             other_topics += 1
