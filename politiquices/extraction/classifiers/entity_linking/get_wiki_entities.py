@@ -5,7 +5,7 @@ import sys
 import requests
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-from politiquices.extraction.utils import just_sleep
+from politiquices.extraction.utils.utils import just_sleep
 
 # PERSONS
 

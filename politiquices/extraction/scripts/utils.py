@@ -35,17 +35,25 @@ def get_text(url):
 def get_text_newspaper(url):
     if text := get_text_from_file(url, f_name='extracted_texts_newspaper.jsonl'):
         return text
-    url_no_frame = url.replace('/wayback/', '/noFrame/replay/')
-    article = Article(url_no_frame)
-    try:
-        print("downloading: ", url_no_frame)
-        article.download()
-        article.parse()
-        entry = {'url': url, 'text': article.text}
-        with open('extracted_texts_newspaper.jsonl', 'a') as f_out:
-            f_out.write(json.dumps(entry) + '\n')
-    except ArticleException as e:
-        print(e)
-        with open('download_error.txt', 'a+') as f_out:
-            f_out.write(url+'\t'+url_no_frame+'\n')
-    return article.text
+
+    if url.startswith('https://arquivo.pt'):
+        url_no_frame = url.replace('/wayback/', '/noFrame/replay/')
+        article = Article(url_no_frame)
+        try:
+            print("downloading: ", url_no_frame)
+            article.download()
+            article.parse()
+            entry = {'url': url, 'text': article.text}
+            with open('extracted_texts_newspaper.jsonl', 'a') as f_out:
+                f_out.write(json.dumps(entry) + '\n')
+        except ArticleException as e:
+            print(e)
+            with open('download_error.txt', 'a+') as f_out:
+                f_out.write(url+'\t'+url_no_frame+'\n')
+        return article.text
+
+    if url.startswith():
+        return None
+
+    else:
+        raise ValueError('unknown URL :', url)

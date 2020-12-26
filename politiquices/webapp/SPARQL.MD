@@ -408,3 +408,41 @@
     }
     group by ?cabinet ?cabinetLabel
     ORDER BY DESC (?n)
+    
+    
+### Relaçoes entre PS e PSD
+
+    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX my_prefix: <http://some.namespace/with/name#>
+    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
+    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
+    PREFIX        wd: <http://www.wikidata.org/entity/>
+    PREFIX       wds: <http://www.wikidata.org/entity/statement/>
+    PREFIX       wdv: <http://www.wikidata.org/value/>
+    PREFIX       wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX  wikibase: <http://wikiba.se/ontology#>
+    PREFIX         p: <http://www.wikidata.org/prop/>
+    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX        bd: <http://www.bigdata.com/rdf#>
+    PREFIX my: <http://www.mobile.com/model/>
+    
+    
+    SELECT DISTINCT ?person_party_a ?person_a_label ?person_party_b ?person_b_label ?arquivo_doc {          
+      wd:Q595575 rdfs:label ?party_a_label FILTER(LANG(?party_a_label) = "pt") .      
+      wd:Q847263 rdfs:label ?party_b_label FILTER(LANG(?party_b_label) = "pt") .      
+      ?person_party_a wdt:P102 wd:Q595575;
+                      rdfs:label ?person_a_label FILTER(LANG(?person_a_label) = "pt") .
+      ?person_party_b wdt:P102 wd:Q847263;
+                      rdfs:label ?person_b_label FILTER(LANG(?person_b_label) = "pt") .    
+        
+      SERVICE <http://0.0.0.0:3030/politiquices> {
+        ?rel my_prefix:ent1 ?person_party_a;
+             my_prefix:ent2 ?person_party_b;
+             my_prefix:type ?rel_type;
+             my_prefix:score ?score;
+             my_prefix:arquivo ?arquivo_doc;
+      }
+    }

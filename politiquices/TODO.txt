@@ -9,19 +9,14 @@ arquivo_pt:
     - detect very similar titles / same URL, probably different crawls:
         - keep older date/version
 
-
 classifiers
 ===========
-
     - run script with PYTHONHASHSEED=0
     - create classifier abstraction/interface
 
     relationship:
     -------------
-        - what about: 'other' vs. 'opposes' vs. 'support' ?
         - look at predictions, analyse, annotate and train/test again
-        - Save the new model
-        - maybe ~15 epochs are enough
         - controlar overfitting?
         - Transformer models: https://huggingface.co/transformers/quicktour.html
 
@@ -99,8 +94,7 @@ Web App
         - apoia/defende c/ as duas direções
         - acusa/opoem-se c/ as duas direções
 
-    - Tens personalidade A vs personalidade B e Tens personalidade  A vs Personalidades de partido B.
-      Podes acrscentar Personalidades de partido A vs Personalidades de partido B
+    - Personalidades de partido A vs Personalidades de partido B
 
     - escolher um partido e ver as acusações + suporte internos
 
@@ -145,8 +139,7 @@ Web App
       - total de artigos em que é mencionado
       - total de artigos em que é mencionado por relação
 
-       - um interface qualquer para poder selecionar as relações e o intervalo de datas
-
+      - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
    - mostrar informação para completar:
         listar pessoas com informação incompleta: cargos, etc. e explicar como alimentar

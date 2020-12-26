@@ -45,6 +45,7 @@ def query_kb(entity, all_results=False):
         "Durão": "Durão Barroso",
         "Ferreira de o Amaral": "Joaquim Ferreira do Amaral",
         "Jerónimo": "Jerónimo de Sousa",
+        'José Pedro Aguiar-Branco': 'José Pedro Aguiar Branco',
 
         "Louçã": "Francisco Louçã",
         "Louça": "Francisco Louçã",

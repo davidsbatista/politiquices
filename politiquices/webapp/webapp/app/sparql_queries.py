@@ -376,7 +376,7 @@ def get_persons_affiliated_with_party(political_party: str):
     party_name = None
     party_logo = None
 
-    # add 'PS' logo since it's on on wikidata
+    # add 'PS' logo since it's not on wikidata
     if political_party == "Q847263":
         party_logo = ps_logo
 
