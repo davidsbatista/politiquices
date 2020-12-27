@@ -222,7 +222,6 @@ def gather_wiki_ids(queries, e_type='org', to_add=None, to_remove=None):
         for el in to_remove:
             if el in relevant_ids:
                 relevant_ids.remove(el)
-                print("Removed ", el)
 
     # eliminate duplicates
     unique_relevant_ids = list(set(relevant_ids))

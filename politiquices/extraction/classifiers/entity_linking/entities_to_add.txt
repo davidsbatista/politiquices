@@ -1,3 +1,4 @@
+# personalities
 https://www.wikidata.org/wiki/Q9619875,António Nogueira Leite
 https://www.wikidata.org/wiki/Q10325927,Maria José Morgado
 https://www.wikidata.org/wiki/Q40688,Yanis Varoufakis
@@ -28,7 +29,7 @@ https://www.wikidata.org/wiki/Q463533,Michel Temer
 https://www.wikidata.org/wiki/Q294460,Mario Draghi
 https://www.wikidata.org/wiki/Q11665,Ramos Horta
 https://www.wikidata.org/wiki/Q1253,Ban Ki Moon
-https://www.wikidata.org/wiki/Q264766, Theresa May
+https://www.wikidata.org/wiki/Q264766,Theresa May
 # political parties
 http://www.wikidata.org/entity/Q595575
 http://www.wikidata.org/entity/Q847263
