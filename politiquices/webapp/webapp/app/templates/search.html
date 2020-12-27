@@ -32,7 +32,8 @@
         };
     });
 
-    /* Personalidade */
+
+    /* 1. Relações de um Personalidade */
     $(function() {
       $("#autocomplete").autocomplete({
         source: nomes,
@@ -52,7 +53,51 @@
       });
     });
 
-    /* Personalidade acusada por membros do mesmo partido */
+    /* 2. Relações entre duas personalidades: per_one */
+    $(function() {
+      $("#autocomplete_per_one").autocomplete({
+        source: nomes,
+        focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox and hidden field
+            $(this).val(ui.item.label);
+            $("#autocomplete_per_one-value").val(ui.item.value);
+        }
+      });
+    });
+
+    /* 2. Relações entre duas personalidades per_one */
+    $(function() {
+      $("#autocomplete_per_two").autocomplete({
+        source: nomes,
+        focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox and hidden field
+            $(this).val(ui.item.label);
+            $("#autocomplete_per_two-value").val(ui.item.value);
+        }
+      });
+    });
+
+
+    /* Personalidade acusada por membros do mesmo partido
+
+    contains an exemple of AJAX being used on autocomplete
+
     $(function() {
       $("#autocomplete_two").autocomplete({
         source: nomes,
@@ -93,8 +138,13 @@
 
       });
     });
+    /*
 
-    /* Relações de um membros de um partido para uma pessoa */
+
+
+
+
+    /* 3. Relações de membros de um partido para uma pessoa: party */
     $(function() {
       $("#autocomplete_three_partido").autocomplete({
         source: parties,
@@ -114,6 +164,7 @@
       });
     });
 
+    /* 3. Relações de membros de um partido para uma pessoa: person */
     $(function() {
       $("#autocomplete_three_pessoa").autocomplete({
         source: nomes,
@@ -133,9 +184,11 @@
       });
     });
 
-    /* Relações entre duas personalidades */
+    /* ----------------------------------------------------------- */
+
+    /* 4. Relações de uma pessoa para membros de um partido: person */
     $(function() {
-      $("#autocomplete_per_one").autocomplete({
+      $("#autocomplete_four_pessoa").autocomplete({
         source: nomes,
         focus: function(event, ui) {
             // prevent autocomplete from updating the textbox
@@ -148,14 +201,15 @@
             event.preventDefault();
             // manually update the textbox and hidden field
             $(this).val(ui.item.label);
-            $("#autocomplete_per_one-value").val(ui.item.value);
+            $("#autocomplete_four_pessoa_value").val(ui.item.value);
         }
       });
     });
 
+    /* 4. Relações de uma pessoa para membros de um partido: party */
     $(function() {
-      $("#autocomplete_per_two").autocomplete({
-        source: nomes,
+      $("#autocomplete_four_partido").autocomplete({
+        source: parties,
         focus: function(event, ui) {
             // prevent autocomplete from updating the textbox
             event.preventDefault();
@@ -167,14 +221,18 @@
             event.preventDefault();
             // manually update the textbox and hidden field
             $(this).val(ui.item.label);
-            $("#autocomplete_per_two-value").val(ui.item.value);
+            $("#autocomplete_four_partido_value").val(ui.item.value);
         }
       });
     });
+
+    /* ----------------------------------------------------------- */
+
 
 
     $(document).ready ( function () {
 
+        /* Relações de uma personalidade */
         $(document).on ("click", "#btn_one", function () {
             var wiki_id = $('#autocomplete-value').val();
             var data = { q: wiki_id, search: true};
@@ -192,10 +250,13 @@
             });
         });
 
+        /* Relações entre duas personalidade */
         $(document).on ("click", "#btn_two", function () {
-            var entity_wiki_id = $('#autocomplete_two-value').val();
-            var party_wiki_id = $('#autocomplete_two-partido-value').val();
-            var data = { query_nr: 'one', entity: entity_wiki_id, party: party_wiki_id};
+            var wiki_id_one = $('#autocomplete_per_one-value').val();
+            var wiki_id_two = $('#autocomplete_per_two-value').val();
+            var data = { query_nr: 'two',
+                         e1: wiki_id_one,
+                         e2: wiki_id_two};
             $.ajax({
               type: 'get',
               data: data,
@@ -210,16 +271,16 @@
             });
         });
 
+        /* Relações entre (membros de ) um partido e uma personalidade */
         $(document).on ("click", "#btn_three", function () {
-            var entity_wiki_id = $('#autocomplete_three_pessoa_value').val();
             var party_wiki_id = $('#autocomplete_three_partido_value').val();
+            var entity_wiki_id = $('#autocomplete_three_pessoa_value').val();
             var e = document.getElementById("dropdownMenuButton");
-            var data = { query_nr: 'two',
-                         entity: entity_wiki_id,
+            var data = { query_nr: 'three',
                          party: party_wiki_id,
+                         entity: entity_wiki_id,
                          relationship: e.textContent
                        };
-
             $.ajax({
               type: 'get',
               data: data,
@@ -234,35 +295,63 @@
             });
         });
 
+        /* Relações de uma personalidade para (membros de ) um partido */
+        $(document).on ("click", "#btn_four", function () {
+            var entity_wiki_id = $('#autocomplete_four_pessoa_value').val();
+            var party_wiki_id = $('#autocomplete_four_partido_value').val();
+            var e = document.getElementById("dropdownMenuButton");
+            var data = { query_nr: 'four',
+                         party: party_wiki_id,
+                         entity: entity_wiki_id,
+                         relationship: e.textContent
+                       };
+            $.ajax({
+              type: 'get',
+              data: data,
+              url: '/queries',
+              error: function () {
+                alert("There was an error processing this page.");
+                return false;
+              },
+              complete: function (output) {
+                $('#entityResults').html(output.responseText);
+              }
+            });
+        });
+
+        /* Relações entre duas personalidade */
+        $(document).on ("click", "#btn_five", function () {
+            var entity_wiki_id = $('#autocomplete_two-value').val();
+            var party_wiki_id = $('#autocomplete_two-partido-value').val();
+            var data = { query_nr: 'five',
+                         party_a: party_wiki_id,
+                         party_b: party_wiki_id};
+            $.ajax({
+              type: 'get',
+              data: data,
+              url: '/queries',
+              error: function () {
+                alert("There was an error processing this page.");
+                return false;
+              },
+              complete: function (output) {
+                $('#entityResults').html(output.responseText);
+              }
+            });
+        });
+
+        /* Dropdown to correct/annotataed relationships */
         $(document).ready(function() {
            $(".dropdown-menu").on('click', 'a', function(){
              $(this).parents('.dropdown').find('button').text($(this).text());
            });
         });
 
-        $(document).on ("click", "#btn_four", function () {
-            var wiki_id_one = $('#autocomplete_per_one-value').val();
-            var wiki_id_two = $('#autocomplete_per_two-value').val();
-            var data = { query_nr: 'three', e1: wiki_id_one, e2: wiki_id_two};
-            $.ajax({
-              type: 'get',
-              data: data,
-              url: '/queries',
-              error: function () {
-                alert("There was an error processing this page.");
-                return false;
-              },
-              complete: function (output) {
-                $('#entityResults').html(output.responseText);
-              }
-            });
-        });
-
-
     });
 
     </script>
 
+    <!-- 1. Relações de uma personalidade -->
     <header class="jumbotron my-3">
         <h4><p>Ver relações uma personalidade</p></h4>
         <form class="container-fluid justify-content-center align-items-center">
@@ -276,6 +365,7 @@
         </form>
     </header>
 
+    <!-- 2. Relações entre duas personalidades -->
     <header class="jumbotron my-3">
         <h4><p>Todas as relações entre duas personalidades</p></h4>
         <form class="container-fluid justify-content-center align-items-center">
@@ -285,30 +375,13 @@
             <div class="controls controls-row row-fluid col-xs-4">
                 <input id="autocomplete_per_one" class="span10" type="text" placeholder="Personalidade" />
                 <input id="autocomplete_per_two" class="span10" type="text" placeholder="Personalidade" />
-                <button type="button" id='btn_four' class="btn btn-primary btn-sm">Seleccionar</button>
-            </div>
-        </div>
-        </form>
-    </header>
-
-    <!--
-    <header class="jumbotron my-3">
-        <h4><p>Personalidade acusada por membros do mesmo partido?</p></h4>
-        <h6>e.g.: 'Quem dentro do PS se opôs a José Sócrates?'</h6>
-        <form class="container-fluid justify-content-center align-items-center">
-        <input id="autocomplete_two-value" type="hidden" name="wiki">
-        <input id="autocomplete_two-partido-value" type="hidden" name="wiki">
-        <div class="control-group">
-            <div class="controls controls-row row-fluid col-xs-4">
-                <input id="autocomplete_two" class="span10" type="text" placeholder="Personalidade" />
-                <input id="autocomplete_partido" class="span10" type="text" placeholder="Partido" />
                 <button type="button" id='btn_two' class="btn btn-primary btn-sm">Seleccionar</button>
             </div>
         </div>
         </form>
     </header>
-    -->
 
+    <!-- 3. Relações entre (membros de) um partido e uma personalidade -->
     <header class="jumbotron my-3">
         <h4><p>Relações de membros de um partido e uma determinada personalidade</p></h4>
         <h6>e.g.: 'Que personalidades do BE se oposeram a Jerónimo de Sousa?'</h6>
@@ -340,18 +413,19 @@
         </form>
     </header>
 
+    <!-- 4. Relações entre uma personalidade e (membros de) um partido -->
     <header class="jumbotron my-3">
         <h4><p>Relações de uma determinada personalidade para com membros de um partido</p></h4>
         <h6>e.g.: 'António Costa este de acordo/apoio quem do PCP?'</h6>
         <h6>e.g.: 'André Ventura opos-se a quem do CDS/PP?'</h6>
         <br>
         <form class="container-fluid justify-content-center align-items-center">
-          <input id="autocomplete_three_partido_value" type="hidden" name="wiki">
-          <input id="autocomplete_three_pessoa_value" type="hidden" name="wiki">
+          <input id="autocomplete_four_partido_value" type="hidden" name="wiki">
+          <input id="autocomplete_four_pessoa_value" type="hidden" name="wiki">
           <div class="control-group">
               <div>
-                  <input id="autocomplete_three_pessoa" class="span10" type="text" placeholder="Personalidade" />
-                  <button type="button" id='btn_three' class="btn btn-primary btn-sm">Seleccionar</button>
+                  <input id="autocomplete_four_pessoa" class="span10" type="text" placeholder="Personalidade" />
+                  <button type="button" id='btn_four' class="btn btn-primary btn-sm">Seleccionar</button>
               </div>
               <div class="dropdown">
                       <button class="btn btn-secondary dropdown-toggle" type="button"
@@ -363,26 +437,25 @@
                       </div>
               </div>
               <div class="controls controls-row row-fluid col-xs-4">
-                  <input id="autocomplete_three_partido" class="span10" type="text" placeholder="Partido" />
+                  <input id="autocomplete_four_partido" class="span10" type="text" placeholder="Partido" />
               </div>
           </div>
         </form>
     </header>
 
-
+    <!-- 5. Relações entre (memberos de) um partido e (memberos de) um outro partido -->
     <header class="jumbotron my-3">
         <h4><p>Relações entre membros de dois partidos</p></h4>
         <h6>e.g.: 'Que personalidades do BE se oposeram a personalidades do PCP?</h6>
         <h6>e.g.: 'Que personalidades do PS apoiaram personalidades do PSD?'</h6>
         <br>
         <form class="container-fluid justify-content-center align-items-center">
-          <input id="autocomplete_three_partido_value" type="hidden" name="wiki">
-          <input id="autocomplete_three_pessoa_value" type="hidden" name="wiki">
+          <input id="autocomplete_five_party_one_value" type="hidden" name="wiki">
+          <input id="autocomplete_five_party_two_value" type="hidden" name="wiki">
 
           <div class="control-group">
               <div class="controls controls-row row-fluid col-xs-4">
-                  <input id="autocomplete_three_partido" class="span10" type="text" placeholder="Partido" />
-
+                  <input id="autocomplete_five_party_one" class="span10" type="text" placeholder="Partido" />
                     <div class="dropdown">
                       <button class="btn btn-secondary dropdown-toggle" type="button"
                               id="dropdownMenuButton" data-toggle="dropdown"
@@ -391,11 +464,9 @@
                           <a class="dropdown-item">opoe-se</a>
                           <a class="dropdown-item">apoia</a>
                     </div>
-
-
                 </div>
-                  <input id="autocomplete_three_pessoa" class="span10" type="text" placeholder="Partido" />
-                  <button type="button" id='btn_three' class="btn btn-primary btn-sm">Seleccionar</button>
+                  <input id="autocomplete_five_party_two" class="span10" type="text" placeholder="Partido" />
+                  <button type="button" id='btn_five' class="btn btn-primary btn-sm">Seleccionar</button>
                 </div>
           </div>
         </form>

@@ -58,14 +58,6 @@ classifiers
 
     entity_linking
     --------------
-        case 2: ?
-        case 3:
-           - ['Joe Berardo', 'senhor Berardo', 'José Berardo'],
-           - ['Joe Berardo', 'Sr. Berardo', 'sr. Berardo', 'Parabéns sr. Berardo'],
-           - ['Joe Berardo', 'José Berardo']
-
-        - remove stuff from ner_ignore
-
         - matche com acentos/sema centos
             - adicionar um campo com os nomes em ANSI (sem acentos)
 

@@ -11,14 +11,14 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_nr_of_persons,
     get_total_nr_of_articles,
     get_person_info,
-    get_list_of_persons_from_some_party_opposing_someone,
     get_persons_affiliated_with_party,
     get_top_relationships,
     get_all_parties,
     get_person_relationships,
     get_party_of_entity,
-    get_list_of_persons_from_some_party_relation_with_someone,
-    get_entities_without_image, get_relationships_between_two_entities)
+    get_entities_without_image, get_relationships_between_two_entities,
+    list_of_spec_relations_between_members_of_a_party_with_someone,
+    list_of_spec_relations_between_a_person_and_members_of_a_party)
 from politiquices.webapp.webapp.app.sparql_queries import all_entities
 from politiquices.webapp.webapp.app.relationships import build_relationships_freq
 
@@ -253,16 +253,35 @@ def queries():
     print(request.args)
     query_nr = request.args.get("query_nr")
 
-    if query_nr == "one":
-        person_wiki_id = request.args.get("entity")
+    # relationships between two persons
+    if query_nr == 'two':
+        person_one = request.args.get("e1")
+        person_two = request.args.get("e2")
+        results = get_relationships_between_two_entities(person_one, person_two)
+
+        for r in results:
+            make_title_linkable_2_entities(r)
+
+        return render_template("two_entities_relationships.html", items=results)
+
+    # relationships between (members of) a party and an entity
+    if query_nr == "three":
         party_wiki_id = request.args.get("party")
-        # ToDo: pass name of person and party name to template
-        results = get_list_of_persons_from_some_party_opposing_someone(
-            person_wiki_id, party_wiki_id
+        person_wiki_id = request.args.get("entity")
+        relationship = request.args.get("relationship")
+
+        if relationship == "opoe-se":
+            rel = "ent1_opposes_ent2"
+        elif relationship == "apoia":
+            rel = "ent1_supports_ent2"
+
+        results = list_of_spec_relations_between_members_of_a_party_with_someone(
+            party_wiki_id, person_wiki_id, rel
         )
         return render_template("template_one.html", items=results)
 
-    if query_nr == "two":
+    # relationships between an entity and (members of) a party
+    if query_nr == "four":
         person_wiki_id = request.args.get("entity")
         party_wiki_id = request.args.get("party")
         relationship = request.args.get("relationship")
@@ -272,18 +291,11 @@ def queries():
         elif relationship == "apoia":
             rel = "ent1_supports_ent2"
 
-        results = get_list_of_persons_from_some_party_relation_with_someone(
+        results = list_of_spec_relations_between_a_person_and_members_of_a_party(
             person_wiki_id, party_wiki_id, rel
         )
 
+
+
         return render_template("template_one.html", items=results)
 
-    if query_nr == 'three':
-        person_one = request.args.get("e1")
-        person_two = request.args.get("e2")
-        results = get_relationships_between_two_entities(person_one, person_two)
-
-        for r in results:
-            make_title_linkable_2_entities(r)
-
-        return render_template("two_entities_relationships.html", items=results)

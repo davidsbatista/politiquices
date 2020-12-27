@@ -526,13 +526,12 @@ def get_top_relationships(wiki_id: str):
 
 
 @lru_cache
-def get_list_of_persons_from_some_party_opposing_someone(wiki_id, party):
-
+def list_of_spec_relations_between_members_of_a_party_with_someone(party, person, relation):
     query = f"""        
         SELECT DISTINCT ?ent1 ?ent1_name ?image_url ?arquivo_doc ?date ?title ?score
         WHERE {{
-            ?rel my_prefix:type "ent1_opposes_ent2";
-                 my_prefix:ent2 wd:{wiki_id};
+            ?rel my_prefix:type '{relation}';
+                 my_prefix:ent2 wd:{person};
                  my_prefix:ent1 ?ent1;
                  my_prefix:score ?score;
                  my_prefix:arquivo ?arquivo_doc .
@@ -549,6 +548,7 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id, party):
         }}
         ORDER BY DESC(?date) ASC(?score)
         """
+
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
@@ -565,32 +565,34 @@ def get_list_of_persons_from_some_party_opposing_someone(wiki_id, party):
             rel_type=RelationshipType.ent1_opposes_ent2,
             rel_score=x["score"]["value"][0:5],
             ent1=person,
-            ent2=Person(wiki_id=wiki_id),
+            ent2=Person(wiki_id=person),
         )
         results.append(rel)
 
     return results
 
 
-@lru_cache
-def get_list_of_persons_from_some_party_relation_with_someone(wiki_id, party, relation):
+def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party, relation):
     query = f"""        
-        SELECT DISTINCT ?ent1 ?ent1_name ?image_url ?arquivo_doc ?date ?title ?score
+        SELECT DISTINCT ?ent2 ?ent2_name ?image_url ?arquivo_doc ?date ?title ?score
         WHERE {{
+            
             ?rel my_prefix:type '{relation}';
-                 my_prefix:ent2 wd:{wiki_id};
-                 my_prefix:ent1 ?ent1;
+                 my_prefix:ent1 wd:{person};
+                 my_prefix:ent2 ?ent2;
                  my_prefix:score ?score;
                  my_prefix:arquivo ?arquivo_doc .
+            
             ?arquivo_doc dc:title ?title;
                          dc:date ?date.
-            ?ent1 rdfs:label ?ent1_name .
+            
+            ?ent2 rdfs:label ?ent2_name .
 
             SERVICE <{wikidata_endpoint}> {{
-                ?ent1 wdt:P102 wd:{party};
+                ?ent2 wdt:P102 wd:{party};
                       rdfs:label ?personLabel.
                 FILTER(LANG(?personLabel) = "pt")
-                OPTIONAL {{ ?ent1 wdt:P18 ?image_url. }}                
+                OPTIONAL {{ ?ent2 wdt:P18 ?image_url. }}                
             }}
         }}
         ORDER BY DESC(?date) ASC(?score)
@@ -602,7 +604,7 @@ def get_list_of_persons_from_some_party_relation_with_someone(wiki_id, party, re
         image = x["image_url"]["value"] if "image_url" in x else no_image
 
         person = Person(
-            name=x["ent1_name"]["value"], wiki_id=x["ent1"]["value"].split("/")[-1], image_url=image
+            name=x["ent2_name"]["value"], wiki_id=x["ent2"]["value"].split("/")[-1], image_url=image
         )
 
         rel = Relationship(
@@ -612,7 +614,7 @@ def get_list_of_persons_from_some_party_relation_with_someone(wiki_id, party, re
             rel_type=RelationshipType.ent1_opposes_ent2,
             rel_score=x["score"]["value"][0:5],
             ent1=person,
-            ent2=Person(wiki_id=wiki_id),
+            ent2=Person(wiki_id=person),
         )
         results.append(rel)
 
