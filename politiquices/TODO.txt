@@ -17,8 +17,8 @@ classifiers
     relationship:
     -------------
         - look at predictions, analyse, annotate and train/test again
+        - explorar os padroes encontrados
         - controlar overfitting?
-        - Transformer models: https://huggingface.co/transformers/quicktour.html
 
         - fix plots, it's a mess!
 
@@ -43,7 +43,10 @@ classifiers
                 - defende != não + defende
             - tool to visualize embeddings
 
-        - explorar os padroes encontrados
+        - mostrar mais relações:
+            - apoia/defende c/ as duas direções
+            - acusa/opoem-se c/ as duas direções
+
 
 
     named entity recognition
@@ -51,6 +54,7 @@ classifiers
     'Cavaco Silva nomeou cunhada para assessorar antiga primeira-dama Maria Cavaco Silva'
     -> 'Cavaco Silva'
     -> 'Maria Cavaco Silva'
+
 
     entity_linking
     --------------
@@ -88,10 +92,6 @@ Web App
     - alterar os namespaces para 'politiquices.pt'
         http://politiquices.pt/entity/<wikidata_person_id> -> todas as relações da pessoa
         http://politiquices.pt/party/<wikidata_party_id> -> todas as pessoas desse partido
-
-    - mostrar mais relações:
-        - apoia/defende c/ as duas direções
-        - acusa/opoem-se c/ as duas direções
 
     - unificar HTML de entity + entity search
 

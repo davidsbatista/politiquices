@@ -210,6 +210,22 @@ def disambiguate(expanded_entities, candidates):
     case 3 ->  ['Joe Berardo', 'José Berardo', 'Coleção Berardo', 'Berardo um Acordo Quadro',
     'José Manuel Rodrigues Berardo']
 
+    case 3 ->  ['Luis Filipe Menezes', 'Luís Filipe Menezes']
+    {'wiki': 'Q6706787', 'last_modified': '2020-12-01T22:53:40Z', 'label': 'Luís Filipe Menezes', 'aliases': ['Luís Filipe Meneses', 'Luis Filipe de Menezes', 'Luís Filipe de Menezes']}
+    {'wiki': 'Q10321558', 'last_modified': '2020-12-24T01:32:58Z', 'label': 'Luís Menezes', 'aliases': ['Luís de Menezes', 'Luís Filipe Valenzuela Tavares de Menezes Lopes']}
+
+    Nogueira Pinto
+    case 3 ->  ['Maria Nogueira Pinto', 'Maria José Nogueira Pinto'] 2
+    {'wiki': 'Q6123866', 'last_modified': '2020-12-19T15:30:57Z', 'label': 'Jaime Nogueira Pinto', 'aliases': ['Jaime nogueira pinto', 'Jaime Alexandre Nogueira Pinto']}
+    {'wiki': 'Q10325930', 'last_modified': '2020-12-24T02:17:41Z', 'label': 'Maria José Nogueira Pinto', 'aliases': ['Maria José Pinto da Cunha Avilez Nogueira Pinto']}
+
+    Gaspar
+    case 3 ->  ['Víto Gaspar', 'Vítor Gaspar'] 2
+    {'wiki': 'Q2118027', 'last_modified': '2020-12-26T03:22:53Z', 'label': 'Vítor Gaspar', 'aliases': ['Vitor Louçã Rabaça Gaspar', 'Vitor Gaspar']}
+    {'wiki': 'Q66984570', 'last_modified': '2020-06-10T10:01:41Z', 'label': 'Emanuel Gaspar', 'aliases': ['Emanuel Gaspar de Freitas']}
+    {'wiki': 'Q27093786', 'last_modified': '2020-12-24T07:28:37Z', 'label': 'Luís Gaspar da Silva', 'aliases': None}
+    {'wiki': 'Q24691796', 'last_modified': '2020-12-24T07:13:35Z', 'label': 'António Silva Henriques Gaspar', 'aliases': None}
+
 
     - just one expanded entity but two candidates
     case 2 ->  ['Filipe Menezes']

@@ -30,6 +30,9 @@ RESOURCES = os.path.join(APP_ROOT, "resources/")
 rule_ner = RuleBasedNer()
 
 
+publico_full_text = dict()
+
+
 def read_lstm_models():
     print("Loading relationship classifier...")
     relationship_clf = joblib.load(MODELS + "relationship_clf_2020-12-23_140325.pkl")
@@ -46,6 +49,10 @@ def parse_args():
 
 
 def entity_linking(entity, url):
+
+    publico_pt = ('http://www.publico.pt','http://economia.publico.pt', 'https://www.publico.pt',
+                  'http://publico.pt', 'http://ecosfera.publico.pt', 'http://desporto.publico.pt')
+
     candidates = query_kb(entity, all_results=True)
     no_wiki = jsonlines.open('no_wiki_id.jsonl', 'a')
 
@@ -63,7 +70,15 @@ def entity_linking(entity, url):
             return full_match_label[0]
 
     # try to expand named-entity based on article's complete text
-    text = get_text_newspaper(url)
+    if url.startswith(publico_pt):
+        try:
+            text = publico_full_text[url]
+        except KeyError:
+            no_wiki.write({"entity": entity, "expanded": None, "candidates": candidates, "url": url})
+            return None
+    else:
+        text = get_text_newspaper(url)
+
     expanded_entity = expand_entities(entity, text)
 
     if len(expanded_entity) == 0:
@@ -122,17 +137,28 @@ def entity_linking(entity, url):
 
 
 def load_publico_texts():
-    # ToDo: allow to get publico articles text for disambiguation
-    with open('input_files_for_rdf/publico_to_be_processed.txt') as f_in:
+    with open('full_text_cache/publico_full_text.txt') as f_in:
         for line in f_in:
-            date, url, title = line.split('\t')
+            parts = line.split('\t')
+            try:
+                date = parts[0]
+                url = parts[1]
+                title = parts[2]
+                text = ' '.join(parts[3:])
+                publico_full_text[url] = text
+            except IndexError:
+                continue
 
 
 def main():
+
     args = parse_args()
 
     if args.publico:
         f_name = args.publico
+        print("Loading publico.pt texts")
+        load_publico_texts()
+
     elif args.arquivo:
         f_name = args.arquivo
     elif args.chave:
@@ -160,6 +186,7 @@ def main():
     no_wiki = jsonlines.open("titles_processed_no_wiki_id.jsonl", mode="w")
     processed = jsonlines.open("titles_processed.jsonl", mode="w")
     ner_linked = jsonlines.open("ner_linked.jsonl", mode="w")
+    failed_to_clean = jsonlines.open("failed_to_clean.jsonl", mode="w")
 
     count = 0
 
@@ -181,7 +208,11 @@ def main():
             if count % 1000 == 0:
                 print(count)
 
-            cleaned_title = clean_title_quotes(clean_title_re(title))
+            try:
+                cleaned_title = clean_title_quotes(clean_title_re(title))
+            except Exception as e:
+                failed_to_clean.write({"url": url, "title": title, "Exception": str(e)})
+                continue
 
             # named-entity recognition
             all_entities, persons = rule_ner.tag(cleaned_title)

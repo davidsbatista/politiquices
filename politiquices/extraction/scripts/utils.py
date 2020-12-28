@@ -3,15 +3,6 @@ import requests
 from newspaper import Article, ArticleException
 
 
-def get_text_from_file(url, f_name='extracted_texts.jsonl'):
-    with open(f_name, 'rt') as f_in:
-        for line in f_in:
-            entry = json.loads(line)
-            if entry['url'] == url:
-                return entry['text']
-    return None
-
-
 def get_text(url):
     if text := get_text_from_file(url):
         return text
@@ -32,11 +23,19 @@ def get_text(url):
         raise e
 
 
-def get_text_newspaper(url):
-    if text := get_text_from_file(url):
-        return text
+def get_text_from_file(url, f_name):
+    with open(f_name, 'rt') as f_in:
+        for line in f_in:
+            entry = json.loads(line)
+            if entry['url'] == url:
+                return entry['text']
+    return None
 
+
+def get_text_newspaper(url):
     if url.startswith('https://arquivo.pt'):
+        if text := get_text_from_file(url, 'full_text_cache/extracted_texts_newspaper.jsonl'):
+            return text
         url_no_frame = url.replace('/wayback/', '/noFrame/replay/')
         article = Article(url_no_frame)
         try:
@@ -51,9 +50,6 @@ def get_text_newspaper(url):
             with open('download_error.txt', 'a+') as f_out:
                 f_out.write(url+'\t'+url_no_frame+'\n')
         return article.text
-
-    if url.startswith():
-        return None
 
     else:
         raise ValueError('unknown URL :', url)
