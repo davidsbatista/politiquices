@@ -123,7 +123,7 @@ def entity_linking(entity, url):
 
 def load_publico_texts():
     # ToDo: allow to get publico articles text for disambiguation
-    with open('publico_to_be_processed.txt') as f_in:
+    with open('input_files_for_rdf/publico_to_be_processed.txt') as f_in:
         for line in f_in:
             date, url, title = line.split('\t')
 

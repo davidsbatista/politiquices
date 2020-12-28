@@ -62,7 +62,7 @@ def main():
     total = 0
     cleaning = 0
 
-    to_extract = jsonlines.open("titles_to_be_processed.jsonl", mode="w")
+    to_extract = jsonlines.open("input_files_for_rdf/titles_to_be_processed.jsonl", mode="w")
     failed_to_clean = jsonlines.open("failed_to_clean.jsonl", mode="w")
     other_topics_log = jsonlines.open("failed_to_clean.jsonl", mode="w")
     too_short_log = jsonlines.open("too_short.jsonl", mode="w")

@@ -46,10 +46,6 @@ classifiers
         - explorar os padroes encontrados
 
 
-    extraction:
-    ------------
-        - apply as well to publico CHAVE collection
-
     named entity recognition
     ------------------------
     'Cavaco Silva nomeou cunhada para assessorar antiga primeira-dama Maria Cavaco Silva'
@@ -58,7 +54,7 @@ classifiers
 
     entity_linking
     --------------
-        - make it work with publico.pt
+        - make it work with publico.pt and CHAVE
 
         - construir o index ElasticSearch a partir das .ttl files:
             tip: usar python RDFLib para ter label + aliases a partir das ttl files
@@ -66,15 +62,10 @@ classifiers
         - match com acentos/sema centos
             - adicionar um campo com os nomes em ANSI (sem acentos)
 
-        - fazer uma avaliação com o novo dataset (e o velho)
-
         - Linking Errors:
             - Remove this guy http://0.0.0.0:5000/entity?q=Q295049 or add 'Pinto da Costa'
 
-        - Software
-            - https://github.com/TheScienceMuseum/elastic-wikidata
-            - https://spacy.io/usage/training#entity-linker
-            - https://spacy.io/api/kb
+        - https://github.com/TheScienceMuseum/elastic-wikidata
 
 Web App
 =======

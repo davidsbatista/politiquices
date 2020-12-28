@@ -33,7 +33,7 @@ def get_text(url):
 
 
 def get_text_newspaper(url):
-    if text := get_text_from_file(url, f_name='extracted_texts_newspaper.jsonl'):
+    if text := get_text_from_file(url):
         return text
 
     if url.startswith('https://arquivo.pt'):
@@ -44,7 +44,7 @@ def get_text_newspaper(url):
             article.download()
             article.parse()
             entry = {'url': url, 'text': article.text}
-            with open('extracted_texts_newspaper.jsonl', 'a') as f_out:
+            with open('full_text_cache/extracted_texts_newspaper.jsonl', 'a') as f_out:
                 f_out.write(json.dumps(entry) + '\n')
         except ArticleException as e:
             print(e)
