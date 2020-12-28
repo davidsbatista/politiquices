@@ -1,19 +1,15 @@
+import argparse
 import csv
 import operator
 import re
-import sys
-import argparse
-
 from collections import defaultdict
 from datetime import datetime
+
+from classes import Article, Person, Relationship
 from itertools import groupby
-
 from jsonlines import jsonlines
-from rdflib import Graph
-from rdflib import BNode, URIRef, Literal, Namespace, XSD, SKOS
+from rdflib import BNode, Graph, Literal, Namespace, SKOS, URIRef, XSD
 from rdflib.namespace import DC, RDFS
-
-from classes import Person, Article, Relationship
 
 
 def remove_duplicates(f_name):
@@ -116,7 +112,7 @@ def processed_titles(filename):
             yield line
 
 
-def extract_date(crawled_date: str, url, publico_url=False):
+def extract_date(crawled_date: str, publico_url=False):
 
     if not publico_url:
         year = crawled_date[0:4]
@@ -206,7 +202,7 @@ def process_classified_titles(titles):
             url = 'http://publico.pt/'+news_id
 
         try:
-            crawled_date = extract_date(title["date"], url, publico_url=publico_url)
+            crawled_date = extract_date(title["date"], publico_url=publico_url)
         except ValueError as e:
             print(url, '\t', e)
             continue
@@ -316,7 +312,7 @@ def populate_graph(articles, persons, relationships, args):
 
     # print out the entire Graph in the RDF Turtle format
     # "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
-    date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
+    date_time = datetime.now().strftime("%Y-%m-%d_%H%M")
     f_name = f"politiquices_{date_time}.ttl"
     g.serialize(destination=f_name, format="turtle")
     print("graph has {} statements.".format(len(g)))
@@ -347,8 +343,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-
-    print(args)
 
     if not args.publico and not args.arquivo:
         # ToDo: print help
