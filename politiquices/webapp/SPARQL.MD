@@ -446,3 +446,36 @@
              my_prefix:arquivo ?arquivo_doc;
       }
     }
+    
+## All from PSD
+
+    SELECT DISTINCT ?person_party_a ?person_a_label ?person_party_b ?person_b_label ?arquivo_doc {          
+      wd:Q595575 rdfs:label ?party_a_label FILTER(LANG(?party_a_label) = "pt") .      
+      ?person_party_a wdt:P102 wd:Q595575;
+                      rdfs:label ?person_a_label FILTER(LANG(?person_a_label) = "pt") .
+    }
+
+    
+## All from PS
+
+    SELECT DISTINCT ?person_party_b ?person_b_label ?arquivo_doc {          
+      ?person_party_b wdt:P102 wd:Q847263;
+                      rdfs:label ?person_b_label FILTER(LANG(?person_b_label) = "pt") .  
+    }
+    
+    
+### ToDo: filter by list of values
+
+    SELECT DISTINCT ?person_party_a ?person_party_b ?arquivo_doc 
+    WHERE {
+      { 
+        VALUES ?person_party_a { wd:Q101537534 wd:Q101760216 wd:Q10263917 wd:Q610788 }
+        VALUES ?person_party_b { wd:Q101537534 wd:Q101760216 wd:Q10263917 wd:Q610788 }
+        ?rel my_prefix:ent1 ?person_party_a;
+             my_prefix:ent2 ?person_party_b;
+             my_prefix:type ?rel_type;
+             my_prefix:score ?score;
+             my_prefix:arquivo ?arquivo_doc;
+        }
+      }
+    LIMIT 10

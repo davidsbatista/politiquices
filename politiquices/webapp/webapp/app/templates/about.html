@@ -6,24 +6,65 @@
 
 <br><br>
 
+<center>
+    <img src="static/images/politiquices.png" class="figure-img img-fluid rounded" width="300" height="375">
+</center>
+
+<br>
+
 <div id="outer" class="container d-flex align-items-center justify-content-center">
 
     <div id="inner" class="w-75 p-2" align="left">
 
-    <p align="left">Tecnologias e bibliotecas de software usadas:</p>
-     <ul>
-        <li><a href="https://www.python.org/">Python</a></li>
-        <li><a href="https://keras.io/">Keras</a></li>
-        <li><a href="https://spacy.io/">SpaCy</a></li>
-        <li><a href="https://www.w3.org/TR/rdf-sparql-query/">SPARQL</a></li>
-        <li><a href="https://github.com/elastic/elasticsearch">ElasticSearch</a></li>
-        <li><a href="https://www.docker.com/">Docker</a></li>
-        <li><a href="https://www.wikidata.org">Wikidata - the free knowledge base</a></li>
-        <li><a href="https://jena.apache.org/">Apache Jena</a></li>
-        <li><a href="https://flask.palletsprojects.com">Flask</a></li>
-        <li><a href="https://getbootstrap.com/">Bootstrap</a></li>
-    </ul>
- </div>
+        <h5><b>Introdução</b></h5>
+
+        <p>O politiquices.pt é um projecto que tem como base os títulos de artigos de
+            notícias recolhidos pelo <a href="https://www.arquivo.pt">arquivo.pt</a>.</p>
+
+        <p>Os artigos recolhidos são pré-processados de modo a que sejam identificadas no título
+            personalidades  relevantes da política portuguesa e, caso existam, as relações de
+            acusação/oposição ou defesa/suporte.</p>
+
+        <p>As personalidades políticas identificadas são associadas ao seu  identificador na
+            <a href="https://www.wikidata.org">wikidata.org</a>, de modo a que a informação relativa
+            a essa personalidade possa ser associada, enriquecendo as relações com outros factos,
+            como: afiliação política, cargos políticos, área de formação, profissão, etc.
+
+        <p>Este processo resulta num grafo ligando artigos de notícias do <a href="https://www.arquivo.pt">arquivo.pt</a>
+           com as personalidades políticas mencionadas, as relações expressas nos artigos, e
+           outros factos relativos às personalidades políticas.</p>
+
+        <p>Este grafo é indexado num motor de SPARQL permitindo depois fazer várias perguntas
+            usando toda informação contida no grafo.</p>
+
+        <br>
+
+        <h5><b>Completar informação</b></h5>
+
+        <p>Os factos e imagems relativos as personalidades políticas são extraídos da
+            <a href="https://www.wikidata.org">wikidata.org</a>, sendo que para  algumas
+            personalidades estes dados estão incompletos.</p>
+
+            <a target="_blank" href="/complete">Personalidades sem imagem</a>
+
+        <br><br>
+
+        <h5><b>Tecnologias e bibliotecas de software usadas:</b></h5>
+        <ul>
+            <li><a href="https://www.python.org/">Python</a></li>
+            <li><a href="https://keras.io/">Keras</a></li>
+            <li><a href="https://spacy.io/">SpaCy</a></li>
+            <li><a href="https://www.w3.org/TR/rdf-sparql-query/">SPARQL</a></li>
+            <li><a href="https://github.com/elastic/elasticsearch">ElasticSearch</a></li>
+            <li><a href="https://www.docker.com/">Docker</a></li>
+            <li><a href="https://www.wikidata.org">Wikidata - the free knowledge base</a></li>
+            <li><a href="https://jena.apache.org/">Apache Jena</a></li>
+            <li><a href="https://flask.palletsprojects.com">Flask</a></li>
+            <li><a href="https://getbootstrap.com/">Bootstrap</a></li>
+        </ul>
+
+    </div>
+
 </div>
 
 <br><br>

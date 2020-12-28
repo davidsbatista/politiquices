@@ -1,8 +1,9 @@
 import logging
 
+from app import app
 from flask import request, jsonify
 from flask import render_template
-from app import app
+
 
 from politiquices.webapp.webapp.app.sparql_queries import (
     query_sparql,
@@ -16,9 +17,13 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_all_parties,
     get_person_relationships,
     get_party_of_entity,
-    get_entities_without_image, get_relationships_between_two_entities,
+    get_wiki_id_affiliated_with_party,
+    get_entities_without_image,
+    get_relationships_between_two_entities,
     list_of_spec_relations_between_members_of_a_party_with_someone,
-    list_of_spec_relations_between_a_person_and_members_of_a_party)
+    list_of_spec_relations_between_a_person_and_members_of_a_party,
+    list_of_spec_relations_between_two_parties
+)
 from politiquices.webapp.webapp.app.sparql_queries import all_entities
 from politiquices.webapp.webapp.app.relationships import build_relationships_freq
 
@@ -258,10 +263,8 @@ def queries():
         person_one = request.args.get("e1")
         person_two = request.args.get("e2")
         results = get_relationships_between_two_entities(person_one, person_two)
-
         for r in results:
             make_title_linkable_2_entities(r)
-
         return render_template("two_entities_relationships.html", items=results)
 
     # relationships between (members of) a party and an entity
@@ -294,8 +297,25 @@ def queries():
         results = list_of_spec_relations_between_a_person_and_members_of_a_party(
             person_wiki_id, party_wiki_id, rel
         )
-
-
-
         return render_template("template_one.html", items=results)
 
+    # relationships between (members of) a party and (members of) another party
+    if query_nr == "five":
+        party_a = request.args.get("party_a")
+        party_b = request.args.get("party_b")
+
+        party_a = ' '.join(['wd:'+x for x in get_wiki_id_affiliated_with_party(party_a)])
+        party_b = ' '.join(['wd:'+x for x in get_wiki_id_affiliated_with_party(party_b)])
+
+        relationship = request.args.get("relationship")
+        if relationship == "opoe-se":
+            rel = "ent1_opposes_ent2"
+        elif relationship == "apoia":
+            rel = "ent1_supports_ent2"
+
+        results = list_of_spec_relations_between_two_parties(party_a, party_b, rel)
+
+        for r in results:
+            make_title_linkable_2_entities(r)
+
+        return render_template("two_entities_relationships.html", items=results)

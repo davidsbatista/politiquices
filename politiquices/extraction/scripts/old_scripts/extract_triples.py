@@ -40,31 +40,6 @@ def parse_args():
     return args
 
 
-def expand_entities_v1(entity, text):
-    expanded = defaultdict(int)
-    entity_tokens = word_tokenize(entity)
-    for sentence in sent_tokenize(text, language='portuguese'):
-        if entity in sentence:
-            sentence_tokens = word_tokenize(sentence)
-            print(sentence, len(sentence_tokens))
-            matched_idx = [(i, i + len(entity_tokens))
-                           for i in range(len(sentence_tokens))
-                           if sentence_tokens[i:i + len(entity_tokens)] == entity_tokens]
-            for matched_pair in matched_idx:
-                start = matched_pair[0]
-                end = matched_pair[1]
-                start_idx = 0 if start <= 2 else start-2
-                tks_bef = sentence_tokens[start_idx:start]
-                bef = [tk for tk in tks_bef if tk.istitle() and tk]
-                end_idx = len(sentence_tokens) if end >= len(sentence_tokens) - 2 else end + 2
-                tks_aft = sentence_tokens[end:end_idx]
-                aft = [tk for tk in tks_aft if tk.istitle()]
-                if bef or aft:
-                    expanded[' '.join(bef + entity_tokens + aft)] += 1
-
-    return expanded
-
-
 def expand_entities_v2(entity, text):
     all_entities, persons = rule_ner.tag(text)
     expanded = [p for p in persons if entity in p and entity != p]
@@ -89,7 +64,7 @@ def filter_perfect_matches(entity, candidates):
 def entity_linking(entity, url):
 
     candidates = query_kb(entity, all_results=True)
-    no_wiki = jsonlines.open('no_wiki_id.jsonl', 'a')
+    no_wiki = jsonlines.open('../no_wiki_id.jsonl', 'a')
 
     if len(candidates) == 1:
         return candidates[0]
@@ -151,7 +126,7 @@ def main():
     args = parse_args()
 
     # load named-entities that should be ignored
-    with open('ner_ignore.txt', 'rt') as f_in:
+    with open('../ner_ignore.txt', 'rt') as f_in:
         ner_ignore = [line.strip() for line in f_in.readlines()]
 
     if args.publico:
@@ -173,7 +148,7 @@ def main():
     nlp.disable = ["tagger", "parser", "ner"]
 
     # open files for logging and later diagnostic
-    ner_ignored = jsonlines.open("ner_ignored.jsonl", mode="w")
+    ner_ignored = jsonlines.open("../ner_ignored.jsonl", mode="w")
     no_entities = jsonlines.open("titles_processed_no_entities.jsonl", mode="w")
     more_entities = jsonlines.open("titles_processed_more_entities.jsonl", mode="w")
     no_wiki = jsonlines.open("titles_processed_no_wiki_id.jsonl", mode="w")

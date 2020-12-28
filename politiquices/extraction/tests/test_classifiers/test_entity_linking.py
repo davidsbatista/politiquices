@@ -1,4 +1,5 @@
-from politiquices.extraction.scripts.test_entity_linking import merge_substrings, fuzzy_match
+from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import merge_substrings, \
+    fuzzy_match
 
 
 def test_fuzzy_match_one_candidate_substring_matches_case_1():

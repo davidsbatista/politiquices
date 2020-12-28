@@ -186,6 +186,7 @@ def get_person_info(wiki_id):
     )
 
 
+@lru_cache
 def get_person_relationships(wiki_id):
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
@@ -409,6 +410,17 @@ def get_persons_affiliated_with_party(political_party: str):
 
 
 @lru_cache
+def get_wiki_id_affiliated_with_party(political_party: str):
+    query = f"""
+        SELECT DISTINCT ?wiki_id {{
+            ?wiki_id wdt:P102 wd:{political_party}; .  
+        }}
+    """
+    results = query_sparql(prefixes + "\n" + query, "wikidata")
+    return [x["wiki_id"]["value"].split("/")[-1] for x in results["results"]["bindings"]]
+
+
+@lru_cache
 def get_all_parties():
     query = f"""
         SELECT DISTINCT ?political_party ?party_label ?party_logo 
@@ -464,6 +476,7 @@ def all_entities():
     return prefixes + "\n" + query
 
 
+@lru_cache
 def get_top_relationships(wiki_id: str):
 
     persons_ent1 = defaultdict(list)
@@ -572,6 +585,7 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(party, person
     return results
 
 
+@lru_cache
 def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party, relation):
     query = f"""        
         SELECT DISTINCT ?ent2 ?ent2_name ?image_url ?arquivo_doc ?date ?title ?score
@@ -622,48 +636,47 @@ def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party
 
 
 @lru_cache
-def get_party_of_entity(wiki_id):
-
+def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, relation):
     query = f"""
-        SELECT DISTINCT ?party ?party_label {{
-            wd:{wiki_id} wdt:P31 wd:Q5.
-            SERVICE <{wikidata_endpoint}> {{ 
-                wd:{wiki_id} p:P102 ?partyStmnt .
-                ?partyStmnt ps:P102 ?party.
-                ?party rdfs:label ?party_label FILTER(LANG(?party_label)="pt") .  
-            }}  
+    SELECT DISTINCT ?person_party_a ?ent1_str ?person_party_b ?ent2_str 
+                    ?arquivo_doc ?date ?title ?rel_type ?score
+    WHERE {{
+      {{
+        
+        VALUES ?person_party_a {{ {values_party_a} }}
+        VALUES ?person_party_b {{ {values_party_b} }}
+        
+        ?rel my_prefix:type '{relation}';
+             my_prefix:ent1 ?person_party_a;
+             my_prefix:ent1_str ?ent1_str;
+             my_prefix:ent2 ?person_party_b;
+             my_prefix:ent2_str ?ent2_str;
+             
+             my_prefix:score ?score;
+             my_prefix:arquivo ?arquivo_doc.
+        
+        ?arquivo_doc dc:title ?title;
+                     dc:date ?date.             
         }}
-        """
+      }}
+    """
 
     result = query_sparql(prefixes + "\n" + query, "politiquices")
-    parties = []
+    relationships = []
     for x in result["results"]["bindings"]:
-        parties.append(
-            {"wiki_id": x["party"]["value"].split("/")[-1], "name": x["party_label"]["value"]}
+        relationships.append(
+            {'url': x['arquivo_doc']['value'],
+             'date': x['date']['value'],
+             'title': x['title']['value'],
+             'rel_type': relation,
+             'score': x["score"]["value"][0:5],
+             'ent1': x['person_party_a']['value'],
+             'ent1_str': x['ent1_str']['value'],
+             'ent2': x['person_party_b']['value'],
+             'ent2_str': x['ent2_str']['value'],
+             }
         )
-    return parties
-
-
-def get_entities_without_image():
-    query = f"""
-        SELECT DISTINCT ?item ?label ?image_url {{
-            ?item wdt:P31 wd:Q5.
-                SERVICE <{live_wikidata}> {{
-                ?item rdfs:label ?label .
-                FILTER(LANG(?label) = "pt")
-                FILTER NOT EXISTS {{ ?item wdt:P18 ?image_url. }}
-          }}
-          }}
-        ORDER BY ?label
-        """
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
-    entities = []
-    for x in result["results"]["bindings"]:
-        entities.append(
-            {"wikidata_id": x["item"]["value"].split("/")[-1], "label": x["label"]["value"]}
-        )
-    print(len(entities), "entities retrieved")
-    return entities
+    return relationships
 
 
 @lru_cache
@@ -716,6 +729,50 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
         )
 
     return relationships
+
+
+@lru_cache
+def get_party_of_entity(wiki_id):
+    query = f"""
+        SELECT DISTINCT ?party ?party_label {{
+            wd:{wiki_id} wdt:P31 wd:Q5.
+            SERVICE <{wikidata_endpoint}> {{ 
+                wd:{wiki_id} p:P102 ?partyStmnt .
+                ?partyStmnt ps:P102 ?party.
+                ?party rdfs:label ?party_label FILTER(LANG(?party_label)="pt") .  
+            }}  
+        }}
+        """
+
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    parties = []
+    for x in result["results"]["bindings"]:
+        parties.append(
+            {"wiki_id": x["party"]["value"].split("/")[-1], "name": x["party_label"]["value"]}
+        )
+    return parties
+
+
+def get_entities_without_image():
+    query = f"""
+        SELECT DISTINCT ?item ?label ?image_url {{
+            ?item wdt:P31 wd:Q5.
+                SERVICE <{live_wikidata}> {{
+                ?item rdfs:label ?label .
+                FILTER(LANG(?label) = "pt")
+                FILTER NOT EXISTS {{ ?item wdt:P18 ?image_url. }}
+          }}
+          }}
+        ORDER BY ?label
+        """
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    entities = []
+    for x in result["results"]["bindings"]:
+        entities.append(
+            {"wikidata_id": x["item"]["value"].split("/")[-1], "label": x["label"]["value"]}
+        )
+    print(len(entities), "entities retrieved")
+    return entities
 
 
 def query_sparql(query, endpoint):

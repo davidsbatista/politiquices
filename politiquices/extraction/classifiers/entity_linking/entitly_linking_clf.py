@@ -1,9 +1,16 @@
+import re
+import difflib
 from functools import lru_cache
 
 from elasticsearch import Elasticsearch
 
+from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
+
 print("Setting up connection with ElasticSearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
+
+# set up the custom NER system
+rule_ner = RuleBasedNer()
 
 
 @lru_cache(maxsize=2000)
@@ -91,3 +98,150 @@ def query_kb(entity, all_results=False):
 
     # print('entity_query: ', entity_query, ' -> ', None)
     return {}
+
+
+def clean_entity(entity):
+    rep = {
+        "Sr.": "",
+        "[": "",
+        "”": "",
+        "doutor": "",
+        "dr.": "",
+        "Dr.": "",
+        "sr.": "",
+        "Foto": "",
+        "Parabéns": "",
+    }
+
+    rep = dict((re.escape(k), v) for k, v in rep.items())
+    pattern = re.compile("|".join(rep.keys()))
+    new_entity = pattern.sub(lambda m: rep[re.escape(m.group(0))], entity)
+
+    return new_entity.strip()
+
+
+def deburr_entity():
+    pass
+    # ToDo:
+    # without dashes and ANSI version of a string
+
+
+def expand_entities(entity, text):
+    all_entities, persons = rule_ner.tag(text)
+    expanded = [p for p in persons if entity in p and entity != p]
+    expanded_clean = [clean_entity(x) for x in expanded]
+    return merge_substrings(expanded_clean)
+
+
+def find_perfect_match(entity, candidates):
+
+    # filter only for those whose label or aliases are a perfect match
+    matches = []
+    for c in candidates:
+        if entity == c['label']:
+            return [c]
+        else:
+            if 'aliases' in c and c['aliases'] is not None:
+                for alias in c['aliases']:
+                    if entity.lower() == alias.lower():
+                        return [c]
+    return matches
+
+
+def merge_substrings(entities):
+    """
+    This function eliminates entities which are already substrings of other  entities.
+
+    This is based on the principle that if a polysemous word appears two or more times in a
+    written discourse, it is extremely likely that they will all share the same sense.
+    (see: https://www.aclweb.org/anthology/H92-1045.pdf)
+    """
+
+    # ToDo:
+    # result = merge_substrings(['Jaime Gama', 'Jaime de Gama'])
+    # assert result == ['Jaime Gama']
+
+    # result = merge_substrings(['Paulo Azevedo', 'Paulo de Azevedo'])
+    # assert result == ['Paulo de Azevedo']
+
+    # result = merge_substrings(['Jose da Silva Lopes', 'José da Silva Lopes'])
+    # assert result == ['José da Silva Lopes']
+
+    # result = merge_substrings(["Guilherme d'Oliveira Martins", "Guilherme d' Oliveira Martins"])
+    # assert result == ['Guilherme d'Oliveira Martins']
+
+    # ['Ana Lourenço', 'Ana Dias Lourenço', 'Ana Afonso Dias Lourenço']
+    # ['Ana Afonso Dias Lourenço']
+
+    # ['Luís Filipe Menezes', 'Luis Filipe Menezes']
+    # ['Luís Filipe Menezes']
+
+    new_entities = []
+
+    # sort the locations by size
+    entities_sorted = sorted([clean_entity(x) for x in entities], key=len)
+
+    # starting with the shortest one see if it's a substring of any of the longer ones
+    for idx, x in enumerate(entities_sorted):
+        found = False
+        for other in entities_sorted[idx + 1:]:
+            if x in other:  # ToDo: use a more relaxed/fuzzy matching here
+                found = True
+                break
+        if not found and x not in new_entities:
+            new_entities.append(x)
+
+    return new_entities
+
+
+def disambiguate(expanded_entities, candidates):
+
+    """
+    # ToDo:
+    - several expanded entities
+    - if more than 'threshold' of expanded entities match full with a candiadate return that
+      candidate
+
+    case 3 ->  ['Joe Berardo', 'José Berardo'] 2
+    {'wiki': 'Q3186200', 'label': 'José Manuel Rodrigues Berardo', 'aliases': ['Joe Berardo',
+    'Joe berardo', 'José berardo', 'José Berardo', 'José manuel rodrigues berardo',
+    'Colecção Berardo']}
+
+    case 3 ->  ['Joe Berardo', 'José Berardo', 'Coleção Berardo', 'Berardo um Acordo Quadro',
+    'José Manuel Rodrigues Berardo']
+
+
+    - just one expanded entity but two candidates
+    case 2 ->  ['Filipe Menezes']
+    {'wiki': 'Q6706787', 'last_modified': '2020-12-01T22:53:40Z', 'label': 'Luís Filipe Menezes',
+    aliases': ['Luís Filipe Meneses', 'Luis Filipe de Menezes', 'Luís Filipe de Menezes']}
+    {'wiki': 'Q10321558', 'last_modified': '2020-02-05T21:22:25Z', 'label': 'Luís Menezes',
+    'aliases': ['Luís de Menezes', 'Luís Filipe Valenzuela Tavares de Menezes Lopes']}
+    """
+
+    def full_match_candidate(entities, candidate):
+        matched = 0
+        for ent in expanded_entities:
+            matched += len(find_perfect_match(ent, [candidate]))
+        return matched == len(entities)
+
+    matching_candidates = [c for c in candidates if full_match_candidate(expanded_entities, c)]
+
+    return matching_candidates
+
+
+def fuzzy_match(entity, candidate, threshold=0.77):
+
+    def fuzzy_compare(a, b):
+        seq = difflib.SequenceMatcher(None, a, b)
+        return seq.ratio()
+
+    if fuzzy_compare(entity, candidate['label']) > threshold:
+        return True
+
+    if 'aliases' in candidate and candidate['aliases'] is not None:
+        for alias in candidate['aliases']:
+            if fuzzy_compare(entity, alias) > threshold:
+                return True
+
+    return False

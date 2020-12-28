@@ -32,7 +32,6 @@
         };
     });
 
-
     /* 1. Relações de um Personalidade */
     $(function() {
       $("#autocomplete").autocomplete({
@@ -52,6 +51,8 @@
         }
       });
     });
+
+
 
     /* 2. Relações entre duas personalidades: per_one */
     $(function() {
@@ -92,55 +93,6 @@
         }
       });
     });
-
-
-    /* Personalidade acusada por membros do mesmo partido
-
-    contains an exemple of AJAX being used on autocomplete
-
-    $(function() {
-      $("#autocomplete_two").autocomplete({
-        source: nomes,
-        focus: function(event, ui) {
-          // prevent autocomplete from updating the textbox
-          event.preventDefault();
-          // manually update the textbox
-          $(this).val(ui.item.label);
-        },
-
-        select: function(event, ui) {
-          // prevent autocomplete from updating the textbox
-          event.preventDefault();
-          // manually update the textbox and hidden field
-          $(this).val(ui.item.label);
-          $("#autocomplete_two-value").val(ui.item.value);
-
-          var wiki_id = $('#autocomplete_two-value').val();
-          var data = { entity: wiki_id};
-
-          $.ajax({
-            type: 'get',
-            data: data,
-            url: '/person_party',
-            error: function () {
-              alert("There was an error processing this page.");
-              return false;
-            },
-            success: function (response) {
-              // ToDo: expand this to the case with more party/other thing
-              $('#autocomplete_two-partido-value').val(response.wiki_id);
-              $('#autocomplete_partido').val(response.name);
-            }
-          });
-
-        },
-
-
-      });
-    });
-    /*
-
-
 
 
 
@@ -184,7 +136,7 @@
       });
     });
 
-    /* ----------------------------------------------------------- */
+
 
     /* 4. Relações de uma pessoa para membros de um partido: person */
     $(function() {
@@ -226,7 +178,47 @@
       });
     });
 
-    /* ----------------------------------------------------------- */
+
+
+    /* 5. Relações entre (membros de ) dois partidos: party one */
+    $(function() {
+      $("#autocomplete_five_party_one").autocomplete({
+        source: parties,
+        focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox and hidden field
+            $(this).val(ui.item.label);
+            $("#autocomplete_five_party_one_value").val(ui.item.value);
+        }
+      });
+    });
+
+    /* 5. Relações entre (membros de ) dois partidos: party two */
+    $(function() {
+      $("#autocomplete_five_party_two").autocomplete({
+        source: parties,
+        focus: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            // prevent autocomplete from updating the textbox
+            event.preventDefault();
+            // manually update the textbox and hidden field
+            $(this).val(ui.item.label);
+            $("#autocomplete_five_party_two_value").val(ui.item.value);
+        }
+      });
+    });
 
 
 
@@ -319,13 +311,15 @@
             });
         });
 
-        /* Relações entre duas personalidade */
+        /* Relações entre (membros de) dois partidos */
         $(document).on ("click", "#btn_five", function () {
-            var entity_wiki_id = $('#autocomplete_two-value').val();
-            var party_wiki_id = $('#autocomplete_two-partido-value').val();
+            var party_a_wiki_id = $('#autocomplete_five_party_one_value').val();
+            var party_b_wiki_id = $('#autocomplete_five_party_two_value').val();
+            var e = document.getElementById("dropdownMenuButton");
             var data = { query_nr: 'five',
-                         party_a: party_wiki_id,
-                         party_b: party_wiki_id};
+                         party_a: party_a_wiki_id,
+                         party_b: party_b_wiki_id,
+                         relationship: e.textContent};
             $.ajax({
               type: 'get',
               data: data,
@@ -383,7 +377,7 @@
 
     <!-- 3. Relações entre (membros de) um partido e uma personalidade -->
     <header class="jumbotron my-3">
-        <h4><p>Relações de membros de um partido e uma determinada personalidade</p></h4>
+        <h4><p>Relações de membros de um partido para uma determinada personalidade</p></h4>
         <h6>e.g.: 'Que personalidades do BE se oposeram a Jerónimo de Sousa?'</h6>
         <h6>e.g.: 'Quem de dentro do PS se opôs a José Sócrates?'</h6>
         <br>
