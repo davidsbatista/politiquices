@@ -2,9 +2,9 @@
 This script pre-process the CETEMPublico corpus producing a JSON lines (see: http://jsonlines.org/)
 file with all the articles:
 
-1) get credentials here: https://www.linguateca.pt/CETEMPublico/informacoes.html#registo
-2) use credentials to download the file: https://www.linguateca.pt/chave/download/CHAVEPublico.zip
-3) unzip the file and move the contents into 'CHAVEPublico' directory
+1) Get credentials here: https://www.linguateca.pt/CETEMPublico/informacoes.html#registo
+2) Use credentials to download the file: https://www.linguateca.pt/chave/download/CHAVEPublico.zip
+3) Unzip the file and move the contents into 'CHAVEPublico' directory
 
 ```
 'Cultura': 9409, 

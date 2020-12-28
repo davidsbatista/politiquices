@@ -112,9 +112,21 @@ def processed_titles(filename):
             yield line
 
 
-def extract_date(crawled_date: str, publico_url=False):
+def extract_date(crawled_date: str, url_type):
 
-    if not publico_url:
+    if url_type == 'publico':
+        try:
+            date_obj = datetime.strptime(crawled_date, "%Y-%m-%d %H:%M:%S")
+            return datetime.strftime(date_obj, '%Y-%m-%d')
+        except ValueError as e:
+            raise e
+
+    elif url_type == 'chave':
+        date_obj = datetime.strptime(crawled_date, "%Y-%m-%d")
+        return datetime.strftime(date_obj, '%Y-%m-%d')
+        pass
+
+    else:
         year = crawled_date[0:4]
         month = crawled_date[4:6]
         day = crawled_date[6:8]
@@ -127,13 +139,6 @@ def extract_date(crawled_date: str, publico_url=False):
             raise ValueError(date_str)
         try:
             date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
-            return datetime.strftime(date_obj, '%Y-%m-%d')
-        except ValueError as e:
-            raise e
-
-    elif publico_url:
-        try:
-            date_obj = datetime.strptime(crawled_date, "%Y-%m-%d %H:%M:%S")
             return datetime.strftime(date_obj, '%Y-%m-%d')
         except ValueError as e:
             raise e
@@ -164,8 +169,6 @@ def process_classified_titles(titles):
 
     for title in titles:
 
-        publico_url = False
-
         e1_wiki = title["ent_1"]["wiki"]
         e2_wiki = title["ent_2"]["wiki"]
 
@@ -184,25 +187,24 @@ def process_classified_titles(titles):
                       'http://publico.pt/', 'https://publico.pt/',
                       'http://www.publico.pt/', 'https://www.publico.pt/']
 
+        url_type = 'arquivo'
         if any(url.startswith(x) for x in publico_pt):
-            publico_url = True
+            url_type = 'publico'
+        elif url.startswith('http://politiquices.pt/PUBLICO-'):
+            url_type = 'chave'
 
         # special case to transform publico.pt urls to: http://publico.pt/<news_id>
-        if publico_url:
-
+        if url_type == 'publico':
             news_id = url.split("-")[-1].replace('?all=1', '')
-
             if not re.match(r'^[0-9]+$', news_id):
                 news_id_ = news_id.split("_")[-1]
-                news_id = news_id_.replace(".1",'')
-
+                news_id = news_id_.replace(".1", '')
             if not re.match(r'^[0-9]+$', news_id):
                 raise ValueError("invalid publico.pt id: ", news_id)
-
-            url = 'http://publico.pt/'+news_id
+            url = 'http://publico.pt/' + news_id
 
         try:
-            crawled_date = extract_date(title["date"], publico_url=publico_url)
+            crawled_date = extract_date(title["date"], url_type)
         except ValueError as e:
             print(url, '\t', e)
             continue
@@ -337,6 +339,7 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--publico", help="input JSONL file with publico.pt results")
     parser.add_argument("--arquivo", help="input JSONL file with arquivo.pt results")
+    parser.add_argument("--chave", help="input JSONL file with CHAVE results")
     args = parser.parse_args()
     return args
 
@@ -344,12 +347,13 @@ def parse_args():
 def main():
     args = parse_args()
 
-    if not args.publico and not args.arquivo:
-        # ToDo: print help
-        exit(-1)
+    #if not args.publico and not args.arquivo:
+    #    # ToDo: print help
+    #    exit(-1)
 
     arquivo_articles = []
     publico_articles = []
+    chave_articles = []
 
     # remove duplicates from arquivo.pt crawled news
     if args.arquivo:
@@ -362,7 +366,14 @@ def main():
     if args.publico:
         publico_articles = [entry for entry in processed_titles(args.publico)]
 
-    articles, persons, relationships = process_classified_titles(publico_articles+arquivo_articles)
+    if args.chave:
+        chave_articles = [entry for entry in processed_titles(args.chave)]
+
+    print("arquivo: ", len(arquivo_articles))
+    print("publico: ", len(publico_articles))
+    print("chave:   ", len(chave_articles))
+    articles, persons, relationships = process_classified_titles(
+        publico_articles + arquivo_articles + chave_articles)
     populate_graph(articles, persons, relationships, args)
 
 

@@ -31,6 +31,7 @@ rule_ner = RuleBasedNer()
 
 
 publico_full_text = dict()
+chave_full_text = dict()
 
 
 def read_lstm_models():
@@ -70,7 +71,10 @@ def entity_linking(entity, url):
             return full_match_label[0]
 
     # try to expand named-entity based on article's complete text
-    if url.startswith(publico_pt):
+    if url.startswith('http://politiquices.pt/PUBLICO'):
+        text = chave_full_text[url]
+
+    elif url.startswith(publico_pt):
         try:
             text = publico_full_text[url]
         except KeyError:
@@ -150,6 +154,13 @@ def load_publico_texts():
                 continue
 
 
+def load_chave_texts():
+    with open('full_text_cache/CHAVE-Publico_94_95.jsonl') as f_in:
+        for line in f_in:
+            entry = json.loads(line)
+            chave_full_text['http://politiquices.pt/'+entry['id']] = entry['text']
+
+
 def main():
 
     args = parse_args()
@@ -158,11 +169,12 @@ def main():
         f_name = args.publico
         print("Loading publico.pt texts")
         load_publico_texts()
-
     elif args.arquivo:
         f_name = args.arquivo
     elif args.chave:
         f_name = args.chave
+        print("Loading CHAVE texts")
+        load_chave_texts()
     else:
         print(args)
         exit(-1)

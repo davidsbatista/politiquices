@@ -6,8 +6,6 @@ arquivo_pt:
     - mais dominos ?
     - datas dos dominos crawlados, alteraram-se ?
     - method to detect semantically similar titles
-    - detect very similar titles / same URL, probably different crawls:
-        - keep older date/version
 
 classifiers
 ===========
@@ -58,40 +56,20 @@ classifiers
 
     entity_linking
     --------------
-        - make it work with publico.pt and CHAVE
-
         - construir o index ElasticSearch a partir das .ttl files:
             tip: usar python RDFLib para ter label + aliases a partir das ttl files
 
-        - match com acentos/sema centos
-            - adicionar um campo com os nomes em ANSI (sem acentos)
-
-        - Linking Errors:
-            - Remove this guy http://0.0.0.0:5000/entity?q=Q295049 or add 'Pinto da Costa'
-
         - https://github.com/TheScienceMuseum/elastic-wikidata
+
+    create_graph
+    ------------
+        - exactly same input, pre-processing should be in another file
 
 Web App
 =======
 
-    - Landing Page, exemplos:
-        - Quem dentro do PS acusou José Sócrates?
-        - escolher um partido e ver as acusações + suporte internos
-        - ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
-
-    - export resultados para csv, tsv, etc.
-
     - normalizar a apresentação de relações (c/ possibilidade de correcção, c/ foto? , etc?)
     - correcção de relações a funcionar em todos os casos
-
-    - eliminate relationships between the same entity:
-        wd:Q610788  <-> wd:Q610788
-        <https://arquivo.pt/wayback/20160130010341/http://www.dn.pt/politica/interior/costa-recusa-ter-recuperado-formula-do-bloco-central-4300633.html>
-        António Costa - Costa recusa ter recuperado "fórmula" do Bloco Central - Política - DN
-
-    - alterar os namespaces para 'politiquices.pt'
-        http://politiquices.pt/entity/<wikidata_person_id> -> todas as relações da pessoa
-        http://politiquices.pt/party/<wikidata_party_id> -> todas as pessoas desse partido
 
     - unificar HTML de entity + entity search
 
@@ -108,8 +86,26 @@ Web App
         - mete uma margem em cima pequena entre a foto e o bordo do cartão
         - faz com que todo o cartão seja clicável (em vez de só o nome, como está agora)
         - personalidades carregar por scroll down
-        - https://github.com/prabhuignoto/react-chrono
         - add AJAX waiting status an animated GIF
+
+        - https://github.com/prabhuignoto/react-chrono
+
+    - Landing Page, exemplos:
+        - Quem dentro do PS acusou José Sócrates?
+        - escolher um partido e ver as acusações + suporte internos
+        - ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
+
+    - export resultados para csv, tsv, etc.
+
+    - eliminate relationships between the same entity:
+        wd:Q610788  <-> wd:Q610788
+        <https://arquivo.pt/wayback/20160130010341/http://www.dn.pt/politica/interior/costa-recusa-ter-recuperado-formula-do-bloco-central-4300633.html>
+        António Costa - Costa recusa ter recuperado "fórmula" do Bloco Central - Política - DN
+
+    - alterar os namespaces para 'politiquices.pt'
+        http://politiquices.pt/entity/<wikidata_person_id> -> todas as relações da pessoa
+        http://politiquices.pt/party/<wikidata_party_id> -> todas as pessoas desse partido
+
 
     Bugs:
        - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
