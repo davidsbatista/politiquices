@@ -1,3 +1,89 @@
+Web App
+=======
+
+    Entity:
+        - https://github.com/prabhuignoto/react-chrono
+        - unificar o código HTML de entity + entity search
+
+    Search:
+        - normalizar a apresentação de relações (c/ possibilidade de correcção, c/ foto? , etc?)
+        - correcção de relações a funcionar em todos os casos
+        - add AJAX waiting status an animated GIF
+
+    All Entities:
+        - mete uma margem em cima pequena entre a foto e o bordo do cartão
+        - personalidades carregar por scroll down
+        - resize das imagens para ficar standard
+        - loading on scroll
+
+    - Landing Page, exemplos:
+        - Quem dentro do PS acusou José Sócrates?
+        - escolher um partido e ver as acusações + suporte internos
+        - ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
+
+    - Agregacoes:
+        - Governo
+        - Assembleias
+        - Profissao
+        - Educacao
+        - listar todos os membros do Governo X
+        - listar todos os que já foram Ministros <qq cena>
+        - quem acusou/apoiou <personalidade_com_um_cargo>
+
+    - export resultados para csv, tsv, etc.
+
+    - eliminate relationships between the same entity:
+        wd:Q610788  <-> wd:Q610788
+        <https://arquivo.pt/wayback/20160130010341/http://www.dn.pt/politica/interior/costa-recusa-ter-recuperado-formula-do-bloco-central-4300633.html>
+        António Costa - Costa recusa ter recuperado "fórmula" do Bloco Central - Política - DN
+
+    - alterar os namespaces para 'politiquices.pt'
+        http://politiquices.pt/entity/<wikidata_person_id> -> todas as relações da pessoa
+        http://politiquices.pt/party/<wikidata_party_id> -> todas as pessoas desse partido
+
+
+    Bugs:
+       - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
+
+    SPARQL queries:
+        ToDo:
+            - timeline de contradições entre duas personalidades
+            - quais os partidos que acusam mais? e que partidos alvo?
+            - existem relações familiares no grafo? entre quem?
+
+   - Sparql Viz:
+        - http://ceur-ws.org/Vol-1320/paper_39.pdf
+        - http://biohackathon.org/d3sparql/
+        - https://github.com/ktym/d3sparql
+
+      - um interface qualquer para poder selecionar as relações e o intervalo de datas
+
+    queries mais interessantes:
+    ---------------------------
+        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+
+        - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
+          alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
+
+        - use case:
+            - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
+            - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
+            - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
+
+        - Charts
+            - https://www.chartjs.org/samples/latest/scales/time/financial.html
+            - https://www.chartjs.org/docs/latest/axes/cartesian/time.html
+
+   - https://www.dafont.com/de/28-days-later.font?text=Politiquices&psize=l&back=theme
+
+
+SPARQL DB
+=========
+    - text index in SPARQL: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
+    - use OR in FILTER to avoid doing two queries:
+        https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
+
+
 arquivo_pt:
 ==========
     - tirar todos os nomes da pagina do governo:
@@ -6,6 +92,7 @@ arquivo_pt:
     - mais dominos ?
     - datas dos dominos crawlados, alteraram-se ?
     - method to detect semantically similar titles
+
 
 classifiers
 ===========
@@ -65,84 +152,3 @@ classifiers
     ------------
         - exactly same input, pre-processing should be in another file
 
-Web App
-=======
-
-    - normalizar a apresentação de relações (c/ possibilidade de correcção, c/ foto? , etc?)
-    - correcção de relações a funcionar em todos os casos
-
-    - unificar HTML de entity + entity search
-
-    - Agregacoes:
-        - Governo
-        - Assembleias
-        - Profissao
-        - Educacao
-        - listar todos os membros do Governo X
-        - listar todos os que já foram Ministros <qq cena>
-        - quem acusou/apoiou <personalidade_com_um_cargo>
-
-    UI:
-        - mete uma margem em cima pequena entre a foto e o bordo do cartão
-        - faz com que todo o cartão seja clicável (em vez de só o nome, como está agora)
-        - personalidades carregar por scroll down
-        - add AJAX waiting status an animated GIF
-
-        - https://github.com/prabhuignoto/react-chrono
-
-    - Landing Page, exemplos:
-        - Quem dentro do PS acusou José Sócrates?
-        - escolher um partido e ver as acusações + suporte internos
-        - ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
-
-    - export resultados para csv, tsv, etc.
-
-    - eliminate relationships between the same entity:
-        wd:Q610788  <-> wd:Q610788
-        <https://arquivo.pt/wayback/20160130010341/http://www.dn.pt/politica/interior/costa-recusa-ter-recuperado-formula-do-bloco-central-4300633.html>
-        António Costa - Costa recusa ter recuperado "fórmula" do Bloco Central - Política - DN
-
-    - alterar os namespaces para 'politiquices.pt'
-        http://politiquices.pt/entity/<wikidata_person_id> -> todas as relações da pessoa
-        http://politiquices.pt/party/<wikidata_party_id> -> todas as pessoas desse partido
-
-
-    Bugs:
-       - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
-
-    SPARQL queries:
-        ToDo:
-            - timeline de contradições entre duas personalidades
-            - quais os partidos que acusam mais? e que partidos alvo?
-            - existem relações familiares no grafo? entre quem?
-
-   - Sparql Viz:
-        - http://ceur-ws.org/Vol-1320/paper_39.pdf
-        - http://biohackathon.org/d3sparql/
-        - https://github.com/ktym/d3sparql
-
-      - um interface qualquer para poder selecionar as relações e o intervalo de datas
-
-    queries mais interessantes:
-    ---------------------------
-        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-
-        - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
-          alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
-
-        - use case:
-            - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
-            - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
-            - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
-
-        - Charts
-            - https://www.chartjs.org/samples/latest/scales/time/financial.html
-            - https://www.chartjs.org/docs/latest/axes/cartesian/time.html
-
-   - https://www.dafont.com/de/28-days-later.font?text=Politiquices&psize=l&back=theme
-
-SPARQL DB
-=========
-    - text index in SPARQL: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
-    - use OR in FILTER to avoid doing two queries:
-        https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
