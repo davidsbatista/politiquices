@@ -18,9 +18,6 @@ web:
 	pip install --upgrade pip; \
 	pip install -r webapp/requirements.txt; \
 	cd $${HOME}/politiquices/politiquices/webapp/; \
-	PYTHONPATH=$${HOME}/politiquices python webapp/populate_search_boxes.py; \
-	mv persons.json webapp/app/static/; \
-	mv parties.json webapp/app/static/; \
 	PYTHONPATH=$${HOME}/politiquices python webapp/run-webserver.py;
 
 

@@ -4,26 +4,64 @@
 
 {% block body %}
 
-<!-- Page Content -->
-<div class="container">
+
+<div class="container" id="content">
 
     <!-- Jumbotron Header -->
     <header class="jumbotron my-4">
         <h4><b>Personalidades Políticas</b></h4>
     </header>
 
+    <script>
+
+    var last_index = 12
+
+    $(window).scroll(function () {
+        // End of the document reached?
+        if ($(document).height() - $(this).height() - 100 < $(this).scrollTop()) {
+
+            // console.log('Just 100 pixels above to Bottom');
+            // var = last_number + 12
+
+            $.ajax({
+                type: "GET",
+                url: "/load_entities",
+                contentType: "application/json; charset=utf-8",
+                data: {'page': last_index },
+                dataType: "JSON",
+                success: function (data) {
+
+                      var html = "<div class=\"row text-center\" id=\"entities\">";
+                      $.each(data, function(index, element){
+                        html += "<div class=\"col-lg-3 col-md-6 mb-4\"><a style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;\" href=\"/entity?q=" + element.wikidata_id + '"' + " class=\"custom-card\"><div class=\"card h-100\"><center><img class=\"figure-img img-fluid rounded\" src=\"" + element.image_url + "\"width=\"120\" height=\"150\"></center><div class=\"card-body\"><h6 class=\"card-title\">" + element.name + "</h6><center>" + element.nr_articles + "<///center></div></div></a></div>"
+                        dataCount = parseInt(index) + 1;
+                      });
+
+                      $("#content").append(html);
+                      last_index += dataCount
+
+                },
+                error: function (req, status, error) {
+                    alert("Error try again");
+                }
+            });
+        }
+    });
+
+    </script>
+
     {% for tmp in items|batch(4) %}
-      <div class="row text-center">
+      <div class="row text-center" id="entities">
           {% for item in tmp %}
             <div class="col-lg-3 col-md-6 mb-4">
-                <a style="display: flex; flex-direction: column; align-items: center; justify-content: center;" href="/entity?q={{item.wikidata_id}}" class="custom-card">
+                <a style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;" href="/entity?q={{item.wikidata_id}}" class="custom-card">
                 <div class="card h-100">
                     <center>
                         <img class="figure-img img-fluid rounded" src="{{item.image_url}}" width="120" height="150" alt="">
                     </center>
                     <div class="card-body">
                         <h6 class="card-title">{{item.name}}</h6>
-                        <center>{{item.nr_articles}} articles</center>
+                        <center>{{item.nr_articles}} artigos</center>
                     </div>
                 </div>
                 </a>

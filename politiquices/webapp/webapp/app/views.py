@@ -1,3 +1,4 @@
+import json
 import logging
 
 from app import app
@@ -6,8 +7,6 @@ from flask import render_template
 
 
 from politiquices.webapp.webapp.app.sparql_queries import (
-    query_sparql,
-    get_total_nr_articles_for_each_person,
     get_nr_articles_per_year,
     get_nr_of_persons,
     get_total_nr_of_articles,
@@ -24,13 +23,15 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     list_of_spec_relations_between_a_person_and_members_of_a_party,
     list_of_spec_relations_between_two_parties
 )
-from politiquices.webapp.webapp.app.sparql_queries import all_entities
+
 from politiquices.webapp.webapp.app.relationships import build_relationships_freq
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 person_no_image = "/static/images/no_picture.jpg"
+
+all_entities_info = None
 
 
 @app.route("/")
@@ -62,52 +63,23 @@ def status():
     return render_template("stats.html", items=items)
 
 
+@app.route("/load_entities")
+def load_entities():
+    print(request.args)
+    start = int(request.args.get("page"))
+    end = start + 24
+    print(start, end)
+    return jsonify(all_entities_info[start:end])
+
+
 @app.route("/entities")
 def list_entities():
-    # ToDo: run this on the Makefile, just after the server is launched and cache
+    global all_entities_info
+    if not all_entities_info:
+        with open("webapp/app/static/all_entities.json") as f_in:
+            all_entities_info = json.load(f_in)
 
-    print("Getting entities extra info from wikidata.org")
-    entities = query_sparql(all_entities(), "politiquices")
-    persons = set()
-    items_as_dict = dict()
-    nr_entities = len(entities["results"]["bindings"])
-
-    print(f"{nr_entities} retrieved")
-
-    for e in entities["results"]["bindings"]:
-
-        # this is just avoid duplicate entities, same entity with two labels
-        # ToDo: see how to fix this with a SPARQL query
-        url = e["item"]["value"]
-        if url in persons:
-            continue
-        persons.add(url)
-
-        name = e["label"]["value"]
-        image_url = e["image_url"]["value"] if "image_url" in e else person_no_image
-
-        wiki_id = url.split("/")[-1]
-
-        items_as_dict[wiki_id] = {
-            "wikidata_url": url,
-            "wikidata_id": wiki_id,
-            "name": name,
-            "nr_articles": 0,
-            "image_url": image_url,
-        }
-
-    article_counts = query_sparql(get_total_nr_articles_for_each_person(), "politiquices")
-    for e in article_counts["results"]["bindings"]:
-        wiki_id = e["person"]["value"].split("/")[-1]
-        if wiki_id in items_as_dict:
-            nr_articles = int(e["count"]["value"])
-            items_as_dict[wiki_id]["nr_articles"] = nr_articles
-
-    items = sorted(list(items_as_dict.values()), key=lambda x: x["nr_articles"], reverse=True)
-
-    print(f"{nr_entities} entities mentioned in titles")
-
-    return render_template("all_entities.html", items=items)
+    return render_template("all_entities.html", items=all_entities_info[0:12])
 
 
 def make_title_linkable(r, wiki_id):
