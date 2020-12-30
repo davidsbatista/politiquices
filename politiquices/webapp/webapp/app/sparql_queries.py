@@ -6,8 +6,8 @@ from functools import lru_cache
 from SPARQLWrapper import SPARQLWrapper, JSON
 from politiquices.webapp.webapp.app.data_models import (
     OfficePosition,
-    PoliticalParty,
     Person,
+    PoliticalParty,
     Relationship,
     RelationshipType,
 )
@@ -421,45 +421,6 @@ def get_wiki_id_affiliated_with_party(political_party: str):
 
 
 @lru_cache
-def get_all_parties():
-    query = f"""
-        SELECT DISTINCT ?political_party ?party_label ?party_logo 
-                        (COUNT(?person) as ?nr_personalities){{
-            ?person wdt:P31 wd:Q5 .
-            SERVICE <{wikidata_endpoint}> {{
-                ?person wdt:P102 ?political_party .
-                ?political_party rdfs:label ?party_label .
-                OPTIONAL {{?political_party wdt:P154 ?party_logo. }} 
-                FILTER(LANG(?party_label) = "pt")
-          }}
-        }} GROUP BY ?political_party ?party_label ?party_logo
-        ORDER BY DESC(?nr_personalities)
-        """
-
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
-    political_parties = []
-    for x in results["results"]["bindings"]:
-
-        if "party_logo" in x:
-            party_logo = x["party_logo"]["value"]
-        else:
-            if x["political_party"]["value"].split("/")[-1] == "Q847263":
-                party_logo = ps_logo
-            else:
-                party_logo = no_image
-        political_parties.append(
-            {
-                "wiki_id": x["political_party"]["value"].split("/")[-1],
-                "party_label": x["party_label"]["value"],
-                "party_logo": party_logo,
-                "nr_personalities": x["nr_personalities"]["value"],
-            }
-        )
-
-    return political_parties
-
-
-@lru_cache
 def all_entities():
     query = f"""
         SELECT DISTINCT ?item ?label ?image_url {{
@@ -478,7 +439,6 @@ def all_entities():
 
 @lru_cache
 def get_top_relationships(wiki_id: str):
-
     persons_ent1 = defaultdict(list)
     query = f"""
         SELECT ?rel_type ?ent2 ?ent2_name (COUNT(?arquivo_doc) as ?nr_articles)

@@ -50,6 +50,7 @@
 
     </script>
 
+    <div id="inner" class="w-100 p-1">
     {% for tmp in items|batch(4) %}
       <div class="row text-center" id="entities">
           {% for item in tmp %}
@@ -69,7 +70,7 @@
           {% endfor %}
       </div>
     {% endfor %}
-
+    </div>
 </div>
 
 <br><br>

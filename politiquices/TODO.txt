@@ -19,6 +19,8 @@ Web App
         - escolher um partido e ver as acusações + suporte internos
         - ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
 
+    - Carregar o JS todo localmente
+
     - Agregacoes:
         - Governo
         - Assembleias

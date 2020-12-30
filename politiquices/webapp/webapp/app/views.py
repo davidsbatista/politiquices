@@ -7,20 +7,19 @@ from flask import render_template
 
 
 from politiquices.webapp.webapp.app.sparql_queries import (
+    get_entities_without_image,
     get_nr_articles_per_year,
     get_nr_of_persons,
-    get_total_nr_of_articles,
-    get_person_info,
-    get_persons_affiliated_with_party,
-    get_top_relationships,
-    get_all_parties,
-    get_person_relationships,
     get_party_of_entity,
-    get_wiki_id_affiliated_with_party,
-    get_entities_without_image,
+    get_person_info,
+    get_person_relationships,
+    get_persons_affiliated_with_party,
     get_relationships_between_two_entities,
-    list_of_spec_relations_between_members_of_a_party_with_someone,
+    get_top_relationships,
+    get_total_nr_of_articles,
+    get_wiki_id_affiliated_with_party,
     list_of_spec_relations_between_a_person_and_members_of_a_party,
+    list_of_spec_relations_between_members_of_a_party_with_someone,
     list_of_spec_relations_between_two_parties
 )
 
@@ -32,6 +31,7 @@ logger.setLevel(logging.WARNING)
 person_no_image = "/static/images/no_picture.jpg"
 
 all_entities_info = None
+all_parties_info = None
 
 
 @app.route("/")
@@ -77,7 +77,6 @@ def list_entities():
     if not all_entities_info:
         with open("webapp/app/static/all_entities.json") as f_in:
             all_entities_info = json.load(f_in)
-
     return render_template("all_entities.html", items=all_entities_info[0:36])
 
 
@@ -176,8 +175,12 @@ def party_members():
 
 @app.route("/parties")
 def all_parties():
-    items = get_all_parties()
-    return render_template("all_parties.html", items=items)
+    global all_parties_info
+    if not all_parties_info:
+        with open("webapp/app/static/all_parties_info.json") as f_in:
+            all_parties_info = json.load(f_in)
+
+    return render_template("all_parties.html", items=all_parties_info)
 
 
 @app.route("/person_party")

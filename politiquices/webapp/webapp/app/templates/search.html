@@ -32,7 +32,7 @@
         };
     });
 
-    /* 1. Relações de um Personalidade */
+    /* 1. Relações de um Personalidade
     $(function() {
       $("#autocomplete").autocomplete({
         source: nomes,
@@ -51,7 +51,7 @@
         }
       });
     });
-
+    */
 
 
     /* 2. Relações entre duas personalidades: per_one */
@@ -224,7 +224,7 @@
 
     $(document).ready ( function () {
 
-        /* Relações de uma personalidade */
+        /* Relações de uma personalidade
         $(document).on ("click", "#btn_one", function () {
             var wiki_id = $('#autocomplete-value').val();
             var data = { q: wiki_id, search: true};
@@ -241,6 +241,7 @@
               }
             });
         });
+        */
 
         /* Relações entre duas personalidade */
         $(document).on ("click", "#btn_two", function () {
@@ -345,7 +346,7 @@
 
     </script>
 
-    <!-- 1. Relações de uma personalidade -->
+    <!-- 1. Relações de uma personalidade
     <header class="jumbotron my-3">
         <h4><p>Ver relações uma personalidade</p></h4>
         <form class="container-fluid justify-content-center align-items-center">
@@ -358,6 +359,9 @@
         </div>
         </form>
     </header>
+    -->
+
+    <div id="inner" class="w-100 p-1">
 
     <!-- 2. Relações entre duas personalidades -->
     <header class="jumbotron my-3">
@@ -467,6 +471,8 @@
     </header>
 
     <div id="entityResults" class="w-85 p-2" align="left"></div>
+
+    </div>
 
   </div>
 
