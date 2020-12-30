@@ -65,9 +65,8 @@ def status():
 
 @app.route("/load_entities")
 def load_entities():
-    print(request.args)
-    start = int(request.args.get("page"))
-    end = start + 24
+    start = int(request.args.get("last_index"))
+    end = start + 36
     print(start, end)
     return jsonify(all_entities_info[start:end])
 
@@ -79,7 +78,7 @@ def list_entities():
         with open("webapp/app/static/all_entities.json") as f_in:
             all_entities_info = json.load(f_in)
 
-    return render_template("all_entities.html", items=all_entities_info[0:12])
+    return render_template("all_entities.html", items=all_entities_info[0:36])
 
 
 def make_title_linkable(r, wiki_id):

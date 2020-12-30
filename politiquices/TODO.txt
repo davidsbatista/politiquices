@@ -2,7 +2,6 @@ Web App
 =======
 
     All Entities:
-        - personalidades carregar por scroll down
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
 
@@ -86,9 +85,10 @@ SPARQL DB
 
 arquivo_pt:
 ==========
-    - tirar todos os nomes da pagina do governo:
-        - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
-        - Ontologia POWER
+    queries:
+        - tirar todos os nomes da pagina do governo:
+            - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
+            - nomes da Ontologia POWER
     - mais dominos ?
     - datas dos dominos crawlados, alteraram-se ?
     - method to detect semantically similar titles
