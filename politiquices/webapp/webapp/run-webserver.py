@@ -10,7 +10,7 @@ from politiquices.webapp.webapp.app.sparql_queries import prefixes
 
 ps_logo = "/static/images/Logo_do_Partido_Socialista(Portugal).png"
 no_image = "/static/images/no_picture.jpg"
-static_data = 'webapp/app/static/'
+static_data = 'webapp/app/static/json/'
 wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
 
 

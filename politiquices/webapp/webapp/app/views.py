@@ -66,8 +66,10 @@ def status():
 @app.route("/load_entities")
 def load_entities():
     start = int(request.args.get("last_index"))
-    end = start + 36
+    end = start + 4
     print(start, end)
+    for x in all_entities_info[start:end]:
+        print(x)
     return jsonify(all_entities_info[start:end])
 
 
@@ -75,7 +77,7 @@ def load_entities():
 def list_entities():
     global all_entities_info
     if not all_entities_info:
-        with open("webapp/app/static/all_entities.json") as f_in:
+        with open("webapp/app/static/json/all_entities.json") as f_in:
             all_entities_info = json.load(f_in)
     return render_template("all_entities.html", items=all_entities_info[0:36])
 
@@ -168,6 +170,7 @@ def detail_entity():
 
 @app.route("/party_members")
 def party_members():
+    # ToDo: cache this to a JSON
     wiki_id = request.args.get("q")
     persons, party_name, party_logo = get_persons_affiliated_with_party(wiki_id)
     return render_template("party_members.html", items=persons, name=party_name, logo=party_logo)
@@ -177,7 +180,7 @@ def party_members():
 def all_parties():
     global all_parties_info
     if not all_parties_info:
-        with open("webapp/app/static/all_parties_info.json") as f_in:
+        with open("webapp/app/static/json/all_parties_info.json") as f_in:
             all_parties_info = json.load(f_in)
 
     return render_template("all_parties.html", items=all_parties_info)

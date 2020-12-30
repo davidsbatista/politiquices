@@ -10,6 +10,11 @@ Web App
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
 
+    Partidos:
+        - pessoas de cada partido:
+        -   pre-carregar num JSON
+        -   load on scroll down
+
     Entity:
         - https://github.com/prabhuignoto/react-chrono
         - unificar o código HTML de entity + entity search
