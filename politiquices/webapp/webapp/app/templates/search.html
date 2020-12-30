@@ -220,28 +220,15 @@
       });
     });
 
-
-
     $(document).ready ( function () {
 
-        /* Relações de uma personalidade
-        $(document).on ("click", "#btn_one", function () {
-            var wiki_id = $('#autocomplete-value').val();
-            var data = { q: wiki_id, search: true};
-            $.ajax({
-              type: 'get',
-              data: data,
-              url: '/entity',
-              error: function () {
-                alert("There was an error processing this page.");
-                return false;
-              },
-              complete: function (output) {
-                $('#entityResults').html(output.responseText);
-              }
-            });
+        $body = $("body");
+
+        $(document).on({
+          ajaxStart: function() { $body.addClass("loading"); },
+          ajaxStop: function() { $body.removeClass("loading"); }
         });
-        */
+
 
         /* Relações entre duas personalidade */
         $(document).on ("click", "#btn_two", function () {

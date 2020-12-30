@@ -1,18 +1,18 @@
 Web App
 =======
 
+    Search:
+        - normalizar a apresentação de relações (c/ possibilidade de correcção, c/ foto? , etc?)
+        - correcção de relações a funcionar em todos os casos
+
     All Entities:
+        - disable scroll when the personality view is activated
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
 
     Entity:
         - https://github.com/prabhuignoto/react-chrono
         - unificar o código HTML de entity + entity search
-
-    Search:
-        - normalizar a apresentação de relações (c/ possibilidade de correcção, c/ foto? , etc?)
-        - correcção de relações a funcionar em todos os casos
-        - add AJAX waiting status an animated GIF -> http://www.ajaxload.info/
 
     - Landing Page, exemplos:
         - Quem dentro do PS acusou José Sócrates?

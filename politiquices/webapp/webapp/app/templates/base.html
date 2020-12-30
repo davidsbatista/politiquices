@@ -49,14 +49,7 @@
             // manually update the textbox and hidden field
             $(this).val(ui.item.label);
             $("#autocomplete-value").val(ui.item.value);
-        }
-      });
-    });
 
-    $(document).ready ( function () {
-
-        /* Relações de uma personalidade */
-        $(document).on ("click", "#btn_one", function () {
             var wiki_id = $('#autocomplete-value').val();
             var data = { q: wiki_id, search: true};
             $.ajax({
@@ -72,7 +65,41 @@
                 $('#inner').html(output.responseText);
               }
             });
+        }
+      });
+    });
+
+    $(document).ready ( function () {
+
+        /* Relações de uma personalidade */
+        $(document).on ("click", "#btn_one", function () {
+            var wiki_id = $('#autocomplete-value').val();
+            var data = { q: wiki_id, search: true};
+
+            $.ajax({
+
+              type: 'get',
+              data: data,
+              url: '/entity',
+
+              error: function () {
+                alert("There was an error processing this page.");
+                return false;
+              },
+
+              complete: function (output) {
+                $('#inner').empty();
+                $('#inner').html(output.responseText);
+              }
+            });
         });
+    });
+
+    $body = $("body");
+
+    $(document).on({
+      ajaxStart: function() { $body.addClass("loading"); },
+      ajaxStop: function() { $body.removeClass("loading"); }
     });
 
   </script>
@@ -95,17 +122,6 @@
         <ul class="navbar-nav ml-auto">
           <input class="form-control form-control-sm" id="autocomplete" type="text" placeholder="Personalidade" aria-label=".form-control-sm example">
           <input type="hidden" id="autocomplete-value" type="text" name="wiki">
-          <button type="button" id='btn_one' class="btn btn-primary btn-sm">Seleccionar</button>
-          <!--<button class="btn btn-outline-success" id="btn_one" type="submit">Search</button>-->
-          <!--
-          <form class="form-control form-control-sm">
-          <input id="autocomplete" class="span9" type="text" placeholder="Personalidade" />
-          </form>
-          <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-          </form>
-          -->
           <li class="nav-item">
             <a class="nav-link" href="/entities">Personalidades</a>
           </li>
@@ -130,18 +146,21 @@
 
     {% endblock %}
 
-    <!-- Footer -->
-    <footer class="py-5 bg-dark">
-    <div class="container">
-      <p class="m-0 text-center text-white"> &copy; politiquices.pt 2020</p>
-    </div>
-    <!-- /.container -->
-    </footer>
+  <!-- AJAX loading component -->
+  <div class="modal"><!-- Place at bottom of page --></div>
 
-    <!-- Popper - Tooltip & Popover Positioning Enginepopper.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-    <!-- Bootstrap min -->
-    <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <!-- Footer -->
+  <footer class="py-5 bg-dark">
+  <div class="container">
+    <p class="m-0 text-center text-white"> &copy; politiquices.pt 2020</p>
+  </div>
+  <!-- /.container -->
+  </footer>
+
+  <!-- Popper - Tooltip & Popover Positioning Enginepopper.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+  <!-- Bootstrap min -->
+  <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
