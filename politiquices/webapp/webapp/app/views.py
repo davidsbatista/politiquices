@@ -70,8 +70,6 @@ def load_entities():
     start = int(request.args.get("last_index"))
     end = start + entities_batch_size
     print(start, end)
-    for x in all_entities_info[start:end]:
-        print(x)
     return jsonify(all_entities_info[start:end])
 
 
@@ -260,7 +258,11 @@ def queries():
         results = list_of_spec_relations_between_members_of_a_party_with_someone(
             party_wiki_id, person_wiki_id, rel
         )
-        return render_template("template_one.html", items=results)
+
+        for r in results:
+            make_title_linkable_2_entities(r)
+
+        return render_template("two_entities_relationships.html", items=results)
 
     # relationships between an entity and (members of) a party
     if query_nr == "four":
@@ -276,7 +278,10 @@ def queries():
         results = list_of_spec_relations_between_a_person_and_members_of_a_party(
             person_wiki_id, party_wiki_id, rel
         )
-        return render_template("template_one.html", items=results)
+
+        for r in results:
+            make_title_linkable_2_entities(r)
+        return render_template("two_entities_relationships.html", items=results)
 
     # relationships between (members of) a party and (members of) another party
     if query_nr == "five":

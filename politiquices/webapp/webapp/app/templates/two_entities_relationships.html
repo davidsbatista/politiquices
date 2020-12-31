@@ -1,65 +1,64 @@
 {% block body %}
 
 <script>
+    $(document).ready(function() {
+      $(".submit").click(function() {
 
-$(document).ready(function() {
-  $(".submit").click(function() {
+        var original_rel = $(this).closest('tr').parent().parent().prop('id');
+        var title_data = {};
+        var entities = {};
 
-    var original_rel = $(this).closest('tr').parent().parent().prop('id');
-    var title_data = {};
-    var entities = {};
+        $(this).closest('tr').find('td').not(':last').each(function() {
 
-    $(this).closest('tr').find('td').not(':last').each(function() {
+            /* ent_1, wiki_1 and ent_2, wiki_2, title and arquivo.pt link */
+            if ($(this).attr('id') == 'title') {
+              title_data.url = $(this).find('#link').attr("href");
+              title_data.title = $(this).find('#link').attr("data-title");
 
-        /* ent_1, wiki_1 and ent_2, wiki_2, title and arquivo.pt link */
-        if ($(this).attr('id') == 'title') {
-          title_data.url = $(this).find('#link').attr("href");
-          title_data.title = $(this).find('#link').attr("data-title");
+              var ent1 = $(this).find('#ent_1').text();
+              var ent1_wiki_url = $(this).find('#ent_1').attr("href").split("q=")[1];
+              var ent2 = $(this).find('#ent_2').text();
+              var ent2_wiki_url = $(this).find('#ent_2').attr("href").split("q=")[1];
+              entities.ent1 = ent1;
+              entities.ent1_wiki_url = ent1_wiki_url;
+              entities.ent2 = ent2;
+              entities.ent2_wiki_url = ent2_wiki_url;
+            }
 
-          var ent1 = $(this).find('#ent_1').text();
-          var ent1_wiki_url = $(this).find('#ent_1').attr("href").split("q=")[1];
-          var ent2 = $(this).find('#ent_2').text();
-          var ent2_wiki_url = $(this).find('#ent_2').attr("href").split("q=")[1];
-          entities.ent1 = ent1;
-          entities.ent1_wiki_url = ent1_wiki_url;
-          entities.ent2 = ent2;
-          entities.ent2_wiki_url = ent2_wiki_url;
-        }
+            /* date of crawl */
+            if ($(this).attr('id') == 'data') {
+                var data = $(this).text();
+                title_data.date = data;
+            }
 
-        /* date of crawl */
-        if ($(this).attr('id') == 'data') {
-            var data = $(this).text();
-            title_data.date = data;
-        }
+            /* selected rel_type */
+            if ($(this).attr('id') == 'rel_type') {
+                selected_rel = $(this).find('button').text();
+                title_data.rel_type = selected_rel;
+            }
+       });
 
-        /* selected rel_type */
-        if ($(this).attr('id') == 'rel_type') {
-            selected_rel = $(this).find('button').text();
-            title_data.rel_type = selected_rel;
-        }
-   });
+       var myJsonString = JSON.stringify(title_data);
+       console.log(myJsonString)
+       $.ajax({
+         type: "POST",
+         context: this,
+         crossDomain: true,
+         url: 'http://politiquices.pt:8000/annotation/',
+         data: myJsonString,
+         success: function (data) {
+           console.log(this);
+           $(this).addClass("disabled");
+         },
+       });
+      });
+    });
 
-   var myJsonString = JSON.stringify(title_data);
-   console.log(myJsonString)
-   $.ajax({
-     type: "POST",
-     context: this,
-     crossDomain: true,
-     url: 'http://politiquices.pt:8000/annotation/',
-     data: myJsonString,
-     success: function (data) {
-       console.log(this);
-       $(this).addClass("disabled");
-     },
-   });
-  });
-});
-
-$(document).ready(function() {
-   $(".dropdown-menu").on('click', 'a', function(){
-       $(this).parents('.dropdown').find('button').text($(this).text());
-   });
-});
+    $(document).ready(function() {
+       $(".dropdown-menu").on('click', 'a', function(){
+           $(this).parents('.dropdown').find('button').text($(this).text());
+       });
+    });
 </script>
 
 <!-- Page Content -->

@@ -20,13 +20,12 @@
   <!-- Charts.JS -->
   <script src="static/vendor/Chart.min.js"></script>
 
+  <!-- Jquery UI -->
   <link rel="stylesheet" href="static/css/jquery-ui.css">
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  <script src="static/vendor/jquery-ui.js"></script>
 
   <script>
-
     $body = $("body");
-
     $(document).on({
       ajaxStart: function() { $body.addClass("loading"); },
       ajaxStop: function() { $body.removeClass("loading"); }
@@ -55,9 +54,9 @@
             event.preventDefault();
             // manually update the textbox and hidden field
             $(this).val(ui.item.label);
-            $("#autocomplete-value").val(ui.item.value);
+            $("#autocomplete_nav_bar-value").val(ui.item.value);
 
-            var wiki_id = $('#autocomplete-value').val();
+            var wiki_id = $('#autocomplete_nav_bar-value').val();
             var data = { q: wiki_id, search: true};
             $.ajax({
               type: 'get',
@@ -76,9 +75,9 @@
       });
     });
 
+    /*
     $(document).ready ( function () {
 
-        /* Relações de uma personalidade */
         $(document).on ("click", "#btn_one", function () {
             var wiki_id = $('#autocomplete-value').val();
             var data = { q: wiki_id, search: true};
@@ -101,7 +100,7 @@
             });
         });
     });
-
+    */
   </script>
 
   <title>{% block title %} {% endblock %}</title>
@@ -121,7 +120,7 @@
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
           <input class="form-control form-control-sm" id="autocomplete_nav_bar" type="text" placeholder="Personalidade" aria-label=".form-control-sm example">
-          <input type="hidden" id="autocomplete-value" type="text" name="wiki">
+          <input type="hidden" id="autocomplete_nav_bar-value" type="text" name="wiki">
           <li class="nav-item">
             <a class="nav-link" href="/entities">Personalidades</a>
           </li>
@@ -129,7 +128,7 @@
             <a class="nav-link" href="/parties">Partidos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/search">Pesquisar</a>
+            <a class="nav-link" href="/search">Procurar</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="/stats">Estatísticas</a>

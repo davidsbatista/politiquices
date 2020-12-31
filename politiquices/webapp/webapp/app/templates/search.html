@@ -6,9 +6,6 @@
 
   <div class="container">
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
     <script>
     /*
     * jQuery UI Autocomplete: Using Label-Value Pairs
@@ -17,7 +14,7 @@
     */
 
     nomes = [];
-    $.getJSON("static/persons.json", function(json_data){
+    $.getJSON("static/json/persons.json", function(json_data){
         for (var i = 0, len = json_data.length; i < len; i++) {
             var person = {label: json_data[i].name, value: json_data[i].wiki_id};
             nomes.push(person);
@@ -25,36 +22,14 @@
     });
 
     parties = [];
-    $.getJSON("static/parties.json", function(json_data){
+    $.getJSON("static/json/parties.json", function(json_data){
         for (var i = 0, len = json_data.length; i < len; i++) {
             var party = {label: json_data[i].name, value: json_data[i].wiki_id};
             parties.push(party);
         };
     });
 
-    /* 1. Relações de um Personalidade
-    $(function() {
-      $("#autocomplete").autocomplete({
-        source: nomes,
-        focus: function(event, ui) {
-            // prevent autocomplete from updating the textbox
-            event.preventDefault();
-            // manually update the textbox
-            $(this).val(ui.item.label);
-        },
-        select: function(event, ui) {
-            // prevent autocomplete from updating the textbox
-            event.preventDefault();
-            // manually update the textbox and hidden field
-            $(this).val(ui.item.label);
-            $("#autocomplete-value").val(ui.item.value);
-        }
-      });
-    });
-    */
-
-
-    /* 2. Relações entre duas personalidades: per_one */
+    /* 1. Relações entre duas personalidades: per_one */
     $(function() {
       $("#autocomplete_per_one").autocomplete({
         source: nomes,
@@ -74,7 +49,7 @@
       });
     });
 
-    /* 2. Relações entre duas personalidades per_one */
+    /* 1. Relações entre duas personalidades per_one */
     $(function() {
       $("#autocomplete_per_two").autocomplete({
         source: nomes,
@@ -94,9 +69,7 @@
       });
     });
 
-
-
-    /* 3. Relações de membros de um partido para uma pessoa: party */
+    /* 2. Relações de membros de um partido para uma pessoa: party */
     $(function() {
       $("#autocomplete_three_partido").autocomplete({
         source: parties,
@@ -116,7 +89,8 @@
       });
     });
 
-    /* 3. Relações de membros de um partido para uma pessoa: person */
+
+    /* 2. Relações de membros de um partido para uma pessoa: person */
     $(function() {
       $("#autocomplete_three_pessoa").autocomplete({
         source: nomes,
@@ -137,8 +111,7 @@
     });
 
 
-
-    /* 4. Relações de uma pessoa para membros de um partido: person */
+    /* 3. Relações de uma pessoa para membros de um partido: person */
     $(function() {
       $("#autocomplete_four_pessoa").autocomplete({
         source: nomes,
@@ -158,7 +131,7 @@
       });
     });
 
-    /* 4. Relações de uma pessoa para membros de um partido: party */
+    /* 3. Relações de uma pessoa para membros de um partido: party */
     $(function() {
       $("#autocomplete_four_partido").autocomplete({
         source: parties,
@@ -180,7 +153,7 @@
 
 
 
-    /* 5. Relações entre (membros de ) dois partidos: party one */
+    /* 4. Relações entre (membros de ) dois partidos: party one */
     $(function() {
       $("#autocomplete_five_party_one").autocomplete({
         source: parties,
@@ -200,7 +173,7 @@
       });
     });
 
-    /* 5. Relações entre (membros de ) dois partidos: party two */
+    /* 4. Relações entre (membros de ) dois partidos: party two */
     $(function() {
       $("#autocomplete_five_party_two").autocomplete({
         source: parties,
@@ -229,7 +202,6 @@
           ajaxStop: function() { $body.removeClass("loading"); }
         });
 
-
         /* Relações entre duas personalidade */
         $(document).on ("click", "#btn_two", function () {
             var wiki_id_one = $('#autocomplete_per_one-value').val();
@@ -251,11 +223,12 @@
             });
         });
 
-        /* Relações entre (membros de ) um partido e uma personalidade */
+
+        /* Relações entre (membros de) um partido e uma personalidade */
         $(document).on ("click", "#btn_three", function () {
             var party_wiki_id = $('#autocomplete_three_partido_value').val();
             var entity_wiki_id = $('#autocomplete_three_pessoa_value').val();
-            var e = document.getElementById("dropdownMenuButton");
+            var e = document.getElementById("dropdownMenuButton2");
             var data = { query_nr: 'three',
                          party: party_wiki_id,
                          entity: entity_wiki_id,
@@ -275,11 +248,11 @@
             });
         });
 
-        /* Relações de uma personalidade para (membros de ) um partido */
+        /* Relações de uma personalidade para (membros de) um partido */
         $(document).on ("click", "#btn_four", function () {
             var entity_wiki_id = $('#autocomplete_four_pessoa_value').val();
             var party_wiki_id = $('#autocomplete_four_partido_value').val();
-            var e = document.getElementById("dropdownMenuButton");
+            var e = document.getElementById("dropdownMenuButton3");
             var data = { query_nr: 'four',
                          party: party_wiki_id,
                          entity: entity_wiki_id,
@@ -333,26 +306,11 @@
 
     </script>
 
-    <!-- 1. Relações de uma personalidade
-    <header class="jumbotron my-3">
-        <h4><p>Ver relações uma personalidade</p></h4>
-        <form class="container-fluid justify-content-center align-items-center">
-        <input type="hidden" id="autocomplete-value" type="text" name="wiki">
-        <div class="control-group">
-            <div class="controls controls-row row-fluid col-xs-4">
-                <input id="autocomplete" class="span10" type="text" placeholder="Personalidade" />
-                <button type="button" id='btn_one' class="btn btn-primary btn-sm">Seleccionar</button>
-            </div>
-        </div>
-        </form>
-    </header>
-    -->
-
     <div id="inner" class="w-100 p-1">
 
     <!-- 1. Relações entre duas personalidades -->
     <header class="jumbotron my-3">
-        <h4><p>Todas as relações entre duas personalidades</p></h4>
+        <h4><p>Relações entre duas determinadas personalidades</p></h4>
         <form class="container-fluid justify-content-center align-items-center">
         <input id="autocomplete_per_one-value" type="hidden" name="wiki">
         <input id="autocomplete_per_two-value" type="hidden" name="wiki">
@@ -360,7 +318,7 @@
             <div class="controls controls-row row-fluid col-xs-4">
                 <input id="autocomplete_per_one" class="span10" type="text" placeholder="Personalidade" />
                 <input id="autocomplete_per_two" class="span10" type="text" placeholder="Personalidade" />
-                <button type="button" id='btn_two' class="btn btn-primary btn-sm">Seleccionar</button>
+                <button type="button" id='btn_two' class="btn btn-primary btn-sm">Procurar</button>
             </div>
         </div>
         </form>
@@ -375,24 +333,20 @@
         <form class="container-fluid justify-content-center align-items-center">
           <input id="autocomplete_three_partido_value" type="hidden" name="wiki">
           <input id="autocomplete_three_pessoa_value" type="hidden" name="wiki">
-
           <div class="control-group">
               <div class="controls controls-row row-fluid col-xs-4">
                   <input id="autocomplete_three_partido" class="span10" type="text" placeholder="Partido" />
-
-                    <div class="dropdown">
+                    <div class="dropdown" style="display: inline;">
                       <button class="btn btn-secondary dropdown-toggle" type="button"
-                              id="dropdownMenuButton" data-toggle="dropdown"
+                              id="dropdownMenuButton2" data-toggle="dropdown"
                               aria-haspopup="true" aria-expanded="false">opoe-se</button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
                           <a class="dropdown-item">opoe-se</a>
                           <a class="dropdown-item">apoia</a>
+                      </div>
                     </div>
-
-
-                </div>
                   <input id="autocomplete_three_pessoa" class="span10" type="text" placeholder="Personalidade" />
-                  <button type="button" id='btn_three' class="btn btn-primary btn-sm">Seleccionar</button>
+                  <button type="button" id='btn_three' class="btn btn-primary btn-sm">Procurar</button>
                 </div>
           </div>
         </form>
@@ -401,28 +355,26 @@
     <!-- 3. Relações entre uma personalidade e (membros de) um partido -->
     <header class="jumbotron my-3">
         <h4><p>Relações de uma determinada personalidade para com membros de um partido</p></h4>
-        <h6>e.g.: 'António Costa este de acordo/apoio quem do PCP?'</h6>
+        <h6>e.g.: 'António Costa esteve de acordo/apoiou quem do PCP?'</h6>
         <h6>e.g.: 'André Ventura opos-se a quem do CDS/PP?'</h6>
         <br>
         <form class="container-fluid justify-content-center align-items-center">
           <input id="autocomplete_four_partido_value" type="hidden" name="wiki">
           <input id="autocomplete_four_pessoa_value" type="hidden" name="wiki">
           <div class="control-group">
-              <div>
+              <div class="controls controls-row row-fluid col-xs-4">
                   <input id="autocomplete_four_pessoa" class="span10" type="text" placeholder="Personalidade" />
-                  <button type="button" id='btn_four' class="btn btn-primary btn-sm">Seleccionar</button>
-              </div>
-              <div class="dropdown">
+                  <div class="dropdown" style="display: inline;">
                       <button class="btn btn-secondary dropdown-toggle" type="button"
-                              id="dropdownMenuButton" data-toggle="dropdown"
+                              id="dropdownMenuButton3" data-toggle="dropdown"
                               aria-haspopup="true" aria-expanded="false">opoe-se</button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
                           <a class="dropdown-item">opoe-se</a>
                           <a class="dropdown-item">apoia</a>
                       </div>
-              </div>
-              <div class="controls controls-row row-fluid col-xs-4">
-                  <input id="autocomplete_four_partido" class="span10" type="text" placeholder="Partido" />
+                  </div>
+                  <input id="autocomplete_four_partido" class="span10" type="text" placeholder="Partido"/>
+                  <button type="button" id='btn_four' class="btn btn-primary btn-sm">Procurar</button>
               </div>
           </div>
         </form>
@@ -441,17 +393,17 @@
           <div class="control-group">
               <div class="controls controls-row row-fluid col-xs-4">
                   <input id="autocomplete_five_party_one" class="span10" type="text" placeholder="Partido" />
-                    <div class="dropdown">
+                    <div class="dropdown" style="display: inline;">
                       <button class="btn btn-secondary dropdown-toggle" type="button"
-                              id="dropdownMenuButton" data-toggle="dropdown"
+                              id="dropdownMenuButton4" data-toggle="dropdown"
                               aria-haspopup="true" aria-expanded="false">opoe-se</button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
                           <a class="dropdown-item">opoe-se</a>
                           <a class="dropdown-item">apoia</a>
                     </div>
                 </div>
                   <input id="autocomplete_five_party_two" class="span10" type="text" placeholder="Partido" />
-                  <button type="button" id='btn_five' class="btn btn-primary btn-sm">Seleccionar</button>
+                  <button type="button" id='btn_five' class="btn btn-primary btn-sm">Procurar</button>
                 </div>
           </div>
         </form>

@@ -501,22 +501,23 @@ def get_top_relationships(wiki_id: str):
 @lru_cache
 def list_of_spec_relations_between_members_of_a_party_with_someone(party, person, relation):
     query = f"""        
-        SELECT DISTINCT ?ent1 ?ent1_name ?image_url ?arquivo_doc ?date ?title ?score
+        SELECT DISTINCT ?ent1 ?ent1_str ?ent2_str ?arquivo_doc ?date ?title ?score
         WHERE {{
             ?rel my_prefix:type '{relation}';
-                 my_prefix:ent2 wd:{person};
                  my_prefix:ent1 ?ent1;
+                 my_prefix:ent1_str ?ent1_str;
+                 my_prefix:ent2 wd:{person};                                              
+                 my_prefix:ent2_str ?ent2_str;                 
                  my_prefix:score ?score;
-                 my_prefix:arquivo ?arquivo_doc .
+                 my_prefix:arquivo ?arquivo_doc .            
+            
             ?arquivo_doc dc:title ?title;
                          dc:date ?date.
-            ?ent1 rdfs:label ?ent1_name .
-
+        
             SERVICE <{wikidata_endpoint}> {{
                 ?ent1 wdt:P102 wd:{party};
                       rdfs:label ?personLabel.
-                FILTER(LANG(?personLabel) = "pt")
-                OPTIONAL {{ ?ent1 wdt:P18 ?image_url. }}                
+                FILTER(LANG(?personLabel) = "pt")                
             }}
         }}
         ORDER BY DESC(?date) ASC(?score)
@@ -525,22 +526,18 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(party, person
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
-        image = x["image_url"]["value"] if "image_url" in x else no_image
-
-        person = Person(
-            name=x["ent1_name"]["value"], wiki_id=x["ent1"]["value"].split("/")[-1], image_url=image
+        results.append(
+            {'url': x['arquivo_doc']['value'],
+             'date': x['date']['value'],
+             'title': x['title']['value'],
+             'rel_type': relation,
+             'score': x["score"]["value"][0:5],
+             'ent1': x['ent1']['value'],
+             'ent1_str': x['ent1_str']['value'],
+             'ent2': person,
+             'ent2_str': x['ent2_str']['value'],
+             }
         )
-
-        rel = Relationship(
-            article_title=x["title"]["value"],
-            article_url=x["arquivo_doc"]["value"],
-            article_date=x["date"]["value"].split("T")[0],
-            rel_type=RelationshipType.ent1_opposes_ent2,
-            rel_score=x["score"]["value"][0:5],
-            ent1=person,
-            ent2=Person(wiki_id=person),
-        )
-        results.append(rel)
 
     return results
 
@@ -548,25 +545,24 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(party, person
 @lru_cache
 def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party, relation):
     query = f"""        
-        SELECT DISTINCT ?ent2 ?ent2_name ?image_url ?arquivo_doc ?date ?title ?score
+        SELECT DISTINCT ?ent2 ?ent2_str ?ent1_str ?arquivo_doc ?date ?title ?score
         WHERE {{
             
             ?rel my_prefix:type '{relation}';
                  my_prefix:ent1 wd:{person};
+                 my_prefix:ent1_str ?ent1_str;
                  my_prefix:ent2 ?ent2;
+                 my_prefix:ent2_str ?ent2_str;
                  my_prefix:score ?score;
                  my_prefix:arquivo ?arquivo_doc .
             
             ?arquivo_doc dc:title ?title;
                          dc:date ?date.
             
-            ?ent2 rdfs:label ?ent2_name .
-
             SERVICE <{wikidata_endpoint}> {{
                 ?ent2 wdt:P102 wd:{party};
                       rdfs:label ?personLabel.
-                FILTER(LANG(?personLabel) = "pt")
-                OPTIONAL {{ ?ent2 wdt:P18 ?image_url. }}                
+                FILTER(LANG(?personLabel) = "pt")                
             }}
         }}
         ORDER BY DESC(?date) ASC(?score)
@@ -575,22 +571,18 @@ def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
-        image = x["image_url"]["value"] if "image_url" in x else no_image
-
-        person = Person(
-            name=x["ent2_name"]["value"], wiki_id=x["ent2"]["value"].split("/")[-1], image_url=image
+        results.append(
+            {'url': x['arquivo_doc']['value'],
+             'date': x['date']['value'],
+             'title': x['title']['value'],
+             'rel_type': relation,
+             'score': x["score"]["value"][0:5],
+             'ent1': person,
+             'ent1_str': x['ent1_str']['value'],
+             'ent2': x['ent2']['value'],
+             'ent2_str': x['ent2_str']['value'],
+             }
         )
-
-        rel = Relationship(
-            article_title=x["title"]["value"],
-            article_url=x["arquivo_doc"]["value"],
-            article_date=x["date"]["value"].split("T")[0],
-            rel_type=RelationshipType.ent1_opposes_ent2,
-            rel_score=x["score"]["value"][0:5],
-            ent1=person,
-            ent2=Person(wiki_id=person),
-        )
-        results.append(rel)
 
     return results
 
