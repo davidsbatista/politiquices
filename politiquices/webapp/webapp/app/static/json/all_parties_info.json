@@ -1,0 +1,398 @@
+[
+    {
+        "wiki_id": "Q595575",
+        "party_label": "Partido Social Democrata",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Logo%20PSD%20cor.PNG",
+        "nr_personalities": "194"
+    },
+    {
+        "wiki_id": "Q847263",
+        "party_label": "Partido Socialista",
+        "party_logo": "/static/images/Logo_do_Partido_Socialista(Portugal).png",
+        "nr_personalities": "178"
+    },
+    {
+        "wiki_id": "Q1054298",
+        "party_label": "CDS - Partido Popular",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Cds%20simbolo%202.png",
+        "nr_personalities": "55"
+    },
+    {
+        "wiki_id": "Q884840",
+        "party_label": "Bloco de Esquerda",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/LeftBloc.svg",
+        "nr_personalities": "30"
+    },
+    {
+        "wiki_id": "Q769829",
+        "party_label": "Partido Comunista Portugu\u00eas",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Portuguese%20Communist%20Party%20logo.svg",
+        "nr_personalities": "29"
+    },
+    {
+        "wiki_id": "Q327591",
+        "party_label": "pol\u00edtico sem partido",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "11"
+    },
+    {
+        "wiki_id": "Q572998",
+        "party_label": "Coliga\u00e7\u00e3o Democr\u00e1tica Unit\u00e1ria",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/PCP-PEV.svg",
+        "nr_personalities": "4"
+    },
+    {
+        "wiki_id": "Q504564",
+        "party_label": "Frente de Liberta\u00e7\u00e3o de Mo\u00e7ambique",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/FRELIMO%20Emblem.svg",
+        "nr_personalities": "3"
+    },
+    {
+        "wiki_id": "Q16947563",
+        "party_label": "LIVRE",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Partido%20LIVRE%20logo.png",
+        "nr_personalities": "3"
+    },
+    {
+        "wiki_id": "Q2054628",
+        "party_label": "Partido Comunista dos Trabalhadores Portugueses",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/MRPP.png",
+        "nr_personalities": "3"
+    },
+    {
+        "wiki_id": "Q978086",
+        "party_label": "Partido Ecologista Os Verdes",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "3"
+    },
+    {
+        "wiki_id": "Q980864",
+        "party_label": "Partido Renovador Democr\u00e1tico",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "3"
+    },
+    {
+        "wiki_id": "Q1546030",
+        "party_label": "Partido da Terra",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "3"
+    },
+    {
+        "wiki_id": "Q222897",
+        "party_label": "Coliga\u00e7\u00e3o da Esquerda Radical",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "2"
+    },
+    {
+        "wiki_id": "Q28551",
+        "party_label": "Movimento Popular de Liberta\u00e7\u00e3o de Angola",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Movimento%20Popular%20de%20Liberta%C3%A7%C3%A3o%20de%20Angola%20%28bandeira%29.svg",
+        "nr_personalities": "2"
+    },
+    {
+        "wiki_id": "Q208242",
+        "party_label": "Partido Popular Europeu",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/EPP-EVP-Logo-German-2011.svg",
+        "nr_personalities": "2"
+    },
+    {
+        "wiki_id": "Q1851550",
+        "party_label": "Partido Popular Mon\u00e1rquico",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "2"
+    },
+    {
+        "wiki_id": "Q1344670",
+        "party_label": "Partido Popular Social Crist\u00e3o",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Logo%20CSV.svg",
+        "nr_personalities": "2"
+    },
+    {
+        "wiki_id": "Q170972",
+        "party_label": "Partido Socialista",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "2"
+    },
+    {
+        "wiki_id": "Q657089",
+        "party_label": "Partido dos Trabalhadores",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/PT%20star%20real%20version.svg",
+        "nr_personalities": "2"
+    },
+    {
+        "wiki_id": "Q49762",
+        "party_label": "Uni\u00e3o Democrata-Crist\u00e3",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Cdu-logo.svg",
+        "nr_personalities": "2"
+    },
+    {
+        "wiki_id": "Q1134161",
+        "party_label": "A Oliveira",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q2788422",
+        "party_label": "Ac\u00e7\u00e3o Democr\u00e1tica Independente",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q377349",
+        "party_label": "Alian\u00e7a Democr\u00e1tica",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q2838243",
+        "party_label": "Alian\u00e7a Popular",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q63645885",
+        "party_label": "CHEGA",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Logo%20Chega%21.png",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q815348",
+        "party_label": "Democracia Crist\u00e3",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/DC%20Party%20Logo%20%281968-1992%29.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q750673",
+        "party_label": "Democratas-Crist\u00e3os e Flamengos",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Christen-Democratisch%20en%20Vlaams%20Logo.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q23731823",
+        "party_label": "Em Marcha!",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q2054681",
+        "party_label": "Ergue-te!",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q14924303",
+        "party_label": "For\u00e7a It\u00e1lia",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Logo%20Forza%20Italia.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q10284314",
+        "party_label": "For\u00e7a de Unidade Popular",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q2031598",
+        "party_label": "For\u00e7as Populares 25 de Abril",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20For%C3%A7as%20Populares%2025%20de%20Abril.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q935996",
+        "party_label": "Frente Revolucion\u00e1ria de Timor-Leste Independente",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q61046702",
+        "party_label": "Frente da Desobedi\u00eancia Realista Europeia",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Mera25-logo.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q19694667",
+        "party_label": "Juntos pelo Povo",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q1322751",
+        "party_label": "Movimento Democr\u00e1tico Brasileiro",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q10332801",
+        "party_label": "Movimento Democr\u00e1tico de Liberta\u00e7\u00e3o de Portugal",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q10332811",
+        "party_label": "Movimento Independente para a Reconstru\u00e7\u00e3o Nacional / Partido da Direita Portuguesa",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q533384",
+        "party_label": "Movimento Reformador",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q1276673",
+        "party_label": "Movimento de Liberta\u00e7\u00e3o de S\u00e3o Tom\u00e9 e Pr\u00edncipe \u2013 Partido Social Democrata",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Flag%20of%20MLSTP.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q20012759",
+        "party_label": "Os Republicanos",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q192406",
+        "party_label": "Partido Comunista da Gr\u00e9cia",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q79854",
+        "party_label": "Partido Comunista da Uni\u00e3o Sovi\u00e9tica",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q9626",
+        "party_label": "Partido Conservador",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q29552",
+        "party_label": "Partido Democrata",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q47729",
+        "party_label": "Partido Democr\u00e1tico",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Partito%20Democratico%20Italy.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q10345627",
+        "party_label": "Partido Democr\u00e1tico Republicano",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/PDR.png",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q185088",
+        "party_label": "Partido Popular",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q1259087",
+        "party_label": "Partido Popular Italiano",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/PartitoPopolareItaliano.gif",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q29468",
+        "party_label": "Partido Republicano",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q2366265",
+        "party_label": "Partido Social Liberal",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Partido%20Social%20Liberal%20logo.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q138198",
+        "party_label": "Partido Socialista Oper\u00e1rio Espanhol",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Logotipo%20del%20PSOE.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q2054807",
+        "party_label": "Partido Socialista Revolucion\u00e1rio",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Vota%20PSR%20Henrique%20Matos.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q7232654",
+        "party_label": "Partido Trabalhista Portugu\u00eas",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q429972",
+        "party_label": "Partido da Mobiliza\u00e7\u00e3o Nacional",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q2054840",
+        "party_label": "Pessoas\u2013Animais\u2013Natureza",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Logo%20Pessoas-Animais-Natureza%20%28text%20only%29.png",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q156868",
+        "party_label": "Plataforma C\u00edvica",
+        "party_logo": "http://commons.wikimedia.org/wiki/Special:FilePath/Platforma%20Obywatelska%20wordmark.svg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q65164025",
+        "party_label": "RIR",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q1052584",
+        "party_label": "Reagrupamento para a Rep\u00fablica",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q151469",
+        "party_label": "R\u00fassia Unida",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q219573",
+        "party_label": "Synaspismos",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q2119074",
+        "party_label": "Uni\u00e3o Democr\u00e1tica Popular",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q3112915",
+        "party_label": "Uni\u00e3o da Esquerda para a Democracia Socialista",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q1904825",
+        "party_label": "Uni\u00e3o dos Democratas pela Rep\u00fablica",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    },
+    {
+        "wiki_id": "Q173152",
+        "party_label": "Uni\u00e3o por um Movimento Popular",
+        "party_logo": "/static/images/no_picture.jpg",
+        "nr_personalities": "1"
+    }
+]
