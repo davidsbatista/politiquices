@@ -33,6 +33,8 @@ person_no_image = "/static/images/no_picture.jpg"
 all_entities_info = None
 all_parties_info = None
 
+entities_batch_size = 16
+
 
 @app.route("/")
 def index():
@@ -66,7 +68,7 @@ def status():
 @app.route("/load_entities")
 def load_entities():
     start = int(request.args.get("last_index"))
-    end = start + 4
+    end = start + entities_batch_size
     print(start, end)
     for x in all_entities_info[start:end]:
         print(x)
@@ -79,7 +81,7 @@ def list_entities():
     if not all_entities_info:
         with open("webapp/app/static/json/all_entities.json") as f_in:
             all_entities_info = json.load(f_in)
-    return render_template("all_entities.html", items=all_entities_info[0:36])
+    return render_template("all_entities.html", items=all_entities_info[0:entities_batch_size])
 
 
 def make_title_linkable(r, wiki_id):
