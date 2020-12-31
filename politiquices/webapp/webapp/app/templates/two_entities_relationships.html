@@ -14,7 +14,6 @@
             if ($(this).attr('id') == 'title') {
               title_data.url = $(this).find('#link').attr("href");
               title_data.title = $(this).find('#link').attr("data-title");
-
               var ent1 = $(this).find('#ent_1').text();
               var ent1_wiki_url = $(this).find('#ent_1').attr("href").split("q=")[1];
               var ent2 = $(this).find('#ent_2').text();
@@ -37,6 +36,11 @@
                 title_data.rel_type = selected_rel;
             }
        });
+
+       title_data.ent_1 = entities.ent1;
+       title_data.ent1_wiki = entities.ent1_wiki_url;
+       title_data.ent_2 = entities.ent2;
+       title_data.ent2_wiki = entities.ent2_wiki_url;
 
        var myJsonString = JSON.stringify(title_data);
        console.log(myJsonString)
