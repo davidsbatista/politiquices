@@ -3,7 +3,10 @@ Web App
 
     Entity:
     -------
+        - um interface qualquer para poder selecionar as relações e o intervalo de datas
         - https://github.com/prabhuignoto/react-chrono
+        - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
+          alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
     Partidos:
         - pessoas de cada partido:
@@ -18,12 +21,6 @@ Web App
     - Landing Page, exemplos:
         - Quem dentro do PS acusou José Sócrates?
         - escolher um partido e ver as acusações + suporte internos
-
-    - TimeLines:
-        - ir para um ano especifico e ver as relações/pessoas por ano mais revelantes/maior frequencia
-        - um interface qualquer para poder selecionar as relações e o intervalo de datas
-        - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
-          alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
     - Agregacoes + info na personalidade:
         - Governo
