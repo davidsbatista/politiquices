@@ -3,15 +3,7 @@ Web App
 
     Entity:
     -------
-
         - https://github.com/prabhuignoto/react-chrono
-
-        - unificar o código HTML de entity + entity search
-
-        - Governo
-        - Assembleias
-        - Profissao
-        - Educacao
 
     Partidos:
         - pessoas de cada partido:

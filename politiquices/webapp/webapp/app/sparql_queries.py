@@ -7,9 +7,7 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from politiquices.webapp.webapp.app.data_models import (
     OfficePosition,
     Person,
-    PoliticalParty,
-    Relationship,
-    RelationshipType,
+    PoliticalParty
 )
 from politiquices.webapp.webapp.app.utils import convert_dates
 
@@ -42,6 +40,8 @@ wikidata_prefixes = """
 
 prefixes = politiquices_prefixes + wikidata_prefixes
 
+
+# Status/Statistics #
 
 @lru_cache
 def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
@@ -80,6 +80,39 @@ def get_total_nr_of_articles() -> int:
 
 
 @lru_cache
+def get_nr_of_persons() -> int:
+    query = """
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        
+        SELECT (COUNT(?x) as ?nr_persons) WHERE {
+            ?x wdt:P31 wd:Q5
+            } 
+        """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    return results["results"]["bindings"][0]["nr_persons"]["value"]
+
+
+# Run once on start-up #
+
+@lru_cache
+def all_entities():
+    query = f"""
+        SELECT DISTINCT ?item ?label ?image_url {{
+            ?item wdt:P31 wd:Q5.
+            SERVICE <{wikidata_endpoint}> {{
+                ?item rdfs:label ?label .
+                FILTER(LANG(?label) = "pt")
+                OPTIONAL {{ ?item wdt:P18 ?image_url. }}                
+                }}
+            }}
+        ORDER BY ?label
+        """
+
+    return prefixes + "\n" + query
+
+
+@lru_cache
 def get_total_nr_articles_for_each_person():
     query = """
         SELECT ?person_name ?person (COUNT(*) as ?count){
@@ -97,22 +130,78 @@ def get_total_nr_articles_for_each_person():
     return prefixes + "\n" + query
 
 
-@lru_cache
-def get_nr_of_persons() -> int:
-    query = """
-        PREFIX wd: <http://www.wikidata.org/entity/>
-        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-        
-        SELECT (COUNT(?x) as ?nr_persons) WHERE {
-            ?x wdt:P31 wd:Q5
-            } 
-        """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
-    return results["results"]["bindings"][0]["nr_persons"]["value"]
+# Parties #
 
+@lru_cache
+def get_persons_affiliated_with_party(political_party: str):
+    query = f"""
+        SELECT DISTINCT ?partyLabel ?political_party_logo ?person ?personLabel ?image_url {{
+          ?person wdt:P31 wd:Q5.
+          SERVICE <{wikidata_endpoint}> {{
+              wd:{political_party} rdfs:label ?partyLabel FILTER(LANG(?partyLabel) = "pt") .
+              OPTIONAL {{ wd:{political_party} wdt:P154 ?political_party_logo. }}
+              ?person wdt:P102 wd:{political_party} .
+              ?person rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
+              OPTIONAL {{ ?person wdt:P18 ?image_url. }}
+
+          }}
+        }} 
+        ORDER BY ?personLabel
+        """
+
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    persons = []
+    party_name = None
+    party_logo = None
+
+    # add 'PS' logo since it's not on wikidata
+    if political_party == "Q847263":
+        party_logo = ps_logo
+
+    seen = set()
+    for x in results["results"]["bindings"]:
+        wiki_id = x["personLabel"]["value"]
+        if wiki_id in seen:
+            continue
+
+        if not party_name:
+            party_name = x["partyLabel"]["value"]
+
+        if not party_logo:
+            if "political_party_logo" in x:
+                party_logo = x["political_party_logo"]["value"]
+            else:
+                party_logo = no_image
+
+        image = x["image_url"]["value"] if "image_url" in x else no_image
+        persons.append(
+            Person(
+                name=wiki_id,
+                wiki_id=x["person"]["value"].split("/")[-1],
+                image_url=image,
+            )
+        )
+        seen.add(wiki_id)
+
+    return persons, party_name, party_logo
+
+
+@lru_cache
+def get_wiki_id_affiliated_with_party(political_party: str):
+    query = f"""
+        SELECT DISTINCT ?wiki_id {{
+            ?wiki_id wdt:P102 wd:{political_party}; .  
+        }}
+    """
+    results = query_sparql(prefixes + "\n" + query, "wikidata")
+    return [x["wiki_id"]["value"].split("/")[-1] for x in results["results"]["bindings"]]
+
+
+# Personality Information #
 
 @lru_cache
 def get_person_info(wiki_id):
+    # ToDo: this can be reduced, made faster, less info, e.g.: dates
     query = f"""SELECT ?name ?office ?office_label ?start ?end ?image_url ?political_party_logo 
                        ?political_party ?political_party_label 
                 WHERE {{
@@ -181,9 +270,76 @@ def get_person_info(wiki_id):
             if office_position not in offices:
                 offices.append(office_position)
 
+    results = get_person_info2(wiki_id)
+
     return Person(
-        wiki_id=wiki_id, name=name, image_url=image_url, parties=parties, positions=offices
+        wiki_id=wiki_id, name=name, image_url=image_url, parties=parties,
+        positions=results['position'], education=results['education'],
+        occupations=results['occupation']
     )
+
+
+@lru_cache
+def get_person_info2(wiki_id):
+    occupation_query = f"""
+        SELECT DISTINCT ?occupation_label
+        WHERE {{
+          wd:{wiki_id} p:P106 ?occupationStmnt .
+          ?occupationStmnt ps:P106 ?occupation .
+          ?occupation rdfs:label ?occupation_label FILTER(LANG(?occupation_label) = "pt").
+        }}
+        """
+
+    education_query = f"""
+        SELECT DISTINCT ?educatedAt_label
+        WHERE {{
+            wd:{wiki_id} p:P69 ?educatedAtStmnt .
+            ?educatedAtStmnt ps:P69 ?educatedAt .
+            ?educatedAt rdfs:label ?educatedAt_label FILTER(LANG(?educatedAt_label) = "pt").
+            }}
+        """
+
+    positions_query = f"""
+        SELECT DISTINCT ?position_label
+        WHERE {{
+            wd:{wiki_id} p:P39 ?positionStmnt .
+            ?positionStmnt ps:P39 ?position .
+            ?position rdfs:label ?position_label FILTER(LANG(?position_label) = "pt").
+        }}
+        """
+
+    results = query_sparql(prefixes + "\n" + occupation_query, "wikidata")
+    occupations = [x['occupation_label']['value'] for x in results['results']['bindings']]
+
+    results = query_sparql(prefixes + "\n" + education_query, "wikidata")
+    education = [x['educatedAt_label']['value'] for x in results['results']['bindings']]
+
+    results = query_sparql(prefixes + "\n" + positions_query, "wikidata")
+    positions = [x['position_label']['value'] for x in results['results']['bindings']]
+
+    return {'education': education, 'occupation': occupations, 'position': positions}
+
+
+@lru_cache
+def get_party_of_entity(wiki_id):
+    query = f"""
+        SELECT DISTINCT ?party ?party_label {{
+            wd:{wiki_id} wdt:P31 wd:Q5.
+            SERVICE <{wikidata_endpoint}> {{ 
+                wd:{wiki_id} p:P102 ?partyStmnt .
+                ?partyStmnt ps:P102 ?party.
+                ?party rdfs:label ?party_label FILTER(LANG(?party_label)="pt") .  
+            }}  
+        }}
+        """
+
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    parties = []
+    for x in result["results"]["bindings"]:
+        parties.append(
+            {"wiki_id": x["party"]["value"].split("/")[-1], "name": x["party_label"]["value"]}
+        )
+    return parties
 
 
 @lru_cache
@@ -318,8 +474,68 @@ def get_person_relationships(wiki_id):
 
 
 @lru_cache
-def get_person_rels_by_month_year(wiki_id, rel_type, ent="ent1"):
+def get_top_relationships(wiki_id: str):
+    persons_ent1 = defaultdict(list)
+    query = f"""
+        SELECT ?rel_type ?ent2 ?ent2_name (COUNT(?arquivo_doc) as ?nr_articles)
+        WHERE {{ 
+          ?rel my_prefix:ent1 wd:{wiki_id}  .
+          ?rel my_prefix:ent2 ?ent2 .
+          ?ent2 rdfs:label ?ent2_name .
+          ?rel my_prefix:type ?rel_type .
+          ?rel my_prefix:arquivo ?arquivo_doc .
+          FILTER(?rel_type != "other")
+        }} GROUP BY ?rel_type ?ent2 ?ent2_name
+        ORDER BY ?rel_type DESC(?nr_articles)
+        """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    for x in results["results"]["bindings"]:
+        persons_ent1[x["rel_type"]["value"]].append(
+            {
+                "wiki_id": "entity?q=" + x["ent2"]["value"].split("/")[-1],
+                "name": x["ent2_name"]["value"],
+                "nr_articles": int(x["nr_articles"]["value"]),
+            }
+        )
 
+    persons_ent2 = defaultdict(list)
+    query = f"""
+        SELECT ?rel_type ?ent1 ?ent1_name (COUNT(?arquivo_doc) as ?nr_articles)
+        WHERE {{ 
+          ?rel my_prefix:ent1 ?ent1  .
+          ?ent1 rdfs:label ?ent1_name .
+          ?rel my_prefix:ent2 wd:{wiki_id}  .
+          ?rel my_prefix:type ?rel_type .
+          ?rel my_prefix:arquivo ?arquivo_doc .
+          FILTER(?rel_type != "other")
+        }}
+        GROUP BY ?rel_type ?ent1 ?ent1_name
+        ORDER BY ?rel_type DESC(?nr_articles)
+        """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    for x in results["results"]["bindings"]:
+        persons_ent2[x["rel_type"]["value"]].append(
+            {
+                "wiki_id": "entity?q=" + x["ent1"]["value"].split("/")[-1],
+                "name": x["ent1_name"]["value"],
+                "nr_articles": int(x["nr_articles"]["value"]),
+            }
+        )
+
+    who_person_opposes = [x for x in persons_ent1['ent1_opposes_ent2']]
+    who_person_supports = [x for x in persons_ent1['ent1_supports_ent2']]
+    who_opposes_person = [x for x in persons_ent2['ent1_opposes_ent2']]
+    who_supports_person = [x for x in persons_ent2['ent1_supports_ent2']]
+
+    return {'who_person_opposes': who_person_opposes,
+            'who_person_supports': who_person_supports,
+            'who_opposes_person': who_opposes_person,
+            'who_supports_person': who_supports_person
+            }
+
+
+@lru_cache
+def get_person_rels_by_month_year(wiki_id, rel_type, ent="ent1"):
     query = f"""
         SELECT DISTINCT ?year ?month (COUNT(?arquivo_doc) as ?nr_articles)
         WHERE {{
@@ -354,148 +570,58 @@ def get_person_rels_by_month_year(wiki_id, rel_type, ent="ent1"):
     return year_month_articles
 
 
-@lru_cache
-def get_persons_affiliated_with_party(political_party: str):
-
-    query = f"""
-        SELECT DISTINCT ?partyLabel ?political_party_logo ?person ?personLabel ?image_url {{
-          ?person wdt:P31 wd:Q5.
-          SERVICE <{wikidata_endpoint}> {{
-              wd:{political_party} rdfs:label ?partyLabel FILTER(LANG(?partyLabel) = "pt") .
-              OPTIONAL {{ wd:{political_party} wdt:P154 ?political_party_logo. }}
-              ?person wdt:P102 wd:{political_party} .
-              ?person rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
-              OPTIONAL {{ ?person wdt:P18 ?image_url. }}
-              
-          }}
-        }} 
-        ORDER BY ?personLabel
-        """
-
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
-    persons = []
-    party_name = None
-    party_logo = None
-
-    # add 'PS' logo since it's not on wikidata
-    if political_party == "Q847263":
-        party_logo = ps_logo
-
-    seen = set()
-    for x in results["results"]["bindings"]:
-        wiki_id = x["personLabel"]["value"]
-        if wiki_id in seen:
-            continue
-
-        if not party_name:
-            party_name = x["partyLabel"]["value"]
-
-        if not party_logo:
-            if "political_party_logo" in x:
-                party_logo = x["political_party_logo"]["value"]
-            else:
-                party_logo = no_image
-
-        image = x["image_url"]["value"] if "image_url" in x else no_image
-        persons.append(
-            Person(
-                name=wiki_id,
-                wiki_id=x["person"]["value"].split("/")[-1],
-                image_url=image,
-            )
-        )
-        seen.add(wiki_id)
-
-    return persons, party_name, party_logo
-
+# Relationship Queries #
 
 @lru_cache
-def get_wiki_id_affiliated_with_party(political_party: str):
+def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
     query = f"""
-        SELECT DISTINCT ?wiki_id {{
-            ?wiki_id wdt:P102 wd:{political_party}; .  
-        }}
-    """
-    results = query_sparql(prefixes + "\n" + query, "wikidata")
-    return [x["wiki_id"]["value"].split("/")[-1] for x in results["results"]["bindings"]]
-
-
-@lru_cache
-def all_entities():
-    query = f"""
-        SELECT DISTINCT ?item ?label ?image_url {{
-            ?item wdt:P31 wd:Q5.
-            SERVICE <{wikidata_endpoint}> {{
-                ?item rdfs:label ?label .
-                FILTER(LANG(?label) = "pt")
-                OPTIONAL {{ ?item wdt:P18 ?image_url. }}                
-                }}
+        SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
+        WHERE {{
+          {{
+          ?rel my_prefix:ent1 wd:{wiki_id_one};
+               my_prefix:ent2 wd:{wiki_id_two};       
+               my_prefix:type ?rel_type;
+               my_prefix:score ?score;
+               my_prefix:arquivo ?arquivo_doc;
+               my_prefix:ent1 ?ent1;
+               my_prefix:ent2 ?ent2;
+               my_prefix:ent1_str ?ent1_str;
+               my_prefix:ent2_str ?ent2_str.
+          ?arquivo_doc dc:title ?title ;
+                       dc:date  ?date .
+              }} UNION {{
+          ?rel my_prefix:ent2 wd:{wiki_id_one};
+               my_prefix:ent1 wd:{wiki_id_two};       
+               my_prefix:type ?rel_type;
+               my_prefix:score ?score;
+               my_prefix:arquivo ?arquivo_doc;
+               my_prefix:ent1 ?ent1;
+               my_prefix:ent2 ?ent2;
+               my_prefix:ent1_str ?ent1_str;
+               my_prefix:ent2_str ?ent2_str.
+          ?arquivo_doc dc:title ?title ;
+                       dc:date  ?date .
             }}
-        ORDER BY ?label
-        """
-
-    return prefixes + "\n" + query
-
-
-@lru_cache
-def get_top_relationships(wiki_id: str):
-    persons_ent1 = defaultdict(list)
-    query = f"""
-        SELECT ?rel_type ?ent2 ?ent2_name (COUNT(?arquivo_doc) as ?nr_articles)
-        WHERE {{ 
-          ?rel my_prefix:ent1 wd:{wiki_id}  .
-          ?rel my_prefix:ent2 ?ent2 .
-          ?ent2 rdfs:label ?ent2_name .
-          ?rel my_prefix:type ?rel_type .
-          ?rel my_prefix:arquivo ?arquivo_doc .
-          FILTER(?rel_type != "other")
-        }} GROUP BY ?rel_type ?ent2 ?ent2_name
-        ORDER BY ?rel_type DESC(?nr_articles)
-        """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
-    for x in results["results"]["bindings"]:
-        persons_ent1[x["rel_type"]["value"]].append(
-            {
-                "wiki_id": "entity?q="+x["ent2"]["value"].split("/")[-1],
-                "name": x["ent2_name"]["value"],
-                "nr_articles": int(x["nr_articles"]["value"]),
-            }
-        )
-
-    persons_ent2 = defaultdict(list)
-    query = f"""
-        SELECT ?rel_type ?ent1 ?ent1_name (COUNT(?arquivo_doc) as ?nr_articles)
-        WHERE {{ 
-          ?rel my_prefix:ent1 ?ent1  .
-          ?ent1 rdfs:label ?ent1_name .
-          ?rel my_prefix:ent2 wd:{wiki_id}  .
-          ?rel my_prefix:type ?rel_type .
-          ?rel my_prefix:arquivo ?arquivo_doc .
-          FILTER(?rel_type != "other")
         }}
-        GROUP BY ?rel_type ?ent1 ?ent1_name
-        ORDER BY ?rel_type DESC(?nr_articles)
+        ORDER BY ASC(?date)
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
-    for x in results["results"]["bindings"]:
-        persons_ent2[x["rel_type"]["value"]].append(
-            {
-                "wiki_id": "entity?q="+x["ent1"]["value"].split("/")[-1],
-                "name": x["ent1_name"]["value"],
-                "nr_articles": int(x["nr_articles"]["value"]),
-            }
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    relationships = []
+    for x in result["results"]["bindings"]:
+        relationships.append(
+            {'url': x['arquivo_doc']['value'],
+             'date': x['date']['value'],
+             'title': x['title']['value'],
+             'rel_type': x['rel_type']['value'],
+             'score': x["score"]["value"][0:5],
+             'ent1': x['ent1']['value'],
+             'ent1_str': x['ent1_str']['value'],
+             'ent2': x['ent2']['value'],
+             'ent2_str': x['ent2_str']['value'],
+             }
         )
 
-    who_person_opposes = [x for x in persons_ent1['ent1_opposes_ent2']]
-    who_person_supports = [x for x in persons_ent1['ent1_supports_ent2']]
-    who_opposes_person = [x for x in persons_ent2['ent1_opposes_ent2']]
-    who_supports_person = [x for x in persons_ent2['ent1_supports_ent2']]
-
-    return {'who_person_opposes': who_person_opposes,
-            'who_person_supports': who_person_supports,
-            'who_opposes_person': who_opposes_person,
-            'who_supports_person': who_supports_person
-            }
+    return relationships
 
 
 @lru_cache
@@ -631,78 +757,7 @@ def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, r
     return relationships
 
 
-@lru_cache
-def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
-    query = f"""
-        SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
-        WHERE {{
-          {{
-          ?rel my_prefix:ent1 wd:{wiki_id_one};
-               my_prefix:ent2 wd:{wiki_id_two};       
-               my_prefix:type ?rel_type;
-               my_prefix:score ?score;
-               my_prefix:arquivo ?arquivo_doc;
-               my_prefix:ent1 ?ent1;
-               my_prefix:ent2 ?ent2;
-               my_prefix:ent1_str ?ent1_str;
-               my_prefix:ent2_str ?ent2_str.
-          ?arquivo_doc dc:title ?title ;
-                       dc:date  ?date .
-              }} UNION {{
-          ?rel my_prefix:ent2 wd:{wiki_id_one};
-               my_prefix:ent1 wd:{wiki_id_two};       
-               my_prefix:type ?rel_type;
-               my_prefix:score ?score;
-               my_prefix:arquivo ?arquivo_doc;
-               my_prefix:ent1 ?ent1;
-               my_prefix:ent2 ?ent2;
-               my_prefix:ent1_str ?ent1_str;
-               my_prefix:ent2_str ?ent2_str.
-          ?arquivo_doc dc:title ?title ;
-                       dc:date  ?date .
-            }}
-        }}
-        ORDER BY ASC(?date)
-        """
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
-    relationships = []
-    for x in result["results"]["bindings"]:
-        relationships.append(
-            {'url': x['arquivo_doc']['value'],
-             'date': x['date']['value'],
-             'title': x['title']['value'],
-             'rel_type': x['rel_type']['value'],
-             'score': x["score"]["value"][0:5],
-             'ent1': x['ent1']['value'],
-             'ent1_str': x['ent1_str']['value'],
-             'ent2': x['ent2']['value'],
-             'ent2_str': x['ent2_str']['value'],
-             }
-        )
-
-    return relationships
-
-
-@lru_cache
-def get_party_of_entity(wiki_id):
-    query = f"""
-        SELECT DISTINCT ?party ?party_label {{
-            wd:{wiki_id} wdt:P31 wd:Q5.
-            SERVICE <{wikidata_endpoint}> {{ 
-                wd:{wiki_id} p:P102 ?partyStmnt .
-                ?partyStmnt ps:P102 ?party.
-                ?party rdfs:label ?party_label FILTER(LANG(?party_label)="pt") .  
-            }}  
-        }}
-        """
-
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
-    parties = []
-    for x in result["results"]["bindings"]:
-        parties.append(
-            {"wiki_id": x["party"]["value"].split("/")[-1], "name": x["party_label"]["value"]}
-        )
-    return parties
+# Other #
 
 
 def get_entities_without_image():
@@ -728,7 +783,6 @@ def get_entities_without_image():
 
 
 def query_sparql(query, endpoint):
-
     if endpoint == "wikidata":
         endpoint_url = wikidata_endpoint
 

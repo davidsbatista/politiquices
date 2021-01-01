@@ -24,7 +24,9 @@ class Person:
     name: Optional[str] = None
     image_url: Optional[str] = None
     parties: Optional[List[PoliticalParty]] = None
-    positions: Optional[List[OfficePosition]] = None
+    positions: Optional[List[str]] = None
+    education: Optional[List[str]] = None
+    occupations: Optional[List[str]] = None
 
 
 @dataclass

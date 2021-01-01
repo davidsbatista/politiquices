@@ -1,66 +1,84 @@
 <!-- Page Content -->
 <div class="container">
 
-    <br><br>
+    <br>
 
-    <!-- Jumbotron Header -->
     <center><h4><b>{{items.name}}</b></h4></center>
 
-    <br><br>
+    <br>
 
-    <div id="outer" class="container d-flex align-items-center justify-content-center">
+    <div id="outer" class="container d-flex align-items-center justify-content-center" width="100%">
 
-    <div class="media">
-
-        <figure class="figure">
-            <a href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">
-            <img src={{items.image}} class="figure-img img-fluid rounded" width="240" height="300">
-        </a>
-            <figcaption class="figure-caption" style="text-align:center;">
-                <a id="ent1_wikid_id" href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">Editar na Wikidata</a>
-            </figcaption>
-        </figure>
-
-        <div class="media-body">
-            <table class="table">
-              <tbody>
-              {% for item in items.parties %}
-                <tr>
-                  <td><img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75"></td>
-                </tr>
-                <tr>
-                  <td><a href="/party_members?q={{item.wiki_id}}" target="_blank">{{item.name}}</a>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-
+        <!-- Foto -->
+        <div class="media">
+            <figure class="figure">
+                <a href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">
+                <img src={{items.image}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{items.name}}" title="{{items.name}}">
+                </a>
+                <figcaption class="figure-caption" style="text-align:center;">
+                    <a id="ent1_wikid_id" href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">Editar na Wikidata</a>
+                </figcaption>
+            </figure>
         </div>
 
-        <div class="media-body">
-        <h5 class="mt-0">Cargos ocupados</h5>
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Início</th>
-                  <th scope="col">Fim</th>
-                  <th scope="col">Cargo</th>
-                </tr>
-              </thead>
+        <!-- Partidos -->
+        <div class="col-auto">
+            <table>
               <tbody>
-              {% for item in items.offices %}
+              {% for item in items.parties %}
+              <tr>
+                  <td>
+                    <a href="/party_members?q={{item.wiki_id}}" target="_blank">
+                        <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
+                    </a>
+                  </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            </div>
+
+        <!-- Positions -->
+        <div class="col-auto">
+            <table>
+              <tbody>
+              {% for item in items.positions %}
                 <tr>
-                  <td>{{item.start}}</td>
-                  <td>{{item.end}}</td>
-                  <td>{{item.position}}</td>
+                  <td>{{item}}</td>
                 </tr>
               {% endfor %}
               </tbody>
             </table>
-      </div>
-    </div>
+        </div>
+
+        <!-- Education -->
+        <div class="col-auto">
+            <table>
+              <tbody>
+              {% for item in items.education %}
+                <tr>
+                  <td>{{item}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+        </div>
+
+        <!-- Occupations -->
+        <div class="col-auto">
+            <table>
+              <tbody>
+              {% for item in items.occupations %}
+                <tr>
+                  <td>{{item}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+        </div>
     </div>
 
+    <!-- Time line of relationships -->
     <div class="container h-100">
       <div class="row h-100 justify-content-center align-items-center">
         <canvas id="myChart" width="900" height="250"></canvas>
@@ -169,11 +187,12 @@
            $(this).parents('.dropdown').find('button').text($(this).text());
        });
     });
+
     </script>
 
-    <br><br><br>
+    <br>
 
-    <!-- Four columns: 25% width on all screens, except for extra small (100% width)-->
+    <!-- Top personalities for each relationship type -->
     <div class="row justify-content-center">
 
       <div class="col-auto">
@@ -182,8 +201,8 @@
               <tbody>
               {% for item in items.top_relations.who_person_opposes %}
                 <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</td>
-                  <td>{{item.nr_articles}}</td>
+                    <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
+                    <td>{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -196,7 +215,7 @@
               <tbody>
               {% for item in items.top_relations.who_person_supports %}
                 <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</td>
+                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
                   <td>{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
@@ -210,34 +229,45 @@
               <tbody>
               {% for item in items.top_relations.who_opposes_person %}
                 <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</td>
+                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
                   <td>{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
           </table>
       </div>
+
       <div class="col-auto">
           <b><center>Apoiado(a) por</center></b>
           <table class="table table-responsive">
               <tbody>
-              {% for item in items.top_relations.who_opposes_person %}
+              {% for item in items.top_relations.who_supports_person %}
                 <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</td>
+                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
                   <td>{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
           </table>
       </div>
+
     </div>
 
-    <br>
     <hr>
-    <br>
 
     <h3>Discorda / Opõe-se / Acusa</h3>
-    <table id="ent1_opposes_ent2">
+    <table id="ent1_opposes_ent2"
+      data-pagination="true"
+      data-toggle="table">
+      <thead>
+        <tr>
+          <th data-sortable="true" data-field="date">date</th>
+          <th data-field="title">title</th>
+          <th data-sortable="true" data-field="score">score</th>
+          <th data-field="relationship">relationship</th>
+          <th data-field="button">button</th>
+        </tr>
+      </thead>
       <tbody>
       {% for item in items.opposed %}
         <tr>
@@ -249,11 +279,11 @@
           <td id="rel_type">
               <div class="dropdown">
                   <button class="btn btn-secondary dropdown-toggle"
-                          type="button" id="dropdownMenuButton"
+                          type="button" id="dropdownMenuButton_1"
                           data-toggle="dropdown"
                           aria-haspopup="true"
                           aria-expanded="false">ent1_opposes_ent2</button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_1">
                       <a class="dropdown-item">other</a>
                       <a class="dropdown-item">ent1_opposes_ent2</a>
                       <a class="dropdown-item">ent2_opposes_ent1</a>
@@ -273,7 +303,19 @@
     <br><br>
 
     <h3>Apoia / Defende</h3>
-    <table id="ent1_supports_ent2">
+    <table id="ent1_supports_ent2"
+    data-toggle="table"
+    data-pagination="true"
+    data-search="true">
+    <thead>
+      <tr>
+        <th data-sortable="true" data-field="date">date</th>
+        <th data-field="title">title</th>
+        <th data-sortable="true" data-field="score">score</th>
+        <th data-field="relationship">relationship</th>
+        <th data-field="button">button</th>
+      </tr>
+    </thead>
       <tbody>
       {% for item in items.supported %}
         <tr>
@@ -310,7 +352,19 @@
     <br><br>
 
     <h3>Acusado(a) por / Oposto(a) por</h3>
-    <table id="ent2_opposes_ent1">
+    <table id="ent2_opposes_ent1"
+    data-toggle="table"
+    data-pagination="true"
+    data-search="true">
+    <thead>
+      <tr>
+        <th data-sortable="true" data-field="date">date</th>
+        <th data-field="title">title</th>
+        <th data-sortable="true" data-field="score">score</th>
+        <th data-field="relationship">relationship</th>
+        <th data-field="button">button</th>
+      </tr>
+    </thead>
       <tbody>
       {% for item in items.opposed_by %}
         <tr>
@@ -347,7 +401,19 @@
     <br><br>
 
     <h3>Apoiado(a) por / Defendido(a) por</h3>
-    <table id="ent2_supports_ent1">
+    <table id="ent2_supports_ent1"
+    data-toggle="table"
+    data-pagination="true"
+    data-search="true">
+    <thead>
+      <tr>
+        <th data-sortable="true" data-field="date">date</th>
+        <th data-field="title">title</th>
+        <th data-sortable="true" data-field="score">score</th>
+        <th data-field="relationship">relationship</th>
+        <th data-field="button">button</th>
+      </tr>
+    </thead>
       <tbody>
       {% for item in items.supported_by %}
         <tr>
@@ -384,7 +450,21 @@
     <br><br>
 
     <h3>Other</h3>
-    <table id="ent1_other_ent2">
+    <table id="ent1_other_ent2"
+    data-toggle="table"
+    data-pagination="true"
+    data-search="true">
+    <thead>
+      <tr>
+        <th data-sortable="true" data-field="date">date</th>
+        <th data-field="title">title</th>
+        <th data-sortable="true" data-field="score">score</th>
+        <th data-field="relationship">relationship</th>
+        <th data-field="button">button</th>
+      </tr>
+    </thead>
+
+
       <tbody>
       {% for item in items.other %}
         <tr>
@@ -421,7 +501,19 @@
     <br><br>
 
     <h3>Other By</h3>
-    <table id="ent2_other_ent1">
+    <table id="ent2_other_ent1"
+    data-toggle="table"
+    data-pagination="true"
+    data-search="true">
+    <thead>
+      <tr>
+        <th data-sortable="true" data-field="date">date</th>
+        <th data-field="title">title</th>
+        <th data-sortable="true" data-field="score">score</th>
+        <th data-field="relationship">relationship</th>
+        <th data-field="button">button</th>
+      </tr>
+    </thead>
       <tbody>
       {% for item in items.other_by %}
         <tr>

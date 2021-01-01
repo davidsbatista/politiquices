@@ -1,0 +1,232 @@
+<!-- Page Content -->
+<div class="container">
+
+    <br>
+
+    <center><h4><b>{{items.name}}</b></h4></center>
+
+    <br>
+
+    <div id="outer" class="container d-flex align-items-center justify-content-center" width="100%">
+
+        <!-- Foto -->
+        <div class="media">
+            <figure class="figure">
+                <a href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">
+                <img src={{items.image}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{items.name}}" title="{{items.name}}">
+                </a>
+                <figcaption class="figure-caption" style="text-align:center;">
+                    <a id="ent1_wikid_id" href=https://www.wikidata.org/wiki/{{items.wiki_id}} target="_blank">Editar na Wikidata</a>
+                </figcaption>
+            </figure>
+        </div>
+
+        <!-- Partidos -->
+        <div class="col-auto">
+            <table>
+              <tbody>
+              {% for item in items.parties %}
+              <tr>
+                  <td>
+                    <a href="/party_members?q={{item.wiki_id}}" target="_blank">
+                        <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
+                    </a>
+                  </td>
+              </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+            </div>
+
+        <!-- Positions -->
+        <div class="col-auto">
+            <table>
+              <tbody>
+              {% for item in items.positions %}
+                <tr>
+                  <td>{{item}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+        </div>
+
+        <!-- Education -->
+        <div class="col-auto">
+            <table>
+              <tbody>
+              {% for item in items.education %}
+                <tr>
+                  <td>{{item}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+        </div>
+
+        <!-- Occupations -->
+        <div class="col-auto">
+            <table>
+              <tbody>
+              {% for item in items.occupations %}
+                <tr>
+                  <td>{{item}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Time line of relationships -->
+    <div class="container h-100">
+      <div class="row h-100 justify-content-center align-items-center">
+        <canvas id="myChart" width="900" height="250"></canvas>
+      </div>
+    </div>
+
+    <script>
+    var ctx = document.getElementById('myChart');
+    var color = Chart.helpers.color;
+
+    var year_labels = {{ items['year_month_labels']|tojson }};
+    var opposed_freq = {{ items['opposed_freq']|tojson }};
+    var supported_freq = {{ items['supported_freq']|tojson }};
+    var opposed_by_freq = {{ items['opposed_by_freq']|tojson }};
+    var supported_by_freq = {{ items['supported_by_freq']|tojson }};
+
+    var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {labels: year_labels,
+               datasets: [
+                    {label: 'acusa', borderColor: "#FF0000", fill: false, data: opposed_freq},
+                    {label: 'é acusado(a)', borderColor: "#980000", fill: false, data: opposed_by_freq},
+                    {label: 'defende', borderColor: "#44861E", fill: false, data: supported_freq},
+                    {label: 'é defendido(a)', borderColor: "#70DA33", fill: false, data: supported_by_freq}
+               ],
+        options: { scales: { yAxes: [ { ticks: {beginAtZero: false} } ] }
+        }
+        }
+    });
+
+    var data = [
+    	{
+    		date: 'Q1 - 2018',
+    		content: 'Lorem ipsum dolor sit amet'
+    	},
+    	{
+    		date: 'Q2 - 2018',
+    		content: 'Lorem ipsum dolor sit amet'
+    	},
+    	{
+    		date: 'Q3 - 2018',
+    		content: 'Lorem ipsum dolor sit amet'
+    	},
+    	{
+    		date: 'Q4 - 2018',
+    		content: 'Lorem ipsum dolor sit amet'
+    	},
+      {
+    		date: 'Q4 - 2018',
+    		content: 'Lorem ipsum dolor sit amet'
+    	},
+      {
+    		date: 'Q4 - 2018',
+    		content: 'Lorem ipsum dolor sit amet'
+    	},
+      {
+    		date: 'Q4 - 2018',
+    		content: 'Lorem ipsum dolor sit amet'
+    	},
+      {
+    		date: 'Q4 - 2018',
+    		content: 'Lorem ipsum dolor sit amet'
+    	}
+    ];
+
+    $(document).ready(function() {
+      $("#my-roadmap").roadmap(data, {
+      	eventsPerSlide: 6,
+      	slide: 1,
+      	rootClass: 'roadmap',
+      	prevArrow: 'prev',
+      	nextArrow: 'next',
+      	orientation: 'vertical',
+      	onBuild: function() {
+      		console.log('on build event');
+      	},
+    	   eventTemplate: '<div class="event">' +'<div class="event__date">####DATE###</div>' + '<div class="event__content">####CONTENT###</div>' + '</div>'
+       });
+   });
+
+    </script>
+
+    <br>
+
+    <!-- Top personalities for each relationship type -->
+    <div class="row justify-content-center">
+
+      <div class="col-auto">
+          <b><center>Discorda / Opõe-se / Acusa</center></b>
+            <table class="table table-responsive">
+              <tbody>
+              {% for item in items.top_relations.who_person_opposes %}
+                <tr>
+                    <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
+                    <td>{{item.nr_articles}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+      </div>
+
+      <div class="col-auto">
+          <b><center>Apoia / Defende</center></b>
+          <table class="table table-responsive">
+              <tbody>
+              {% for item in items.top_relations.who_person_supports %}
+                <tr>
+                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
+                  <td>{{item.nr_articles}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+            </table>
+      </div>
+
+      <div class="col-auto">
+          <b><center>Acusado(a) por / Oposto(a) por</center></b>
+          <table class="table table-responsive">
+              <tbody>
+              {% for item in items.top_relations.who_opposes_person %}
+                <tr>
+                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
+                  <td>{{item.nr_articles}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+      </div>
+
+      <div class="col-auto">
+          <b><center>Apoiado(a) por</center></b>
+          <table class="table table-responsive">
+              <tbody>
+              {% for item in items.top_relations.who_supports_person %}
+                <tr>
+                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
+                  <td>{{item.nr_articles}}</td>
+                </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+      </div>
+
+    </div>
+
+    <hr>
+
+    <!-- Timeline of news titles -->
+    <div id="my-roadmap"></div>
+
+</div>
