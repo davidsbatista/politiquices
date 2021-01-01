@@ -7,7 +7,7 @@
 
     <br>
 
-    <div id="outer" class="container d-flex align-items-center justify-content-center" width="100%">
+    <div id="outer" class="container d-flex align-items-center justify-content-center">
 
         <!-- Foto -->
         <div class="media">
@@ -187,7 +187,6 @@
            $(this).parents('.dropdown').find('button').text($(this).text());
        });
     });
-
     </script>
 
     <br>
@@ -253,38 +252,28 @@
 
     </div>
 
-    <hr>
+    <br>
 
     <h3>Discorda / Opõe-se / Acusa</h3>
-    <table id="ent1_opposes_ent2"
-      data-pagination="true"
-      data-search="true"
-      data-toggle="table">
-      <thead>
-        <tr>
-          <th data-sortable="true" data-field="date">date</th>
-          <th data-field="title">title</th>
-          <th data-sortable="true" data-field="score">score</th>
-          <th data-field="relationship">relationship</th>
-          <th data-field="button">button</th>
-        </tr>
-      </thead>
+    <table class="table">
       <tbody>
       {% for item in items.opposed %}
         <tr>
           <td id="data">{{item.date}}</td>
           <td id="title">
             {{item.title_clickable|safe}}
-            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank"><img src="{{item.link_image}}" width="{{item.image_width}}" height="20"></a>
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
+                <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
+            </a>
           <td id="score">{{item.score}}</td>
           <td id="rel_type">
               <div class="dropdown">
                   <button class="btn btn-secondary dropdown-toggle"
-                          type="button" id="dropdownMenuButton_1"
+                          type="button" id="dropdownMenuButton"
                           data-toggle="dropdown"
                           aria-haspopup="true"
                           aria-expanded="false">ent1_opposes_ent2</button>
-                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_1">
+                  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                       <a class="dropdown-item">other</a>
                       <a class="dropdown-item">ent1_opposes_ent2</a>
                       <a class="dropdown-item">ent2_opposes_ent1</a>
@@ -301,22 +290,10 @@
       </tbody>
     </table>
 
-    <br><br>
+    <br>
 
     <h3>Apoia / Defende</h3>
-    <table id="ent1_supports_ent2"
-    data-toggle="table"
-    data-pagination="true"
-    data-search="true">
-    <thead>
-      <tr>
-        <th data-sortable="true" data-field="date">date</th>
-        <th data-field="title">title</th>
-        <th data-sortable="true" data-field="score">score</th>
-        <th data-field="relationship">relationship</th>
-        <th data-field="button">button</th>
-      </tr>
-    </thead>
+    <table class="table">
       <tbody>
       {% for item in items.supported %}
         <tr>
@@ -350,22 +327,10 @@
       </tbody>
     </table>
 
-    <br><br>
+    <br>
 
     <h3>Acusado(a) por / Oposto(a) por</h3>
-    <table id="ent2_opposes_ent1"
-    data-toggle="table"
-    data-pagination="true"
-    data-search="true">
-    <thead>
-      <tr>
-        <th data-sortable="true" data-field="date">date</th>
-        <th data-field="title">title</th>
-        <th data-sortable="true" data-field="score">score</th>
-        <th data-field="relationship">relationship</th>
-        <th data-field="button">button</th>
-      </tr>
-    </thead>
+    <table class="table">
       <tbody>
       {% for item in items.opposed_by %}
         <tr>
@@ -399,22 +364,10 @@
       </tbody>
     </table>
 
-    <br><br>
+    <br>
 
     <h3>Apoiado(a) por / Defendido(a) por</h3>
-    <table id="ent2_supports_ent1"
-    data-toggle="table"
-    data-pagination="true"
-    data-search="true">
-    <thead>
-      <tr>
-        <th data-sortable="true" data-field="date">date</th>
-        <th data-field="title">title</th>
-        <th data-sortable="true" data-field="score">score</th>
-        <th data-field="relationship">relationship</th>
-        <th data-field="button">button</th>
-      </tr>
-    </thead>
+    <table class="table">
       <tbody>
       {% for item in items.supported_by %}
         <tr>
@@ -448,24 +401,10 @@
       </tbody>
     </table>
 
-    <br><br>
+    <br>
 
     <h3>Other</h3>
-    <table id="ent1_other_ent2"
-    data-toggle="table"
-    data-pagination="true"
-    data-search="true">
-    <thead>
-      <tr>
-        <th data-sortable="true" data-field="date">date</th>
-        <th data-field="title">title</th>
-        <th data-sortable="true" data-field="score">score</th>
-        <th data-field="relationship">relationship</th>
-        <th data-field="button">button</th>
-      </tr>
-    </thead>
-
-
+    <table class="table">
       <tbody>
       {% for item in items.other %}
         <tr>
@@ -499,22 +438,10 @@
       </tbody>
     </table>
 
-    <br><br>
+    <br>
 
     <h3>Other By</h3>
-    <table id="ent2_other_ent1"
-    data-toggle="table"
-    data-pagination="true"
-    data-search="true">
-    <thead>
-      <tr>
-        <th data-sortable="true" data-field="date">date</th>
-        <th data-field="title">title</th>
-        <th data-sortable="true" data-field="score">score</th>
-        <th data-field="relationship">relationship</th>
-        <th data-field="button">button</th>
-      </tr>
-    </thead>
+    <table class="table">
       <tbody>
       {% for item in items.other_by %}
         <tr>

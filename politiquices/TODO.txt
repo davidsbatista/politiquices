@@ -10,8 +10,10 @@ Web App
 
     Partidos:
         - pessoas de cada partido:
-        -   pre-carregar num JSON
-        -   load on scroll down
+        - pre-carregar num JSON
+
+    Pesquisar:
+        - interface para mostrar os resultados
 
     All Entities:
         - disable scroll when the personality view is activated
@@ -124,7 +126,6 @@ classifiers
         - mostrar mais relações:
             - apoia/defende c/ as duas direções
             - acusa/opoem-se c/ as duas direções
-
 
 
     named entity recognition

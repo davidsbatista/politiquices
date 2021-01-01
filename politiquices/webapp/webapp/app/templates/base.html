@@ -11,11 +11,10 @@
   <!-- Jquery needs to come first to avoid: 'Uncaught ReferenceError: $ is not defined' -->
   <script src="static/vendor/jquery/jquery.min.js"></script>
 
+  <!-- Road map plugin
   <link href="static/dist/jquery.roadmap.min.css" rel="stylesheet">
   <script src="static/dist/jquery.roadmap.min.js"></script>
-
-  <!-- Datatables -->
-  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.css">
+  -->
 
   <!-- Bootstrap -->
   <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -85,7 +84,6 @@
 
   <title>{% block title %} {% endblock %}</title>
 
-
 </head>
 
 <body>
@@ -133,7 +131,6 @@
   <div class="container">
     <p class="m-0 text-center text-white"> &copy; politiquices.pt 2020</p>
   </div>
-  <!-- /.container -->
   </footer>
 
   <!-- Popper - Tooltip & Popover Positioning Enginepopper.js -->
@@ -141,8 +138,29 @@
 
   <!-- Bootstrap min -->
   <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
   <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
+
+  <!-- Datatables
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.css">
+
+  see: https://examples.bootstrap-table.com/#welcome.html
+  Usage example:
+
+    <table id="ent1_opposes_ent2">
+      data-pagination="true"
+      data-search="true"
+      data-toggle="table">
+      <thead>
+        <tr>
+          <th data-sortable="true" data-field="date">date</th>
+          <th data-field="title">title</th>
+          <th data-sortable="true" data-field="score">score</th>
+          <th data-field="relationship">relationship</th>
+          <th data-field="button">button</th>
+        </tr>
+      </thead>
+      <tbody>
+  -->
 
 </body>
 </html>
