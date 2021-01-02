@@ -8,23 +8,28 @@ Web App
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
-    Partidos:
-        - pessoas de cada partido:
-        - pre-carregar num JSON
+    Nav-Search-Box:
+    ---------------
+        - doesn't work on 'Personalidades' or 'Partidos' after one from the list is selected
+          and shown
 
     Pesquisar:
+    ----------
         - interface para mostrar os resultados
 
     All Entities:
+    -------------
         - disable scroll when the personality view is activated
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
 
     - Landing Page, exemplos:
+    -------------------------
         - Quem dentro do PS acusou José Sócrates?
         - escolher um partido e ver as acusações + suporte internos
 
     - Agregacoes + info na personalidade:
+    ------------------------------------
         - Governo
         - Assembleias
         - Profissao

@@ -5,7 +5,7 @@ from app import app
 from flask import request, jsonify
 from flask import render_template
 
-
+from politiquices.webapp.webapp.app.data_models import Person
 from politiquices.webapp.webapp.app.sparql_queries import (
     get_entities_without_image,
     get_nr_articles_per_year,
@@ -30,8 +30,14 @@ logger.setLevel(logging.WARNING)
 
 person_no_image = "/static/images/no_picture.jpg"
 
-all_entities_info = None
-all_parties_info = None
+with open("webapp/app/static/json/all_entities_info.json") as f_in:
+    all_entities_info = json.load(f_in)
+
+with open("webapp/app/static/json/all_parties_info.json") as f_in:
+    all_parties_info = json.load(f_in)
+
+with open("webapp/app/static/json/party_members.json") as f_in:
+    all_parties_members = json.load(f_in)
 
 entities_batch_size = 16
 
@@ -75,10 +81,6 @@ def load_entities():
 
 @app.route("/entities")
 def list_entities():
-    global all_entities_info
-    if not all_entities_info:
-        with open("webapp/app/static/json/all_entities.json") as f_in:
-            all_entities_info = json.load(f_in)
     return render_template("all_entities.html", items=all_entities_info[0:entities_batch_size])
 
 
@@ -112,8 +114,6 @@ def detail_entity():
         from_search = True
 
     person = get_person_info(wiki_id)
-
-    print(person)
 
     top_entities_in_rel_type = get_top_relationships(wiki_id)
     relationships_articles = get_person_relationships(wiki_id)
@@ -175,19 +175,33 @@ def detail_entity():
 
 @app.route("/party_members")
 def party_members():
-    # ToDo: cache this to a JSON
     wiki_id = request.args.get("q")
-    persons, party_name, party_logo = get_persons_affiliated_with_party(wiki_id)
+
+    # get party info
+    for x in all_parties_info:
+        if x['wiki_id'] == wiki_id:
+            party_name = x['party_label']
+            party_logo = x['party_logo']
+
+    # get all members
+    persons = []
+    members_id = all_parties_members[wiki_id]
+    for member_id in members_id:
+        for entity in all_entities_info:
+            if member_id == entity['wikidata_id']:
+                persons.append(
+                    Person(
+                        name=entity['name'],
+                        wiki_id=entity['wikidata_id'],
+                        image_url=entity['image_url'],
+                    )
+                )
+
     return render_template("party_members.html", items=persons, name=party_name, logo=party_logo)
 
 
 @app.route("/parties")
 def all_parties():
-    global all_parties_info
-    if not all_parties_info:
-        with open("webapp/app/static/json/all_parties_info.json") as f_in:
-            all_parties_info = json.load(f_in)
-
     return render_template("all_parties.html", items=all_parties_info)
 
 

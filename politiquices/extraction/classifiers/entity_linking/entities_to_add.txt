@@ -31,6 +31,7 @@ https://www.wikidata.org/wiki/Q11665,Ramos Horta
 https://www.wikidata.org/wiki/Q1253,Ban Ki Moon
 https://www.wikidata.org/wiki/Q264766,Theresa May
 https://www.wikidata.org/wiki/Q2254113,Pedro Abrunhosa
+https://www.wikidata.org/wiki/Q10325927,Maria José Morgado
 # political parties
 http://www.wikidata.org/entity/Q595575
 http://www.wikidata.org/entity/Q847263
