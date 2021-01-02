@@ -13,7 +13,6 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_party_of_entity,
     get_person_info,
     get_person_relationships,
-    get_persons_affiliated_with_party,
     get_relationships_between_two_entities,
     get_top_relationships,
     get_total_nr_of_articles,
@@ -30,20 +29,33 @@ logger.setLevel(logging.WARNING)
 
 person_no_image = "/static/images/no_picture.jpg"
 
-with open("webapp/app/static/json/all_entities_info.json") as f_in:
-    all_entities_info = json.load(f_in)
+all_entities_info = None
+all_parties_info = None
+all_parties_members = None
 
-with open("webapp/app/static/json/all_parties_info.json") as f_in:
-    all_parties_info = json.load(f_in)
 
-with open("webapp/app/static/json/party_members.json") as f_in:
-    all_parties_members = json.load(f_in)
+def init():
+    global all_entities_info
+    with open("webapp/app/static/json/all_entities_info.json") as f_in:
+        all_entities_info = json.load(f_in)
+
+    global all_parties_info
+    with open("webapp/app/static/json/all_parties_info.json") as f_in:
+        all_parties_info = json.load(f_in)
+
+    global all_parties_members
+    with open("webapp/app/static/json/party_members.json") as f_in:
+        all_parties_members = json.load(f_in)
+
 
 entities_batch_size = 16
 
 
 @app.route("/")
 def index():
+    if not all_entities_info:
+        print("Loading chached JSONs")
+        init()
     return render_template("index.html")
 
 
