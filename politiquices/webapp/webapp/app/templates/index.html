@@ -6,14 +6,147 @@
 
 <br><br>
 
-<div id="outer" class="container d-flex align-items-center justify-content-center">
+<center>
+    <img src="static/images/politiquices.png" class="figure-img img-fluid rounded" width="300" height="375">
+</center>
 
-    <div id="inner" class="w-100 p-1">
-        - ToDo: por aqui alguns exemplos
+<br>
+
+
+<!-- individual relationships -->
+<div id="outer" class="container d-flex align-items-center justify-content-center">
+    <div id="intro" class="w-100">
+        <p>O politiquices.pt permite pesquisar e analisar relações de apoiou ou oposiçao
+           entre personalidades políticas expressas em títulos de artigo de noticiosos.</p>
+        <p>Poderam ser exploradas todas as relações relativas a uma determinada personalidade:</p>
+    </div>
+</div>
+<div class="container">
+
+    <div id="links" class="w-100 p-1">
+
+        <div class="row text-center" id="entities">
+
+            <div class="col-lg-3 col-md-6 mb-4">
+            <a style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;" href="/entity?q=Q182367" class="custom-card">
+            <div class="card h-100">
+                <center>
+                    <img class="figure-img img-fluid rounded" src="http://commons.wikimedia.org/wiki/Special:FilePath/Josesocrates09082006.jpg" alt="" width="120" height="150">
+                </center>
+                <div class="card-body">
+                    <h6 class="card-title">José Sócrates</h6>
+                    <center>3238 artigos</center>
+                </div>
+            </div>
+            </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+            <a style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;" href="/entity?q=Q57398" class="custom-card">
+            <div class="card h-100">
+                <center>
+                    <img class="figure-img img-fluid rounded" src="http://commons.wikimedia.org/wiki/Special:FilePath/An%C3%ADbal%20Cavaco%20Silva%20Senate%20of%20Poland%2001.jpg" alt="" width="120" height="150">
+                </center>
+                <div class="card-body">
+                    <h6 class="card-title">Aníbal Cavaco Silva</h6>
+                    <center>2976 artigos</center>
+                </div>
+            </div>
+            </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+            <a style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;" href="/entity?q=Q610788" class="custom-card">
+            <div class="card h-100">
+                <center>
+                    <img class="figure-img img-fluid rounded" src="http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Costa%20img%206536.jpg" alt="" width="120" height="150">
+                </center>
+                <div class="card-body">
+                    <h6 class="card-title">António Costa</h6>
+                    <center>2903 artigos</center>
+                </div>
+            </div>
+            </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+            <a style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;" href="/entity?q=Q57615" class="custom-card">
+            <div class="card h-100">
+                <center>
+                    <img class="figure-img img-fluid rounded" src="http://commons.wikimedia.org/wiki/Special:FilePath/Pedro%20Passos%20Coelho%201.jpg" alt="" width="120" height="150">
+                </center>
+                <div class="card-body">
+                    <h6 class="card-title">Pedro Passos Coelho</h6>
+                    <center>1879 artigos</center>
+                </div>
+            </div>
+            </a>
+            </div>
+
+        </div>
+
     </div>
 
 </div>
 
-<br><br>
+
+
+<!-- relationships between two personalities -->
+<div id="outer" class="container d-flex align-items-center justify-content-center">
+    <div id="intro" class="w-100">
+        <p>Também é possível explorar apenas as relações entre duas personalidades específicas,
+           por exemplo:</p>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div class="w-100 p-1">
+        <div class="row">
+            <div class="col">
+                <center>e.g.: Rui Rio vs Santana Lopes</center>
+            </div>
+            <div class="col">
+                <center>e.g.: José Sócrates vs António Costa</center>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br><br>
+
+<!-- relationships between parties and personalities -->
+<div id="outer" class="container d-flex align-items-center justify-content-center">
+    <div id="intro" class="w-100">
+        <p>Permite também explorar relações tendo em conta todas as personalidades associadas a um
+           determinado partido político. Por exemplo, obter uma lista de relações envolvendo membros
+           do Partido Socialista que se oposeram a José Sócrates, ou uma lista das relações
+           envolvendo pessoas do Partido Social Democráta apoiadas por Assunção Cristas</p>
+    </div>
+</div>
+<div class="container">
+    <div class="w-100 p-1">
+        <div class="row">
+            <div class="col">
+                <center>e.g.: Partido Socialista -> opem-se -> José Sócrates ?</center>
+            </div>
+            <div class="col">
+                <center>e.g.: Assunção Cristas -> apoia -> Partido Social Democráta</center>
+            </div>
+        </div>
+    </div>
+</div>
+<br><br><br>
+
+
+
+<!-- relationships between parties -->
+<div id="outer" class="container d-flex align-items-center justify-content-center">
+    <div id="intro" class="w-100">
+        <p>Finalmente permite também obter relações entre todos os membros de dois partidos
+           políticos. Por exemplo todas as relações de oposição entre todos os membros
+           do Partido Socialista:</p>
+    </div>
+</div>
+
+
 
 {% endblock %}

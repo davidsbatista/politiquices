@@ -361,7 +361,7 @@ def get_person_relationships(wiki_id):
               ?arquivo_doc dc:title ?title ;
                            dc:date  ?date .
             }}
-            ORDER BY ASC(?score)
+            ORDER BY ASC(?date)
         """
 
     results = query_sparql(prefixes + "\n" + query, "politiquices")

@@ -109,61 +109,13 @@
         }
     });
 
-    var data = [
-    	{
-    		date: 'Q1 - 2018',
-    		content: 'Lorem ipsum dolor sit amet'
-    	},
-    	{
-    		date: 'Q2 - 2018',
-    		content: 'Lorem ipsum dolor sit amet'
-    	},
-    	{
-    		date: 'Q3 - 2018',
-    		content: 'Lorem ipsum dolor sit amet'
-    	},
-    	{
-    		date: 'Q4 - 2018',
-    		content: 'Lorem ipsum dolor sit amet'
-    	},
-      {
-    		date: 'Q4 - 2018',
-    		content: 'Lorem ipsum dolor sit amet'
-    	},
-      {
-    		date: 'Q4 - 2018',
-    		content: 'Lorem ipsum dolor sit amet'
-    	},
-      {
-    		date: 'Q4 - 2018',
-    		content: 'Lorem ipsum dolor sit amet'
-    	},
-      {
-    		date: 'Q4 - 2018',
-    		content: 'Lorem ipsum dolor sit amet'
-    	}
-    ];
-
-    $(document).ready(function() {
-      $("#my-roadmap").roadmap(data, {
-      	eventsPerSlide: 6,
-      	slide: 1,
-      	rootClass: 'roadmap',
-      	prevArrow: 'prev',
-      	nextArrow: 'next',
-      	orientation: 'vertical',
-      	onBuild: function() {
-      		console.log('on build event');
-      	},
-    	   eventTemplate: '<div class="event">' +'<div class="event__date">####DATE###</div>' + '<div class="event__content">####CONTENT###</div>' + '</div>'
-       });
-   });
+    $('.timeline').timeline();
 
     </script>
 
-    <br>
+    <br><br>
 
-    <!-- Top personalities for each relationship type -->
+    <!-- Top personalities for each relationship type-->
     <div class="row justify-content-center">
 
       <div class="col-auto">
@@ -221,12 +173,181 @@
               </tbody>
           </table>
       </div>
-
     </div>
 
+    <br><br>
+
+    <hr>
+    <!-- Timeline with news articles -->
+    <div class="timeline" data-mode="auto"  visible-items="4">
+      <div class="timeline__wrap">
+        <div class="timeline__items">
+
+          <div class="timeline__item">
+            <div class="timeline__content">
+              <h2>2018</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dignissim neque condimentum lacus dapibus. Lorem
+                ipsum dolor sit amet, consectetur adipiscing elit. Integer dignissim neque condimentum lacus dapibus.</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <div class="timeline__content">
+              <h2>2018</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dignissim neque condimentum lacus dapibus. Lorem
+                ipsum dolor sit amet, consectetur adipiscing elit. Integer dignissim neque condimentum lacus dapibus.</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <div class="timeline__content">
+              <h2>2018</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dignissim neque condimentum lacus dapibus. Lorem
+                ipsum dolor sit amet, consectetur adipiscing elit. Integer dignissim neque condimentum lacus dapibus.</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <div class="timeline__content">
+              <h2>2018</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dignissim neque condimentum lacus dapibus. Lorem
+                ipsum dolor sit amet, consectetur adipiscing elit. Integer dignissim neque condimentum lacus dapibus.</p>
+            </div>
+          </div>
+
+          <div class="timeline__item">
+            <div class="timeline__content">
+              <h2>2017</h2>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer dignissim neque condimentum lacus dapibus.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
     <hr>
 
-    <!-- Timeline of news titles -->
-    <div id="my-roadmap"></div>
+    <!-- Tables with all the titles
+    see: https://examples.bootstrap-table.com/#welcome.html -->
+
+    <br><br><br>
+
+    <center><h3>Discorda / Opõe-se / Acusa</h3></center>
+    <table id="ent1_opposes_ent2"
+           data-pagination="true"
+           data-search="true"
+           data-toggle="table">
+      <thead>
+        <tr>
+          <th data-sortable="true" data-field="date">Data</th>
+          <th data-field="title">Título</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in items.opposed %}
+        <tr>
+          <td id="data">{{item.date}}</td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
+                <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
+            </a>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <center><h3>Apoia / Defende</h3></center>
+    <table class="ent1_supports_ent2"
+           data-pagination="true"
+           data-search="true"
+           data-toggle="table">
+      <thead>
+        <tr>
+          <th data-sortable="true" data-field="date">Data</th>
+          <th data-field="title">Título</th>
+        </tr>
+      </thead>
+      <tbody>
+      <tbody>
+      {% for item in items.supported %}
+        <tr>
+          <td id="data">{{item.date}}</td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
+                <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <center><h3>Acusado(a) por / Oposto(a) por</h3></center>
+    <table class="ent2_opposes_ent1"
+           data-pagination="true"
+           data-search="true"
+           data-toggle="table">
+      <thead>
+        <tr>
+          <th data-sortable="true" data-field="date">Data</th>
+          <th data-field="title">Título</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in items.opposed_by %}
+        <tr>
+          <td id="data">{{item.date}}</td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
+                <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
+    <br><br>
+
+    <center><h3>Apoiado(a) por / Defendido(a) por</h3></center>
+    <table class="ent2_supports_ent1"
+           data-pagination="true"
+           data-search="true"
+           data-toggle="table">
+      <thead>
+        <tr>
+          <th data-sortable="true" data-field="date">Data</th>
+          <th data-field="title">Título</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for item in items.supported_by %}
+        <tr>
+          <td id="data">{{item.date}}</td>
+          <td id="title">
+            {{item.title_clickable|safe}}
+            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
+                <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
+            </a>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+
 
 </div>
+
+  <script>
+      timeline(document.querySelectorAll('.timeline'), {
+          verticalStartPosition: 'right',
+          verticalTrigger: '150px'
+      });
+  </script>

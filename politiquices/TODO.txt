@@ -1,21 +1,33 @@
 Web App
 =======
 
+    - Landing Page, exemplos:
+    -------------------------
+        - Quem dentro do PS acusou José Sócrates?
+        - escolher um partido e ver as acusações + suporte internos
+
+    - Parties (members)
+    -------------------
+        - tirar o header grande, apenas logo + nome (com title e alt)
+
     Entity:
     -------
         - um interface qualquer para poder selecionar as relações e o intervalo de datas
+
         - https://github.com/prabhuignoto/react-chrono
-        - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
-          alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
+        - debug mode:
+            - nice to have table + submit working: LOW PRIORITARY
+
+    Pesquisar:
+    ----------
+        - interface para mostrar os resultados
+
 
     Nav-Search-Box:
     ---------------
         - doesn't work on 'Personalidades' or 'Partidos' after one from the list is selected
           and shown
 
-    Pesquisar:
-    ----------
-        - interface para mostrar os resultados
 
     All Entities:
     -------------
@@ -23,10 +35,6 @@ Web App
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
 
-    - Landing Page, exemplos:
-    -------------------------
-        - Quem dentro do PS acusou José Sócrates?
-        - escolher um partido e ver as acusações + suporte internos
 
     - Agregacoes + info na personalidade:
     ------------------------------------
@@ -60,6 +68,8 @@ Web App
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - timeline de contradições entre duas personalidades
         - quais os partidos que acusam mais? e que partidos alvo?
+        - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
+          alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
         - existem relações familiares no grafo? entre quem?
         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
         - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
@@ -69,6 +79,7 @@ Web App
         - http://ceur-ws.org/Vol-1320/paper_39.pdf
         - http://biohackathon.org/d3sparql/
         - https://github.com/ktym/d3sparql
+
     - Charts
         - https://www.chartjs.org/samples/latest/scales/time/financial.html
         - https://www.chartjs.org/docs/latest/axes/cartesian/time.html
