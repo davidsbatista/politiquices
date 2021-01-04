@@ -1,14 +1,17 @@
 Web App
 =======
 
-    - Landing Page, exemplos:
-    -------------------------
-        - Quem dentro do PS acusou José Sócrates?
-        - escolher um partido e ver as acusações + suporte internos
+    Landing Page
+    ------------
+        - terminar
 
-    - Parties (members)
+    Parties (members)
     -------------------
         - tirar o header grande, apenas logo + nome (com title e alt)
+
+    Pesquisar:
+    ----------
+        - interface para mostrar os resultados
 
     Entity:
     -------
@@ -18,15 +21,18 @@ Web App
         - debug mode:
             - nice to have table + submit working: LOW PRIORITARY
 
-    Pesquisar:
-    ----------
-        - interface para mostrar os resultados
-
-
     Nav-Search-Box:
     ---------------
         - doesn't work on 'Personalidades' or 'Partidos' after one from the list is selected
           and shown
+        - clicar no branco fazer collapse ao menu (hamburger)
+        - pesquisar: permitir pesquisar sem acentos
+
+
+    Stats
+    -----
+        - Top pairs of personalities (regardless of directions or rel_type)
+        - Histograma com freqs. de personalidades
 
 
     All Entities:
@@ -68,6 +74,7 @@ Web App
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - timeline de contradições entre duas personalidades
         - quais os partidos que acusam mais? e que partidos alvo?
+        - escolher um partido e ver as acusações + suporte internos
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
         - existem relações familiares no grafo? entre quem?
@@ -157,6 +164,11 @@ classifiers
             tip: usar python RDFLib para ter label + aliases a partir das ttl files
 
         - https://github.com/TheScienceMuseum/elastic-wikidata
+
+        - news article with this personalities
+            https://www.wikidata.org/wiki/Q23904994
+            https://www.wikidata.org/wiki/Q52112309
+            https://www.wikidata.org/wiki/Q72310730
 
     create_graph
     ------------
