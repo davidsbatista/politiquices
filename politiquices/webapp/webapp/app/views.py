@@ -169,7 +169,7 @@ def detail_entity():
     }
 
     if from_search:
-        return render_template("entity_search.html", items=items)
+        return render_template("entity_timeline.html", items=items)
 
     return render_template("entity.html", items=items)
 
@@ -307,7 +307,6 @@ def queries():
     if query_nr == "five":
         party_a = request.args.get("party_a")
         party_b = request.args.get("party_b")
-
         party_a = ' '.join(['wd:'+x for x in get_wiki_id_affiliated_with_party(party_a)])
         party_b = ' '.join(['wd:'+x for x in get_wiki_id_affiliated_with_party(party_b)])
 

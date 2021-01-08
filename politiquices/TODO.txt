@@ -1,10 +1,6 @@
 Web App
 =======
 
-    Landing Page
-    ------------
-        - terminar
-
     Parties (members)
     -------------------
         - tirar o header grande, apenas logo + nome (com title e alt)
@@ -12,9 +8,15 @@ Web App
     Pesquisar:
     ----------
         - interface para mostrar os resultados
+        - relationships between two personalities: mostrar quem apoia/acusa mais o outro
 
     Entity:
     -------
+        - sim, essa primeira tabela tem que ter um corte ali nos primeros 10 e depois estar cada
+          uma delas ou num scroll ou expand/collapse
+        - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
+
+        - ah tipo uma infobox, mas horizontal, com os dados da pessoa, é boa ideia
         - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
         - https://github.com/prabhuignoto/react-chrono
@@ -131,6 +133,7 @@ classifiers
             - ModelCheckpoint: maximize for precision in lowest class
             - Optimizer and Learning Rate
             - batch size, Early Stop
+            - https://parameterfree.com/2020/12/06/neural-network-maybe-evolved-to-make-adam-the-best-optimizer/
             - https://spacy.io/usage/training#tips
             - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
             - https://towardsdatascience.com/checklist-for-debugging-neural-networks-d8b2a9434f21
@@ -173,4 +176,3 @@ classifiers
     create_graph
     ------------
         - exactly same input, pre-processing should be in another file
-
