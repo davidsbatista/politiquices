@@ -7,7 +7,7 @@
 
     <br>
 
-    <div id="outer" class="container d-flex align-items-center justify-content-center" width="100%">
+    <div id="outer" class="container d-flex align-items-center justify-content-center">
 
         <!-- Foto -->
         <div class="media">
@@ -76,9 +76,10 @@
               </tbody>
             </table>
         </div>
+
     </div>
 
-    <!-- Time line of relationships -->
+    <!-- Time-line of relationships -->
     <div class="container h-100">
       <div class="row h-100 justify-content-center align-items-center">
         <canvas id="myChart" width="900" height="250"></canvas>
@@ -115,7 +116,7 @@
 
     <br><br>
 
-    <!-- Top personalities for each relationship type-->
+    <!-- Top personalities for each relationship type -->
     <div class="row justify-content-center">
 
       <div class="col-auto">
@@ -178,7 +179,7 @@
     <br><br>
 
     <hr>
-    <!-- Timeline with news articles -->
+    <!-- Timeline with news articles
     <div class="timeline" data-mode="auto"  visible-items="4">
       <div class="timeline__wrap">
         <div class="timeline__items">
@@ -226,128 +227,181 @@
       </div>
     </div>
     <hr>
+    -->
 
     <!-- Tables with all the titles
-    see: https://examples.bootstrap-table.com/#welcome.html -->
+    see: https://examples.bootstrap-table.com/#welcome.html
+    -->
 
-    <br><br><br>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg">
+        <div class="container">
+          <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav mr">
+              <li class="nav-item">
+                <a class="nav-link" id="opposes">Opõe-se</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="supports">Apoia</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="opposed_by">Oposto por</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="supported_by">Apoiado por</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" id="all">Todas</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    </div>
 
-    <center><h3>Discorda / Opõe-se / Acusa</h3></center>
-    <table id="ent1_opposes_ent2"
-           data-pagination="true"
-           data-search="true"
-           data-toggle="table">
-      <thead>
-        <tr>
-          <th data-sortable="true" data-field="date">Data</th>
-          <th data-field="title">Título</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for item in items.opposed %}
-        <tr>
-          <td id="data">{{item.date}}</td>
-          <td id="title">
-            {{item.title_clickable|safe}}
-            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
-                <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
-            </a>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+    <br>
 
-    <br><br>
-
-    <center><h3>Apoia / Defende</h3></center>
-    <table class="ent1_supports_ent2"
-           data-pagination="true"
-           data-search="true"
-           data-toggle="table">
-      <thead>
-        <tr>
-          <th data-sortable="true" data-field="date">Data</th>
-          <th data-field="title">Título</th>
-        </tr>
-      </thead>
-      <tbody>
-      <tbody>
-      {% for item in items.supported %}
-        <tr>
-          <td id="data">{{item.date}}</td>
-          <td id="title">
-            {{item.title_clickable|safe}}
-            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
-                <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
-            </a>
-          </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-
-    <br><br>
-
-    <center><h3>Acusado(a) por / Oposto(a) por</h3></center>
-    <table class="ent2_opposes_ent1"
-           data-pagination="true"
-           data-search="true"
-           data-toggle="table">
-      <thead>
-        <tr>
-          <th data-sortable="true" data-field="date">Data</th>
-          <th data-field="title">Título</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for item in items.opposed_by %}
-        <tr>
-          <td id="data">{{item.date}}</td>
-          <td id="title">
-            {{item.title_clickable|safe}}
-            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
-                <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
-            </a>
-          </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-
-    <br><br>
-
-    <center><h3>Apoiado(a) por / Defendido(a) por</h3></center>
-    <table class="ent2_supports_ent1"
-           data-pagination="true"
-           data-search="true"
-           data-toggle="table">
-      <thead>
-        <tr>
-          <th data-sortable="true" data-field="date">Data</th>
-          <th data-field="title">Título</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for item in items.supported_by %}
-        <tr>
-          <td id="data">{{item.date}}</td>
-          <td id="title">
-            {{item.title_clickable|safe}}
-            <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
-                <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
-            </a>
-          </td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-
+    <div class="container" id="single_table">
+      <center><h3 id="table_title"> Acusa / Opoe-se </h3></center>
+        <table id="table"
+               data-pagination="true"
+               data-search="true"
+               data-toggle="table">
+            <thead>
+                <tr>
+                    <th data-sortable="true" data-field="data">Data</th>
+                    <th data-field="titulo">Título</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
 
 </div>
 
-  <script>
-      timeline(document.querySelectorAll('.timeline'), {
-          verticalStartPosition: 'right',
-          verticalTrigger: '150px'
+<script>
+
+    var opposed = {{ opposed|safe }};
+    var supported = {{ supported|safe }};
+    var opposed_by = {{ opposed_by|safe }};
+    var supported_by = {{ supported_by|safe }};
+    var all_relationships =  {{ all_relationships|safe }};
+
+    // by default we show the 'opposed' table
+    var $table = $('#table');
+    $(function (table) {
+        $('#table').bootstrapTable({
+            data: opposed
+        });
+    });
+
+
+    $("#opposes").click(function() {
+      $('#single_table').empty();
+      $('#single_table').append('<center><h3> Acusa / Opoe-se </h3></center>');
+      $('#single_table').append(
+      '<table id=\"table\"\
+             data-pagination=\"true\"\
+             data-search=\"true\"\
+             data-toggle=\"table\">\
+          <thead>\
+              <tr>\
+                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
+                  <th data-field=\"titulo\">Título</th>\
+              </tr>\
+          </thead>\
+      </table>');
+      $('#table').bootstrapTable({
+          data: opposed
       });
+    });
+
+    $("#supports").click(function() {
+      $('#single_table').empty();
+      $('#single_table').append('<center><h3> Defende / Apoia </h3></center>');
+      $('#single_table').append(
+      '<table id=\"table\"\
+             data-pagination=\"true\"\
+             data-search=\"true\"\
+             data-toggle=\"table\">\
+          <thead>\
+              <tr>\
+                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
+                  <th data-field=\"titulo\">Título</th>\
+              </tr>\
+          </thead>\
+      </table>');
+
+
+      $('#table').bootstrapTable({
+          data: supported
+      });
+
+    });
+
+    $("#opposed_by").click(function() {
+      $('#single_table').empty();
+      $('#single_table').append('<center><h3> Acusado por / Oposto por </h3></center>');
+      $('#single_table').append(
+      '<table id=\"table\"\
+             data-pagination=\"true\"\
+             data-search=\"true\"\
+             data-toggle=\"table\">\
+          <thead>\
+              <tr>\
+                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
+                  <th data-field=\"titulo\">Título</th>\
+              </tr>\
+          </thead>\
+      </table>');
+      $('#table').bootstrapTable({
+          data: opposed_by
+      });
+    });
+
+    $("#supported_by").click(function() {
+      $('#single_table').empty();
+      $('#single_table').append('<center><h3> Defendido por / Apoiado por </h3></center>');
+      $('#single_table').append(
+      '<table id=\"table\"\
+             data-pagination=\"true\"\
+             data-search=\"true\"\
+             data-toggle=\"table\">\
+          <thead>\
+              <tr>\
+                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
+                  <th data-field=\"titulo\">Título</th>\
+              </tr>\
+          </thead>\
+      </table>');
+      $('#table').bootstrapTable({
+          data: supported_by
+      });
+    });
+
+    $("#all").click(function() {
+      $('#single_table').empty();
+      $('#single_table').append('<center><h3> Todas as relações </h3></center>');
+      $('#single_table').append(
+      '<table id=\"table\"\
+             data-pagination=\"true\"\
+             data-search=\"true\"\
+             data-toggle=\"table\">\
+          <thead>\
+              <tr>\
+                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
+                  <th data-field=\"titulo\">Título</th>\
+              </tr>\
+          </thead>\
+      </table>');
+      $('#table').bootstrapTable({
+          data: all_relationships
+      });
+    });
+
+
+    timeline(document.querySelectorAll('.timeline'), {
+        verticalStartPosition: 'right',
+        verticalTrigger: '150px'
+    });
+
   </script>

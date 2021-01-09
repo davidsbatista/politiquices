@@ -1,9 +1,13 @@
 Web App
 =======
 
-    Parties (members)
-    -------------------
-        - tirar o header grande, apenas logo + nome (com title e alt)
+    Nav-Search-Box:
+    ---------------
+        - doesn't work on 'Personalidades' or 'Partidos' after one from the list is selected
+          and shown
+        - pesquisar: permitir pesquisar sem acentos
+        - clicar no branco fazer collapse ao menu (hamburger)
+
 
     Pesquisar:
     ----------
@@ -14,27 +18,23 @@ Web App
     -------
         - sim, essa primeira tabela tem que ter um corte ali nos primeros 10 e depois estar cada
           uma delas ou num scroll ou expand/collapse
+
         - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
 
         - ah tipo uma infobox, mas horizontal, com os dados da pessoa, é boa ideia
+
         - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
         - https://github.com/prabhuignoto/react-chrono
         - debug mode:
             - nice to have table + submit working: LOW PRIORITARY
 
-    Nav-Search-Box:
-    ---------------
-        - doesn't work on 'Personalidades' or 'Partidos' after one from the list is selected
-          and shown
-        - clicar no branco fazer collapse ao menu (hamburger)
-        - pesquisar: permitir pesquisar sem acentos
-
 
     Stats
     -----
         - Top pairs of personalities (regardless of directions or rel_type)
         - Histograma com freqs. de personalidades
+        - remote 'other' from stats
 
 
     All Entities:

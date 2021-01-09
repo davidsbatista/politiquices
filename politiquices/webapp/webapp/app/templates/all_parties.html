@@ -14,15 +14,17 @@
       <div class="row text-center">
           {% for item in tmp %}
             <div class="col-lg-3 col-md-6 mb-4">
+                <a style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;" href=/party_members?q={{item.wiki_id}} class="custom-card">
                 <div class="card h-100">
                     <center>
                         <img class="figure-img img-fluid rounded" src="{{item.party_logo}}" width="120" height="150" alt="">
                     </center>
                     <div class="card-body">
-                        <h6 class="card-title"><a href=/party_members?q={{item.wiki_id}}>{{item.party_label}}</a></h6>
+                        <h6 class="card-title">{{item.party_label}}</h6>
                         <center>{{item.nr_personalities}} personalidades</center>
                     </div>
                 </div>
+                </a>
             </div>
           {% endfor %}
       </div>
