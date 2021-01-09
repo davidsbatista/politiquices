@@ -7,12 +7,9 @@
   <div class="container">
 
     <script>
-    /*
-    * jQuery UI Autocomplete: Using Label-Value Pairs
-    * https://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html
-    * https://github.com/salmanarshad2000/demos/blob/v1.0.4/jquery-ui-autocomplete/using-label-value-pairs.html
-    */
 
+    // already loaded in base.html
+    /*
     nomes = [];
     $.getJSON("static/json/persons.json", function(json_data){
         for (var i = 0, len = json_data.length; i < len; i++) {
@@ -20,6 +17,7 @@
             nomes.push(person);
         };
     });
+    */
 
     parties = [];
     $.getJSON("static/json/parties.json", function(json_data){
@@ -49,7 +47,7 @@
       });
     });
 
-    /* 1. Relações entre duas personalidades per_one */
+    /* 1. Relações entre duas personalidades per_two */
     $(function() {
       $("#autocomplete_per_two").autocomplete({
         source: nomes,
@@ -150,7 +148,6 @@
         }
       });
     });
-
 
 
     /* 4. Relações entre (membros de ) dois partidos: party one */
