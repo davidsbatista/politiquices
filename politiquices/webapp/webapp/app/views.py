@@ -154,7 +154,6 @@ def detail_entity():
     }
 
     if 'annotate' in request.args:
-        print("rendering annotate mode")
         return render_template("entity_annotate.html", items=items)
 
     all_relationships_json = []
@@ -197,6 +196,14 @@ def detail_entity():
             <img src="{i['link_image']}" width="{i['image_width']}" height="20"></a>
             """
         supported_by_json.append({"data": i["date"], "titulo": html_title})
+        all_relationships_json.append({"data": i["date"], "titulo": html_title})
+
+    for i in items["other"] + items["other_by"]:
+        # title with entities clickable and icon with link to arquivo.pt
+        html_title = f"""
+            {i['title_clickable']} <a id="link" href={i['url']} target="_blank">
+            <img src="{i['link_image']}" width="{i['image_width']}" height="20"></a>
+            """
         all_relationships_json.append({"data": i["date"], "titulo": html_title})
 
     if from_search:

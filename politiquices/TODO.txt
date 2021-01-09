@@ -1,40 +1,34 @@
 Web App
 =======
 
+    Entity:
+    -------
+
+        - interface para mostrar os resultados entre 2 pessoas
+        - relationships between two personalities: mostrar quem apoia/acusa mais o outro
+        - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
+
+
+        - um interface qualquer para poder selecionar as relações e o intervalo de datas
+
     Nav-Search-Box:
     ---------------
         - doesn't work on 'Personalidades' or 'Partidos' after one from the list is selected
           and shown
+
+
+    Low Priority
+    ------------
+        - Export table results: https://bootstrap-table.com/docs/extensions/export/
+        - ah tipo uma infobox, mas horizontal, com os dados da pessoa, é boa ideia
         - pesquisar: permitir pesquisar sem acentos
         - clicar no branco fazer collapse ao menu (hamburger)
 
 
-    Pesquisar:
-    ----------
-        - interface para mostrar os resultados
-        - relationships between two personalities: mostrar quem apoia/acusa mais o outro
-
-    Entity:
-    -------
-        - sim, essa primeira tabela tem que ter um corte ali nos primeros 10 e depois estar cada
-          uma delas ou num scroll ou expand/collapse
-
-        - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
-
-        - ah tipo uma infobox, mas horizontal, com os dados da pessoa, é boa ideia
-
-        - um interface qualquer para poder selecionar as relações e o intervalo de datas
-
-        - https://github.com/prabhuignoto/react-chrono
-        - debug mode:
-            - nice to have table + submit working: LOW PRIORITARY
-
-
     Stats
     -----
-        - Top pairs of personalities (regardless of directions or rel_type)
         - Histograma com freqs. de personalidades
-        - remote 'other' from stats
+        - Top pairs of personalities (regardless of directions or rel_type)
 
 
     All Entities:
@@ -56,8 +50,6 @@ Web App
 
     - 'Procurar' a funcionar com "ENTER":
         https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
-
-    - export resultados para csv, tsv, etc.
 
     - eliminate relationships between the same entity:
         wd:Q610788  <-> wd:Q610788
@@ -88,10 +80,6 @@ Web App
         - http://ceur-ws.org/Vol-1320/paper_39.pdf
         - http://biohackathon.org/d3sparql/
         - https://github.com/ktym/d3sparql
-
-    - Charts
-        - https://www.chartjs.org/samples/latest/scales/time/financial.html
-        - https://www.chartjs.org/docs/latest/axes/cartesian/time.html
 
    - https://www.dafont.com/de/28-days-later.font?text=Politiquices&psize=l&back=theme
 

@@ -27,14 +27,20 @@ body {
                 no-repeat;
 }
 
-/* When the body has the loading class, we turn
-   the scrollbar off with overflow:hidden */
+/* 'truncate' table at 10 */
+.wrapper.overflow {
+  overflow-y: scroll;
+  display: inline-block;
+}
+
+
+/* AJAX loading GIF */
+/* When the body has the loading class, we turn the scrollbar off with overflow:hidden */
 body.loading .modal {
     overflow: hidden;
 }
 
-/* Anytime the body has the loading class, our
-   modal element will be visible */
+/* Anytime the body has the loading class, our modal element will be visible */
 body.loading .modal {
     display: block;
 }

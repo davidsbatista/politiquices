@@ -11,11 +11,17 @@
  Landing Page
  ------------
     - Personalidades links     -> OK
-    - Personalidades vs. Party -> no working
-    - Party vs. Personalidades -> no working
+    - Personalidades vs. Party -> not working
+    - Party vs. Personalidades -> not working
     - Party vs. Party          -> not working
 
 
 Personalidades
 --------------
-    -
+    - Selecting an entity      -> OK
+
+Partidos
+--------
+    - Selecting a party         -> OK
+     |
+     |-> Show party members     -> OK

@@ -1,4 +1,5 @@
 <!-- Page Content -->
+
 <div class="container">
 
     <br>
@@ -121,7 +122,7 @@
 
       <div class="col-auto">
           <b><center>Discorda / Opõe-se / Acusa</center></b>
-            <table class="table table-responsive">
+            <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_person_opposes %}
                 <tr>
@@ -135,7 +136,7 @@
 
       <div class="col-auto">
           <b><center>Apoia / Defende</center></b>
-          <table class="table table-responsive">
+          <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_person_supports %}
                 <tr>
@@ -149,7 +150,7 @@
 
       <div class="col-auto">
           <b><center>Acusado(a) por / Oposto(a) por</center></b>
-          <table class="table table-responsive">
+          <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_opposes_person %}
                 <tr>
@@ -163,7 +164,7 @@
 
       <div class="col-auto">
           <b><center>Apoiado(a) por</center></b>
-          <table class="table table-responsive">
+          <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_supports_person %}
                 <tr>
@@ -174,6 +175,7 @@
               </tbody>
           </table>
       </div>
+
     </div>
 
     <br><br>
