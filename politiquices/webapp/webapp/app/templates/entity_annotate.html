@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block body %}
+
 <!-- Page Content -->
 <div class="container">
 
@@ -78,36 +82,7 @@
         </div>
     </div>
 
-    <!-- Time line of relationships -->
-    <div class="container h-100">
-      <div class="row h-100 justify-content-center align-items-center">
-        <canvas id="myChart" width="900" height="250"></canvas>
-      </div>
-    </div>
-
     <script>
-    var ctx = document.getElementById('myChart');
-    var color = Chart.helpers.color;
-
-    var year_labels = {{ items['year_month_labels']|tojson }};
-    var opposed_freq = {{ items['opposed_freq']|tojson }};
-    var supported_freq = {{ items['supported_freq']|tojson }};
-    var opposed_by_freq = {{ items['opposed_by_freq']|tojson }};
-    var supported_by_freq = {{ items['supported_by_freq']|tojson }};
-
-    var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {labels: year_labels,
-               datasets: [
-                    {label: 'acusa', borderColor: "#FF0000", fill: false, data: opposed_freq},
-                    {label: 'é acusado(a)', borderColor: "#980000", fill: false, data: opposed_by_freq},
-                    {label: 'defende', borderColor: "#44861E", fill: false, data: supported_freq},
-                    {label: 'é defendido(a)', borderColor: "#70DA33", fill: false, data: supported_by_freq}
-               ],
-        options: { scales: { yAxes: [ { ticks: {beginAtZero: false} } ] }
-        }
-        }
-    });
 
     // adpated from:
     // https://stackoverflow.com/questions/14460421/get-the-contents-of-a-table-row-with-a-button-click
@@ -189,70 +164,7 @@
     });
     </script>
 
-    <br>
-
-    <!-- Top personalities for each relationship type -->
-    <div class="row justify-content-center">
-
-      <div class="col-auto">
-          <b><center>Discorda / Opõe-se / Acusa</center></b>
-            <table class="table table-responsive">
-              <tbody>
-              {% for item in items.top_relations.who_person_opposes %}
-                <tr>
-                    <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
-                    <td>{{item.nr_articles}}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-      </div>
-
-      <div class="col-auto">
-          <b><center>Apoia / Defende</center></b>
-          <table class="table table-responsive">
-              <tbody>
-              {% for item in items.top_relations.who_person_supports %}
-                <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
-                  <td>{{item.nr_articles}}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
-            </table>
-      </div>
-
-      <div class="col-auto">
-          <b><center>Acusado(a) por / Oposto(a) por</center></b>
-          <table class="table table-responsive">
-              <tbody>
-              {% for item in items.top_relations.who_opposes_person %}
-                <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
-                  <td>{{item.nr_articles}}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
-          </table>
-      </div>
-
-      <div class="col-auto">
-          <b><center>Apoiado(a) por</center></b>
-          <table class="table table-responsive">
-              <tbody>
-              {% for item in items.top_relations.who_supports_person %}
-                <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
-                  <td>{{item.nr_articles}}</td>
-                </tr>
-              {% endfor %}
-              </tbody>
-          </table>
-      </div>
-
-    </div>
-
-    <br>
+    <br><br>
 
     <h3>Discorda / Opõe-se / Acusa</h3>
     <table class="table">
@@ -476,3 +388,7 @@
     </table>
 
 </div>
+
+<br><br>
+
+{% endblock %}

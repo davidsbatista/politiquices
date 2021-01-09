@@ -91,30 +91,10 @@ def load_entities():
     return jsonify(all_entities_info[start:end])
 
 
-def make_title_linkable(r, wiki_id):
-
-    # add link to focus entity
-    link_one = r["title"].replace(
-        r["focus_ent"], '<a id="ent_1" href="entity?q=' + wiki_id + '">' + r["focus_ent"] + "</a>"
-    )
-    # add link to other entity page
-    title_link = link_one.replace(
-        r["other_ent_name"],
-        '<a id="ent_2" href=' + r["other_ent_url"] + ">" + r["other_ent_name"] + "</a>",
-    )
-    r["title_clickable"] = title_link
-
-    if r["url"].startswith("http://publico.pt"):
-        r["link_image"] = "/static/images/114px-Logo_publico.png"
-        r["image_width"] = "20"
-    else:
-        r["link_image"] = "/static/images/color_vertical.svg"
-        r["image_width"] = "39.8"
-
-
 # Personalidade View: called from 'Personalidade'-nav-bar or 'Personalidades'-click
 @app.route("/entity")
 def detail_entity():
+
     from_search = False
     wiki_id = request.args.get("q")
     if request.args.get("search"):
@@ -172,6 +152,10 @@ def detail_entity():
         "opposed_by_freq": opposed_by_freq,
         "supported_by_freq": supported_by_freq,
     }
+
+    if 'annotate' in request.args:
+        print("rendering annotate mode")
+        return render_template("entity_annotate.html", items=items)
 
     all_relationships_json = []
 
@@ -287,6 +271,27 @@ def get_person_party():
 def complete():
     result = get_entities_without_image()
     return render_template("incomplete_entities.html", items=result)
+
+
+def make_title_linkable(r, wiki_id):
+
+    # add link to focus entity
+    link_one = r["title"].replace(
+        r["focus_ent"], '<a id="ent_1" href="entity?q=' + wiki_id + '">' + r["focus_ent"] + "</a>"
+    )
+    # add link to other entity page
+    title_link = link_one.replace(
+        r["other_ent_name"],
+        '<a id="ent_2" href=' + r["other_ent_url"] + ">" + r["other_ent_name"] + "</a>",
+    )
+    r["title_clickable"] = title_link
+
+    if r["url"].startswith("http://publico.pt"):
+        r["link_image"] = "/static/images/114px-Logo_publico.png"
+        r["image_width"] = "20"
+    else:
+        r["link_image"] = "/static/images/color_vertical.svg"
+        r["image_width"] = "39.8"
 
 
 def make_title_linkable_2_entities(r):
