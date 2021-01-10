@@ -4,8 +4,7 @@
 
 {% block body %}
 
-    <!-- Page Content -->
-    <div class="container">
+<div class="container">
 
     <br>
     <center><h4><b>{{name}}</b></h4></center>
@@ -23,7 +22,6 @@
         </div>
 
     </div>
-
 
     {% for tmp in items|batch(4) %}
       <div class="row text-center" id="entities">
@@ -44,7 +42,7 @@
       </div>
     {% endfor %}
 
-    </div>
+</div>
 
 <br><br>
 

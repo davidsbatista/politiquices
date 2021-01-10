@@ -3,7 +3,6 @@ Web App
 
     Entity:
     -------
-
         - interface para mostrar os resultados entre 2 pessoas
         - relationships between two personalities: mostrar quem apoia/acusa mais o outro
         - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
@@ -151,8 +150,11 @@ classifiers
 
     entity_linking
     --------------
-        - 'Costa' is not always 'António Costa', can be often 'Carlos Costa'
-        - https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
+        - 'Costa':
+            - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
+            - apply entity linking algorithm
+
+        - 'Fernando Gomes'
 
         - construir o index ElasticSearch a partir das .ttl files:
             tip: usar python RDFLib para ter label + aliases a partir das ttl files

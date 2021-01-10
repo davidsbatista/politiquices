@@ -49,33 +49,6 @@ def index():
     return render_template("index.html")
 
 
-# Procurar
-@app.route("/search")
-def search():
-    return render_template("search.html")
-
-
-# Sobre
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-
-# Estatísticas
-@app.route("/stats")
-def status():
-    year, nr_articles_year = get_nr_articles_per_year()
-    nr_persons = get_nr_of_persons()
-    nr_articles = get_total_nr_of_articles()
-    items = {
-        "nr_persons": nr_persons,
-        "nr_articles": nr_articles,
-        "year_labels": year,
-        "year_articles": nr_articles_year,
-    }
-    return render_template("stats.html", items=items)
-
-
 # Personalidades (first call)
 @app.route("/entities")
 def list_entities():
@@ -208,7 +181,7 @@ def detail_entity():
 
     if from_search:
         return render_template(
-            "entity.html",
+            "entity_timeline.html",
             items=items,
             opposed=opposed_json,
             supported=supported_json,
@@ -226,6 +199,33 @@ def detail_entity():
         supported_by=supported_by_json,
         all_relationships=all_relationships_json,
     )
+
+
+# Procurar
+@app.route("/search")
+def search():
+    return render_template("search.html")
+
+
+# Estatísticas
+@app.route("/stats")
+def status():
+    year, nr_articles_year = get_nr_articles_per_year()
+    nr_persons = get_nr_of_persons()
+    nr_articles = get_total_nr_of_articles()
+    items = {
+        "nr_persons": nr_persons,
+        "nr_articles": nr_articles,
+        "year_labels": year,
+        "year_articles": nr_articles_year,
+    }
+    return render_template("stats.html", items=items)
+
+
+# Sobre
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 
 @app.route("/party_members")
