@@ -1,19 +1,26 @@
 Web App
 =======
 
+    All Entities:
+    -------------
+        - disable scroll when the personality view is activated
+        - mais imagens por linha
+        - cache + cópia do resize das imagens para este display
+        - size original para a página principal da entidade only
+
+
     Entity:
     -------
         - interface para mostrar os resultados entre 2 pessoas
         - relationships between two personalities: mostrar quem apoia/acusa mais o outro
         - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
-
-
         - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
-    Nav-Search-Box:
-    ---------------
-        - doesn't work on 'Personalidades' or 'Partidos' after one from the list is selected
-          and shown
+
+    Stats
+    -----
+        - Histograma com freqs. de personalidades
+        - Top pairs of personalities (regardless of directions or rel_type)
 
 
     Low Priority
@@ -23,18 +30,6 @@ Web App
         - pesquisar: permitir pesquisar sem acentos
         - clicar no branco fazer collapse ao menu (hamburger)
 
-
-    Stats
-    -----
-        - Histograma com freqs. de personalidades
-        - Top pairs of personalities (regardless of directions or rel_type)
-
-
-    All Entities:
-    -------------
-        - disable scroll when the personality view is activated
-        - cache + cópia do resize das imagens para este display
-        - size original para a página principal da entidade only
 
 
     - Agregacoes + info na personalidade:

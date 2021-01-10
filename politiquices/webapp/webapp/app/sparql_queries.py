@@ -757,6 +757,31 @@ def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, r
     return relationships
 
 
+# Two Personalities
+
+def func():
+    query = """
+        SELECT DISTINCT ?rel_type (COUNT (?url) as ?n_artigos) {  
+        {
+            ?rel my_prefix:ent1 wd:Q1688029 .
+            ?rel my_prefix:ent2 wd:Q57398 .  
+        }
+        UNION 
+        {
+            ?rel my_prefix:ent1 wd:Q57398 .  
+            ?rel my_prefix:ent2 wd:Q1688029 .
+        }
+            ?rel my_prefix:arquivo ?url .
+            ?rel my_prefix:type ?rel_type .
+        }
+        GROUP BY ?rel_type
+        ORDER BY DESC(?n_artigos)
+    """
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    relationships = []
+    for x in result["results"]["bindings"]:
+        print(x)
+
 # Other #
 
 

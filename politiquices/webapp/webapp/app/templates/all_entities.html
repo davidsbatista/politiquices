@@ -6,7 +6,7 @@
 
 <div class="container" id="container">
 
-    <script>
+    <script id="auto-scroll">
 
     var batch_size = 16
     var last_index = batch_size
@@ -28,7 +28,7 @@
 
                       var html = "<div class=\"row text-center\" id=\"entities\">";
                       $.each(data, function(index, element){
-                        html += "<div class=\"col-lg-3 col-md-6 mb-4\"><a style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;\" href=\"/entity?q=" + element.wikidata_id + '"' + " class=\"custom-card\"><div class=\"card h-100\"><center><img class=\"figure-img img-fluid rounded\" src=\"" + element.image_url + "\"width=\"120\" height=\"150\"></center><div class=\"card-body\"><h6 class=\"card-title\">" + element.name + "</h6><center>" + element.nr_articles + "<///center></div></div></a></div>"
+                        html += "<div class=\"col-lg-3 col-md-6 mb-4\"><a style=\"display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px;\" href=\"/entity?q=" + element.wikidata_id + '"' + " class=\"custom-card\"><div class=\"card h-100\"><center><img class=\"figure-img img-fluid rounded\" src=\"" + element.image_url + "\"width=\"120\" height=\"150\"></center><div class=\"card-body\"><h6 class=\"card-title\">" + element.name + "</h6><center>" + element.nr_articles + "</center></div></div></a></div>"
                       });
 
                       $("#container").append(html);
@@ -66,7 +66,5 @@
     {% endfor %}
     </div>
 </div>
-
-<br><br>
 
 {% endblock %}
