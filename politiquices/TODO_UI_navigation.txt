@@ -20,8 +20,10 @@ Personalidades
 --------------
     - Selecting an entity      -> OK
 
+
 Partidos
 --------
-    - Selecting a party         -> OK
-     |
-     |-> Show party members     -> OK
+    - Selecting a party           -> OK
+       |-> Show party members     -> OK
+           |-> Select a person    -> OK
+           |-> 'Personalidades'   -> Fails

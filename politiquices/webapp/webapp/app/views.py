@@ -153,7 +153,7 @@ def detail_entity():
         "supported_by_freq": supported_by_freq,
     }
 
-    if 'annotate' in request.args:
+    if "annotate" in request.args:
         return render_template("entity_annotate.html", items=items)
 
     all_relationships_json = []
@@ -336,10 +336,20 @@ def queries():
     if query_nr == "two":
         person_one = request.args.get("e1")
         person_two = request.args.get("e2")
+
+        person_one_info = get_person_info(person_one)
+        person_two_info = get_person_info(person_two)
         results = get_relationships_between_two_entities(person_one, person_two)
+
         for r in results:
             make_title_linkable_2_entities(r)
-        return render_template("two_entities_relationships.html", items=results)
+
+        return render_template(
+            "two_entities_relationships.html",
+            items=results,
+            entity_one=person_one_info,
+            entity_two=person_two_info,
+        )
 
     # relationships between (members of) a party and an entity
     if query_nr == "three":
@@ -359,7 +369,7 @@ def queries():
         for r in results:
             make_title_linkable_2_entities(r)
 
-        return render_template("two_entities_relationships.html", items=results)
+        return render_template("retrieved_relationships.html", items=results)
 
     # relationships between an entity and (members of) a party
     if query_nr == "four":
@@ -378,7 +388,7 @@ def queries():
 
         for r in results:
             make_title_linkable_2_entities(r)
-        return render_template("two_entities_relationships.html", items=results)
+        return render_template("retrieved_relationships.html", items=results)
 
     # relationships between (members of) a party and (members of) another party
     if query_nr == "five":
@@ -398,4 +408,4 @@ def queries():
         for r in results:
             make_title_linkable_2_entities(r)
 
-        return render_template("two_entities_relationships.html", items=results)
+        return render_template("retrieved_relationships.html", items=results)

@@ -151,6 +151,9 @@ classifiers
 
     entity_linking
     --------------
+        - 'Costa' is not always 'António Costa', can be often 'Carlos Costa'
+        - https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
+
         - construir o index ElasticSearch a partir das .ttl files:
             tip: usar python RDFLib para ter label + aliases a partir das ttl files
 

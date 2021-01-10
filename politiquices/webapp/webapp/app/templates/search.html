@@ -8,16 +8,7 @@
 
     <script>
 
-    // already loaded in base.html
-    /*
-    nomes = [];
-    $.getJSON("static/json/persons.json", function(json_data){
-        for (var i = 0, len = json_data.length; i < len; i++) {
-            var person = {label: json_data[i].name, value: json_data[i].wiki_id};
-            nomes.push(person);
-        };
-    });
-    */
+    // var 'nomes' is already loaded in base.html which is extended
 
     parties = [];
     $.getJSON("static/json/parties.json", function(json_data){
@@ -67,6 +58,7 @@
       });
     });
 
+
     /* 2. Relações de membros de um partido para uma pessoa: party */
     $(function() {
       $("#autocomplete_three_partido").autocomplete({
@@ -86,7 +78,6 @@
         }
       });
     });
-
 
     /* 2. Relações de membros de um partido para uma pessoa: person */
     $(function() {
@@ -215,7 +206,8 @@
                 return false;
               },
               complete: function (output) {
-                $('#entityResults').html(output.responseText);
+                $('#inner').html(output.responseText);
+
               }
             });
         });
@@ -239,7 +231,7 @@
                 return false;
               },
               complete: function (output) {
-                $('#entityResults').html(output.responseText);
+                $('#inner').html(output.responseText);
               }
             });
         });
@@ -263,7 +255,7 @@
                 return false;
               },
               complete: function (output) {
-                $('#entityResults').html(output.responseText);
+                $('#inner').html(output.responseText);
               }
             });
         });
@@ -286,7 +278,7 @@
                 return false;
               },
               complete: function (output) {
-                $('#entityResults').html(output.responseText);
+                $('#inner').html(output.responseText);
               }
             });
         });
@@ -308,111 +300,111 @@
     <hr>
 
     <!-- 1. Relações entre duas personalidades -->
-    <header style="width: 80%; height: 80%">
-        <h4><p>Relações entre duas personalidades</p></h4>
-        <form class="container-fluid justify-content-center align-items-center">
-        <input id="autocomplete_per_one-value" type="hidden" name="wiki">
-        <input id="autocomplete_per_two-value" type="hidden" name="wiki">
-        <div class="control-group">
-            <div class="controls controls-row row-fluid col-xs-4">
-                <input id="autocomplete_per_one" class="span10" type="text" placeholder="Personalidade" />
-                <input id="autocomplete_per_two" class="span10" type="text" placeholder="Personalidade" />
-                <button type="button" id='btn_two' class="btn btn-primary btn-sm">Procurar</button>
-            </div>
-        </div>
-        </form>
-    </header>
+    <center>
+      <h4><p>Relações entre duas personalidades</p></h4>
+      <form class="container-fluid justify-content-center align-items-center">
+      <input id="autocomplete_per_one-value" type="hidden" name="wiki">
+      <input id="autocomplete_per_two-value" type="hidden" name="wiki">
+      <div class="control-group">
+          <div class="controls controls-row row-fluid col-xs-4">
+              <input id="autocomplete_per_one" class="span10" type="text" placeholder="Personalidade" />
+              <input id="autocomplete_per_two" class="span10" type="text" placeholder="Personalidade" />
+              <button type="button" id='btn_two' class="btn btn-primary btn-sm">Procurar</button>
+          </div>
+      </div>
+      </form>
+    </center>
 
     <br><hr>
 
     <!-- 2. Relações entre (membros de) um partido e uma personalidade -->
-    <header style="width: 80%;">
-        <h4><p>Relações de membros de um partido e uma personalidade</p></h4>
-        <h6>e.g.: 'Que personalidades do BE se oposeram a Jerónimo de Sousa?'</h6>
-        <h6>e.g.: 'Quem de dentro do PS se opôs a José Sócrates?'</h6>
-        <br>
-        <form class="container-fluid justify-content-center align-items-center">
-          <input id="autocomplete_three_partido_value" type="hidden" name="wiki">
-          <input id="autocomplete_three_pessoa_value" type="hidden" name="wiki">
-          <div class="control-group">
-              <div class="controls controls-row row-fluid col-xs-4">
-                  <input id="autocomplete_three_partido" class="span10" type="text" placeholder="Partido" />
-                    <div class="dropdown" style="display: inline;">
-                      <button class="btn btn-secondary dropdown-toggle" type="button"
-                              id="dropdownMenuButton2" data-toggle="dropdown"
-                              aria-haspopup="true" aria-expanded="false">opoe-se</button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                          <a class="dropdown-item">opoe-se</a>
-                          <a class="dropdown-item">apoia</a>
-                      </div>
+    <center>
+      <h4><p>Relações de membros de um partido e uma personalidade</p></h4>
+      <h6>e.g.: 'Que personalidades do BE se oposeram a Jerónimo de Sousa?'</h6>
+      <h6>e.g.: 'Quem de dentro do PS se opôs a José Sócrates?'</h6>
+      <br>
+      <form class="container-fluid justify-content-center align-items-center">
+        <input id="autocomplete_three_partido_value" type="hidden" name="wiki">
+        <input id="autocomplete_three_pessoa_value" type="hidden" name="wiki">
+        <div class="control-group">
+            <div class="controls controls-row row-fluid col-xs-4">
+                <input id="autocomplete_three_partido" class="span10" type="text" placeholder="Partido" />
+                  <div class="dropdown" style="display: inline;">
+                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                            id="dropdownMenuButton2" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">opoe-se</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                        <a class="dropdown-item">opoe-se</a>
+                        <a class="dropdown-item">apoia</a>
                     </div>
-                  <input id="autocomplete_three_pessoa" class="span10" type="text" placeholder="Personalidade" />
-                  <button type="button" id='btn_three' class="btn btn-primary btn-sm">Procurar</button>
-                </div>
-          </div>
-        </form>
-    </header>
+                  </div>
+                <input id="autocomplete_three_pessoa" class="span10" type="text" placeholder="Personalidade" />
+                <button type="button" id='btn_three' class="btn btn-primary btn-sm">Procurar</button>
+              </div>
+        </div>
+      </form>
+    </center>
 
     <br><hr>
 
     <!-- 3. Relações entre uma personalidade e (membros de) um partido -->
-    <header style="width: 80%;">
-        <h4><p>Relações de uma personalidade e membros de um partido</p></h4>
-        <h6>e.g.: 'António Costa esteve de acordo/apoiou quem do PCP?'</h6>
-        <h6>e.g.: 'André Ventura opos-se a quem do CDS/PP?'</h6>
-        <br>
-        <form class="container-fluid justify-content-center align-items-center">
-          <input id="autocomplete_four_partido_value" type="hidden" name="wiki">
-          <input id="autocomplete_four_pessoa_value" type="hidden" name="wiki">
-          <div class="control-group">
-              <div class="controls controls-row row-fluid col-xs-4">
-                  <input id="autocomplete_four_pessoa" class="span10" type="text" placeholder="Personalidade" />
-                  <div class="dropdown" style="display: inline;">
-                      <button class="btn btn-secondary dropdown-toggle" type="button"
-                              id="dropdownMenuButton3" data-toggle="dropdown"
-                              aria-haspopup="true" aria-expanded="false">opoe-se</button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                          <a class="dropdown-item">opoe-se</a>
-                          <a class="dropdown-item">apoia</a>
-                      </div>
-                  </div>
-                  <input id="autocomplete_four_partido" class="span10" type="text" placeholder="Partido"/>
-                  <button type="button" id='btn_four' class="btn btn-primary btn-sm">Procurar</button>
-              </div>
-          </div>
-        </form>
-    </header>
+    <center>
+      <h4><p>Relações de uma personalidade e membros de um partido</p></h4>
+      <h6>e.g.: 'António Costa esteve de acordo/apoiou quem do PCP?'</h6>
+      <h6>e.g.: 'André Ventura opos-se a quem do CDS/PP?'</h6>
+      <br>
+      <form class="container-fluid justify-content-center align-items-center">
+        <input id="autocomplete_four_partido_value" type="hidden" name="wiki">
+        <input id="autocomplete_four_pessoa_value" type="hidden" name="wiki">
+        <div class="control-group">
+            <div class="controls controls-row row-fluid col-xs-4">
+                <input id="autocomplete_four_pessoa" class="span10" type="text" placeholder="Personalidade" />
+                <div class="dropdown" style="display: inline;">
+                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                            id="dropdownMenuButton3" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">opoe-se</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
+                        <a class="dropdown-item">opoe-se</a>
+                        <a class="dropdown-item">apoia</a>
+                    </div>
+                </div>
+                <input id="autocomplete_four_partido" class="span10" type="text" placeholder="Partido"/>
+                <button type="button" id='btn_four' class="btn btn-primary btn-sm">Procurar</button>
+            </div>
+        </div>
+      </form>
+    <center>
 
     <br><hr>
 
-    <!-- 4. Relações entre (memberos de) um partido e (memberos de) um outro partido -->
-    <header style="width: 80%;">
-        <h4><p>Relações entre membros de dois partidos</p></h4>
-        <h6>e.g.: 'Que personalidades do BE se oposeram a personalidades do PCP?</h6>
-        <h6>e.g.: 'Que personalidades do PS apoiaram personalidades do PSD?'</h6>
-        <br>
-        <form class="container-fluid justify-content-center align-items-center">
-          <input id="autocomplete_five_party_one_value" type="hidden" name="wiki">
-          <input id="autocomplete_five_party_two_value" type="hidden" name="wiki">
+    <!-- 4. Relações entre (membros de) um partido e (membros de) um outro partido -->
+    <center>
+      <h4><p>Relações entre membros de dois partidos</p></h4>
+      <h6>e.g.: 'Que personalidades do BE se oposeram a personalidades do PCP?</h6>
+      <h6>e.g.: 'Que personalidades do PS apoiaram personalidades do PSD?'</h6>
+      <br>
+      <form class="container-fluid justify-content-center align-items-center">
+        <input id="autocomplete_five_party_one_value" type="hidden" name="wiki">
+        <input id="autocomplete_five_party_two_value" type="hidden" name="wiki">
 
-          <div class="control-group">
-              <div class="controls controls-row row-fluid col-xs-4">
-                  <input id="autocomplete_five_party_one" class="span10" type="text" placeholder="Partido" />
-                    <div class="dropdown" style="display: inline;">
-                      <button class="btn btn-secondary dropdown-toggle" type="button"
-                              id="dropdownMenuButton4" data-toggle="dropdown"
-                              aria-haspopup="true" aria-expanded="false">opoe-se</button>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                          <a class="dropdown-item">opoe-se</a>
-                          <a class="dropdown-item">apoia</a>
-                    </div>
-                </div>
-                  <input id="autocomplete_five_party_two" class="span10" type="text" placeholder="Partido" />
-                  <button type="button" id='btn_five' class="btn btn-primary btn-sm">Procurar</button>
-                </div>
-          </div>
-        </form>
-    </header>
+        <div class="control-group">
+            <div class="controls controls-row row-fluid col-xs-4">
+                <input id="autocomplete_five_party_one" class="span10" type="text" placeholder="Partido" />
+                  <div class="dropdown" style="display: inline;">
+                    <button class="btn btn-secondary dropdown-toggle" type="button"
+                            id="dropdownMenuButton4" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">opoe-se</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
+                        <a class="dropdown-item">opoe-se</a>
+                        <a class="dropdown-item">apoia</a>
+                  </div>
+              </div>
+                <input id="autocomplete_five_party_two" class="span10" type="text" placeholder="Partido" />
+                <button type="button" id='btn_five' class="btn btn-primary btn-sm">Procurar</button>
+              </div>
+        </div>
+      </form>
+    </center>
 
     <div id="entityResults" class="w-85 p-2" align="left"></div>
 
