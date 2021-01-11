@@ -72,6 +72,7 @@
               },
               complete: function (output) {
                 // remove $('#auto-scroll') if in 'Personalidades' page
+                $(window).off();
                 $('#container').empty();
                 $('#container').html(output.responseText);
               }

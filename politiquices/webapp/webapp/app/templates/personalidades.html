@@ -14,10 +14,6 @@
     $(window).scroll(function () {
         // End of the document reached?
         if ($(document).height() - $(this).height() - 100 < $(this).scrollTop()) {
-
-            // console.log('Just 100 pixels above to Bottom');
-            // var = last_number + batch_size
-
             $.ajax({
                 type: "GET",
                 url: "/load_entities",
