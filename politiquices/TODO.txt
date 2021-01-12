@@ -1,9 +1,12 @@
 Web App
 =======
 
+    Stats
+    -----
+        - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?
+
     All Entities:
     -------------
-        - disable scroll when the personality view is activated
         - mais imagens por linha
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
@@ -15,12 +18,6 @@ Web App
         - relationships between two personalities: mostrar quem apoia/acusa mais o outro
         - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
         - um interface qualquer para poder selecionar as relações e o intervalo de datas
-
-
-    Stats
-    -----
-        - Histograma com freqs. de personalidades
-        - Top pairs of personalities (regardless of directions or rel_type)
 
 
     Low Priority

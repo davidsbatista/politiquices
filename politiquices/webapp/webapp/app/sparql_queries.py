@@ -4,11 +4,7 @@ from typing import Tuple, List
 
 from functools import lru_cache
 from SPARQLWrapper import SPARQLWrapper, JSON
-from politiquices.webapp.webapp.app.data_models import (
-    OfficePosition,
-    Person,
-    PoliticalParty
-)
+from politiquices.webapp.webapp.app.data_models import OfficePosition, Person, PoliticalParty
 from politiquices.webapp.webapp.app.utils import convert_dates
 
 wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
@@ -42,6 +38,7 @@ prefixes = politiquices_prefixes + wikidata_prefixes
 
 
 # Status/Statistics #
+
 
 @lru_cache
 def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
@@ -95,6 +92,70 @@ def get_nr_of_persons() -> int:
 
 # Run once on start-up #
 
+
+def top_co_occurrences():
+    query = """
+        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+        PREFIX wd: <http://www.wikidata.org/entity/>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX my_prefix: <http://some.namespace/with/name#>
+        
+        SELECT DISTINCT ?person_a ?person_b (COUNT (?url) as ?n_artigos) {
+          VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
+                              'ent1_supports_ent2' 'ent2_supports_ent1'} .
+              
+          ?rel my_prefix:type ?rel_values .
+          {
+            ?rel my_prefix:ent1 ?person_a .
+            ?rel my_prefix:ent2 ?person_b .
+          }
+          UNION {
+            ?rel my_prefix:ent2 ?person_a .
+            ?rel my_prefix:ent1 ?person_b .
+          }
+          ?rel my_prefix:arquivo ?url .
+          ?rel my_prefix:type ?rel_type .
+        }
+        GROUP BY ?person_a ?person_b
+        ORDER BY DESC(?n_artigos)
+        """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    co_occurrences = []
+    seen = set()
+    for x in results["results"]["bindings"]:
+        person_a = x["person_a"]["value"]
+        person_b = x["person_b"]["value"]
+        artigos = x["n_artigos"]["value"]
+        if person_a + " " + person_b in seen:
+            continue
+        co_occurrences.append({"person_a": person_a, "person_b": person_b, "n_artigos": artigos})
+        seen.add(person_a + " " + person_b)
+        seen.add(person_b + " " + person_a)
+
+    return co_occurrences
+
+
+@lru_cache
+def all_persons_freq():
+    query = """
+        SELECT DISTINCT ?person (COUNT (?url) as ?n_artigos) {  
+        VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
+                            'ent1_supports_ent2' 'ent2_supports_ent1'} .
+        ?rel my_prefix:type ?rel_values .          
+        { ?rel my_prefix:ent1 ?person .} UNION { ?rel my_prefix:ent2 ?person . }              
+        ?rel my_prefix:arquivo ?url .
+        ?rel my_prefix:type ?rel_type .        
+        }
+        GROUP BY ?person
+        HAVING (?n_artigos > 0)
+        ORDER BY DESC(?n_artigos)        
+        """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    top_freq = [{'person': x['person']['value'], 'freq': x['n_artigos']['value']}
+                for x in results["results"]["bindings"]]
+    return top_freq
+
+
 @lru_cache
 def all_entities():
     query = f"""
@@ -131,6 +192,7 @@ def get_total_nr_articles_for_each_person():
 
 
 # Parties #
+
 
 @lru_cache
 def get_persons_affiliated_with_party(political_party: str):
@@ -175,11 +237,7 @@ def get_persons_affiliated_with_party(political_party: str):
 
         image = x["image_url"]["value"] if "image_url" in x else no_image
         persons.append(
-            Person(
-                name=wiki_id,
-                wiki_id=x["person"]["value"].split("/")[-1],
-                image_url=image,
-            )
+            Person(name=wiki_id, wiki_id=x["person"]["value"].split("/")[-1], image_url=image,)
         )
         seen.add(wiki_id)
 
@@ -198,6 +256,7 @@ def get_wiki_id_affiliated_with_party(political_party: str):
 
 
 # Personality Information #
+
 
 @lru_cache
 def get_person_info(wiki_id):
@@ -273,9 +332,13 @@ def get_person_info(wiki_id):
     results = get_person_info2(wiki_id)
 
     return Person(
-        wiki_id=wiki_id, name=name, image_url=image_url, parties=parties,
-        positions=results['position'], education=results['education'],
-        occupations=results['occupation']
+        wiki_id=wiki_id,
+        name=name,
+        image_url=image_url,
+        parties=parties,
+        positions=results["position"],
+        education=results["education"],
+        occupations=results["occupation"],
     )
 
 
@@ -309,15 +372,15 @@ def get_person_info2(wiki_id):
         """
 
     results = query_sparql(prefixes + "\n" + occupation_query, "wikidata")
-    occupations = [x['occupation_label']['value'] for x in results['results']['bindings']]
+    occupations = [x["occupation_label"]["value"] for x in results["results"]["bindings"]]
 
     results = query_sparql(prefixes + "\n" + education_query, "wikidata")
-    education = [x['educatedAt_label']['value'] for x in results['results']['bindings']]
+    education = [x["educatedAt_label"]["value"] for x in results["results"]["bindings"]]
 
     results = query_sparql(prefixes + "\n" + positions_query, "wikidata")
-    positions = [x['position_label']['value'] for x in results['results']['bindings']]
+    positions = [x["position_label"]["value"] for x in results["results"]["bindings"]]
 
-    return {'education': education, 'occupation': occupations, 'position': positions}
+    return {"education": education, "occupation": occupations, "position": positions}
 
 
 @lru_cache
@@ -522,16 +585,17 @@ def get_top_relationships(wiki_id: str):
             }
         )
 
-    who_person_opposes = [x for x in persons_ent1['ent1_opposes_ent2']]
-    who_person_supports = [x for x in persons_ent1['ent1_supports_ent2']]
-    who_opposes_person = [x for x in persons_ent2['ent1_opposes_ent2']]
-    who_supports_person = [x for x in persons_ent2['ent1_supports_ent2']]
+    who_person_opposes = [x for x in persons_ent1["ent1_opposes_ent2"]]
+    who_person_supports = [x for x in persons_ent1["ent1_supports_ent2"]]
+    who_opposes_person = [x for x in persons_ent2["ent1_opposes_ent2"]]
+    who_supports_person = [x for x in persons_ent2["ent1_supports_ent2"]]
 
-    return {'who_person_opposes': who_person_opposes,
-            'who_person_supports': who_person_supports,
-            'who_opposes_person': who_opposes_person,
-            'who_supports_person': who_supports_person
-            }
+    return {
+        "who_person_opposes": who_person_opposes,
+        "who_person_supports": who_person_supports,
+        "who_opposes_person": who_opposes_person,
+        "who_supports_person": who_supports_person,
+    }
 
 
 @lru_cache
@@ -572,6 +636,7 @@ def get_person_rels_by_month_year(wiki_id, rel_type, ent="ent1"):
 
 # Relationship Queries #
 
+
 @lru_cache
 def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
     query = f"""
@@ -609,16 +674,17 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
     relationships = []
     for x in result["results"]["bindings"]:
         relationships.append(
-            {'url': x['arquivo_doc']['value'],
-             'date': x['date']['value'],
-             'title': x['title']['value'],
-             'rel_type': x['rel_type']['value'],
-             'score': x["score"]["value"][0:5],
-             'ent1': x['ent1']['value'],
-             'ent1_str': x['ent1_str']['value'],
-             'ent2': x['ent2']['value'],
-             'ent2_str': x['ent2_str']['value'],
-             }
+            {
+                "url": x["arquivo_doc"]["value"],
+                "date": x["date"]["value"],
+                "title": x["title"]["value"],
+                "rel_type": x["rel_type"]["value"],
+                "score": x["score"]["value"][0:5],
+                "ent1": x["ent1"]["value"],
+                "ent1_str": x["ent1_str"]["value"],
+                "ent2": x["ent2"]["value"],
+                "ent2_str": x["ent2_str"]["value"],
+            }
         )
 
     return relationships
@@ -653,16 +719,17 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(party, person
     results = []
     for x in result["results"]["bindings"]:
         results.append(
-            {'url': x['arquivo_doc']['value'],
-             'date': x['date']['value'],
-             'title': x['title']['value'],
-             'rel_type': relation,
-             'score': x["score"]["value"][0:5],
-             'ent1': x['ent1']['value'],
-             'ent1_str': x['ent1_str']['value'],
-             'ent2': person,
-             'ent2_str': x['ent2_str']['value'],
-             }
+            {
+                "url": x["arquivo_doc"]["value"],
+                "date": x["date"]["value"],
+                "title": x["title"]["value"],
+                "rel_type": relation,
+                "score": x["score"]["value"][0:5],
+                "ent1": x["ent1"]["value"],
+                "ent1_str": x["ent1_str"]["value"],
+                "ent2": person,
+                "ent2_str": x["ent2_str"]["value"],
+            }
         )
 
     return results
@@ -698,16 +765,17 @@ def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party
     results = []
     for x in result["results"]["bindings"]:
         results.append(
-            {'url': x['arquivo_doc']['value'],
-             'date': x['date']['value'],
-             'title': x['title']['value'],
-             'rel_type': relation,
-             'score': x["score"]["value"][0:5],
-             'ent1': person,
-             'ent1_str': x['ent1_str']['value'],
-             'ent2': x['ent2']['value'],
-             'ent2_str': x['ent2_str']['value'],
-             }
+            {
+                "url": x["arquivo_doc"]["value"],
+                "date": x["date"]["value"],
+                "title": x["title"]["value"],
+                "rel_type": relation,
+                "score": x["score"]["value"][0:5],
+                "ent1": person,
+                "ent1_str": x["ent1_str"]["value"],
+                "ent2": x["ent2"]["value"],
+                "ent2_str": x["ent2_str"]["value"],
+            }
         )
 
     return results
@@ -743,22 +811,22 @@ def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, r
     relationships = []
     for x in result["results"]["bindings"]:
         relationships.append(
-            {'url': x['arquivo_doc']['value'],
-             'date': x['date']['value'],
-             'title': x['title']['value'],
-             'rel_type': relation,
-             'score': x["score"]["value"][0:5],
-             'ent1': x['person_party_a']['value'],
-             'ent1_str': x['ent1_str']['value'],
-             'ent2': x['person_party_b']['value'],
-             'ent2_str': x['ent2_str']['value'],
-             }
+            {
+                "url": x["arquivo_doc"]["value"],
+                "date": x["date"]["value"],
+                "title": x["title"]["value"],
+                "rel_type": relation,
+                "score": x["score"]["value"][0:5],
+                "ent1": x["person_party_a"]["value"],
+                "ent1_str": x["ent1_str"]["value"],
+                "ent2": x["person_party_b"]["value"],
+                "ent2_str": x["ent2_str"]["value"],
+            }
         )
     return relationships
 
 
 # Two Personalities
-
 def func():
     query = """
         SELECT DISTINCT ?rel_type (COUNT (?url) as ?n_artigos) {  
@@ -781,6 +849,7 @@ def func():
     relationships = []
     for x in result["results"]["bindings"]:
         print(x)
+
 
 # Other #
 
