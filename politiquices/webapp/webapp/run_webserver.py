@@ -86,10 +86,6 @@ def get_all_parties_with_affiliated_count():
     return political_parties
 
 
-def get_top_co_ocorruences():
-    pass
-
-
 def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
@@ -98,6 +94,8 @@ def main():
 
     # mapping: wiki_id -> person_info
     wiki_id = {x["wikidata_id"]: {"name": x["name"], "image_url": x["image_url"]} for x in per_data}
+    with open(static_data + "wiki_id_info.json", "w") as f_out:
+        json.dump(wiki_id, f_out, indent=4)
 
     print(f"{len(per_data)} entities card info (positions + wikidata_link + image + nr articles)")
     with open(static_data + "all_entities_info.json", "w") as f_out:

@@ -40,6 +40,8 @@ with open("webapp/app/static/json/all_parties_info.json") as f_in:
 with open("webapp/app/static/json/party_members.json") as f_in:
     all_parties_members = json.load(f_in)
 
+with open("webapp/app/static/json/wiki_id_info.json") as f_in:
+    wiki_id_info = json.load(f_in)
 
 entities_batch_size = 16
 
@@ -211,8 +213,11 @@ def search():
 # Estatísticas
 @app.route("/stats")
 def status():
+
     # ToDo: nr. parties
-    # ToDo: normalize this code for all values/graphs
+    # ToDo: make links
+    # ToDo: refactor/normalize this code for all values/graphs
+
     year, nr_articles_year = get_nr_articles_per_year()
     nr_persons = get_nr_of_persons()
     nr_articles = get_total_nr_of_articles()
@@ -224,23 +229,11 @@ def status():
         "year_articles": nr_articles_year,
     }
 
-    # ToDo: get names of persons and make links
-    labels = [x["person"] for x in per_freq]
+    labels = [wiki_id_info[x["person"].split("/")[-1]]['name'] for x in per_freq]
     values = [x["freq"] for x in per_freq]
-    links = [{'x["person"]': """<a href="http://www.google.com" target="_blank" >Google</a>"""}
-             for _ in per_freq]
-
-    """
-    'Link 1: <a href="http://www.google.com" target="_blank" >Google</a>',
-    'Link 2: <a href="http://www.yahoo.com" target="_blank" >Yahoo</a>',
-    'Link 3: <a href="http://www.bing.com" target="_blank" >Bing</a>',
-    'Link 4: <a href="http://news.bbc.co.uk" target="_blank" >BBC News</a>',
-    'Link 5: <a href="http://www.facebook.com" target="_blank" >Facebook</a>'
-    """
-
     return render_template(
-        "stats.html", items=items, per_freq_labels=labels, per_freq_values=values,
-        per_freq_links=links)
+        "stats.html", items=items, per_freq_labels=labels, per_freq_values=values
+    )
 
 
 # Sobre

@@ -1,29 +1,12 @@
-'Personalidade' nav-Box on:
----------------------------
-    - Landing Page      -> not working
-    - Personalidades    -> disable scroll when the personality view is activated
-    - Partidos          -> footer is smaller
-    - Procurar          ->
-    - Estatísticas      -> DONE
-    - Sobre             -> DONE
-
-
- Landing Page
- ------------
+Landing Page
+------------
     - Personalidades links     -> OK
     - Personalidades vs. Party -> not working
     - Party vs. Personalidades -> not working
     - Party vs. Party          -> not working
 
-
-Personalidades
---------------
-    - Selecting an entity      -> OK
-
-
 Partidos
 --------
     - Selecting a party           -> OK
        |-> Show party members     -> OK
-           |-> Select a person    -> OK
            |-> 'Personalidades'   -> Fails

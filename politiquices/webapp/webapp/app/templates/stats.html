@@ -62,13 +62,12 @@
                    }
             });
 
+
+
         // Person
         var ctx = document.getElementById('barChart');
         var per_labels = {{ per_freq_labels|tojson }};
         var per_values = {{ per_freq_values|tojson }};
-        var per_links = {{ per_freq_links|tojson }};
-
-        console.log(per_links);
 
         var myBarChart = new Chart(ctx, {
             type: 'horizontalBar',
@@ -79,9 +78,29 @@
                         data: per_values
                         }]
                    },
-            options: {
-                tooltips: per_links
-              }
+             options: {
+               events: ["mousemove", "mouseout", "click", "touchstart", "touchmove", "touchend"],
+               onClick: function(e, data) {
+                   console.log('mouse')
+                   var ctx = $("#barChart")[0].getContext("2d");
+                   var base = that.chart.chartArea.bottom;
+                   var height = that.chart.chart.height;
+                   var width = that.chart.chart.scales['x-axis-0'].width;
+                   var offset = $('#chart').offset().top - $(window).scrollTop();
+                   if(e.pageY > base + offset){
+                       var count = that.chart.scales['x-axis-0'].ticks.length;
+                       var padding_left = that.chart.scales['x-axis-0'].paddingLeft;
+                       var padding_right = that.chart.scales['x-axis-0'].paddingRight;
+                       var xwidth = (width-padding_left-padding_right)/count;
+                       // don't call for padding areas
+                       var bar_index = (e.offsetX - padding_left - that.chart.scales['y-axis-0'].width) / xwidth;
+                       if(bar_index > 0 & bar_index < count){
+                           bar_index = Math.floor(bar_index);
+                           console.log(bar_index);
+                       }
+                   }
+               }
+           }
         });
 
 

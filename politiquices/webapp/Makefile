@@ -18,7 +18,7 @@ web:
 	pip install --upgrade pip; \
 	pip install -r webapp/requirements.txt; \
 	cd $${HOME}/politiquices/politiquices/webapp/; \
-	PYTHONPATH=$${HOME}/politiquices python webapp/run-webserver.py;
+	PYTHONPATH=$${HOME}/politiquices python webapp/run_webserver.py;
 
 
 all: sparql	web

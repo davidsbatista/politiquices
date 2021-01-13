@@ -5,6 +5,10 @@ Web App
     -----
         - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?
 
+    Grafo:
+    ------
+
+
     All Entities:
     -------------
         - mais imagens por linha
