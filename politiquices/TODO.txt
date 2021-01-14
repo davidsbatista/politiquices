@@ -8,6 +8,13 @@ Web App
     Grafo:
     ------
 
+    Landing Page
+    ------------
+        - Personalidades links     -> OK
+        - Personalidades vs. Party -> not working
+        - Party vs. Personalidades -> not working
+        - Party vs. Party          -> not working
+
 
     All Entities:
     -------------

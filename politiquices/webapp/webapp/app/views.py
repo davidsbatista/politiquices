@@ -242,6 +242,12 @@ def about():
     return render_template("about.html")
 
 
+# Partidos
+@app.route("/parties")
+def all_parties():
+    return render_template("all_parties.html", items=all_parties_info)
+
+
 @app.route("/party_members")
 def party_members():
     wiki_id = request.args.get("q")
@@ -269,11 +275,6 @@ def party_members():
     return render_template(
         "party_members.html", items=persons, name=party_name, logo=party_logo, party_wiki_id=wiki_id
     )
-
-
-@app.route("/parties")
-def all_parties():
-    return render_template("all_parties.html", items=all_parties_info)
 
 
 @app.route("/person_party")
