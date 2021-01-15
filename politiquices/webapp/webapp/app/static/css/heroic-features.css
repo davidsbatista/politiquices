@@ -27,7 +27,17 @@ body {
                 no-repeat;
 }
 
-/* 'truncate' table at 10 */
+
+#cy {
+    width: 80%;
+    height: 50%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+
+/* PROBABLY NOT BEING USED (CLEAN): 'truncate' table at 10 */
 .wrapper.overflow {
   overflow-y: scroll;
   display: inline-block;

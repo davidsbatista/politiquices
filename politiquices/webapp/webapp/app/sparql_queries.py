@@ -91,8 +91,30 @@ def get_nr_of_persons() -> int:
 
 
 # Run once on start-up #
+@lru_cache()
+def get_graph_links():
+    query = """
+        SELECT DISTINCT ?person_a ?rel_type ?person_b ?url {
+        VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
+                            'ent1_supports_ent2' 'ent2_supports_ent1'} .
+        ?rel my_prefix:type ?rel_values .  
+        ?rel my_prefix:ent1 ?person_a .
+        ?rel my_prefix:ent2 ?person_b .
+        ?rel my_prefix:type ?rel_type .
+        ?rel my_prefix:arquivo ?url .
+        }
+        """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    edges = [{'person_a': x["person_a"]["value"],
+              'person_b': x["person_b"]["value"],
+              'rel_type': x["rel_type"]["value"],
+              'url': x["url"]["value"]}
+             for x in results["results"]["bindings"]
+             ]
+    return edges
 
 
+@lru_cache()
 def top_co_occurrences():
     query = """
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>

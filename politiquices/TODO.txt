@@ -1,20 +1,32 @@
 Web App
 =======
 
-    Stats
-    -----
-        - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?
+    -> Carregar só os partidos portugueses
 
     Grafo:
     ------
 
+
+    Stats
+    -----
+        - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?
+
     Landing Page
     ------------
-        - Personalidades links     -> OK
         - Personalidades vs. Party -> not working
         - Party vs. Personalidades -> not working
         - Party vs. Party          -> not working
 
+    Entity:
+    -------
+        - relationships between two personalities: mostrar quem apoia/acusa mais o outro
+        - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
+        - um interface qualquer para poder selecionar as relações e o intervalo de datas
+
+    Retrieved_Relationships:
+    -----------------------
+        - ToDo: Partido vs Person
+        - ToDo: Person vs Partido
 
     All Entities:
     -------------
@@ -22,13 +34,11 @@ Web App
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
 
-
-    Entity:
-    -------
-        - interface para mostrar os resultados entre 2 pessoas
-        - relationships between two personalities: mostrar quem apoia/acusa mais o outro
-        - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
-        - um interface qualquer para poder selecionar as relações e o intervalo de datas
+    Bugs:
+    ----
+       - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
+       - 'Procurar' a funcionar com "ENTER":
+          https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
 
 
     Low Priority
@@ -38,20 +48,16 @@ Web App
         - pesquisar: permitir pesquisar sem acentos
         - clicar no branco fazer collapse ao menu (hamburger)
 
+        - Agregacoes + info na personalidade:
+          ------------------------------------
+          - Governo
+          - Assembleias
+          - Profissao
+          - Educacao
+          - listar todos os membros do Governo X
+          - listar todos os que já foram Ministros <qq cena>
+          - quem acusou/apoiou <personalidade_com_um_cargo>
 
-
-    - Agregacoes + info na personalidade:
-    ------------------------------------
-        - Governo
-        - Assembleias
-        - Profissao
-        - Educacao
-        - listar todos os membros do Governo X
-        - listar todos os que já foram Ministros <qq cena>
-        - quem acusou/apoiou <personalidade_com_um_cargo>
-
-    - 'Procurar' a funcionar com "ENTER":
-        https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
 
     - eliminate relationships between the same entity:
         wd:Q610788  <-> wd:Q610788
@@ -61,9 +67,6 @@ Web App
     - alterar os namespaces para 'politiquices.pt'
         http://politiquices.pt/entity/<wikidata_person_id> -> todas as relações da pessoa
         http://politiquices.pt/party/<wikidata_party_id> -> todas as pessoas desse partido
-
-    Bugs:
-       - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
 
 
     SPARQL queries:
@@ -77,11 +80,6 @@ Web App
         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
         - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
         - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
-
-   - Sparql Viz:
-        - http://ceur-ws.org/Vol-1320/paper_39.pdf
-        - http://biohackathon.org/d3sparql/
-        - https://github.com/ktym/d3sparql
 
    - https://www.dafont.com/de/28-days-later.font?text=Politiquices&psize=l&back=theme
 

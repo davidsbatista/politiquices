@@ -4,7 +4,7 @@ from collections import defaultdict
 
 from app import app
 
-from politiquices.webapp.webapp.app.sparql_queries import prefixes
+from politiquices.webapp.webapp.app.sparql_queries import prefixes, get_graph_links
 from politiquices.webapp.webapp.app.sparql_queries import top_co_occurrences
 from politiquices.webapp.webapp.app.sparql_queries import all_entities
 from politiquices.webapp.webapp.app.sparql_queries import query_sparql
@@ -86,6 +86,10 @@ def get_all_parties_with_affiliated_count():
     return political_parties
 
 
+def build_graph_models(edges):
+    pass
+
+
 def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
@@ -146,8 +150,12 @@ def main():
 
     with open(static_data + "top_co_occurrences.json", "w") as f_out:
         json.dump(co_occurrences, f_out, indent=4)
-
     print(f"{len(co_occurrences)} co-ocorruences")
+
+    edges = get_graph_links()
+    with open(static_data + "edges.json", "w") as f_out:
+        json.dump(edges, f_out, indent=4)
+    print(f"{len(edges)} edges extracted")
 
     app.run(debug=True, host="0.0.0.0")
 

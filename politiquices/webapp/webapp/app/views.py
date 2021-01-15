@@ -43,6 +43,10 @@ with open("webapp/app/static/json/party_members.json") as f_in:
 with open("webapp/app/static/json/wiki_id_info.json") as f_in:
     wiki_id_info = json.load(f_in)
 
+with open("webapp/app/static/json/edges.json") as f_in:
+    edges = json.load(f_in)
+
+
 entities_batch_size = 16
 
 
@@ -210,6 +214,60 @@ def search():
     return render_template("search.html")
 
 
+# Grafo
+@app.route("/graph")
+def graph():
+    nodes = set()
+    elements = []
+
+    # ToDo: rever o quer SPARQL (apenas 548 personalidades? porque?)
+    # ToDo: 'classes' no elemento para associar a um partido
+
+    for x in edges:
+        name_a = wiki_id_info[x["person_a"].split("/")[-1]]["name"]
+        name_b = wiki_id_info[x["person_b"].split("/")[-1]]["name"]
+        wiki_id_a = x["person_a"].split("/")[-1]
+        wiki_id_b = x["person_b"].split("/")[-1]
+
+        if wiki_id_a in nodes:
+            continue
+        else:
+            elements.append({"data": {"id": wiki_id_a, "label": name_a}})
+            nodes.add(name_a)
+
+        if wiki_id_b in nodes:
+            continue
+        else:
+            elements.append({"data": {"id": wiki_id_b, "label": name_b}})
+            nodes.add(name_b)
+
+        if x["rel_type"].startswith("ent1"):
+            elements.append(
+                {
+                    "data": {
+                        "id": x["url"],
+                        "source": wiki_id_a,
+                        "target": wiki_id_b,
+                        "label": x["rel_type"],
+                    }
+                }
+            )
+
+        elif x["rel_type"].startswith("ent2"):
+            elements.append(
+                {
+                    "data": {
+                        "id": x["url"],
+                        "source": wiki_id_b,
+                        "target": wiki_id_a,
+                        "label": x["rel_type"],
+                    }
+                }
+            )
+
+    return render_template("graph.html", elements=elements[:100])
+
+
 # Estatísticas
 @app.route("/stats")
 def status():
@@ -229,7 +287,7 @@ def status():
         "year_articles": nr_articles_year,
     }
 
-    labels = [wiki_id_info[x["person"].split("/")[-1]]['name'] for x in per_freq]
+    labels = [wiki_id_info[x["person"].split("/")[-1]]["name"] for x in per_freq]
     values = [x["freq"] for x in per_freq]
     return render_template(
         "stats.html", items=items, per_freq_labels=labels, per_freq_values=values
