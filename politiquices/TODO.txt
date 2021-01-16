@@ -4,7 +4,6 @@ Web App
     Bugs:
     ----
        - Speed up party vs party queries, how?: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
-       - Carregar só os partidos portugueses
        - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
        - 'Procurar' a funcionar com "ENTER": https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
 

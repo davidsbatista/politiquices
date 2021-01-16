@@ -50,18 +50,24 @@ def get_entities():
 
 
 def get_all_parties_with_affiliated_count():
-
     query = f"""
-        SELECT DISTINCT ?political_party ?party_label ?party_logo 
+        SELECT DISTINCT ?political_party ?party_label ?party_logo ?country_label
                 (COUNT(?person) as ?nr_personalities){{
             ?person wdt:P31 wd:Q5 .
             SERVICE <{wikidata_endpoint}> {{
                 ?person wdt:P102 ?political_party .
                 ?political_party rdfs:label ?party_label .
+                OPTIONAL {{
+                    ?political_party p:P17 ?country_stmt .
+                    ?country_stmt ps:P17 ?country .
+                    ?country rdfs:label ?country_label .
+                }}
+                FILTER(LANG(?country_label) = "pt")
                 OPTIONAL {{?political_party wdt:P154 ?party_logo. }} 
                 FILTER(LANG(?party_label) = "pt")
           }}
-        }} GROUP BY ?political_party ?party_label ?party_logo
+        }} 
+        GROUP BY ?political_party ?party_label ?party_logo ?country_label
         ORDER BY DESC(?nr_personalities)
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
@@ -79,15 +85,12 @@ def get_all_parties_with_affiliated_count():
                 "wiki_id": x["political_party"]["value"].split("/")[-1],
                 "party_label": x["party_label"]["value"],
                 "party_logo": party_logo,
+                "party_country": x["country_label"]["value"],
                 "nr_personalities": x["nr_personalities"]["value"],
             }
         )
 
     return political_parties
-
-
-def build_graph_models(edges):
-    pass
 
 
 def main():
@@ -105,7 +108,7 @@ def main():
     with open(static_data + "all_entities_info.json", "w") as f_out:
         json.dump(per_data, f_out, indent=4)
 
-    # cache for search box
+    # persons cache for search box
     persons = [
         {"name": x["name"], "wiki_id": x["wikidata_id"], "image_url": x["image_url"]}
         for x in sorted(per_data, key=lambda x: x["name"])
@@ -120,10 +123,11 @@ def main():
     with open(static_data + "all_parties_info.json", "w") as f_out:
         json.dump(parties_data, f_out, indent=4)
 
-    # cache for search box
+    # parties cache for search box, filtering only portuguese political parties
     parties = [
         {"name": x["party_label"], "wiki_id": x["wiki_id"], "image_url": x["party_logo"]}
         for x in sorted(parties_data, key=lambda x: x["party_label"])
+        if x["party_country"] == 'Portugal'
     ]
     with open(static_data + "parties.json", "w") as f_out:
         json.dump(parties, f_out, indent=4)
