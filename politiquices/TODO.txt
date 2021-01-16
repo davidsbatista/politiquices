@@ -3,12 +3,12 @@ Web App
 
     Entity:
     -------
-        - relationships between two personalities: mostrar quem apoia/acusa mais o outro
         - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
-        - periodo de tempo ano, e 4 barras por ano, 1 por cada tipo de relacao
+        - relationships between two personalities: mostrar quem apoia/acusa mais o outro
 
     Bugs:
     ----
+       - AJAX loading GIF em todos os cenários ?
        - Speed up party vs party queries, how?:
             https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
@@ -91,7 +91,7 @@ arquivo_pt:
         - tirar todos os nomes da pagina do governo:
             - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
             - nomes da Ontologia POWER
-    - mais dominos ?
+    - mais dominios ?
     - datas dos dominos crawlados, alteraram-se ?
     - method to detect semantically similar titles
 

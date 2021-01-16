@@ -78,6 +78,8 @@
 
     </div>
 
+    <br><br>
+
     <!-- Time-line of relationships -->
     <div class="container h-100">
       <div class="row h-100 justify-content-center align-items-center">
@@ -96,16 +98,20 @@
     var supported_by_freq = {{ items['supported_by_freq']|tojson }};
 
     var myChart = new Chart(ctx, {
-        type: 'line',
-        data: {labels: year_labels,
-               datasets: [
-                    {label: 'acusa', borderColor: "#FF0000", fill: false, data: opposed_freq},
-                    {label: 'é acusado(a)', borderColor: "#980000", fill: false, data: opposed_by_freq},
-                    {label: 'defende', borderColor: "#44861E", fill: false, data: supported_freq},
-                    {label: 'é defendido(a)', borderColor: "#70DA33", fill: false, data: supported_by_freq}
-               ],
-        options: { scales: { yAxes: [ { ticks: {beginAtZero: false} } ] }
-        }
+        type: 'bar',
+        data: {
+          labels: year_labels,
+          datasets: [
+            {label: 'acusa', backgroundColor: "#FF0000", fill: true, data: opposed_freq},
+            {label: 'é acusado(a)', backgroundColor: "#980000", fill: true, data: opposed_by_freq},
+            {label: 'defende', backgroundColor: "#44861E", fill: true, data: supported_freq},
+            {label: 'é defendido(a)', backgroundColor: "#70DA33", fill: false, true: supported_by_freq}
+            ]
+          },
+        options: {
+          scales: {
+            x: {stacked: true},
+          }
         }
     });
 

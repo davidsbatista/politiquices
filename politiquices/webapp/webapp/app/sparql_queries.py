@@ -346,7 +346,7 @@ def get_person_info(wiki_id):
             if office_position not in offices:
                 offices.append(office_position)
 
-    results = get_person_info2(wiki_id)
+    results = get_person_detailed_info(wiki_id)
 
     return Person(
         wiki_id=wiki_id,
@@ -360,7 +360,7 @@ def get_person_info(wiki_id):
 
 
 @lru_cache
-def get_person_info2(wiki_id):
+def get_person_detailed_info(wiki_id):
     occupation_query = f"""
         SELECT DISTINCT ?occupation_label
         WHERE {{
@@ -649,6 +649,39 @@ def get_person_rels_by_month_year(wiki_id, rel_type, ent="ent1"):
         year_month_articles[(str(year) + "-" + str(month))] = int(x["nr_articles"]["value"])
 
     return year_month_articles
+
+
+def get_person_rels_by_year(wiki_id, rel_type, ent="ent1"):
+    query = f"""
+        SELECT DISTINCT ?year (COUNT(?arquivo_doc) as ?nr_articles)
+        WHERE {{
+
+              ?rel my_prefix:{ent} wd:{wiki_id} .
+              ?rel my_prefix:type ?rel_type ;
+                   my_prefix:score ?score.
+
+              FILTER (?rel_type = "{rel_type}")
+
+              ?rel my_prefix:ent1 ?ent1 ;
+                   my_prefix:ent2 ?ent2 ;
+                   my_prefix:ent1_str ?ent1_str ;
+                   my_prefix:ent2_str ?ent2_str ;
+                   my_prefix:arquivo ?arquivo_doc .
+
+              ?arquivo_doc dc:title ?title ;
+                           dc:date  ?date .
+        }}
+    GROUP BY (YEAR(?date) AS ?year)
+    ORDER BY ?year
+    """
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    # dicts are insertion ordered
+    year_articles = dict()
+    for x in result["results"]["bindings"]:
+        year = x["year"]["value"]
+        year_articles[str(year)] = int(x["nr_articles"]["value"])
+
+    return year_articles
 
 
 # relationship queries #

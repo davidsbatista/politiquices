@@ -23,7 +23,10 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     all_persons_freq,
 )
 
-from politiquices.webapp.webapp.app.relationships import build_relationships_freq
+from politiquices.webapp.webapp.app.relationships import (
+    build_relationships_year_month_freq,
+    build_relationships_by_year,
+)
 from politiquices.webapp.webapp.app.utils import make_title_linkable
 from politiquices.webapp.webapp.app.utils import make_title_linkable_2_entities
 
@@ -106,15 +109,26 @@ def detail_entity():
     for r in relationships_articles["other_by"]:
         make_title_linkable(r, wiki_id)
 
+    """
     (
         year_month_labels,
         opposed_freq,
         supported_freq,
         opposed_by_freq,
         supported_by_freq,
-    ) = build_relationships_freq(wiki_id)
+    ) = build_relationships_year_month_freq(wiki_id)
+    """
+
+    (
+        all_years,
+        opposed_freq,
+        supported_freq,
+        opposed_by_freq,
+        supported_by_freq,
+    ) = build_relationships_by_year(wiki_id)
 
     items = {
+        # person information
         "wiki_id": person.wiki_id,
         "name": person.name,
         "image": person.image_url,
@@ -122,14 +136,20 @@ def detail_entity():
         "positions": person.positions,
         "occupations": person.occupations,
         "education": person.education,
+
+        # top-persons in each relationship
         "top_relations": top_entities_in_rel_type,
+
+        # titles/articles supporting relationships
         "opposed": relationships_articles["opposes"],
         "supported": relationships_articles["supports"],
         "opposed_by": relationships_articles["opposed_by"],
         "supported_by": relationships_articles["supported_by"],
         "other": relationships_articles["other"],
         "other_by": relationships_articles["other_by"],
-        "year_month_labels": year_month_labels,
+
+        # titles/articles frequency supporting relationships by year
+        "year_month_labels": all_years,
         "opposed_freq": opposed_freq,
         "supported_freq": supported_freq,
         "opposed_by_freq": opposed_by_freq,
@@ -405,10 +425,7 @@ def queries():
         person_info = get_person_info(person_wiki_id)
 
         return render_template(
-            "query_party_person.html",
-            items=results,
-            party=party_info,
-            person=person_info,
+            "query_party_person.html", items=results, party=party_info, person=person_info,
         )
 
     # relationships between an entity and (members of) a party
@@ -434,10 +451,7 @@ def queries():
         person_info = get_person_info(person_wiki_id)
 
         return render_template(
-            "query_person_party.html",
-            items=results,
-            party=party_info,
-            person=person_info,
+            "query_person_party.html", items=results, party=party_info, person=person_info,
         )
 
     # relationships between (members of) a party and (members of) another party
