@@ -38,8 +38,6 @@ prefixes = politiquices_prefixes + wikidata_prefixes
 
 
 # Status/Statistics #
-
-
 @lru_cache
 def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
     query = """
@@ -214,8 +212,6 @@ def get_total_nr_articles_for_each_person():
 
 
 # Parties #
-
-
 @lru_cache
 def get_persons_affiliated_with_party(political_party: str):
     query = f"""
@@ -277,9 +273,8 @@ def get_wiki_id_affiliated_with_party(political_party: str):
     return [x["wiki_id"]["value"].split("/")[-1] for x in results["results"]["bindings"]]
 
 
-# Personality Information #
-
-
+# Personality Information
+# ToDo: merge get_person_info() and get_person_info2()
 @lru_cache
 def get_person_info(wiki_id):
     # ToDo: this can be reduced, made faster, less info, e.g.: dates
@@ -656,9 +651,7 @@ def get_person_rels_by_month_year(wiki_id, rel_type, ent="ent1"):
     return year_month_articles
 
 
-# Relationship Queries #
-
-
+# relationship queries #
 @lru_cache
 def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
     query = f"""
@@ -848,34 +841,7 @@ def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, r
     return relationships
 
 
-# Two Personalities
-def func():
-    query = """
-        SELECT DISTINCT ?rel_type (COUNT (?url) as ?n_artigos) {  
-        {
-            ?rel my_prefix:ent1 wd:Q1688029 .
-            ?rel my_prefix:ent2 wd:Q57398 .  
-        }
-        UNION 
-        {
-            ?rel my_prefix:ent1 wd:Q57398 .  
-            ?rel my_prefix:ent2 wd:Q1688029 .
-        }
-            ?rel my_prefix:arquivo ?url .
-            ?rel my_prefix:type ?rel_type .
-        }
-        GROUP BY ?rel_type
-        ORDER BY DESC(?n_artigos)
-    """
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
-    relationships = []
-    for x in result["results"]["bindings"]:
-        print(x)
-
-
 # Other #
-
-
 def get_entities_without_image():
     query = f"""
         SELECT DISTINCT ?item ?label ?image_url {{

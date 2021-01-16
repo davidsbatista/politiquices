@@ -24,6 +24,8 @@ from politiquices.webapp.webapp.app.sparql_queries import (
 )
 
 from politiquices.webapp.webapp.app.relationships import build_relationships_freq
+from politiquices.webapp.webapp.app.utils import make_title_linkable
+from politiquices.webapp.webapp.app.utils import make_title_linkable_2_entities
 
 # ToDo: review have proper logging
 logger = logging.getLogger(__name__)
@@ -31,6 +33,7 @@ logger.setLevel(logging.WARNING)
 
 person_no_image = "/static/images/no_picture.jpg"
 
+# load all static generated caching stuff
 with open("webapp/app/static/json/all_entities_info.json") as f_in:
     all_entities_info = json.load(f_in)
 
@@ -208,6 +211,53 @@ def detail_entity():
     )
 
 
+# Partidos
+@app.route("/parties")
+def all_parties():
+    return render_template("all_parties.html", items=all_parties_info)
+
+
+@app.route("/party_members")
+def party_members():
+    wiki_id = request.args.get("q")
+
+    # get party info
+    for x in all_parties_info:
+        if x["wiki_id"] == wiki_id:
+            party_name = x["party_label"]
+            party_logo = x["party_logo"]
+
+    # get all members
+    persons = []
+    members_id = all_parties_members[wiki_id]
+    for member_id in members_id:
+        for entity in all_entities_info:
+            if member_id == entity["wikidata_id"]:
+                persons.append(
+                    Person(
+                        name=entity["name"],
+                        wiki_id=entity["wikidata_id"],
+                        image_url=entity["image_url"],
+                    )
+                )
+
+    return render_template(
+        "party_members.html", items=persons, name=party_name, logo=party_logo, party_wiki_id=wiki_id
+    )
+
+
+@app.route("/person_party")
+def get_person_party():
+    person_wiki_id = request.args.get("entity")
+    parties = get_party_of_entity(person_wiki_id)
+
+    if not parties:
+        return "None"
+
+    # ToDo: handle the case with several parties/other things
+    return jsonify(parties[0])
+
+
 # Procurar
 @app.route("/search")
 def search():
@@ -300,105 +350,14 @@ def about():
     return render_template("about.html")
 
 
-# Partidos
-@app.route("/parties")
-def all_parties():
-    return render_template("all_parties.html", items=all_parties_info)
-
-
-@app.route("/party_members")
-def party_members():
-    wiki_id = request.args.get("q")
-
-    # get party info
-    for x in all_parties_info:
-        if x["wiki_id"] == wiki_id:
-            party_name = x["party_label"]
-            party_logo = x["party_logo"]
-
-    # get all members
-    persons = []
-    members_id = all_parties_members[wiki_id]
-    for member_id in members_id:
-        for entity in all_entities_info:
-            if member_id == entity["wikidata_id"]:
-                persons.append(
-                    Person(
-                        name=entity["name"],
-                        wiki_id=entity["wikidata_id"],
-                        image_url=entity["image_url"],
-                    )
-                )
-
-    return render_template(
-        "party_members.html", items=persons, name=party_name, logo=party_logo, party_wiki_id=wiki_id
-    )
-
-
-@app.route("/person_party")
-def get_person_party():
-    person_wiki_id = request.args.get("entity")
-    parties = get_party_of_entity(person_wiki_id)
-
-    if not parties:
-        return "None"
-
-    # ToDo: handle the case with several parties/other things
-    return jsonify(parties[0])
-
-
+# other: personalities without image
 @app.route("/complete")
 def complete():
     result = get_entities_without_image()
     return render_template("incomplete_entities.html", items=result)
 
 
-def make_title_linkable(r, wiki_id):
-
-    # add link to focus entity
-    link_one = r["title"].replace(
-        r["focus_ent"], '<a id="ent_1" href="entity?q=' + wiki_id + '">' + r["focus_ent"] + "</a>"
-    )
-    # add link to other entity page
-    title_link = link_one.replace(
-        r["other_ent_name"],
-        '<a id="ent_2" href=' + r["other_ent_url"] + ">" + r["other_ent_name"] + "</a>",
-    )
-    r["title_clickable"] = title_link
-
-    if r["url"].startswith("http://publico.pt"):
-        r["link_image"] = "/static/images/114px-Logo_publico.png"
-        r["image_width"] = "20"
-    else:
-        r["link_image"] = "/static/images/color_vertical.svg"
-        r["image_width"] = "39.8"
-
-
-def make_title_linkable_2_entities(r):
-
-    ent1_wikid_id = r["ent1"].split("/")[-1]
-    link_one = r["title"].replace(
-        r["ent1_str"],
-        '<a id="ent_1" href="entity?q=' + ent1_wikid_id + '">' + r["ent1_str"] + "</a>",
-    )
-
-    ent2_wikid_id = r["ent2"].split("/")[-1]
-    title_link = link_one.replace(
-        r["ent2_str"],
-        '<a id="ent_2" href="entity?q=' + ent2_wikid_id + '">' + r["ent2_str"] + "</a>",
-    )
-
-    r["title_clickable"] = title_link
-
-    if r["url"].startswith("http://publico.pt"):
-        r["link_image"] = "/static/images/114px-Logo_publico.png"
-        r["image_width"] = "20"
-
-    else:
-        r["link_image"] = "/static/images/color_vertical.svg"
-        r["image_width"] = "39.8"
-
-
+# handling input from Procurar and front-page queries
 @app.route("/queries")
 def queries():
 
@@ -409,7 +368,6 @@ def queries():
     if query_nr == "two":
         person_one = request.args.get("e1")
         person_two = request.args.get("e2")
-
         person_one_info = get_person_info(person_one)
         person_two_info = get_person_info(person_two)
         results = get_relationships_between_two_entities(person_one, person_two)
@@ -418,7 +376,7 @@ def queries():
             make_title_linkable_2_entities(r)
 
         return render_template(
-            "two_entities_relationships.html",
+            "query_person_person.html",
             items=results,
             entity_one=person_one_info,
             entity_two=person_two_info,
@@ -442,7 +400,16 @@ def queries():
         for r in results:
             make_title_linkable_2_entities(r)
 
-        return render_template("retrieved_relationships.html", items=results)
+        # ToDo: this can be improved, e.g.: make a mapping after loading the json
+        party_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_wiki_id][0]
+        person_info = get_person_info(person_wiki_id)
+
+        return render_template(
+            "query_party_person.html",
+            items=results,
+            party=party_info,
+            person=person_info,
+        )
 
     # relationships between an entity and (members of) a party
     if query_nr == "four":
@@ -461,14 +428,24 @@ def queries():
 
         for r in results:
             make_title_linkable_2_entities(r)
-        return render_template("retrieved_relationships.html", items=results)
+
+        # ToDo: this can be improved, e.g.: make a mapping after loading the json
+        party_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_wiki_id][0]
+        person_info = get_person_info(person_wiki_id)
+
+        return render_template(
+            "query_person_party.html",
+            items=results,
+            party=party_info,
+            person=person_info,
+        )
 
     # relationships between (members of) a party and (members of) another party
     if query_nr == "five":
         party_a = request.args.get("party_a")
         party_b = request.args.get("party_b")
-        party_a = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
-        party_b = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
+        party_a_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
+        party_b_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
 
         relationship = request.args.get("relationship")
         if relationship == "opoe-se":
@@ -476,9 +453,18 @@ def queries():
         elif relationship == "apoia":
             rel = "ent1_supports_ent2"
 
-        results = list_of_spec_relations_between_two_parties(party_a, party_b, rel)
+        results = list_of_spec_relations_between_two_parties(party_a_members, party_b_members, rel)
 
         for r in results:
             make_title_linkable_2_entities(r)
 
-        return render_template("retrieved_relationships.html", items=results)
+        # ToDo: this can be improved, e.g.: make a mapping after loading the json
+        party_one_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_a][0]
+        party_two_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_b][0]
+
+        return render_template(
+            "query_party_party.html",
+            items=results,
+            party_one=party_one_info,
+            party_two=party_two_info,
+        )

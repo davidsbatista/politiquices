@@ -1,0 +1,63 @@
+
+
+<div id="outer_party_one" class="container d-flex align-items-center justify-content-center">
+
+    <!-- Logo -->
+    <div class="media">
+        <figure class="figure">
+            <img class="figure-img img-fluid rounded" src="{{party_one.party_logo}}" width="120" height="150" alt="">
+            <figcaption class="figure-caption" style="text-align:center;">
+                <a href=https://www.wikidata.org/wiki/{{party_one.wiki_id}} target="_blank">Editar na Wikidata</a>
+            </figcaption>
+        </figure>
+    </div>
+
+    <!-- Nome -->
+    <div class="col-auto">
+        <h3>{{party_one.party_label}}</h3>
+    </div>
+
+</div>
+
+<div id="outer_party_two" class="container d-flex align-items-center justify-content-center">
+
+    <!-- Logo -->
+    <div class="media">
+        <figure class="figure">
+            <img class="figure-img img-fluid rounded" src="{{party_two.party_logo}}" width="120" height="150" alt="">
+            <figcaption class="figure-caption" style="text-align:center;">
+                <a href=https://www.wikidata.org/wiki/{{party_two.wiki_id}} target="_blank">Editar na Wikidata</a>
+            </figcaption>
+        </figure>
+    </div>
+
+    <!-- Nome -->
+    <div class="col-auto">
+        <h3>{{party_two.party_label}}</h3>
+    </div>
+</div>
+
+<table data-pagination="true" data-search="true" data-toggle="table">
+    <thead>
+    <tr>
+        <th data-sortable="true" data-field="data">Data</th>
+        <th data-field="title">Título</th>
+    </tr>
+    </thead>
+    <tbody>
+  {% for item in items %}
+    <tr>
+      <td id="data">{{item.date}}</td>
+      <td id="title">
+          {{item.title_clickable|safe}}
+          <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
+              <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
+          </a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+<!-- Datatables: for some reason this needs to reloaded to trigger the rendering of the table -->
+<script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>

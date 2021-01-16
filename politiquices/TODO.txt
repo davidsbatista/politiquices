@@ -1,32 +1,22 @@
 Web App
 =======
 
-    -> Carregar só os partidos portugueses
-
-    Grafo:
-    ------
-
+    Bugs:
+    ----
+       - Speed up party vs party queries, how?: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
+       - Carregar só os partidos portugueses
+       - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
+       - 'Procurar' a funcionar com "ENTER": https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
 
     Stats
     -----
         - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?
 
-    Landing Page
-    ------------
-        - Personalidades vs. Party -> not working
-        - Party vs. Personalidades -> not working
-        - Party vs. Party          -> not working
-
     Entity:
     -------
         - relationships between two personalities: mostrar quem apoia/acusa mais o outro
         - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
-        - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
-    Retrieved_Relationships:
-    -----------------------
-        - ToDo: Partido vs Person
-        - ToDo: Person vs Partido
 
     All Entities:
     -------------
@@ -34,11 +24,8 @@ Web App
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
 
-    Bugs:
-    ----
-       - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
-       - 'Procurar' a funcionar com "ENTER":
-          https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
+
+    - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
 
     Low Priority
@@ -59,6 +46,9 @@ Web App
           - quem acusou/apoiou <personalidade_com_um_cargo>
 
 
+
+Backend-stuff
+-------------
     - eliminate relationships between the same entity:
         wd:Q610788  <-> wd:Q610788
         <https://arquivo.pt/wayback/20160130010341/http://www.dn.pt/politica/interior/costa-recusa-ter-recuperado-formula-do-bloco-central-4300633.html>
@@ -72,8 +62,8 @@ Web App
     SPARQL queries:
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - timeline de contradições entre duas personalidades
-        - quais os partidos que acusam mais? e que partidos alvo?
         - escolher um partido e ver as acusações + suporte internos
+        - quais os partidos que acusam mais? e que partidos alvo?
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
         - existem relações familiares no grafo? entre quem?
@@ -157,7 +147,7 @@ classifiers
 
         - 'Fernando Gomes'
 
-        - construir o index ElasticSearch a partir das .ttl files:
+        - construir o index ElasticSearch a partir das .ttl files, em vez de sacar os JSONs
             tip: usar python RDFLib para ter label + aliases a partir das ttl files
 
         - https://github.com/TheScienceMuseum/elastic-wikidata
