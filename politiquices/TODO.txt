@@ -1,20 +1,25 @@
 Web App
 =======
 
-    Bugs:
-    ----
-       - Speed up party vs party queries, how?: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
-       - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
-       - 'Procurar' a funcionar com "ENTER": https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
-
-    Stats
-    -----
-        - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?
-
     Entity:
     -------
         - relationships between two personalities: mostrar quem apoia/acusa mais o outro
         - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
+        - periodo de tempo ano, e 4 barras por ano, 1 por cada tipo de relacao
+
+    Bugs:
+    ----
+       - Speed up party vs party queries, how?:
+            https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
+
+       - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
+
+       - 'Procurar' a funcionar com "ENTER":
+            https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
+
+    Stats
+    -----
+        - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?
 
 
     All Entities:
