@@ -12,7 +12,11 @@ Web App
                 - X apoia Y    vs.     Y apoia X
 
 
-    Bugs:
+    Small improvments
+    -----------------
+        - Row clickable nas tables com links para notícias
+
+    Bugs
     ----
        - AJAX loading GIF em todos os cenários ?
        - Speed up party vs party queries, how?:
@@ -38,6 +42,7 @@ Web App
     ------------
         - Export table results: https://bootstrap-table.com/docs/extensions/export/
         - ah tipo uma infobox, mas horizontal, com os dados da pessoa, é boa ideia
+        - tirar todos os alerts -> subsituir por uma pagina de erro
         - pesquisar: permitir pesquisar sem acentos
         - clicar no branco fazer collapse ao menu (hamburger)
 

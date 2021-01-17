@@ -73,9 +73,9 @@
   {% for item in items %}
     <tr>
       <td id="data">{{item.date}}</td>
-      <td id="title">
+      <td id="title" class='clickable-row'>
           {{item.title_clickable|safe}}
-          <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
+          <a data-title="{{item.title}}" href={{item.url}} target="_blank">
               <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
           </a>
       </td>

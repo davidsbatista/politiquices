@@ -82,31 +82,41 @@
 
     </div>
 
-    <table data-pagination="true" data-search="true" data-toggle="table" data-page-size="25">
-    <thead>
-    <tr>
-        <th data-sortable="true" data-field="data">Data</th>
-        <th data-field="title">Título</th>
-        <th data-sortable="true" data-field="relationship">Relação</th>
-    </tr>
-    </thead>
-    <tbody>
-  {% for item in items %}
-    <tr>
-      <td id="data">{{item.date}}</td>
-      <td id="title">
-          {{item.title_clickable|safe}}
-          <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
-              <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
-          </a>
-      </td>
-      <td id="relationship">{{item.rel_type}}</td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-
-    <!-- Datatables -->
-    <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
+    <table id="titles" data-pagination="true" data-search="true" data-toggle="table" data-page-size="25">
+      <thead>
+        <tr>
+            <th data-sortable="true" data-field="data">Data</th>
+            <th data-field="title">Título</th>
+            <th data-sortable="true" data-field="relationship">Relação</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+          <tr class='clickable-row' data-href='{{item.url}}'>
+            <td id="data">{{item.date}}</td>
+             <td id="title">
+                 {{item.title_clickable|safe}}
+                 <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
+                     <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
+                 </a>
+             </td>
+              <td id="relationship">{{item.rel_type}}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      </table>
 
 </div>
+
+<!-- Datatables -->
+<script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js">
+
+/*
+
+$(document).ready(function(){
+  console.log($('#titles'))
+  $('#titles').on('click-row.bs.table', function (e) {console.log.(e)}
+});
+*/
+
+</script>
