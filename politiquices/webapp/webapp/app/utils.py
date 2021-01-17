@@ -18,7 +18,6 @@ def add_icon(r):
         r["image_width"] = "39.8"
 
 
-# ToDo: merge this two functions in one
 def clickable_title(r, wiki_id):
 
     # add link to focus entity
@@ -36,7 +35,7 @@ def clickable_title(r, wiki_id):
     return r
 
 
-def make_title_linkable_2_entities(r):
+def per_vs_person_linkable(r):
 
     ent1_wikid_id = r["ent1"].split("/")[-1]
     link_one = r["title"].replace(

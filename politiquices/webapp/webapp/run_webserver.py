@@ -94,7 +94,6 @@ def get_all_parties_with_affiliated_count():
 
 
 def main():
-    """
     print("\nCaching static stuff from SPARQL engine :-)")
 
     # persons cache
@@ -161,7 +160,7 @@ def main():
     with open(static_data + "edges.json", "w") as f_out:
         json.dump(edges, f_out, indent=4)
     print(f"{len(edges)} graph edges extracted")
-    """
+
     app.run(debug=True, host="0.0.0.0")
 
 

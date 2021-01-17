@@ -3,18 +3,14 @@ Web App
 
     Person vs Person:
     ----------------
-        - titulo para os tipos de relação
-
         - graficos entre os dois:
-            - só pode haver duas relações:
-
-                - X acusa Y
-                - Y acusa X
-
-                - X defende Y
-                - Y defende X
 
             - relationships between two personalities: mostrar quem apoia/acusa mais o outro
+
+            - só pode haver duas relações:
+                - X acusa Y    vs.     Y acusa X
+                - X apoia Y    vs.     Y apoia X
+
 
     Bugs:
     ----
@@ -61,15 +57,14 @@ Backend-stuff
 -------------
     - eliminate relationships between the same entity:
         wd:Q610788  <-> wd:Q610788
-        <https://arquivo.pt/wayback/20160130010341/http://www.dn.pt/politica/interior/costa-recusa-ter-recuperado-formula-do-bloco-central-4300633.html>
         António Costa - Costa recusa ter recuperado "fórmula" do Bloco Central - Política - DN
 
     - alterar os namespaces para 'politiquices.pt'
         http://politiquices.pt/entity/<wikidata_person_id> -> todas as relações da pessoa
         http://politiquices.pt/party/<wikidata_party_id> -> todas as pessoas desse partido
 
-
     SPARQL queries:
+        - personalidade que mais acusa? e mais apoia? e mais é acusada? e mais é defendida?
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - timeline de contradições entre duas personalidades
         - escolher um partido e ver as acusações + suporte internos

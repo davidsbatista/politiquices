@@ -87,6 +87,7 @@
     <tr>
         <th data-sortable="true" data-field="data">Data</th>
         <th data-field="title">Título</th>
+        <th data-sortable="true" data-field="relationship">Relação</th>
     </tr>
     </thead>
     <tbody>
@@ -99,6 +100,7 @@
               <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
           </a>
       </td>
+      <td id="relationship">{{item.rel_type}}</td>
     </tr>
   {% endfor %}
   </tbody>

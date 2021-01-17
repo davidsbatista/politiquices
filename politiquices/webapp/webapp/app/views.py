@@ -23,11 +23,9 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     all_persons_freq,
 )
 
-from politiquices.webapp.webapp.app.relationships import (
-    build_relationships_by_year,
-)
+from politiquices.webapp.webapp.app.relationships import build_relationships_by_year
 from politiquices.webapp.webapp.app.utils import clickable_title
-from politiquices.webapp.webapp.app.utils import make_title_linkable_2_entities
+from politiquices.webapp.webapp.app.utils import per_vs_person_linkable
 
 # ToDo: review have proper logging
 logger = logging.getLogger(__name__)
@@ -139,16 +137,23 @@ def detail_entity():
         "supported_by_freq": chart_js_data["supported_by_freq"],
 
         # top-persons in each relationship
-        "top_relations": top_entities_in_rel_type,
+        "top_relations": top_entities_in_rel_type
     }
 
+    # show a special interface allowing to annotate/correct relationships
     if "annotate" in request.args:
+        items.update({'opposes': opposes,
+                      'supports': supports,
+                      'opposed_by': opposed_by,
+                      'supported_by': supported_by,
+                      'other': other,
+                      'other_by': other_by
+                      })
         return render_template("entity_annotate.html", items=items)
 
     if from_search:
         return render_template(
             "entity_timeline.html",
-            entity_wiki_id=person.wiki_id,
             items=items,
             opposed=opposed_json,
             supported=supported_json,
@@ -159,7 +164,6 @@ def detail_entity():
 
     return render_template(
         "entity.html",
-        entity_wiki_id=person.wiki_id,
         items=items,
         opposed=opposed_json,
         supported=supported_json,
@@ -314,7 +318,7 @@ def complete():
     return render_template("incomplete_entities.html", items=result)
 
 
-# handling input from Procurar and front-page queries
+# handling input from 'Procurar' and 'Home' queries
 @app.route("/queries")
 def queries():
     print(request.args)
@@ -329,7 +333,11 @@ def queries():
         results = get_relationships_between_two_entities(person_one, person_two)
 
         for r in results:
-            make_title_linkable_2_entities(r)
+            per_vs_person_linkable(r)
+
+        for r in results:
+            print(r)
+            print()
 
         return render_template(
             "query_person_person.html",
@@ -354,7 +362,7 @@ def queries():
         )
 
         for r in results:
-            make_title_linkable_2_entities(r)
+            per_vs_person_linkable(r)
 
         # ToDo: this can be improved, e.g.: make a mapping after loading the json
         party_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_wiki_id][0]
@@ -380,7 +388,7 @@ def queries():
         )
 
         for r in results:
-            make_title_linkable_2_entities(r)
+            per_vs_person_linkable(r)
 
         # ToDo: this can be improved, e.g.: make a mapping after loading the json
         party_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_wiki_id][0]
@@ -406,7 +414,7 @@ def queries():
         results = list_of_spec_relations_between_two_parties(party_a_members, party_b_members, rel)
 
         for r in results:
-            make_title_linkable_2_entities(r)
+            per_vs_person_linkable(r)
 
         # ToDo: this can be improved, e.g.: make a mapping after loading the json
         party_one_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_a][0]
