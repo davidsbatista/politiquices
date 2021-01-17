@@ -1,4 +1,4 @@
-<div class="container" id="container">
+<div class="container" id="inner">
 
     <br>
 
@@ -40,6 +40,7 @@
         <!-- Positions -->
         <div class="col-auto">
             <table>
+              <thead><b><center>Cargos</center></b></thead>
               <tbody>
               {% for item in items.positions %}
                 <tr>
@@ -53,6 +54,7 @@
         <!-- Education -->
         <div class="col-auto">
             <table>
+              <thead><b><center>Educação</center></b></thead>
               <tbody>
               {% for item in items.education %}
                 <tr>
@@ -66,6 +68,7 @@
         <!-- Occupations -->
         <div class="col-auto">
             <table>
+              <thead><b><center>Profissão</center></b></thead>
               <tbody>
               {% for item in items.occupations %}
                 <tr>
@@ -104,8 +107,8 @@
           datasets: [
             {label: 'acusa', backgroundColor: "#FF0000", fill: true, data: opposed_freq},
             {label: 'é acusado(a)', backgroundColor: "#980000", fill: true, data: opposed_by_freq},
-            {label: 'defende', backgroundColor: "#44861E", fill: true, data: supported_freq},
-            {label: 'é defendido(a)', backgroundColor: "#70DA33", fill: false, true: supported_by_freq}
+            {label: 'apoia', backgroundColor: "#44861E", fill: true, data: supported_freq},
+            {label: 'é apoiado(a)', backgroundColor: "#70DA33", fill: false, true: supported_by_freq}
             ]
           },
         options: {
@@ -115,7 +118,30 @@
         }
     });
 
+    // Time-line
     $('.timeline').timeline();
+
+    // click on table rows
+    jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            var url = $(this).data("href")
+            $.ajax({
+              type: 'get',
+              data: null,
+              url: url,
+              error: function () {
+                alert("There was an error processing this page.");
+                return false;
+              },
+              complete: function (output) {
+                $('#inner').html(output.responseText);
+
+              }
+            });
+        });
+
+    });
+
 
     </script>
 
@@ -125,12 +151,12 @@
     <div class="row justify-content-center">
 
       <div class="col-auto">
-          <b><center>Discorda / Opõe-se / Acusa</center></b>
+          <b><center>Acusa</center></b>
             <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_person_opposes %}
-                <tr>
-                    <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
+                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{item.wiki_id}}&e2={{entity_wiki_id}}>
+                    <td>{{item.name}}</td>
                     <td>{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
@@ -139,13 +165,13 @@
       </div>
 
       <div class="col-auto">
-          <b><center>Apoia / Defende</center></b>
+          <b><center>Apoia</center></b>
           <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_person_supports %}
-                <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
-                  <td>{{item.nr_articles}}</td>
+                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{item.wiki_id}}&e2={{entity_wiki_id}}>
+                    <td>{{item.name}}</td>
+                    <td>{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -153,13 +179,13 @@
       </div>
 
       <div class="col-auto">
-          <b><center>Acusado(a) por / Oposto(a) por</center></b>
+          <b><center>Acusado(a) por</center></b>
           <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_opposes_person %}
-                <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
-                  <td>{{item.nr_articles}}</td>
+                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{item.wiki_id}}&e2={{entity_wiki_id}}>
+                    <td>{{item.name}}</td>
+                    <td>{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -171,9 +197,9 @@
           <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_supports_person %}
-                <tr>
-                  <td><a href={{item.wiki_id}}>{{item.name}}</a></td>
-                  <td>{{item.nr_articles}}</td>
+                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{item.wiki_id}}&e2={{entity_wiki_id}}>
+                    <td>{{item.name}}</td>
+                    <td>{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -184,8 +210,8 @@
 
     <br><br>
 
-    <hr>
-    <!-- Timeline with news articles
+    <!-- Timeline with news articles -->
+    <!--
     <div class="timeline" data-mode="auto"  visible-items="4">
       <div class="timeline__wrap">
         <div class="timeline__items">
@@ -235,9 +261,7 @@
     <hr>
     -->
 
-    <!-- Tables with all the titles
-    see: https://examples.bootstrap-table.com/#welcome.html
-    -->
+    <!-- Tables with all the titles: see: https://examples.bootstrap-table.com/#welcome.html -->
 
     <div class="container">
         <nav class="navbar navbar-expand-lg">
@@ -245,16 +269,16 @@
           <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav mr">
               <li class="nav-item">
-                <a class="nav-link" id="opposes">Opõe-se</a>
+                <a class="nav-link" id="opposes">Acusa</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" id="supports">Apoia</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="opposed_by">Oposto por</a>
+                <a class="nav-link" id="opposed_by">Acusado(a) por</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="supported_by">Apoiado por</a>
+                <a class="nav-link" id="supported_by">Apoiado(a) por</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" id="all">Todas</a>
@@ -268,7 +292,7 @@
     <br>
 
     <div class="container" id="single_table">
-      <center><h3 id="table_title"> Acusa / Opoe-se </h3></center>
+      <center><h3 id="table_title">Acusa</h3></center>
         <table id="table"
                data-pagination="true"
                data-search="true"
@@ -303,7 +327,7 @@
 
     $("#opposes").click(function() {
       $('#single_table').empty();
-      $('#single_table').append('<center><h3> Acusa / Opoe-se </h3></center>');
+      $('#single_table').append('<center><h3> Acusa </h3></center>');
       $('#single_table').append(
       '<table id=\"table\"\
              data-pagination=\"true\"\
@@ -323,7 +347,7 @@
 
     $("#supports").click(function() {
       $('#single_table').empty();
-      $('#single_table').append('<center><h3> Defende / Apoia </h3></center>');
+      $('#single_table').append('<center><h3> Apoia </h3></center>');
       $('#single_table').append(
       '<table id=\"table\"\
              data-pagination=\"true\"\
@@ -346,7 +370,7 @@
 
     $("#opposed_by").click(function() {
       $('#single_table').empty();
-      $('#single_table').append('<center><h3> Acusado por / Oposto por </h3></center>');
+      $('#single_table').append('<center><h3> Acusado(a) </h3></center>');
       $('#single_table').append(
       '<table id=\"table\"\
              data-pagination=\"true\"\
@@ -366,7 +390,7 @@
 
     $("#supported_by").click(function() {
       $('#single_table').empty();
-      $('#single_table').append('<center><h3> Defendido por / Apoiado por </h3></center>');
+      $('#single_table').append('<center><h3> Apoiado(a) por </h3></center>');
       $('#single_table').append(
       '<table id=\"table\"\
              data-pagination=\"true\"\

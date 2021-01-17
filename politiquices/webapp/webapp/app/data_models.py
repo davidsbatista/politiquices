@@ -6,8 +6,6 @@ from typing import List, Optional
 
 @dataclass
 class OfficePosition:
-    start: str
-    end: str
     position: str
 
 

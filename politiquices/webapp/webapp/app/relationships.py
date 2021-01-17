@@ -105,11 +105,11 @@ def build_relationships_year_month_freq(wiki_id: str):
 
 def get_chart_labels(opposed_by_freq, opposed_freq, supported_by_freq, supported_freq):
     if (
-            len(opposed_freq)
-            == len(supported_freq)
-            == len(opposed_by_freq)
-            == len(supported_by_freq)
-            == 0
+        len(opposed_freq)
+        == len(supported_freq)
+        == len(opposed_by_freq)
+        == len(supported_by_freq)
+        == 0
     ):
         max_date = "1994"
         min_date = "2019"
@@ -138,9 +138,6 @@ def fill_zero_values(labels, input_freq):
 
 
 def build_relationships_by_year(wiki_id: str):
-    """
-
-    """
 
     # some personality can support another personality in two different relationship directions
     supported_freq_one = get_person_rels_by_year(wiki_id, "ent1_supports_ent2", ent="ent1")
@@ -173,7 +170,10 @@ def build_relationships_by_year(wiki_id: str):
     opposed_by_freq = fill_zero_values(labels, opposed_by_freq)
     supported_by_freq = fill_zero_values(labels, supported_by_freq)
 
-    return labels, opposed_freq, supported_freq, opposed_by_freq, supported_by_freq
-
-
-
+    return {
+        "labels": labels,
+        "opposed_freq": opposed_freq,
+        "supported_freq": supported_freq,
+        "opposed_by_freq": opposed_by_freq,
+        "supported_by_freq": supported_by_freq,
+    }

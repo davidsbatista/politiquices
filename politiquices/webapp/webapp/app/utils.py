@@ -6,8 +6,20 @@ def convert_dates(date: str):
     return date_obj.strftime("%Y %b")
 
 
+def add_icon(r):
+    """adds either a arquivo.pt icon oder publico.pt icon"""
+
+    if r["url"].startswith("http://publico.pt"):
+        r["link_image"] = "/static/images/114px-Logo_publico.png"
+        r["image_width"] = "20"
+
+    else:
+        r["link_image"] = "/static/images/color_vertical.svg"
+        r["image_width"] = "39.8"
+
+
 # ToDo: merge this two functions in one
-def make_title_linkable(r, wiki_id):
+def clickable_title(r, wiki_id):
 
     # add link to focus entity
     link_one = r["title"].replace(
@@ -18,14 +30,10 @@ def make_title_linkable(r, wiki_id):
         r["other_ent_name"],
         '<a id="ent_2" href=' + r["other_ent_url"] + ">" + r["other_ent_name"] + "</a>",
     )
-    r["title_clickable"] = title_link
 
-    if r["url"].startswith("http://publico.pt"):
-        r["link_image"] = "/static/images/114px-Logo_publico.png"
-        r["image_width"] = "20"
-    else:
-        r["link_image"] = "/static/images/color_vertical.svg"
-        r["image_width"] = "39.8"
+    r["title_clickable"] = title_link
+    add_icon(r)
+    return r
 
 
 def make_title_linkable_2_entities(r):
@@ -43,11 +51,4 @@ def make_title_linkable_2_entities(r):
     )
 
     r["title_clickable"] = title_link
-
-    if r["url"].startswith("http://publico.pt"):
-        r["link_image"] = "/static/images/114px-Logo_publico.png"
-        r["image_width"] = "20"
-
-    else:
-        r["link_image"] = "/static/images/color_vertical.svg"
-        r["image_width"] = "39.8"
+    add_icon(r)

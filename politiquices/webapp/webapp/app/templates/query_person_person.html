@@ -1,97 +1,88 @@
 
-<div id="outer_ent1" class="container d-flex align-items-center justify-content-center">
+<br>
 
-    <!-- Foto -->
-    <div class="media">
-        <figure class="figure">
-            <a href=https://www.wikidata.org/wiki/{{entity_one.wiki_id}} target="_blank">
-            <img src={{entity_one.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{entity_one.name}}" title="{{entity_one.name}}">
-            </a>
-            <figcaption class="figure-caption" style="text-align:center;">
-                <a id="ent1_wikid_id" href=https://www.wikidata.org/wiki/{{entity_one.wiki_id}} target="_blank">Editar na Wikidata</a>
-            </figcaption>
-        </figure>
-    </div>
+<div class="container">
 
-    <!-- Partidos -->
-    <div class="col-auto">
-        <table>
-          <tbody>
-          {% for item in entity_one.parties %}
-          <tr>
-              <td>
-                <a href="/party_members?q={{item.wiki_id}}" target="_blank">
-                    <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
-                </a>
-              </td>
-          </tr>
-          {% endfor %}
-          </tbody>
-        </table>
+    <div class="row justify-content-center">
+
+        <div class="col-xs-6">
+
+            <div id="outer_ent1" class="container d-flex align-items-center justify-content-center">
+                <!-- Partidos -->
+                <div class="col-auto">
+                    <table>
+                      <tbody>
+                      {% for item in entity_one.parties %}
+                      <tr>
+                          <td>
+                            <a href="/party_members?q={{item.wiki_id}}" target="_blank">
+                                <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
+                            </a>
+                          </td>
+                      </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                </div>
+
+                <!-- Foto -->
+                <div class="media">
+                    <figure class="figure">
+                        <a href=/entity?q={{entity_one.wiki_id}} target="_blank">
+                        <img src={{entity_one.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{entity_one.name}}" title="{{entity_one.name}}">
+                        </a>
+                        <figcaption class="figure-caption" style="text-align:center;">
+                            <b>{{entity_one.name}}</b>
+                        </figcaption>
+                    </figure>
+                </div>
+
+            </div>
+
         </div>
 
-    <!-- Positions -->
-    <div class="col-auto">
-        <table>
-          <tbody>
-          {% for item in entity_one.positions %}
-            <tr>
-              <td>{{item}}</td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
-    </div>
-
-</div>
-
-<div id="outer_ent2" class="container d-flex align-items-center justify-content-center">
-
-    <!-- Foto -->
-    <div class="media">
-        <figure class="figure">
-            <a href=https://www.wikidata.org/wiki/{{entity_two.wiki_id}} target="_blank">
-            <img src={{entity_two.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{entity_two.name}}" title="{{entity_two.name}}">
-            </a>
-            <figcaption class="figure-caption" style="text-align:center;">
-                <a id="ent2_wikid_id" href=https://www.wikidata.org/wiki/{{entity_two.wiki_id}} target="_blank">Editar na Wikidata</a>
-            </figcaption>
-        </figure>
-    </div>
-
-    <!-- Partidos -->
-    <div class="col-auto">
-        <table>
-          <tbody>
-          {% for item in entity_two.parties %}
-          <tr>
-              <td>
-                <a href="/party_members?q={{item.wiki_id}}" target="_blank">
-                    <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
-                </a>
-              </td>
-          </tr>
-          {% endfor %}
-          </tbody>
-        </table>
+        <div class="col-xs-6">
+            Relações de apoio/suporte entre XX e XX
         </div>
 
-    <!-- Positions -->
-    <div class="col-auto">
-        <table>
-          <tbody>
-          {% for item in entity_two.positions %}
-            <tr>
-              <td>{{item}}</td>
-            </tr>
-          {% endfor %}
-          </tbody>
-        </table>
+        <div class="col-xs-6">
+            <div id="outer_ent2" class="container d-flex align-items-center justify-content-center">
+
+                <!-- Foto -->
+                <div class="media">
+                    <figure class="figure">
+                        <a href=/entity?q={{entity_two.wiki_id}} target="_blank">
+                        <img src={{entity_two.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{entity_two.name}}" title="{{entity_two.name}}">
+                        </a>
+                        <figcaption class="figure-caption" style="text-align:center;">
+                            <b>{{entity_two.name}}</b>
+                        </figcaption>
+                    </figure>
+                </div>
+
+                <!-- Partidos -->
+                <div class="col-auto">
+                    <table>
+                      <tbody>
+                      {% for item in entity_two.parties %}
+                      <tr>
+                          <td>
+                            <a href="/party_members?q={{item.wiki_id}}" target="_blank">
+                                <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
+                            </a>
+                          </td>
+                      </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                    </div>
+
+            </div>
+        </div>
+
     </div>
 
-</div>
-
-<table data-pagination="true" data-search="true" data-toggle="table">
+    <table data-pagination="true" data-search="true" data-toggle="table" data-page-size="25">
     <thead>
     <tr>
         <th data-sortable="true" data-field="data">Data</th>
@@ -113,5 +104,7 @@
   </tbody>
 </table>
 
-<!-- Datatables -->
-<script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
+    <!-- Datatables -->
+    <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
+
+</div>

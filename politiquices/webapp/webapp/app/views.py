@@ -24,10 +24,9 @@ from politiquices.webapp.webapp.app.sparql_queries import (
 )
 
 from politiquices.webapp.webapp.app.relationships import (
-    build_relationships_year_month_freq,
     build_relationships_by_year,
 )
-from politiquices.webapp.webapp.app.utils import make_title_linkable
+from politiquices.webapp.webapp.app.utils import clickable_title
 from politiquices.webapp.webapp.app.utils import make_title_linkable_2_entities
 
 # ToDo: review have proper logging
@@ -51,7 +50,6 @@ with open("webapp/app/static/json/wiki_id_info.json") as f_in:
 
 with open("webapp/app/static/json/edges.json") as f_in:
     edges = json.load(f_in)
-
 
 entities_batch_size = 16
 
@@ -80,7 +78,6 @@ def load_entities():
 # Personalidade View: called from 'Personalidade'-nav-bar or 'Personalidades'-click
 @app.route("/entity")
 def detail_entity():
-
     from_search = False
     wiki_id = request.args.get("q")
     if request.args.get("search"):
@@ -88,44 +85,41 @@ def detail_entity():
 
     person = get_person_info(wiki_id)
     top_entities_in_rel_type = get_top_relationships(wiki_id)
-    relationships_articles = get_person_relationships(wiki_id)
+    titles_rels = get_person_relationships(wiki_id)
 
-    # make titles with entities all clicklable
-    for r in relationships_articles["opposes"]:
-        make_title_linkable(r, wiki_id)
+    # get the data to create the graph
+    chart_js_data = build_relationships_by_year(wiki_id)
 
-    for r in relationships_articles["supports"]:
-        make_title_linkable(r, wiki_id)
+    # create a clickable title
+    opposes = [clickable_title(r, wiki_id) for r in titles_rels["opposes"]]
+    supports = [clickable_title(r, wiki_id) for r in titles_rels["supports"]]
+    opposed_by = [clickable_title(r, wiki_id) for r in titles_rels["opposed_by"]]
+    supported_by = [clickable_title(r, wiki_id) for r in titles_rels["supported_by"]]
+    other = [clickable_title(r, wiki_id) for r in titles_rels["other"]]
+    other_by = [clickable_title(r, wiki_id) for r in titles_rels["other_by"]]
 
-    for r in relationships_articles["opposed_by"]:
-        make_title_linkable(r, wiki_id)
+    def make_json(relationships):
+        """
+        titles/relationships are sent as JSONs containing only two fields:
+            - date
+           - clickable title
+        """
+        json_data = []
+        for r in relationships:
+            html_title = f"""{r['title_clickable']}\
+            <a id="link" href={r['url']} target="_blank"><img src="{r['link_image']}"\
+            width="{r['image_width']}" height="20"></a>"""
+            json_data.append({"data": r["date"], "titulo": html_title})
+        return json_data
 
-    for r in relationships_articles["supported_by"]:
-        make_title_linkable(r, wiki_id)
-
-    for r in relationships_articles["other"]:
-        make_title_linkable(r, wiki_id)
-
-    for r in relationships_articles["other_by"]:
-        make_title_linkable(r, wiki_id)
-
-    """
-    (
-        year_month_labels,
-        opposed_freq,
-        supported_freq,
-        opposed_by_freq,
-        supported_by_freq,
-    ) = build_relationships_year_month_freq(wiki_id)
-    """
-
-    (
-        all_years,
-        opposed_freq,
-        supported_freq,
-        opposed_by_freq,
-        supported_by_freq,
-    ) = build_relationships_by_year(wiki_id)
+    opposed_json = make_json(opposes)
+    supported_json = make_json(supports)
+    opposed_by_json = make_json(opposed_by)
+    supported_by_json = make_json(supported_by)
+    other_json = make_json(other + other_by)
+    all_relationships_json = (
+        opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
+    )
 
     items = {
         # person information
@@ -137,81 +131,24 @@ def detail_entity():
         "occupations": person.occupations,
         "education": person.education,
 
+        # titles/articles frequency by relationships by year, for ChartJS
+        "year_month_labels": chart_js_data["labels"],
+        "opposed_freq": chart_js_data["opposed_freq"],
+        "supported_freq": chart_js_data["supported_freq"],
+        "opposed_by_freq": chart_js_data["opposed_by_freq"],
+        "supported_by_freq": chart_js_data["supported_by_freq"],
+
         # top-persons in each relationship
         "top_relations": top_entities_in_rel_type,
-
-        # titles/articles supporting relationships
-        "opposed": relationships_articles["opposes"],
-        "supported": relationships_articles["supports"],
-        "opposed_by": relationships_articles["opposed_by"],
-        "supported_by": relationships_articles["supported_by"],
-        "other": relationships_articles["other"],
-        "other_by": relationships_articles["other_by"],
-
-        # titles/articles frequency supporting relationships by year
-        "year_month_labels": all_years,
-        "opposed_freq": opposed_freq,
-        "supported_freq": supported_freq,
-        "opposed_by_freq": opposed_by_freq,
-        "supported_by_freq": supported_by_freq,
     }
 
     if "annotate" in request.args:
         return render_template("entity_annotate.html", items=items)
 
-    all_relationships_json = []
-
-    opposed_json = []
-    for i in items["opposed"]:
-        # title with entities clickable and icon with link to arquivo.pt
-        html_title = f"""
-            {i['title_clickable']} <a id="link" href={i['url']} target="_blank">
-            <img src="{i['link_image']}" width="{i['image_width']}" height="20"></a>
-            """
-        opposed_json.append({"data": i["date"], "titulo": html_title})
-        all_relationships_json.append({"data": i["date"], "titulo": html_title})
-
-    supported_json = []
-    for i in items["supported"]:
-        # title with entities clickable and icon with link to arquivo.pt
-        html_title = f"""
-            {i['title_clickable']} <a id="link" href={i['url']} target="_blank">
-            <img src="{i['link_image']}" width="{i['image_width']}" height="20"></a>
-            """
-        supported_json.append({"data": i["date"], "titulo": html_title})
-        all_relationships_json.append({"data": i["date"], "titulo": html_title})
-
-    opposed_by_json = []
-    for i in items["opposed_by"]:
-        # title with entities clickable and icon with link to arquivo.pt
-        html_title = f"""
-            {i['title_clickable']} <a id="link" href={i['url']} target="_blank">
-            <img src="{i['link_image']}" width="{i['image_width']}" height="20"></a>
-            """
-        opposed_by_json.append({"data": i["date"], "titulo": html_title})
-        all_relationships_json.append({"data": i["date"], "titulo": html_title})
-
-    supported_by_json = []
-    for i in items["supported_by"]:
-        # title with entities clickable and icon with link to arquivo.pt
-        html_title = f"""
-            {i['title_clickable']} <a id="link" href={i['url']} target="_blank">
-            <img src="{i['link_image']}" width="{i['image_width']}" height="20"></a>
-            """
-        supported_by_json.append({"data": i["date"], "titulo": html_title})
-        all_relationships_json.append({"data": i["date"], "titulo": html_title})
-
-    for i in items["other"] + items["other_by"]:
-        # title with entities clickable and icon with link to arquivo.pt
-        html_title = f"""
-            {i['title_clickable']} <a id="link" href={i['url']} target="_blank">
-            <img src="{i['link_image']}" width="{i['image_width']}" height="20"></a>
-            """
-        all_relationships_json.append({"data": i["date"], "titulo": html_title})
-
     if from_search:
         return render_template(
             "entity_timeline.html",
+            entity_wiki_id=person.wiki_id,
             items=items,
             opposed=opposed_json,
             supported=supported_json,
@@ -222,6 +159,7 @@ def detail_entity():
 
     return render_template(
         "entity.html",
+        entity_wiki_id=person.wiki_id,
         items=items,
         opposed=opposed_json,
         supported=supported_json,
@@ -341,7 +279,6 @@ def graph():
 # Estatísticas
 @app.route("/stats")
 def status():
-
     # ToDo: nr. parties
     # ToDo: make links
     # ToDo: refactor/normalize this code for all values/graphs
@@ -380,7 +317,6 @@ def complete():
 # handling input from Procurar and front-page queries
 @app.route("/queries")
 def queries():
-
     print(request.args)
     query_nr = request.args.get("query_nr")
 

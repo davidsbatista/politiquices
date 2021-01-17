@@ -1,19 +1,27 @@
 Web App
 =======
 
-    Entity:
-    -------
-        - ao clicar numa personalidade dessa tabela ir para a view de entre 2 personalidades
-        - relationships between two personalities: mostrar quem apoia/acusa mais o outro
+    Person vs Person:
+    ----------------
+        - titulo para os tipos de relação
+
+        - graficos entre os dois:
+            - só pode haver duas relações:
+
+                - X acusa Y
+                - Y acusa X
+
+                - X defende Y
+                - Y defende X
+
+            - relationships between two personalities: mostrar quem apoia/acusa mais o outro
 
     Bugs:
     ----
        - AJAX loading GIF em todos os cenários ?
        - Speed up party vs party queries, how?:
             https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
-
        - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
-
        - 'Procurar' a funcionar com "ENTER":
             https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
 
@@ -28,9 +36,7 @@ Web App
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
 
-
     - um interface qualquer para poder selecionar as relações e o intervalo de datas
-
 
     Low Priority
     ------------

@@ -94,6 +94,7 @@ def get_all_parties_with_affiliated_count():
 
 
 def main():
+    """
     print("\nCaching static stuff from SPARQL engine :-)")
 
     # persons cache
@@ -154,13 +155,13 @@ def main():
 
     with open(static_data + "top_co_occurrences.json", "w") as f_out:
         json.dump(co_occurrences, f_out, indent=4)
-    print(f"{len(co_occurrences)} co-ocorruences")
+    print(f"{len(co_occurrences)} entity co-ocorruences")
 
     edges = get_graph_links()
     with open(static_data + "edges.json", "w") as f_out:
         json.dump(edges, f_out, indent=4)
-    print(f"{len(edges)} edges extracted")
-
+    print(f"{len(edges)} graph edges extracted")
+    """
     app.run(debug=True, host="0.0.0.0")
 
 

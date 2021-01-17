@@ -5,7 +5,6 @@ from typing import Tuple, List
 from functools import lru_cache
 from SPARQLWrapper import SPARQLWrapper, JSON
 from politiquices.webapp.webapp.app.data_models import OfficePosition, Person, PoliticalParty
-from politiquices.webapp.webapp.app.utils import convert_dates
 
 wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
 live_wikidata = "https://query.wikidata.org/sparql"
@@ -277,35 +276,28 @@ def get_wiki_id_affiliated_with_party(political_party: str):
 # ToDo: merge get_person_info() and get_person_info2()
 @lru_cache
 def get_person_info(wiki_id):
-    # ToDo: this can be reduced, made faster, less info, e.g.: dates
-    query = f"""SELECT ?name ?office ?office_label ?start ?end ?image_url ?political_party_logo 
-                       ?political_party ?political_party_label 
-                WHERE {{
-                    
-                    wd:{wiki_id} rdfs:label ?name 
-                        FILTER(LANG(?name)="pt") .
-                    
-                    OPTIONAL {{ wd:{wiki_id} wdt:P18 ?image_url. }}
-                    
-                    OPTIONAL {{
-                        wd:{wiki_id} p:P39 ?officeStmnt.
-                        ?officeStmnt ps:P39 ?office.
-                        ?office rdfs:label ?office_label 
-                            FILTER(LANG(?office_label)="pt")
-                    }}
-                    
-                    OPTIONAL {{ ?officeStmnt pq:P580 ?start. }}                
-                    OPTIONAL {{ ?officeStmnt pq:P582 ?end. }}                    
-                    OPTIONAL {{
-                        wd:{wiki_id} p:P102 ?political_partyStmnt.
-                        ?political_partyStmnt ps:P102 ?political_party.
-                        ?political_party rdfs:label ?political_party_label 
-                            FILTER(LANG(?political_party_label)="pt").
-                        OPTIONAL {{ ?political_party wdt:P154 ?political_party_logo. }}
-                    }}
-                }}
-            """
-
+    query = f"""
+        SELECT ?name ?office ?office_label ?image_url ?political_party_logo 
+                ?political_party ?political_party_label 
+        WHERE {{
+            wd:{wiki_id} rdfs:label ?name
+            FILTER(LANG(?name)="pt") .
+            OPTIONAL {{ wd:{wiki_id} wdt:P18 ?image_url. }}
+            OPTIONAL {{
+                wd:{wiki_id} p:P39 ?officeStmnt.
+                ?officeStmnt ps:P39 ?office.
+                ?office rdfs:label ?office_label 
+                    FILTER(LANG(?office_label)="pt")
+            }}
+            OPTIONAL {{
+                wd:{wiki_id} p:P102 ?political_partyStmnt.
+                ?political_partyStmnt ps:P102 ?political_party.
+                ?political_party rdfs:label ?political_party_label 
+                    FILTER(LANG(?political_party_label)="pt").
+                OPTIONAL {{ ?political_party wdt:P154 ?political_party_logo. }}
+            }}
+        }}
+    """
     results = query_sparql(prefixes + "\n" + query, "wikidata")
 
     name = None
@@ -338,11 +330,7 @@ def get_person_info(wiki_id):
 
         # office positions
         if "office_label" in e:
-            office_position = OfficePosition(
-                start=convert_dates(e["start"]["value"]) if "start" in e else None,
-                end=convert_dates(e["end"]["value"]) if "end" in e else None,
-                position=e["office_label"]["value"],
-            )
+            office_position = OfficePosition(position=e["office_label"]["value"])
             if office_position not in offices:
                 offices.append(office_position)
 
@@ -447,6 +435,7 @@ def get_person_relationships(wiki_id):
     results = query_sparql(prefixes + "\n" + query, "politiquices")
     relations = defaultdict(list)
 
+    # ToDo: refactor to a function
     for e in results["results"]["bindings"]:
         ent1_wiki = e["ent1"]["value"].split("/")[-1].strip()
         ent2_wiki = e["ent2"]["value"].split("/")[-1].strip()
@@ -572,7 +561,7 @@ def get_top_relationships(wiki_id: str):
     for x in results["results"]["bindings"]:
         persons_ent1[x["rel_type"]["value"]].append(
             {
-                "wiki_id": "entity?q=" + x["ent2"]["value"].split("/")[-1],
+                "wiki_id": x["ent2"]["value"].split("/")[-1],
                 "name": x["ent2_name"]["value"],
                 "nr_articles": int(x["nr_articles"]["value"]),
             }
@@ -596,7 +585,7 @@ def get_top_relationships(wiki_id: str):
     for x in results["results"]["bindings"]:
         persons_ent2[x["rel_type"]["value"]].append(
             {
-                "wiki_id": "entity?q=" + x["ent1"]["value"].split("/")[-1],
+                "wiki_id": x["ent1"]["value"].split("/")[-1],
                 "name": x["ent1_name"]["value"],
                 "nr_articles": int(x["nr_articles"]["value"]),
             }
@@ -911,52 +900,5 @@ def query_sparql(query, endpoint):
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
-
-    """
-    print("------------------------------------------------")
-    print("get_total_nr_of_articles")
-    print(get_total_nr_of_articles.cache_info())
-    print()
-    print("get_total_nr_articles_for_each_person")
-    print(get_total_nr_articles_for_each_person.cache_info())
-    print()
-    print("get_nr_of_persons")
-    print(get_nr_of_persons.cache_info())
-    print()
-    print("get_person_info")
-    print(get_person_info.cache_info())
-    print()
-    print("get_person_relationships")
-    print(get_person_relationships.cache_info())
-    print()
-    print("get_nr_articles_per_year")
-    print(get_nr_articles_per_year.cache_info())
-    print()
-    print("get_persons_affiliated_with_party")
-    print(get_persons_affiliated_with_party.cache_info())
-    print()
-    print("get_all_parties()")
-    print(get_all_parties.cache_info())
-    print()
-    print("all_entities")
-    print(all_entities.cache_info())
-    print()
-    print("get_top_relationships")
-    print(get_top_relationships.cache_info())
-    print()
-    print("get_list_of_persons_from_some_party_opposing_someone.cache_info()")
-    print(get_list_of_persons_from_some_party_opposing_someone.cache_info())
-    print()
-    print("get_list_of_persons_from_some_party_relation_with_someone")
-    print(get_list_of_persons_from_some_party_relation_with_someone.cache_info())
-    print()
-    print("get_party_of_entity")
-    print(get_party_of_entity.cache_info())
-    print()
-    print("get_relationships_between_two_entities.cache_info()")
-    print(get_relationships_between_two_entities.cache_info())
-    print()
-    print("------------------------------------------------")
-    """
 
     return results

@@ -37,6 +37,9 @@ body {
 }
 
 
+[data-href] { cursor: pointer; }
+
+
 /* PROBABLY NOT BEING USED (CLEAN): 'truncate' table at 10 */
 .wrapper.overflow {
   overflow-y: scroll;
