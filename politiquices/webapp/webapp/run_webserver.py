@@ -93,36 +93,33 @@ def get_all_parties_with_affiliated_count():
     return political_parties
 
 
-def main():
-    print("\nCaching static stuff from SPARQL engine :-)")
+def graph_edges_cache():
+    edges = get_graph_links()
+    with open(static_data + "edges.json", "w") as f_out:
+        json.dump(edges, f_out, indent=4)
+    print(f"{len(edges)} graph edges extracted")
 
-    # persons cache
-    per_data = get_entities()
 
-    # mapping: wiki_id -> person_info
-    wiki_id = {x["wikidata_id"]: {"name": x["name"], "image_url": x["image_url"]} for x in per_data}
-    with open(static_data + "wiki_id_info.json", "w") as f_out:
-        json.dump(wiki_id, f_out, indent=4)
+def entities_top_co_occurrences(wiki_id):
+    raw_counts = top_co_occurrences()
+    co_occurrences = []
+    for x in raw_counts:
+        co_occurrences.append(
+            {'person_a': wiki_id[x["person_a"].split("/")[-1]],
+             'person_b': wiki_id[x["person_b"].split("/")[-1]],
+             'nr_occurrences': x["n_artigos"]}
+        )
+    with open(static_data + "top_co_occurrences.json", "w") as f_out:
+        json.dump(co_occurrences, f_out, indent=4)
+    print(f"{len(co_occurrences)} entity co-ocorruences")
 
-    print(f"{len(per_data)} entities card info (positions + wikidata_link + image + nr articles)")
-    with open(static_data + "all_entities_info.json", "w") as f_out:
-        json.dump(per_data, f_out, indent=4)
 
-    # persons cache for search box
-    persons = [
-        {"name": x["name"], "wiki_id": x["wikidata_id"], "image_url": x["image_url"]}
-        for x in sorted(per_data, key=lambda x: x["name"])
-    ]
-    all_politiquices_persons = set([x["wiki_id"] for x in persons])
-    with open(static_data + "persons.json", "wt") as f_out:
-        json.dump(persons, f_out, indent=True)
-
+def parties_json_cache(all_politiquices_persons):
     # parties cache
     parties_data = get_all_parties_with_affiliated_count()
     print(f"{len(parties_data)} parties info (image + nr affiliated personalities)")
     with open(static_data + "all_parties_info.json", "w") as f_out:
         json.dump(parties_data, f_out, indent=4)
-
     # parties cache for search box, filtering only portuguese political parties
     parties = [
         {"name": x["party_label"], "wiki_id": x["wiki_id"], "image_url": x["party_logo"]}
@@ -131,7 +128,6 @@ def main():
     ]
     with open(static_data + "parties.json", "w") as f_out:
         json.dump(parties, f_out, indent=4)
-
     # members of each party
     party_members = defaultdict(list)
     for party in parties:
@@ -143,23 +139,44 @@ def main():
     with open(static_data + "party_members.json", "w") as f_out:
         json.dump(party_members, f_out, indent=4)
 
-    raw_counts = top_co_occurrences()
-    co_occurrences = []
-    for x in raw_counts:
-        co_occurrences.append(
-            {'person_a': wiki_id[x["person_a"].split("/")[-1]],
-             'person_b': wiki_id[x["person_b"].split("/")[-1]],
-             'nr_occurrences': x["n_artigos"]}
-        )
 
-    with open(static_data + "top_co_occurrences.json", "w") as f_out:
-        json.dump(co_occurrences, f_out, indent=4)
-    print(f"{len(co_occurrences)} entity co-ocorruences")
+def personalities_json_cache():
+    # persons cache
+    per_data = get_entities()
+    # mapping: wiki_id -> person_info
+    wiki_id = {x["wikidata_id"]: {"name": x["name"], "image_url": x["image_url"]} for x in per_data}
+    with open(static_data + "wiki_id_info.json", "w") as f_out:
+        json.dump(wiki_id, f_out, indent=4)
+    print(f"{len(per_data)} entities card info (positions + wikidata_link + image + nr articles)")
+    with open(static_data + "all_entities_info.json", "w") as f_out:
+        json.dump(per_data, f_out, indent=4)
+    # persons cache for search box
+    persons = [
+        {"name": x["name"], "wiki_id": x["wikidata_id"], "image_url": x["image_url"]}
+        for x in sorted(per_data, key=lambda x: x["name"])
+    ]
+    all_politiquices_persons = set([x["wiki_id"] for x in persons])
+    with open(static_data + "persons.json", "wt") as f_out:
+        json.dump(persons, f_out, indent=True)
+    return all_politiquices_persons, wiki_id
 
-    edges = get_graph_links()
-    with open(static_data + "edges.json", "w") as f_out:
-        json.dump(edges, f_out, indent=4)
-    print(f"{len(edges)} graph edges extracted")
+
+def main():
+    """
+    print("\nCaching static stuff from SPARQL engine :-)")
+
+    # personalities cache
+    all_politiquices_persons, wiki_id = personalities_json_cache()
+
+    # parties cache
+    parties_json_cache(all_politiquices_persons)
+
+    # entities co-occurrences cache
+    entities_top_co_occurrences(wiki_id)
+
+    # graph edges cache
+    graph_edges_cache()
+    """
 
     app.run(debug=True, host="0.0.0.0")
 

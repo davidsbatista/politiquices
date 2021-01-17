@@ -82,6 +82,58 @@
 
     </div>
 
+    <!-- Char with relationships throughout the years -->
+    <div class="container h-100">
+      <div class="row h-100 justify-content-center align-items-center">
+        <canvas id="myChart" width="900" height="250"></canvas>
+      </div>
+    </div>
+
+    <script>
+
+        var ctx = document.getElementById('myChart');
+        var color = Chart.helpers.color;
+
+        var year_labels = {{ labels|tojson }};
+        var ent1_ent1_opposes_ent2 = {{ ent1_ent1_opposes_ent2|tojson }};
+        var ent1_ent1_supports_ent2 = {{ ent1_ent1_supports_ent2|tojson }};
+        var ent1_ent2_opposes_ent1 = {{ ent1_ent2_opposes_ent1|tojson }};
+        var ent1_ent2_supports_ent1 = {{ ent1_ent2_supports_ent1|tojson }};
+
+        var ent2_ent1_opposes_ent2 = {{ ent2_ent1_opposes_ent2|tojson }};
+        var ent2_ent1_supports_ent2 = {{ ent2_ent1_supports_ent2|tojson }};
+        var ent2_ent2_opposes_ent1 = {{ ent2_ent2_opposes_ent1|tojson }};
+        var ent2_ent2_supports_ent1 = {{ ent2_ent2_supports_ent1|tojson }};
+
+        var ent1_name = {{ entity_one.name|tojson }};
+        var ent2_name = {{ entity_two.name|tojson }};
+
+        var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: year_labels,
+          datasets: [
+            // entity one
+            {label: 'ENT1-ent1_acusa_ent2', backgroundColor: "#FF0000", fill: true, data: ent1_ent1_opposes_ent2},
+            {label: 'ENT1-ent1_apoia_ent2', backgroundColor: "#980000", fill: true, data: ent1_ent1_supports_ent2},
+            {label: 'ENT1-ent2_acusa_ent1', backgroundColor: "#44861E", fill: true, data: ent1_ent2_opposes_ent1},
+            {label: 'ENT1-ent2_apoia_ent1', backgroundColor: "#70DA33", fill: true, data: ent1_ent2_supports_ent1},
+            // entity two
+            {label: 'ENT2-ent1_acusa_ent2', backgroundColor: "#611808", fill: true, data: ent2_ent1_opposes_ent2},
+            {label: 'ENT2-ent1_apoia_ent2', backgroundColor: "#086159", fill: true, data: ent2_ent1_supports_ent2},
+            {label: 'ENT2-ent2_acusa_ent1', backgroundColor: "#083d61", fill: true, data: ent2_ent2_opposes_ent1},
+            {label: 'ENT2-ent2_apoia_ent1', backgroundColor: "#1e0861", fill: true, data: ent2_ent2_supports_ent1}
+            ]
+          },
+        options: {
+          scales: {
+            x: {stacked: true},
+          }
+        }
+    });
+
+    </script>
+
     <table id="titles" data-pagination="true" data-search="true" data-toggle="table" data-page-size="25">
       <thead>
         <tr>
@@ -109,14 +161,13 @@
 </div>
 
 <!-- Datatables -->
-<script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js">
+<script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
 
-/*
-
-$(document).ready(function(){
-  console.log($('#titles'))
-  $('#titles').on('click-row.bs.table', function (e) {console.log.(e)}
-});
-*/
-
+<script>
+    $(document).ready(function(){
+      $('#titles').on('click-row.bs.table', function ( row, $element, field) {
+        url = field[0].getAttribute("data-href");
+        window.open(url, '_blank');
+      })
+    });
 </script>

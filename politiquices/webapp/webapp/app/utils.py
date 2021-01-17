@@ -51,3 +51,19 @@ def per_vs_person_linkable(r):
 
     r["title_clickable"] = title_link
     add_icon(r)
+
+
+def make_json(relationships):
+    """
+    titles/relationships are sent as JSONs containing only two fields:
+       - date
+       - clickable title
+    """
+    json_data = []
+    for r in relationships:
+        html_title = f"""{r['title_clickable']}\
+        <a id="link" href={r['url']} target="_blank"><img src="{r['link_image']}"\
+        width="{r['image_width']}" height="20"></a>"""
+        json_data.append({"data": r["date"], "titulo": html_title})
+
+    return json_data

@@ -52,8 +52,7 @@ body.loading .modal {
 }
 
 
-
-/*** for the input search box on the nav-bar ***/
+/* Input Search box on the nav-bar drop-down show over the page*/
 #search-wrapper {
     padding: 10px;
     z-index: 1;
@@ -68,7 +67,7 @@ body.loading .modal {
 #ui-id-1 {z-index: 9999;}
 
 
-/*** entity cards ***/
+/* Entity Cards */
 .card:hover{
   box-shadow: 0 10px 20px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 }

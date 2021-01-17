@@ -83,7 +83,7 @@
 
     <br><br>
 
-    <!-- Time-line of relationships -->
+    <!-- Char with relationships throughout the years -->
     <div class="container h-100">
       <div class="row h-100 justify-content-center align-items-center">
         <canvas id="myChart" width="900" height="250"></canvas>
@@ -155,7 +155,7 @@
             <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_person_opposes %}
-                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{item.wiki_id}}&e2={{items.wiki_id}}>
+                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
                     <td>{{item.name}}</td>
                     <td>{{item.nr_articles}}</td>
                 </tr>
@@ -169,7 +169,7 @@
           <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_person_supports %}
-                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{item.wiki_id}}&e2={{items.wiki_id}}>
+                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
                     <td>{{item.name}}</td>
                     <td>{{item.nr_articles}}</td>
                 </tr>
@@ -183,7 +183,7 @@
           <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_opposes_person %}
-                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{item.wiki_id}}&e2={{items.wiki_id}}>
+                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
                     <td>{{item.name}}</td>
                     <td>{{item.nr_articles}}</td>
                 </tr>
@@ -198,7 +198,7 @@
                  class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_supports_person %}
-                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{item.wiki_id}}&e2={{items.wiki_id}}>
+                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
                     <td>{{item.name}}</td>
                     <td>{{item.nr_articles}}</td>
                 </tr>
@@ -321,7 +321,7 @@
              data-pagination=\"true\"\
              data-search=\"true\"\
              data-toggle=\"table\"\
-             data-page-size=\"30\">
+             data-page-size=\"30\">\
           <thead>\
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\
@@ -343,8 +343,7 @@
              data-pagination=\"true\"\
              data-search=\"true\"\
              data-toggle=\"table\"\
-             data-page-size=\"30\">
-
+             data-page-size=\"30\">\
           <thead>\
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\
@@ -367,8 +366,7 @@
              data-pagination=\"true\"\
              data-search=\"true\"\
              data-toggle=\"table\"\
-             data-page-size=\"30\">
-
+             data-page-size=\"30\">\
           <thead>\
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\
@@ -389,8 +387,8 @@
       '<table id=\"table\"\
              data-pagination=\"true\"\
              data-search=\"true\"\
-             data-toggle=\"table\">\
-             data-page-size=\"30\">
+             data-toggle=\"table\"\
+             data-page-size=\"30\">\
           <thead>\
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\
@@ -412,8 +410,7 @@
              data-pagination=\"true\"\
              data-search=\"true\"\
              data-toggle=\"table\"\
-             data-page-size=\"30\">
-
+             data-page-size=\"30\">\
           <thead>\
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\

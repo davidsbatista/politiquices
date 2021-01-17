@@ -23,8 +23,9 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     all_persons_freq,
 )
 
-from politiquices.webapp.webapp.app.relationships import build_relationships_by_year
-from politiquices.webapp.webapp.app.utils import clickable_title
+from politiquices.webapp.webapp.app.relationships import build_relationships_by_year, \
+    get_chart_labels, fill_zero_values
+from politiquices.webapp.webapp.app.utils import clickable_title, make_json
 from politiquices.webapp.webapp.app.utils import per_vs_person_linkable
 
 # ToDo: review have proper logging
@@ -96,27 +97,13 @@ def detail_entity():
     other = [clickable_title(r, wiki_id) for r in titles_rels["other"]]
     other_by = [clickable_title(r, wiki_id) for r in titles_rels["other_by"]]
 
-    def make_json(relationships):
-        """
-        titles/relationships are sent as JSONs containing only two fields:
-            - date
-           - clickable title
-        """
-        json_data = []
-        for r in relationships:
-            html_title = f"""{r['title_clickable']}\
-            <a id="link" href={r['url']} target="_blank"><img src="{r['link_image']}"\
-            width="{r['image_width']}" height="20"></a>"""
-            json_data.append({"data": r["date"], "titulo": html_title})
-        return json_data
-
     opposed_json = make_json(opposes)
     supported_json = make_json(supports)
     opposed_by_json = make_json(opposed_by)
     supported_by_json = make_json(supported_by)
     other_json = make_json(other + other_by)
     all_relationships_json = (
-        opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
+            opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
     )
 
     items = {
@@ -140,7 +127,7 @@ def detail_entity():
         "top_relations": top_entities_in_rel_type
     }
 
-    # show a special interface allowing to annotate/correct relationships
+    # show a different interface allowing to annotate/correct relationships
     if "annotate" in request.args:
         items.update({'opposes': opposes,
                       'supports': supports,
@@ -330,16 +317,44 @@ def queries():
         person_two = request.args.get("e2")
         person_one_info = get_person_info(person_one)
         person_two_info = get_person_info(person_two)
-        results = get_relationships_between_two_entities(person_one, person_two)
+        results, rels_freq_by_year_ent1, rels_freq_by_year_ent2 = get_relationships_between_two_entities(person_one, person_two)
+
+        print(person_one_info.name)
+        for year in rels_freq_by_year_ent1:
+            print(year, rels_freq_by_year_ent1[year])
+        print()
+        print(person_two_info.name)
+        for year in rels_freq_by_year_ent1:
+            print(year, rels_freq_by_year_ent2[year])
 
         for r in results:
             per_vs_person_linkable(r)
+
+        labels = list(rels_freq_by_year_ent1.keys())
+        ent1_ent1_opposes_ent2 = [rels_freq_by_year_ent1[year]['ent1_opposes_ent2'] for year in rels_freq_by_year_ent1]
+        ent1_ent1_supports_ent2 = [rels_freq_by_year_ent1[year]['ent1_supports_ent2'] for year in rels_freq_by_year_ent1]
+        ent1_ent2_opposes_ent1 = [rels_freq_by_year_ent1[year]['ent2_opposes_ent1'] for year in rels_freq_by_year_ent1]
+        ent1_ent2_supports_ent1 = [rels_freq_by_year_ent1[year]['ent2_supports_ent1'] for year in rels_freq_by_year_ent1]
+
+        ent2_ent1_opposes_ent2 = [rels_freq_by_year_ent2[year]['ent1_opposes_ent2'] for year in rels_freq_by_year_ent2]
+        ent2_ent1_supports_ent2 = [rels_freq_by_year_ent2[year]['ent1_supports_ent2'] for year in rels_freq_by_year_ent2]
+        ent2_ent2_opposes_ent1 = [rels_freq_by_year_ent1[year]['ent2_opposes_ent1'] for year in rels_freq_by_year_ent1]
+        ent2_ent2_supports_ent1 = [rels_freq_by_year_ent1[year]['ent2_supports_ent1'] for year in rels_freq_by_year_ent1]
 
         return render_template(
             "query_person_person.html",
             items=results,
             entity_one=person_one_info,
             entity_two=person_two_info,
+            labels=labels,
+            ent1_ent1_opposes_ent2=ent1_ent1_opposes_ent2,
+            ent1_ent1_supports_ent2=ent1_ent1_supports_ent2,
+            ent1_ent2_opposes_ent1=ent1_ent2_opposes_ent1,
+            ent1_ent2_supports_ent1=ent1_ent2_supports_ent1,
+            ent2_ent1_opposes_ent2=ent2_ent1_opposes_ent2,
+            ent2_ent1_supports_ent2=ent2_ent1_supports_ent2,
+            ent2_ent2_opposes_ent1=ent2_ent2_opposes_ent1,
+            ent2_ent2_supports_ent1=ent2_ent2_supports_ent1,
         )
 
     # relationships between (members of) a party and an entity

@@ -102,12 +102,15 @@ def get_graph_links():
         }
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
-    edges = [{'person_a': x["person_a"]["value"],
-              'person_b': x["person_b"]["value"],
-              'rel_type': x["rel_type"]["value"],
-              'url': x["url"]["value"]}
-             for x in results["results"]["bindings"]
-             ]
+    edges = [
+        {
+            "person_a": x["person_a"]["value"],
+            "person_b": x["person_b"]["value"],
+            "rel_type": x["rel_type"]["value"],
+            "url": x["url"]["value"],
+        }
+        for x in results["results"]["bindings"]
+    ]
     return edges
 
 
@@ -170,8 +173,10 @@ def all_persons_freq():
         ORDER BY DESC(?n_artigos)        
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
-    top_freq = [{'person': x['person']['value'], 'freq': x['n_artigos']['value']}
-                for x in results["results"]["bindings"]]
+    top_freq = [
+        {"person": x["person"]["value"], "freq": x["n_artigos"]["value"]}
+        for x in results["results"]["bindings"]
+    ]
     return top_freq
 
 
@@ -673,7 +678,7 @@ def get_person_rels_by_year(wiki_id, rel_type, ent="ent1"):
     return year_articles
 
 
-# relationship queries #
+# relationship queries
 @lru_cache
 def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
     query = f"""
@@ -708,8 +713,21 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
         ORDER BY ASC(?date)
         """
     result = query_sparql(prefixes + "\n" + query, "politiquices")
+
+    def relationships_counter():
+        return {
+            "ent1_opposes_ent2": 0,
+            "ent1_supports_ent2": 0,
+            "ent2_opposes_ent1": 0,
+            "ent2_supports_ent1": 0,
+        }
+    rels_freq_by_year_ent1 = defaultdict(relationships_counter)
+    rels_freq_by_year_ent2 = defaultdict(relationships_counter)
+
     relationships = []
     for x in result["results"]["bindings"]:
+        if 'other' in x["rel_type"]["value"]:
+            continue
         relationships.append(
             {
                 "url": x["arquivo_doc"]["value"],
@@ -724,7 +742,17 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
             }
         )
 
-    return relationships
+        ent1_wiki_id = x["ent1"]["value"].split("/")[-1]
+        year = x["date"]["value"][0:4]
+        rel_type = x["rel_type"]["value"]
+
+        if ent1_wiki_id == wiki_id_one:
+            rels_freq_by_year_ent1[year][rel_type] += 1
+
+        if ent1_wiki_id == wiki_id_two:
+            rels_freq_by_year_ent2[year][rel_type] += 1
+
+    return relationships, rels_freq_by_year_ent1, rels_freq_by_year_ent2
 
 
 @lru_cache

@@ -1,20 +1,8 @@
 Web App
 =======
 
-    Person vs Person:
-    ----------------
-        - graficos entre os dois:
-
-            - relationships between two personalities: mostrar quem apoia/acusa mais o outro
-
-            - só pode haver duas relações:
-                - X acusa Y    vs.     Y acusa X
-                - X apoia Y    vs.     Y apoia X
-
-
-    Small improvments
-    -----------------
-        - Row clickable nas tables com links para notícias
+    - Rever o gráfico em Person vs. Person
+    - Row clickable nas tables com links para notícias (na entity)
 
     Bugs
     ----
