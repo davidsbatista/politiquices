@@ -335,10 +335,6 @@ def queries():
         for r in results:
             per_vs_person_linkable(r)
 
-        for r in results:
-            print(r)
-            print()
-
         return render_template(
             "query_person_person.html",
             items=results,
