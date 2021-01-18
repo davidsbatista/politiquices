@@ -288,6 +288,7 @@
                 <tr>
                     <th data-sortable="true" data-field="data">Data</th>
                     <th data-field="titulo">Título</th>
+                    <th data-field="url" data-visible="false">URL</th>
                 </tr>
             </thead>
         </table>
@@ -307,10 +308,15 @@
     var $table = $('#table');
     $(function (table) {
         $('#table').bootstrapTable({
-            onClickRow: function() {console.log('clicado')},
+            onClickRow: function ( row, $element, field) {
+              url = row['url'];
+              window.open(url, '_blank');
+            },
             data: opposed
         });
     });
+
+    $(document).scrollTop( $(relationships).offset().top );
 
 
     $("#opposes").click(function() {
@@ -330,6 +336,10 @@
           </thead>\
       </table>');
       $('#table').bootstrapTable({
+          onClickRow: function ( row, $element, field) {
+            url = row['url'];
+            window.open(url, '_blank');
+          },
           data: opposed
       });
       $(document).scrollTop( $(relationships).offset().top );
@@ -352,6 +362,10 @@
           </thead>\
       </table>');
       $('#table').bootstrapTable({
+          onClickRow: function ( row, $element, field) {
+            url = row['url'];
+            window.open(url, '_blank');
+          },
           data: supported
       });
       $(document).scrollTop( $(relationships).offset().top );
@@ -375,6 +389,10 @@
           </thead>\
       </table>');
       $('#table').bootstrapTable({
+          onClickRow: function ( row, $element, field) {
+            url = row['url'];
+            window.open(url, '_blank');
+          },
           data: opposed_by
       });
       $(document).scrollTop( $(relationships).offset().top );
@@ -397,6 +415,10 @@
           </thead>\
       </table>');
       $('#table').bootstrapTable({
+          onClickRow: function ( row, $element, field) {
+            url = row['url'];
+            window.open(url, '_blank');
+          },
           data: supported_by
       });
       $(document).scrollTop( $(relationships).offset().top );
@@ -419,6 +441,10 @@
           </thead>\
       </table>');
       $('#table').bootstrapTable({
+          onClickRow: function ( row, $element, field) {
+            url = row['url'];
+            window.open(url, '_blank');
+          },
           data: all_relationships
       });
       $(document).scrollTop( $(relationships).offset().top );

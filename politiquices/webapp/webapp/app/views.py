@@ -97,6 +97,9 @@ def detail_entity():
     other = [clickable_title(r, wiki_id) for r in titles_rels["other"]]
     other_by = [clickable_title(r, wiki_id) for r in titles_rels["other_by"]]
 
+    for x in opposes:
+        print(x)
+
     opposed_json = make_json(opposes)
     supported_json = make_json(supports)
     opposed_by_json = make_json(opposed_by)

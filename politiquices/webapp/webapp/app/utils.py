@@ -61,9 +61,9 @@ def make_json(relationships):
     """
     json_data = []
     for r in relationships:
-        html_title = f"""{r['title_clickable']}\
-        <a id="link" href={r['url']} target="_blank"><img src="{r['link_image']}"\
-        width="{r['image_width']}" height="20"></a>"""
-        json_data.append({"data": r["date"], "titulo": html_title})
+        html_title = f"""{r['title_clickable']} <img src="{r['link_image']}" width="{r['image_width']}" height="20">"""
+        json_data.append({"data": r["date"],
+                          "titulo": html_title,
+                          "url": r["url"]})
 
     return json_data

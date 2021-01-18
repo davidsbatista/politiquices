@@ -1,8 +1,8 @@
 Web App
 =======
 
-    - Rever o gráfico em Person vs. Person
-    - Row clickable nas tables com links para notícias (na entity)
+    - Rever o gráfico em Person vs. Person:
+        e.g.: Manuela Ferreira Leite vs Aguiar Branco
 
     Bugs
     ----
