@@ -3,8 +3,6 @@ Web App
     Party Members
     --------------
        - load on scroll down
-       - click on member go to top of page
-
 
     - Rever o gráfico em Person vs. Person:
         e.g.: Manuela Ferreira Leite vs Aguiar Branco
