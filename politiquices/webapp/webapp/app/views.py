@@ -23,8 +23,11 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     all_persons_freq,
 )
 
-from politiquices.webapp.webapp.app.relationships import build_relationships_by_year, \
-    get_chart_labels, fill_zero_values
+from politiquices.webapp.webapp.app.relationships import (
+    build_relationships_by_year,
+    get_chart_labels,
+    fill_zero_values,
+)
 from politiquices.webapp.webapp.app.utils import clickable_title, make_json
 from politiquices.webapp.webapp.app.utils import per_vs_person_linkable
 
@@ -106,7 +109,7 @@ def detail_entity():
     supported_by_json = make_json(supported_by)
     other_json = make_json(other + other_by)
     all_relationships_json = (
-            opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
+        opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
     )
 
     items = {
@@ -118,27 +121,28 @@ def detail_entity():
         "positions": person.positions,
         "occupations": person.occupations,
         "education": person.education,
-
         # titles/articles frequency by relationships by year, for ChartJS
         "year_month_labels": chart_js_data["labels"],
         "opposed_freq": chart_js_data["opposed_freq"],
         "supported_freq": chart_js_data["supported_freq"],
         "opposed_by_freq": chart_js_data["opposed_by_freq"],
         "supported_by_freq": chart_js_data["supported_by_freq"],
-
         # top-persons in each relationship
-        "top_relations": top_entities_in_rel_type
+        "top_relations": top_entities_in_rel_type,
     }
 
     # show a different interface allowing to annotate/correct relationships
     if "annotate" in request.args:
-        items.update({'opposes': opposes,
-                      'supports': supports,
-                      'opposed_by': opposed_by,
-                      'supported_by': supported_by,
-                      'other': other,
-                      'other_by': other_by
-                      })
+        items.update(
+            {
+                "opposes": opposes,
+                "supports": supports,
+                "opposed_by": opposed_by,
+                "supported_by": supported_by,
+                "other": other,
+                "other_by": other_by,
+            }
+        )
         return render_template("entity_annotate.html", items=items)
 
     if from_search:
@@ -188,13 +192,19 @@ def party_members():
                 persons.append(
                     Person(
                         name=entity["name"],
+                        nr_articles=int(entity["nr_articles"]),
                         wiki_id=entity["wikidata_id"],
                         image_url=entity["image_url"],
                     )
                 )
 
+    sorted_persons = sorted(persons, key=lambda x: x.nr_articles, reverse=True)
     return render_template(
-        "party_members.html", items=persons, name=party_name, logo=party_logo, party_wiki_id=wiki_id
+        "party_members.html",
+        items=sorted_persons,
+        name=party_name,
+        logo=party_logo,
+        party_wiki_id=wiki_id,
     )
 
 
@@ -320,7 +330,11 @@ def queries():
         person_two = request.args.get("e2")
         person_one_info = get_person_info(person_one)
         person_two_info = get_person_info(person_two)
-        results, rels_freq_by_year_ent1, rels_freq_by_year_ent2 = get_relationships_between_two_entities(person_one, person_two)
+        (
+            results,
+            rels_freq_by_year_ent1,
+            rels_freq_by_year_ent2,
+        ) = get_relationships_between_two_entities(person_one, person_two)
 
         print(person_one_info.name)
         for year in rels_freq_by_year_ent1:
@@ -334,15 +348,31 @@ def queries():
             per_vs_person_linkable(r)
 
         labels = list(rels_freq_by_year_ent1.keys())
-        ent1_ent1_opposes_ent2 = [rels_freq_by_year_ent1[year]['ent1_opposes_ent2'] for year in rels_freq_by_year_ent1]
-        ent1_ent1_supports_ent2 = [rels_freq_by_year_ent1[year]['ent1_supports_ent2'] for year in rels_freq_by_year_ent1]
-        ent1_ent2_opposes_ent1 = [rels_freq_by_year_ent1[year]['ent2_opposes_ent1'] for year in rels_freq_by_year_ent1]
-        ent1_ent2_supports_ent1 = [rels_freq_by_year_ent1[year]['ent2_supports_ent1'] for year in rels_freq_by_year_ent1]
+        ent1_ent1_opposes_ent2 = [
+            rels_freq_by_year_ent1[year]["ent1_opposes_ent2"] for year in rels_freq_by_year_ent1
+        ]
+        ent1_ent1_supports_ent2 = [
+            rels_freq_by_year_ent1[year]["ent1_supports_ent2"] for year in rels_freq_by_year_ent1
+        ]
+        ent1_ent2_opposes_ent1 = [
+            rels_freq_by_year_ent1[year]["ent2_opposes_ent1"] for year in rels_freq_by_year_ent1
+        ]
+        ent1_ent2_supports_ent1 = [
+            rels_freq_by_year_ent1[year]["ent2_supports_ent1"] for year in rels_freq_by_year_ent1
+        ]
 
-        ent2_ent1_opposes_ent2 = [rels_freq_by_year_ent2[year]['ent1_opposes_ent2'] for year in rels_freq_by_year_ent2]
-        ent2_ent1_supports_ent2 = [rels_freq_by_year_ent2[year]['ent1_supports_ent2'] for year in rels_freq_by_year_ent2]
-        ent2_ent2_opposes_ent1 = [rels_freq_by_year_ent1[year]['ent2_opposes_ent1'] for year in rels_freq_by_year_ent1]
-        ent2_ent2_supports_ent1 = [rels_freq_by_year_ent1[year]['ent2_supports_ent1'] for year in rels_freq_by_year_ent1]
+        ent2_ent1_opposes_ent2 = [
+            rels_freq_by_year_ent2[year]["ent1_opposes_ent2"] for year in rels_freq_by_year_ent2
+        ]
+        ent2_ent1_supports_ent2 = [
+            rels_freq_by_year_ent2[year]["ent1_supports_ent2"] for year in rels_freq_by_year_ent2
+        ]
+        ent2_ent2_opposes_ent1 = [
+            rels_freq_by_year_ent1[year]["ent2_opposes_ent1"] for year in rels_freq_by_year_ent1
+        ]
+        ent2_ent2_supports_ent1 = [
+            rels_freq_by_year_ent1[year]["ent2_supports_ent1"] for year in rels_freq_by_year_ent1
+        ]
 
         return render_template(
             "query_person_person.html",

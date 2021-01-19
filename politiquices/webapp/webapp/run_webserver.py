@@ -115,11 +115,13 @@ def entities_top_co_occurrences(wiki_id):
 
 
 def parties_json_cache(all_politiquices_persons):
+
     # parties cache
     parties_data = get_all_parties_with_affiliated_count()
     print(f"{len(parties_data)} parties info (image + nr affiliated personalities)")
     with open(static_data + "all_parties_info.json", "w") as f_out:
         json.dump(parties_data, f_out, indent=4)
+
     # parties cache for search box, filtering only portuguese political parties
     parties = [
         {"name": x["party_label"], "wiki_id": x["wiki_id"], "image_url": x["party_logo"]}
@@ -128,9 +130,10 @@ def parties_json_cache(all_politiquices_persons):
     ]
     with open(static_data + "parties.json", "w") as f_out:
         json.dump(parties, f_out, indent=4)
+
     # members of each party
     party_members = defaultdict(list)
-    for party in parties:
+    for party in parties_data:
         # get all wiki_id associated with a party
         wiki_ids = get_wiki_id_affiliated_with_party(party["wiki_id"])
         # then filter only those with mention in new articles
