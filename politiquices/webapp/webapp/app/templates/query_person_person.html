@@ -140,19 +140,16 @@
             <th data-sortable="true" data-field="data">Data</th>
             <th data-field="title">Título</th>
             <th data-sortable="true" data-field="relationship">Relação</th>
+            <th data-align="center" data-field="link">Artigo</th>
         </tr>
       </thead>
       <tbody>
         {% for item in items %}
           <tr class='clickable-row' data-href='{{item.url}}'>
             <td id="data">{{item.date}}</td>
-             <td id="title">
-                 {{item.title_clickable|safe}}
-                 <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
-                     <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
-                 </a>
-             </td>
+             <td id="title">{{item.title_clickable|safe}}</td>
               <td id="relationship">{{item.rel_type}}</td>
+              <td id="link">{{item.link|safe}}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -164,10 +161,12 @@
 <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
 
 <script>
+    /*
     $(document).ready(function(){
       $('#titles').on('click-row.bs.table', function ( row, $element, field) {
         url = field[0].getAttribute("data-href");
         window.open(url, '_blank');
       })
     });
+    */
 </script>

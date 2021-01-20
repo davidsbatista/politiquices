@@ -36,9 +36,12 @@ body {
     left: 0px;
 }
 
+/*
 .table-hover tbody tr:hover > td {
     cursor: pointer;
 }
+*/
+
 
 [data-href] { cursor: pointer; }
 

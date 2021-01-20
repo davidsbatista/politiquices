@@ -288,6 +288,7 @@
                 <tr>
                     <th data-sortable="true" data-field="data">Data</th>
                     <th data-field="titulo">Título</th>
+                    <th data-align="center" data-field="link">Artigo</th>
                     <th data-field="url" data-visible="false">URL</th>
                 </tr>
             </thead>
@@ -308,10 +309,6 @@
     var $table = $('#table');
     $(function (table) {
         $('#table').bootstrapTable({
-            onClickRow: function ( row, $element, field) {
-              url = row['url'];
-              window.open(url, '_blank');
-            },
             data: opposed
         });
     });
@@ -332,14 +329,12 @@
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\
                   <th data-field=\"titulo\">Título</th>\
+                  <th data-align="center" data-field="link">Artigo</th>\
+                  <th data-field="url" data-visible="false">URL</th>\
               </tr>\
           </thead>\
       </table>');
       $('#table').bootstrapTable({
-          onClickRow: function ( row, $element, field) {
-            url = row['url'];
-            window.open(url, '_blank');
-          },
           data: opposed
       });
       $(document).scrollTop( $(relationships).offset().top );
@@ -358,14 +353,12 @@
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\
                   <th data-field=\"titulo\">Título</th>\
+                  <th data-align="center" data-field="link">Artigo</th>\
+                  <th data-field="url" data-visible="false">URL</th>\
               </tr>\
           </thead>\
       </table>');
       $('#table').bootstrapTable({
-          onClickRow: function ( row, $element, field) {
-            url = row['url'];
-            window.open(url, '_blank');
-          },
           data: supported
       });
       $(document).scrollTop( $(relationships).offset().top );
@@ -385,14 +378,12 @@
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\
                   <th data-field=\"titulo\">Título</th>\
+                  <th data-align="center" data-field="link">Artigo</th>\
+                  <th data-field="url" data-visible="false">URL</th>\
               </tr>\
           </thead>\
       </table>');
       $('#table').bootstrapTable({
-          onClickRow: function ( row, $element, field) {
-            url = row['url'];
-            window.open(url, '_blank');
-          },
           data: opposed_by
       });
       $(document).scrollTop( $(relationships).offset().top );
@@ -411,14 +402,12 @@
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\
                   <th data-field=\"titulo\">Título</th>\
+                  <th data-align="center" data-field="link">Artigo</th>\
+                  <th data-field="url" data-visible="false">URL</th>\
               </tr>\
           </thead>\
       </table>');
       $('#table').bootstrapTable({
-          onClickRow: function ( row, $element, field) {
-            url = row['url'];
-            window.open(url, '_blank');
-          },
           data: supported_by
       });
       $(document).scrollTop( $(relationships).offset().top );
@@ -437,14 +426,12 @@
               <tr>\
                   <th data-sortable=\"true\" data-field=\"data\">Data</th>\
                   <th data-field=\"titulo\">Título</th>\
+                  <th data-align="center" data-field="link">Artigo</th>\
+                  <th data-field="url" data-visible="false">URL</th>\
               </tr>\
           </thead>\
       </table>');
       $('#table').bootstrapTable({
-          onClickRow: function ( row, $element, field) {
-            url = row['url'];
-            window.open(url, '_blank');
-          },
           data: all_relationships
       });
       $(document).scrollTop( $(relationships).offset().top );

@@ -100,9 +100,6 @@ def detail_entity():
     other = [clickable_title(r, wiki_id) for r in titles_rels["other"]]
     other_by = [clickable_title(r, wiki_id) for r in titles_rels["other_by"]]
 
-    for x in opposes:
-        print(x)
-
     opposed_json = make_json(opposes)
     supported_json = make_json(supports)
     opposed_by_json = make_json(opposed_by)
@@ -336,6 +333,7 @@ def queries():
             rels_freq_by_year_ent2,
         ) = get_relationships_between_two_entities(person_one, person_two)
 
+        """
         print(person_one_info.name)
         for year in rels_freq_by_year_ent1:
             print(year, rels_freq_by_year_ent1[year])
@@ -343,6 +341,7 @@ def queries():
         print(person_two_info.name)
         for year in rels_freq_by_year_ent1:
             print(year, rels_freq_by_year_ent2[year])
+        """
 
         for r in results:
             per_vs_person_linkable(r)
