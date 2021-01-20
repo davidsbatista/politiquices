@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %} politiquices.pt {% endblock %}
+
+{% block body %}
+
+<div class="container" id="container">
+
+    <br><br>
+
+    <div class="container" id="inner">
+
+        <!-- intro -->
+        <div class="container d-flex align-items-center justify-content-center">
+          <div class="w-100">
+            <p>O politiquices.pt permite pesquisar e analisar relações de <b>apoio</b> ou <b>oposição</b>
+               entre personalidades políticas expressas em títulos de artigo de jornal.</p>
+           </div>
+        </div>
+
+        <br><br><br><br>
+
+        <center>
+          <form class="container-fluid justify-content-center align-items-center">
+            <input id="autocomplete_three_partido_value" type="hidden" name="wiki">
+            <input id="autocomplete_three_pessoa_value" type="hidden" name="wiki">
+            <div class="control-group">
+                <div class="controls controls-row row-fluid col-xs-4">
+                    <input id="autocomplete_three_partido" class="span10" type="text" placeholder="Partido ou Personalidade" />
+                      <div class="dropdown" style="display: inline;">
+                        <button class="btn btn-secondary dropdown-toggle" type="button"
+                                id="dropdownMenuButton2" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">opoe-se</button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                            <a class="dropdown-item">opoe-se</a>
+                            <a class="dropdown-item">apoia</a>
+                        </div>
+                      </div>
+                    <input id="autocomplete_three_pessoa" class="span10" type="text" placeholder="Partido ou Personalidade" />
+                    <button type="button" id='btn_three' class="btn btn-primary btn-sm">Procurar</button>
+                  </div>
+            </div>
+          </form>
+        </center>
+
+    </div>
+
+    <br><br><br><br>
+
+</div>
+
+{% endblock %}

@@ -9,6 +9,8 @@ Web App
         - Pessoa vs. Partido
         - Partido vs. Partido
 
+    - Apenas duas search boxes com tudo
+
     Stats
     -----
      - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?

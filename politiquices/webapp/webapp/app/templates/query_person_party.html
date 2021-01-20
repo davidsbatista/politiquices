@@ -62,29 +62,24 @@
         </div>
 
         <table data-pagination="true" data-search="true" data-toggle="table">
-    <thead>
-    <tr>
-        <th data-sortable="true" data-field="data">Data</th>
-        <th data-field="title">Título</th>
-    </tr>
-    </thead>
-    <tbody>
-  {% for item in items %}
-    <tr>
-      <td id="data">{{item.date}}</td>
-      <td id="title">
-          {{item.title_clickable|safe}}
-          <a id="link" data-title="{{item.title}}" href={{item.url}} target="_blank">
-              <img src="{{item.link_image}}" width="{{item.image_width}}" height="20">
-          </a>
-      </td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-
+        <thead>
+        <tr>
+            <th data-sortable="true" data-field="data">Data</th>
+            <th data-field="title">Título</th>
+            <th data-align="center" data-field="link">Artigo</th>
+        </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+            <tr>
+              <td id="data">{{item.date}}</td>
+              <td id="title">{{item.title_clickable|safe}}</td>
+              <td id="link"><a href={{item.url}} target="_blank"><img src="{{item.link_image}}" width="{{item.image_width}}" height="20"></a></td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
     </div>
-
 </div>
 
 
