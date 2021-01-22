@@ -1,12 +1,18 @@
 Web App
 =======
 
-    - AJAX loading GIF: centrar
     - Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas -> maior e com feedback que é link
+
+    - AJAX loading GIF: centrar
 
     - Indexar colecção CHAVE no server e fazer links para politiquices.pt
 
     - Quando não há resultados, indicar e ficar no index.html
+
+    Absolutos e relativos:
+        - Quem mais acusa? é acusado?
+        - Quem mais defende? é defendido
+
 
     Grafo
     -----
@@ -15,7 +21,6 @@ Web App
 
     Low Priority
     ------------
-
         Party Members
         --------------
          - load on scroll down

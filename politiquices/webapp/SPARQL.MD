@@ -408,10 +408,10 @@
     }
     group by ?cabinet ?cabinetLabel
     ORDER BY DESC (?n)
+  
+  
+### Top personalities that oppose someone
     
-    
-### Relaçoes entre PS e PSD
-
     PREFIX        dc: <http://purl.org/dc/elements/1.1/>
     PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX my_prefix: <http://some.namespace/with/name#>
@@ -427,55 +427,16 @@
     PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
     PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX        bd: <http://www.bigdata.com/rdf#>
-    PREFIX my: <http://www.mobile.com/model/>
     
-    
-    SELECT DISTINCT ?person_party_a ?person_a_label ?person_party_b ?person_b_label ?arquivo_doc {          
-      wd:Q595575 rdfs:label ?party_a_label FILTER(LANG(?party_a_label) = "pt") .      
-      wd:Q847263 rdfs:label ?party_b_label FILTER(LANG(?party_b_label) = "pt") .      
-      ?person_party_a wdt:P102 wd:Q595575;
-                      rdfs:label ?person_a_label FILTER(LANG(?person_a_label) = "pt") .
-      ?person_party_b wdt:P102 wd:Q847263;
-                      rdfs:label ?person_b_label FILTER(LANG(?person_b_label) = "pt") .    
-        
-      SERVICE <http://0.0.0.0:3030/politiquices> {
-        ?rel my_prefix:ent1 ?person_party_a;
-             my_prefix:ent2 ?person_party_b;
-             my_prefix:type ?rel_type;
-             my_prefix:score ?score;
-             my_prefix:arquivo ?arquivo_doc;
+    SELECT DISTINCT ?person_a (COUNT(?url) as ?nr_articles) {
+      { ?rel my_prefix:ent1 ?person_a .
+        ?rel my_prefix:type 'ent1_opposes_ent2'.
+      }  
+      UNION 
+      { ?rel my_prefix:ent2 ?person_a .
+        ?rel my_prefix:type 'ent2_opposes_ent1'.
       }
+      ?rel my_prefix:arquivo ?url .
     }
-    
-## All from PSD
-
-    SELECT DISTINCT ?person_party_a ?person_a_label ?person_party_b ?person_b_label ?arquivo_doc {          
-      wd:Q595575 rdfs:label ?party_a_label FILTER(LANG(?party_a_label) = "pt") .      
-      ?person_party_a wdt:P102 wd:Q595575;
-                      rdfs:label ?person_a_label FILTER(LANG(?person_a_label) = "pt") .
-    }
-
-    
-## All from PS
-
-    SELECT DISTINCT ?person_party_b ?person_b_label ?arquivo_doc {          
-      ?person_party_b wdt:P102 wd:Q847263;
-                      rdfs:label ?person_b_label FILTER(LANG(?person_b_label) = "pt") .  
-    }
-    
-    
-### ToDo: filter by list of values
-
-    SELECT DISTINCT ?person_party_a ?person_party_b ?arquivo_doc 
-    WHERE {
-      { 
-        VALUES ?person_party_a { wd:Q101537534 wd:Q101760216 wd:Q10263917 wd:Q610788 }
-        VALUES ?person_party_b { wd:Q101537534 wd:Q101760216 wd:Q10263917 wd:Q610788 }
-        ?rel my_prefix:ent1 ?person_party_a;
-             my_prefix:ent2 ?person_party_b;
-             my_prefix:type ?rel_type;
-             my_prefix:score ?score;
-             my_prefix:arquivo ?arquivo_doc;
-        }
-      }
-    LIMIT 10
+    GROUP BY ?person_a
+    ORDER BY DESC(?nr_articles)
