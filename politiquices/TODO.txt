@@ -7,11 +7,6 @@ Web App
     - Rever o gráfico em Person vs. Person:
         e.g.: Manuela Ferreira Leite vs Aguiar Branco
 
-    - Interfaces
-        - Partido vs. Pessoa
-        - Pessoa vs. Partido
-        - Partido vs. Partido
-
     Stats
     -----
      - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?

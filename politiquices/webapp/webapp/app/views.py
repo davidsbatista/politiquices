@@ -463,6 +463,10 @@ def party_vs_party(party_a, party_b, relationship, party_a_info, party_b_info):
 
 @app.route("/queries")
 def queries():
+
+    import time
+    time.sleep(3)
+
     print(request.args)
     query_nr = request.args.get("query_nr")
 

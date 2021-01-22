@@ -147,9 +147,9 @@
         {% for item in items %}
           <tr class='clickable-row' data-href='{{item.url}}'>
             <td id="data">{{item.date}}</td>
-             <td id="title">{{item.title_clickable|safe}}</td>
-              <td id="relationship">{{item.rel_type}}</td>
-              <td id="link">{{item.link|safe}}</td>
+            <td id="title">{{item.title_clickable|safe}}</td>
+            <td id="relationship">{{item.rel_type}}</td>
+            <td id="link">{{item.link|safe}}</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -159,14 +159,3 @@
 
 <!-- Datatables -->
 <script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
-
-<script>
-    /*
-    $(document).ready(function(){
-      $('#titles').on('click-row.bs.table', function ( row, $element, field) {
-        url = field[0].getAttribute("data-href");
-        window.open(url, '_blank');
-      })
-    });
-    */
-</script>
