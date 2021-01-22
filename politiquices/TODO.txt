@@ -1,6 +1,9 @@
 Web App
 =======
 
+    - AJAX loading GIF em todos os cenários ?
+    - Quando não há resultados, indicar e ficar no index.html
+
     - Rever o gráfico em Person vs. Person:
         e.g.: Manuela Ferreira Leite vs Aguiar Branco
 
@@ -9,20 +12,15 @@ Web App
         - Pessoa vs. Partido
         - Partido vs. Partido
 
-    - Apenas duas search boxes com tudo
-
     Stats
     -----
      - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?
-
 
     Grafo
     -----
     - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
-
     - Indexar colecção CHAVE no server e fazer links para politiquices.pt
-
 
     Low Priority
     ------------
@@ -40,8 +38,7 @@ Web App
 
 
         Bugs
-        ----
-        - AJAX loading GIF em todos os cenários ?
+        ----        
         - Speed up party vs party queries, how?:
             https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
         - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
@@ -167,6 +164,9 @@ classifiers
         - 'Costa':
             - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
             - apply entity linking algorithm
+
+        - http://0.0.0.0:5000/entity?q=Q17496480
+            'Rui Pedro Soares' always being tagged as 'Pedro Soares'
 
         - 'Fernando Gomes'
 

@@ -4,387 +4,160 @@
 
 {% block body %}
 
-<script>
-
-    $(document).ready(function() {
-
-      $("#two_pers_one").click(function(e){
-        var data = { query_nr: 'two', e1: 'Q182367', e2: 'Q57398'};
-        $.ajax({
-          type: 'get',
-          data: data,
-          url: '/queries',
-          error: function () {
-            alert("There was an error processing this page.");
-            return false;
-          },
-          complete: function (output) {
-            $('#inner').html(output.responseText);
-          }
-        });
-      });
-
-      $("#two_pers_two").click(function(e){
-        var data = { query_nr: 'two', e1: 'Q7378729', e2: 'Q239248'};
-        $.ajax({
-          type: 'get',
-          data: data,
-          url: '/queries',
-          error: function () {
-            alert("There was an error processing this page.");
-            return false;
-          },
-          complete: function (output) {
-            $('#inner').html(output.responseText);
-          }
-        });
-      });
-
-      $("#party_person").click(function(e){
-          var data = { query_nr: 'three',
-                       party: 'Q847263',
-                       entity: 'Q182367',
-                       relationship: 'opoe-se'
-                     };
-          $.ajax({
-            type: 'get',
-            data: data,
-            url: '/queries',
-            error: function () {
-              alert("There was an error processing this page.");
-              return false;
-            },
-            complete: function (output) {
-              $('#inner').html(output.responseText);
-            }
-          });
-      });
-
-      $("#person_party").click(function(e){
-          var data = { query_nr: 'four',
-                       party: 'Q595575',
-                       entity: 'Q439377',
-                       relationship: 'apoia'
-                     };
-          $.ajax({
-            type: 'get',
-            data: data,
-            url: '/queries',
-            error: function () {
-              alert("There was an error processing this page.");
-              return false;
-            },
-            complete: function (output) {
-              $('#inner').html(output.responseText);
-            }
-          });
-      });
-
-     // http://0.0.0.0:5000/queries?query_nr=five&party_a=Q847263&party_b=Q595575&relationship=apoia
-
-      $("#party_vs_party_one").click(function(e){
-          var data = { query_nr: 'five',
-                       party_a: 'Q847263',
-                       party_b: 'Q595575',
-                       relationship: 'apoia'
-                     };
-          $.ajax({
-            type: 'get',
-            data: data,
-            url: '/queries',
-            error: function () {
-              alert("There was an error processing this page.");
-              return false;
-            },
-            complete: function (output) {
-              $('#inner').html(output.responseText);
-            }
-          });
-      });
-
-      $("#party_vs_party_two").click(function(e){
-          var data = { query_nr: 'five',
-                       party_a: 'Q884840',
-                       party_b: 'Q884840',
-                       relationship: 'opoe-se'
-                     };
-          $.ajax({
-            type: 'get',
-            data: data,
-            url: '/queries',
-            error: function () {
-              alert("There was an error processing this page.");
-              return false;
-            },
-            complete: function (output) {
-              $('#inner').html(output.responseText);
-            }
-          });
-      });
-
-    });
-
-
-
-
-
-
-</script>
-
 <div class="container" id="container">
 
+    <script>
+
+      parties = [];
+      all_entities = [];
+      personalities = [];
+      
+      $.getJSON("static/json/parties.json", function(json_data){
+          for (var i = 0, len = json_data.length; i < len; i++) {
+              var party = {label: json_data[i].name, value: json_data[i].wiki_id};
+              parties.push(party);
+              all_entities.push(party);
+          };
+      });
+      
+      $.getJSON("static/json/persons.json", function(json_data){
+          for (var i = 0, len = json_data.length; i < len; i++) {
+              var person = {label: json_data[i].name, value: json_data[i].wiki_id};
+              personalities.push(person);
+              all_entities.push(person);
+          };
+      });
+      
+      /* input_left */
+      $(function() {
+        $("#autocomplete_entity_one").autocomplete({
+          source: all_entities,
+          focus: function(event, ui) {          
+              event.preventDefault();   // prevent autocomplete from updating the textbox
+              $(this).val(ui.item.label);
+          },
+          select: function(event, ui) {        
+              event.preventDefault();
+              $(this).val(ui.item.label);
+              $("#autocomplete_entity_one_value").val(ui.item.value);
+          }
+        });
+      });
+    
+      /* input_right */
+      $(function() {
+        $("#autocomplete_entity_two").autocomplete({
+          source: all_entities,
+          focus: function(event, ui) {          
+              event.preventDefault();
+              $(this).val(ui.item.label);
+          },
+          select: function(event, ui) {          
+              event.preventDefault();
+              $(this).val(ui.item.label);
+              $("#autocomplete_entity_two_value").val(ui.item.value);
+          }
+        });
+      });
+    
+      $(document).ready ( function () {
+    
+        /* Relações entre duas entidades */
+        $(document).on ("click", "#button", function () {
+            var wiki_id_one = $('#autocomplete_entity_one_value').val();
+            var wiki_id_two = $('#autocomplete_entity_two_value').val();
+            var e = document.getElementById("dropdownMenuButton");
+            var data = {query_nr: 'one',
+                        e1: wiki_id_one,
+                        e2: wiki_id_two,
+                        relationship: e.textContent};
+            $.ajax({
+              type: 'get',
+              data: data,
+              url: '/queries',
+              error: function () {
+                alert("There was an error processing this page.");
+                return false;
+              },
+              complete: function (output) {
+                $('#inner').html(output.responseText);
+    
+              }
+            });
+        });
+
+        /* Dropdown to correct/annotataed relationships */
+        $(document).ready(function() {
+          $(".dropdown-menu").on('click', 'a', function(){
+            $(this).parents('.dropdown').find('button').text($(this).text());
+          });
+        });
+
+
+      });
+    
+    </script>
+  
     <br><br>
 
     <div class="container" id="inner">
 
-    <!-- intro -->
-    <div class="container d-flex align-items-center justify-content-center">
-      <div class="w-100">
-        <p>O politiquices.pt permite pesquisar e analisar relações de <b>apoio</b> ou <b>oposição</b>
-           entre personalidades políticas expressas em títulos de artigo de jornal.</p>
-       </div>
-    </div>
-    <br><br>
-
-
-    <!-- individual relationships -->
-    <div class="container d-flex align-items-center justify-content-center">
-        <div class="w-100">
-          <h2><b>Relações individuais</b></h2>
-          <br>
-          <p>Poderam ser exploradas todas as relações de <b>apoio</b> ou <b>oposição</b> de uma determinada personalidade:</p>
+        <!-- intro -->
+        <div class="container d-flex align-items-center justify-content-center">
+          <div class="w-100">
+            <p>O politiquices.pt permite pesquisar e analisar relações de <b>apoio</b> ou <b>oposição</b>
+               entre personalidades políticas expressas em títulos de artigo de jornal.</p>
+           </div>
         </div>
-    </div>
-    <div class="container">
-        <hr>
-        <div class="w-100 p-1">
-            <div class="row text-center" id="entities">
+        
+        <div class="container d-flex align-items-center justify-content-center">
+          <div class="w-100">            
+            <p class="font-weight-bold">Relações entre duas personalidade:</p>
+              <ul>
+                <li>'Quais as relações de apoio/acusação entre António Costa e Marcelo Rebelo de Sousa?'</li>
+              </ul>
+          
+            <p class="font-weight-bold">Relações entre membros de um partido e uma personalidade</p>
+              <ul>
+                <li>'Que personalidades do BE se oposeram a Jerónimo de Sousa?'</li>
+                <li>'Quem de dentro do PS se opôs a José Sócrates?'</li>
+              </ul>
 
-                <div class="col-lg-3 col-md-6 mb-4">
-                <a style="display: flex;" href="/entity?q=Q182367" class="custom-card">
-                <div class="card h-100">
-                    <center>
-                        <img class="figure-img img-fluid rounded" src="http://commons.wikimedia.org/wiki/Special:FilePath/Josesocrates09082006.jpg" alt="" width="120" height="150">
-                    </center>
-                    <div class="card-body">
-                        <h6 class="card-title">José Sócrates</h6>
-                    </div>
-                </div>
-                </a>
-                </div>
-
-                <div class="col-lg-3 col-md-6 mb-4">
-                <a style="display: flex;" href="/entity?q=Q57398" class="custom-card">
-                <div class="card h-100">
-                    <center>
-                        <img class="figure-img img-fluid rounded" src="http://commons.wikimedia.org/wiki/Special:FilePath/An%C3%ADbal%20Cavaco%20Silva%20Senate%20of%20Poland%2001.jpg" alt="" width="120" height="150">
-                    </center>
-                    <div class="card-body">
-                        <h6 class="card-title">Aníbal Cavaco Silva</h6>
-                    </div>
-                </div>
-                </a>
-                </div>
-
-
-
-                <div class="col-lg-3 col-md-6 mb-4">
-                <a style="display: flex;" href="/entity?q=Q610788" class="custom-card">
-                <div class="card h-100">
-                    <center>
-                        <img class="figure-img img-fluid rounded" src="http://commons.wikimedia.org/wiki/Special:FilePath/Ant%C3%B3nio%20Costa%20img%206536.jpg" alt="" width="120" height="150">
-                    </center>
-                    <div class="card-body">
-                        <h6 class="card-title">António Costa</h6>
-                    </div>
-                </div>
-                </a>
-                </div>
-
-                <div class="col-lg-3 col-md-6 mb-4">
-                <a style="display: flex;" href="/entity?q=Q57615" class="custom-card">
-                <div class="card h-100">
-                    <center>
-                        <img class="figure-img img-fluid rounded" src="http://commons.wikimedia.org/wiki/Special:FilePath/Pedro%20Passos%20Coelho%201.jpg" alt="" width="120" height="150">
-                    </center>
-                    <div class="card-body">
-                        <h6 class="card-title">Pedro Passos Coelho</h6>
-                    </div>
-                </div>
-                </a>
-                </div>
-
-            </div>
-        </div>
-        <hr>
-    </div>
-    <br><br>
-
-
-    <!-- relationships between two personalities -->
-    <div class="container d-flex align-items-center justify-content-center">
-        <div class="w-100">
-          <h2><b>Relações entre duas personalidades</b></h2>
-          <br>
-          <p>Também é possível explorar apenas relações entre duas personalidades específicas,
-             por exemplo, todas as <b>relações de apoio ou oposição entre José Sócrates e Cavaco Silva</b>
-             ou todas as <b>relações de apoio ou oposição entra Rui Rio e Pedro Pedro Santana Lopes</b>
-           </p>
-        </div>
-    </div>
-    <br>
-    <div class="container">
-      <div class="w-100 p-1">
-        <div class="row row-list">
-
-          <div class="col">
-            <!-- "/queries?query_nr=two&e1=Q182367&e2=Q57398" -->
-            <a id="two_pers_one" href="javascript:">
-              <center>
-              <div class="text-center">
-                <img class="social" src="http://commons.wikimedia.org/wiki/Special:FilePath/Josesocrates09082006.jpg" alt="" width="120" height="150">
-                <b>oposição</b>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/>
-                </svg>
-                <b>apoio</b>
-                <img class="figure-img img-fluid rounded" src="http://commons.wikimedia.org/wiki/Special:FilePath/An%C3%ADbal%20Cavaco%20Silva%20Senate%20of%20Poland%2001.jpg" alt="" width="120" height="150">
-              </div>
-              </center>
-            </a>
-          </div>
-
-          <div class="col">
-            <!-- "/queries?query_nr=two&e1=Q7378729&e2=Q239248" -->
-            <a id="two_pers_two" href="javascript:">
-              <center>
-              <div class="text-center">
-                <img class="figure-img img-fluid rounded" src="https://upload.wikimedia.org/wikipedia/commons/2/23/RuiRio%40EPP2018.jpg" alt="" width="120" height="150">
-                <b>oposição</b>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-right" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M1 11.5a.5.5 0 0 0 .5.5h11.793l-3.147 3.146a.5.5 0 0 0 .708.708l4-4a.5.5 0 0 0 0-.708l-4-4a.5.5 0 0 0-.708.708L13.293 11H1.5a.5.5 0 0 0-.5.5zm14-7a.5.5 0 0 1-.5.5H2.707l3.147 3.146a.5.5 0 1 1-.708.708l-4-4a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 4H14.5a.5.5 0 0 1 .5.5z"/>
-                </svg>
-                <b>apoio</b>
-                <img class="figure-img img-fluid rounded" src="https://upload.wikimedia.org/wikipedia/commons/d/da/Pedro_Santana_Lopes.jpg" alt="" width="120" height="150">
-              </div>
-              </center>
-            </a>
-          </div>
-
+            <p class="font-weight-bold">Relações entre membros de dois partidos</p>
+              <ul>
+                <li>'Que personalidades do BE se oposeram a personalidades do PCP?</li>
+                <li>'Que personalidades do PS apoiaram personalidades do PSD?'</li>
+              </ul>
         </div>
       </div>
-    <hr>
-    </div>
-    <br><br>
 
+      <br>
 
-    <!-- relationships between parties and personalities -->
-    <div class="container d-flex align-items-center justify-content-center">
-        <div class="w-100">
-          <h2><b>Relações entre uma personalidade e membros de um partido político</b></h2>
-          <br>
-            <p>Permite também explorar relações agregadas por afiliações políticas,
-              isto é tendo em conta todas as personalidades associadas a um determinado
-              partido político.
-
-              <p>É possível obter uma lista de relações envolvendo <b>membros do Partido
-              Socialista que se oposeram a José Sócrates</b>, ou uma lista das relações
-              envolvendo <b>pessoas do Partido Social Democráta apoiadas por Assunção Cristas</b></p>
-        </div>
-    </div>
-    <br>
-    <div class="container">
-        <div class="w-100 p-1">
-            <div class="row">
-                <div class="col">
-                  <!-- href="/queries?query_nr=three&party=Q847263&entity=Q182367&relationship=opoe-se"-->
-                  <a id="party_person" href="javascript:">
-                    <center>
-                    <div class="text-center">
-                      <img class="social img-fluid rounded" src="static/images/Logo_do_Partido_Socialista(Portugal).png" alt="" width="120" height="150">
-                      <b>oposição</b>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                      </svg>
-                      <img class="social img-fluid rounded" src="https://upload.wikimedia.org/wikipedia/commons/7/78/Josesocrates09082006.jpg" alt="" width="120" height="150">
-                    </div>
-                    </center>
-                  </a>
-                </div>
-                <div class="col">
-                  <!-- href="/queries?query_nr=four&party=Q595575&entity=Q439377&relationship=apoia" -->
-                  <a id="person_party" href="javascript:">
-                  <center>
-                  <div class="text-center">
-                      <img class="social img-fluid rounded" src="https://upload.wikimedia.org/wikipedia/commons/7/73/Assun%C3%A7%C3%A3oCristas.png" alt="" width="120" height="150">
-                      <b>apoio</b>
-                      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                      </svg>
-                      <img class="social img-fluid rounded" src="https://upload.wikimedia.org/wikipedia/commons/4/49/Logo_PSD_cor.PNG" alt="" width="120" height="150">
+      <center>
+        <form class="container-fluid justify-content-center align-items-center">
+          <input id="autocomplete_entity_one_value" type="hidden" name="wiki">
+          <input id="autocomplete_entity_two_value" type="hidden" name="wiki">
+          <div class="control-group">
+              <div class="controls controls-row row-fluid col-xs-4">                  
+                <input id="autocomplete_entity_one" class="span10" type="text" placeholder="Partido ou Personalidade"/>
+                  <div class="dropdown" style="display: inline;">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" 
+                            id="dropdownMenuButton" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">opoe-se</button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                              <a class="dropdown-item">opoe-se</a>
+                              <a class="dropdown-item">apoia</a>
+                            </div>
                   </div>
-                  </center>
-                  </a>
-                </div>
-            </div>
-        </div>
-    <hr>
-    </div>
-    <br><br>
-
-
-    <!-- relationships between parties -->
-    <div class="container d-flex align-items-center justify-content-center">
-        <div class="w-100">
-          <h2><b>Relações entre membros de um partidos políticos</b></h2>
-          <br>
-          <p>Finalmente permite também obter relações entre todos os membros de dois partidos
-             políticos.
-             <p>Como por exemplo, <b>relações de apoio de membros do Partido Socialista
-             para com o Partido Social Demócrata</b> ou encontrar possíveis desentendimentos internos num
-            partido, por exemplo explorando as <b>relações de oposição entre membros do Bloco de Esquerda</b>
-        </div>
-    </div>
-    <div class="container">
-        <div class="w-100 p-1">
-            <div class="row">
-              <div class="col">
-                <a id="party_vs_party_one" href="javascript:">
-                <center>
-                <div class="text-center">
-                    <img class="social img-fluid rounded" src="static/images/Logo_do_Partido_Socialista(Portugal).png" alt="" width="120" height="150">
-                    <b>apoio</b>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                    </svg>
-                    <img class="social img-fluid rounded" src="https://upload.wikimedia.org/wikipedia/commons/4/49/Logo_PSD_cor.PNG" alt="" width="120" height="150">
-                </div>
-                </center>
-                </a>
+                <input id="autocomplete_entity_two" class="span10" type="text" placeholder="Partido ou Personalidade"/>
+                <button type="button" id='button' class="btn btn-primary btn-sm">Procurar</button>
               </div>
-
-              <div class="col">
-                <a id="party_vs_party_two" href="javascript:">
-                <center>
-                <div class="text-center">
-                    <img class="social img-fluid rounded" src="https://upload.wikimedia.org/wikipedia/commons/3/38/LeftBloc.svg" alt="" width="120" height="150">
-                    <b>oposição</b>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                      <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z"/>
-                    </svg>
-                    <img class="social img-fluid rounded" src="https://upload.wikimedia.org/wikipedia/commons/3/38/LeftBloc.svg" alt="" width="120" height="150">
-                </div>
-                </center>
-                </a>
-              </div>
-
-            </div>
-        </div>
+          </div>
+        </form>
+      </center>
     </div>
 
-    </div>
-
-    <br><br>
+    <br><br><br><br>
 
 </div>
 

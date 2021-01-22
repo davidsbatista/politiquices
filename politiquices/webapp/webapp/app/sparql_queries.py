@@ -1,6 +1,6 @@
 import sys
-from collections import defaultdict
 from typing import Tuple, List
+from collections import defaultdict
 
 from functools import lru_cache
 from SPARQLWrapper import SPARQLWrapper, JSON

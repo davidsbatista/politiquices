@@ -33,7 +33,7 @@ def get_entities():
         wiki_id = url.split("/")[-1]
         items_as_dict[wiki_id] = {
             "wikidata_url": url,
-            "wikidata_id": wiki_id,
+            "wiki_id": wiki_id,
             "name": name,
             "nr_articles": 0,
             "image_url": image_url,
@@ -147,7 +147,7 @@ def personalities_json_cache():
     # persons cache
     per_data = get_entities()
     # mapping: wiki_id -> person_info
-    wiki_id = {x["wikidata_id"]: {"name": x["name"], "image_url": x["image_url"]} for x in per_data}
+    wiki_id = {x["wiki_id"]: {"name": x["name"], "image_url": x["image_url"]} for x in per_data}
     with open(static_data + "wiki_id_info.json", "w") as f_out:
         json.dump(wiki_id, f_out, indent=4)
     print(f"{len(per_data)} entities card info (positions + wikidata_link + image + nr articles)")
@@ -155,7 +155,7 @@ def personalities_json_cache():
         json.dump(per_data, f_out, indent=4)
     # persons cache for search box
     persons = [
-        {"name": x["name"], "wiki_id": x["wikidata_id"], "image_url": x["image_url"]}
+        {"name": x["name"], "wiki_id": x["wiki_id"], "image_url": x["image_url"]}
         for x in sorted(per_data, key=lambda x: x["name"])
     ]
     all_politiquices_persons = set([x["wiki_id"] for x in persons])
@@ -167,6 +167,7 @@ def personalities_json_cache():
 def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
+    """
     # personalities cache
     all_politiquices_persons, wiki_id = personalities_json_cache()
 
@@ -178,7 +179,8 @@ def main():
 
     # graph edges cache
     graph_edges_cache()
-
+    """
+    
     app.run(debug=True, host="0.0.0.0")
 
 

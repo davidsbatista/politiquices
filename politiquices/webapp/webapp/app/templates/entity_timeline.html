@@ -118,10 +118,7 @@
         }
     });
 
-    // Time-line
-    // $('.timeline').timeline();
-
-    // click on table rows
+    // Click on table rows
     jQuery(document).ready(function($) {
         $(".clickable-row").click(function() {
             var url = $(this).data("href")
@@ -134,7 +131,8 @@
                 return false;
               },
               complete: function (output) {
-                $('#inner').html(output.responseText);
+                console.log(output.responseText);
+                $('#container').html(output.responseText);
                 $(document).scrollTop(0);
               }
             });

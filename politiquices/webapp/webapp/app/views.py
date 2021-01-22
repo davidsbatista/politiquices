@@ -106,7 +106,7 @@ def detail_entity():
     supported_by_json = make_json(supported_by)
     other_json = make_json(other + other_by)
     all_relationships_json = (
-        opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
+            opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
     )
 
     items = {
@@ -185,12 +185,12 @@ def party_members():
     members_id = all_parties_members[wiki_id]
     for member_id in members_id:
         for entity in all_entities_info:
-            if member_id == entity["wikidata_id"]:
+            if member_id == entity["wiki_id"]:
                 persons.append(
                     Person(
                         name=entity["name"],
                         nr_articles=int(entity["nr_articles"]),
-                        wiki_id=entity["wikidata_id"],
+                        wiki_id=entity["wiki_id"],
                         image_url=entity["image_url"],
                     )
                 )
@@ -215,12 +215,6 @@ def get_person_party():
 
     # ToDo: handle the case with several parties/other things
     return jsonify(parties[0])
-
-
-# Procurar
-@app.route("/search")
-def search():
-    return render_template("search.html")
 
 
 # Grafo
@@ -315,157 +309,183 @@ def complete():
     return render_template("incomplete_entities.html", items=result)
 
 
-# handling input from 'Procurar' and 'Home' queries
+def get_info(wiki_id):
+    if info := [entry for entry in all_parties_info if entry["wiki_id"] == wiki_id]:
+        return info[0], 'party'
+
+    if info := [entry for entry in all_entities_info if entry["wiki_id"] == wiki_id]:
+        return info[0], 'person'
+
+
+def person_vs_person(entity_one, entity_two):
+    """
+    relationships between two persons
+    """
+    person_one = entity_one
+    person_two = entity_two
+    person_one_info = get_person_info(person_one)
+    person_two_info = get_person_info(person_two)
+    (
+        results,
+        rels_freq_by_year_ent1,
+        rels_freq_by_year_ent2,
+    ) = get_relationships_between_two_entities(person_one, person_two)
+
+    """
+    print(person_one_info.name)
+    for year in rels_freq_by_year_ent1:
+        print(year, rels_freq_by_year_ent1[year])
+    print()
+    print(person_two_info.name)
+    for year in rels_freq_by_year_ent1:
+        print(year, rels_freq_by_year_ent2[year])
+    """
+
+    for r in results:
+        per_vs_person_linkable(r)
+
+    labels = list(rels_freq_by_year_ent1.keys())
+    ent1_ent1_opposes_ent2 = [
+        rels_freq_by_year_ent1[year]["ent1_opposes_ent2"] for year in rels_freq_by_year_ent1
+    ]
+    ent1_ent1_supports_ent2 = [
+        rels_freq_by_year_ent1[year]["ent1_supports_ent2"] for year in rels_freq_by_year_ent1
+    ]
+    ent1_ent2_opposes_ent1 = [
+        rels_freq_by_year_ent1[year]["ent2_opposes_ent1"] for year in rels_freq_by_year_ent1
+    ]
+    ent1_ent2_supports_ent1 = [
+        rels_freq_by_year_ent1[year]["ent2_supports_ent1"] for year in rels_freq_by_year_ent1
+    ]
+
+    ent2_ent1_opposes_ent2 = [
+        rels_freq_by_year_ent2[year]["ent1_opposes_ent2"] for year in rels_freq_by_year_ent2
+    ]
+    ent2_ent1_supports_ent2 = [
+        rels_freq_by_year_ent2[year]["ent1_supports_ent2"] for year in rels_freq_by_year_ent2
+    ]
+    ent2_ent2_opposes_ent1 = [
+        rels_freq_by_year_ent1[year]["ent2_opposes_ent1"] for year in rels_freq_by_year_ent1
+    ]
+    ent2_ent2_supports_ent1 = [
+        rels_freq_by_year_ent1[year]["ent2_supports_ent1"] for year in rels_freq_by_year_ent1
+    ]
+
+    return render_template(
+        "query_person_person.html",
+        items=results,
+        entity_one=person_one_info,
+        entity_two=person_two_info,
+        labels=labels,
+        ent1_ent1_opposes_ent2=ent1_ent1_opposes_ent2,
+        ent1_ent1_supports_ent2=ent1_ent1_supports_ent2,
+        ent1_ent2_opposes_ent1=ent1_ent2_opposes_ent1,
+        ent1_ent2_supports_ent1=ent1_ent2_supports_ent1,
+        ent2_ent1_opposes_ent2=ent2_ent1_opposes_ent2,
+        ent2_ent1_supports_ent2=ent2_ent1_supports_ent2,
+        ent2_ent2_opposes_ent1=ent2_ent2_opposes_ent1,
+        ent2_ent2_supports_ent1=ent2_ent2_supports_ent1,
+    )
+
+
+def party_vs_person(party_wiki_id, person_wiki_id, relationship, party_info, person_info):
+    """
+    relationships between (members of) a party and an entity
+    """
+
+    if relationship == "opoe-se":
+        rel = "ent1_opposes_ent2"
+    elif relationship == "apoia":
+        rel = "ent1_supports_ent2"
+
+    results = list_of_spec_relations_between_members_of_a_party_with_someone(
+        party_wiki_id, person_wiki_id, rel
+    )
+
+    for r in results:
+        per_vs_person_linkable(r)
+
+    person_info = get_person_info(person_wiki_id)
+
+    return render_template(
+        "query_party_person.html", items=results, party=party_info, person=person_info,
+    )
+
+
+def person_vs_party(person_wiki_id, party_wiki_id, relationship, person_info, party_info):
+    """
+    relationships between an entity and (members of) a party
+    """
+
+    if relationship == "opoe-se":
+        rel = "ent1_opposes_ent2"
+    elif relationship == "apoia":
+        rel = "ent1_supports_ent2"
+
+    results = list_of_spec_relations_between_a_person_and_members_of_a_party(
+        person_wiki_id, party_wiki_id, rel
+    )
+
+    for r in results:
+        per_vs_person_linkable(r)
+
+    person_info = get_person_info(person_wiki_id)
+
+    return render_template(
+        "query_person_party.html", items=results, person=person_info, party=party_info,
+    )
+
+
+def party_vs_party(party_a, party_b, relationship, party_a_info, party_b_info):
+    """
+        relationships between (members of) a party and (members of) another party    
+        """
+    party_a_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
+    party_b_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
+
+    if relationship == "opoe-se":
+        rel = "ent1_opposes_ent2"
+    elif relationship == "apoia":
+        rel = "ent1_supports_ent2"
+
+    results = list_of_spec_relations_between_two_parties(party_a_members, party_b_members, rel)
+
+    for r in results:
+        per_vs_person_linkable(r)
+
+    return render_template(
+        "query_party_party.html",
+        items=results,
+        party_one=party_a_info,
+        party_two=party_b_info,
+    )
+
+
 @app.route("/queries")
 def queries():
     print(request.args)
     query_nr = request.args.get("query_nr")
 
-    # relationships between two persons
     if query_nr == "two":
-        person_one = request.args.get("e1")
-        person_two = request.args.get("e2")
-        person_one_info = get_person_info(person_one)
-        person_two_info = get_person_info(person_two)
-        (
-            results,
-            rels_freq_by_year_ent1,
-            rels_freq_by_year_ent2,
-        ) = get_relationships_between_two_entities(person_one, person_two)
+        entity_one = request.args.get("e1")
+        entity_two = request.args.get("e2")
+        return person_vs_person(entity_one, entity_two)
 
-        """
-        print(person_one_info.name)
-        for year in rels_freq_by_year_ent1:
-            print(year, rels_freq_by_year_ent1[year])
-        print()
-        print(person_two_info.name)
-        for year in rels_freq_by_year_ent1:
-            print(year, rels_freq_by_year_ent2[year])
-        """
-
-        for r in results:
-            per_vs_person_linkable(r)
-
-        labels = list(rels_freq_by_year_ent1.keys())
-        ent1_ent1_opposes_ent2 = [
-            rels_freq_by_year_ent1[year]["ent1_opposes_ent2"] for year in rels_freq_by_year_ent1
-        ]
-        ent1_ent1_supports_ent2 = [
-            rels_freq_by_year_ent1[year]["ent1_supports_ent2"] for year in rels_freq_by_year_ent1
-        ]
-        ent1_ent2_opposes_ent1 = [
-            rels_freq_by_year_ent1[year]["ent2_opposes_ent1"] for year in rels_freq_by_year_ent1
-        ]
-        ent1_ent2_supports_ent1 = [
-            rels_freq_by_year_ent1[year]["ent2_supports_ent1"] for year in rels_freq_by_year_ent1
-        ]
-
-        ent2_ent1_opposes_ent2 = [
-            rels_freq_by_year_ent2[year]["ent1_opposes_ent2"] for year in rels_freq_by_year_ent2
-        ]
-        ent2_ent1_supports_ent2 = [
-            rels_freq_by_year_ent2[year]["ent1_supports_ent2"] for year in rels_freq_by_year_ent2
-        ]
-        ent2_ent2_opposes_ent1 = [
-            rels_freq_by_year_ent1[year]["ent2_opposes_ent1"] for year in rels_freq_by_year_ent1
-        ]
-        ent2_ent2_supports_ent1 = [
-            rels_freq_by_year_ent1[year]["ent2_supports_ent1"] for year in rels_freq_by_year_ent1
-        ]
-
-        return render_template(
-            "query_person_person.html",
-            items=results,
-            entity_one=person_one_info,
-            entity_two=person_two_info,
-            labels=labels,
-            ent1_ent1_opposes_ent2=ent1_ent1_opposes_ent2,
-            ent1_ent1_supports_ent2=ent1_ent1_supports_ent2,
-            ent1_ent2_opposes_ent1=ent1_ent2_opposes_ent1,
-            ent1_ent2_supports_ent1=ent1_ent2_supports_ent1,
-            ent2_ent1_opposes_ent2=ent2_ent1_opposes_ent2,
-            ent2_ent1_supports_ent2=ent2_ent1_supports_ent2,
-            ent2_ent2_opposes_ent1=ent2_ent2_opposes_ent1,
-            ent2_ent2_supports_ent1=ent2_ent2_supports_ent1,
-        )
-
-    # relationships between (members of) a party and an entity
-    if query_nr == "three":
-        party_wiki_id = request.args.get("party")
-        person_wiki_id = request.args.get("entity")
+    if query_nr == "one":
+        entity_one = request.args.get("e1")
+        entity_two = request.args.get("e2")
         relationship = request.args.get("relationship")
+        e1_info, e1_type = get_info(entity_one)
+        e2_info, e2_type = get_info(entity_two)
 
-        if relationship == "opoe-se":
-            rel = "ent1_opposes_ent2"
-        elif relationship == "apoia":
-            rel = "ent1_supports_ent2"
+        if e1_type == 'person' and e2_type == 'person':
+            return person_vs_person(entity_one, entity_two)
 
-        results = list_of_spec_relations_between_members_of_a_party_with_someone(
-            party_wiki_id, person_wiki_id, rel
-        )
+        elif e1_type == 'party' and e2_type == 'person':
+            return party_vs_person(entity_one, entity_two, relationship, e1_info, e2_info)
 
-        for r in results:
-            per_vs_person_linkable(r)
+        elif e1_type == 'person' and e2_type == 'party':
+            return person_vs_party(entity_one, entity_two, relationship, e1_info, e2_info)
 
-        # ToDo: this can be improved, e.g.: make a mapping after loading the json
-        party_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_wiki_id][0]
-        person_info = get_person_info(person_wiki_id)
-
-        return render_template(
-            "query_party_person.html", items=results, party=party_info, person=person_info,
-        )
-
-    # relationships between an entity and (members of) a party
-    if query_nr == "four":
-        person_wiki_id = request.args.get("entity")
-        party_wiki_id = request.args.get("party")
-        relationship = request.args.get("relationship")
-
-        if relationship == "opoe-se":
-            rel = "ent1_opposes_ent2"
-        elif relationship == "apoia":
-            rel = "ent1_supports_ent2"
-
-        results = list_of_spec_relations_between_a_person_and_members_of_a_party(
-            person_wiki_id, party_wiki_id, rel
-        )
-
-        for r in results:
-            per_vs_person_linkable(r)
-
-        # ToDo: this can be improved, e.g.: make a mapping after loading the json
-        party_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_wiki_id][0]
-        person_info = get_person_info(person_wiki_id)
-
-        return render_template(
-            "query_person_party.html", items=results, party=party_info, person=person_info,
-        )
-
-    # relationships between (members of) a party and (members of) another party
-    if query_nr == "five":
-        party_a = request.args.get("party_a")
-        party_b = request.args.get("party_b")
-        party_a_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
-        party_b_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
-
-        relationship = request.args.get("relationship")
-        if relationship == "opoe-se":
-            rel = "ent1_opposes_ent2"
-        elif relationship == "apoia":
-            rel = "ent1_supports_ent2"
-
-        results = list_of_spec_relations_between_two_parties(party_a_members, party_b_members, rel)
-
-        for r in results:
-            per_vs_person_linkable(r)
-
-        # ToDo: this can be improved, e.g.: make a mapping after loading the json
-        party_one_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_a][0]
-        party_two_info = [entry for entry in all_parties_info if entry["wiki_id"] == party_b][0]
-
-        return render_template(
-            "query_party_party.html",
-            items=results,
-            party_one=party_one_info,
-            party_two=party_two_info,
-        )
+        elif e1_type == 'party' and e2_type == 'party':
+            return party_vs_party(entity_one, entity_two, relationship, e1_info, e2_info)
