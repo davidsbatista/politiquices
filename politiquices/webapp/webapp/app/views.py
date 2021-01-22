@@ -274,26 +274,45 @@ def graph():
 # Estatísticas
 @app.route("/stats")
 def status():
-    # ToDo: nr. parties
-    # ToDo: make links
-    # ToDo: refactor/normalize this code for all values/graphs
 
-    year, nr_articles_year = get_nr_articles_per_year()
+    # single values
     nr_persons = get_nr_of_persons()
+    nr_parties = len(all_parties_info)
+
+    # articles per year chart
+    nr_articles_year_labels, nr_articles_year_values = get_nr_articles_per_year()
     nr_articles = get_total_nr_of_articles()
+
+    # personality frequency chart
+    per_freq_labels = []
+    per_freq_values = []
     per_freq = all_persons_freq()
+    for x in per_freq:
+        per_freq_labels.append(wiki_id_info[x["person"].split("/")[-1]]["name"])
+        per_freq_values.append(x["freq"])
+
+    # person co-occurrence chart
+    co_occurrences_labels = []
+    co_occurrences_values = []
+    with open("webapp/app/static/json/top_co_occurrences.json") as f_in:
+        top_co_occurrences = json.load(f_in)
+    for x in top_co_occurrences:
+        co_occurrences_labels.append(x['person_a']['name'] + ' / ' + x['person_b']['name'])
+        co_occurrences_values.append(x['nr_occurrences'])
+
     items = {
+        "nr_parties": nr_parties,
         "nr_persons": nr_persons,
         "nr_articles": nr_articles,
-        "year_labels": year,
-        "year_articles": nr_articles_year,
+        "nr_articles_year_labels": nr_articles_year_labels,
+        "nr_articles_year_values": nr_articles_year_values,
+        "per_freq_labels": per_freq_labels,
+        "per_freq_values": per_freq_values,
+        "per_co_occurrence_labels": co_occurrences_labels,
+        "per_co_occurrence_values": co_occurrences_values
     }
 
-    labels = [wiki_id_info[x["person"].split("/")[-1]]["name"] for x in per_freq]
-    values = [x["freq"] for x in per_freq]
-    return render_template(
-        "stats.html", items=items, per_freq_labels=labels, per_freq_values=values
-    )
+    return render_template("stats.html", items=items)
 
 
 # Sobre
@@ -465,7 +484,7 @@ def party_vs_party(party_a, party_b, relationship, party_a_info, party_b_info):
 def queries():
 
     import time
-    time.sleep(3)
+    time.sleep(1)
 
     print(request.args)
     query_nr = request.args.get("query_nr")

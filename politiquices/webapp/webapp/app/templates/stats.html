@@ -17,12 +17,12 @@
             </center>
             <br><br>
             <center>
-                <h4><a href="/parties"><b>XX partidos políticos</b></a></h4>
+                <h4><a href="/parties"><b>{{items.nr_parties}} partidos políticos</b></a></h4>
             </center>
          </div>
     </div>
 
-    <br>
+    <br><br>
 
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
@@ -38,18 +38,29 @@
         <div class="row h-100 justify-content-center align-items-center">
             <h4><b>Nº Relações/Artigos por Personalidade</b></h4>
             <br><br>
-            <canvas id="barChart" width="100" height="250"></canvas>
+            <canvas id="barChart_per_freq" width="100" height="250"></canvas>
         </div>
     </div>
 
 
+    <br><br>
+
+    <div class="container h-100">
+        <div class="row h-100 justify-content-center align-items-center">
+            <h4><b>Personalidades com mais co-occurrências</b></h4>
+            <br><br>
+            <canvas id="barChart_co_occurr" width="100" height="250"></canvas>
+        </div>
+    </div>
+
     <script>
+        
         // Articles
         var ctx = document.getElementById('myChart');
         var color = Chart.helpers.color;
 
-        var year_labels = {{ items['year_labels']|tojson }};
-        var year_articles = {{ items['year_articles']|tojson }};
+        var year_labels = {{ items['nr_articles_year_labels']|tojson }};
+        var year_articles = {{ items['nr_articles_year_values']|tojson }};
 
         var myChart = new Chart(ctx, {
             type: 'bar',
@@ -61,19 +72,37 @@
                         }]
                    }
             });
-
-        // Person
-        var ctx = document.getElementById('barChart');
-        var per_labels = {{ per_freq_labels|tojson }};
-        var per_values = {{ per_freq_values|tojson }};
+        
+        // Person Freq.
+        var ctx = document.getElementById('barChart_per_freq');
+        var per_freq_labels = {{ items['per_freq_labels']|tojson }};
+        var per_freq_values = {{ items['per_freq_values']|tojson }};
 
         var myBarChart = new Chart(ctx, {
             type: 'horizontalBar',
-            data: {labels: per_labels,
+            data: {labels: per_freq_labels,
                    datasets: [{
                         label: 'No. of articles',
                         backgroundColor: "#4d6072",
-                        data: per_values
+                        data: per_freq_values
+                        }]
+                   }
+        });
+        
+        // Person Co-Occur. Freq.
+        
+        var ctx = document.getElementById('barChart_co_occurr');
+        var per_co_occ_labels = {{ items['per_co_occurrence_labels']|tojson }};
+        var per_co_occ_values = {{ items['per_co_occurrence_values']|tojson }};
+
+
+        var myBarChart = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {labels: per_co_occ_labels,
+                   datasets: [{
+                        label: 'No. of articles',
+                        backgroundColor: "#4d6072",
+                        data: per_co_occ_values
                         }]
                    }
         });
@@ -82,6 +111,8 @@
     </script>
 
     </div>
+
+    <br><br>
 
 </div>
 

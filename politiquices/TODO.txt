@@ -1,21 +1,17 @@
 Web App
 =======
 
-    - AJAX loading GIF em todos os cenários ?
+    - AJAX loading GIF: centrar
     - Quando não há resultados, indicar e ficar no index.html
-
     - Rever o gráfico em Person vs. Person:
         e.g.: Manuela Ferreira Leite vs Aguiar Branco
 
-    Stats
-    -----
-     - Top pairs of personalities (regardless of directions or rel_type) -> Heatmap?
+    - Indexar colecção CHAVE no server e fazer links para politiquices.pt
 
     Grafo
     -----
-    - um interface qualquer para poder selecionar as relações e o intervalo de datas
+     - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
-    - Indexar colecção CHAVE no server e fazer links para politiquices.pt
 
     Low Priority
     ------------
@@ -24,13 +20,11 @@ Web App
         --------------
          - load on scroll down
 
-
         All Entities:
         -------------
          - mais imagens por linha
          - cache + cópia do resize das imagens para este display
          - size original para a página principal da entidade only
-
 
         Bugs
         ----        
@@ -40,15 +34,14 @@ Web App
         - 'Procurar' a funcionar com "ENTER":
             https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
 
-
         Varios:
         -------
+         - Charts with links, possible ?
          - Export table results: https://bootstrap-table.com/docs/extensions/export/
          - ah tipo uma infobox, mas horizontal, com os dados da pessoa, é boa ideia
          - tirar todos os alerts -> subsituir por uma pagina de erro
          - pesquisar: permitir pesquisar sem acentos
          - clicar no branco fazer collapse ao menu (hamburger)
-
 
          Agregacoes + info na personalidade:
          ------------------------------------
