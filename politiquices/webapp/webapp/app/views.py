@@ -74,6 +74,8 @@ def load_entities():
     start = int(request.args.get("last_index"))
     end = start + entities_batch_size
     print(start, end)
+    for x in all_entities_info[start:end]:
+        print(x)
     return jsonify(all_entities_info[start:end])
 
 
@@ -220,12 +222,13 @@ def get_person_party():
 # Grafo
 @app.route("/graph")
 def graph():
+
     nodes = set()
     elements = []
 
-    # ToDo: rever o quer SPARQL (apenas 548 personalidades? porque?)
-    # ToDo: 'classes' no elemento para associar a um partido
+    # ToDo: tip 'classes' no elemento para associar a um partido
 
+    #
     for x in edges:
         name_a = wiki_id_info[x["person_a"].split("/")[-1]]["name"]
         name_b = wiki_id_info[x["person_b"].split("/")[-1]]["name"]

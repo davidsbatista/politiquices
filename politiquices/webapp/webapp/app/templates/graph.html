@@ -7,14 +7,24 @@
 
 <style>
     #cy {
-        width: 50%;
-        height: 50%;
-        background-color: lightblue;
+        width: 75%;
+        height: 75%;
+        background-color: #EFEEEE;
         // position: absolute;
         top: 20%;
-        left: 25%;
+        left: 15%;
     }
 </style>
+
+<!--
+<style>
+    #cy {
+      width: 300px;
+      height: 300px;
+      display: block;
+    }
+</style>
+-->
 
 
 <div class="container" id="container">
@@ -34,6 +44,8 @@
     var cy = cytoscape({
       container: document.getElementById('cy'), // container to render in
       elements: edges,
+
+      /*
       style: [
         {
           selector: 'node',
@@ -46,7 +58,7 @@
           selector: 'edge',
           style: {
             'label': 'data(label)',
-            'width': 3,
+            'width': 0.5,
             'line-color': '#ccc',
             'target-arrow-color': '#ccc',
             'target-arrow-shape': 'triangle',
@@ -54,6 +66,8 @@
           }
         }
       ],
+      */
+
       layout: {
         name: 'random',
         rows: 101

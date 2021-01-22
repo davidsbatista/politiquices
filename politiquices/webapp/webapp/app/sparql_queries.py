@@ -90,11 +90,11 @@ def get_nr_of_persons() -> int:
 # Run once on start-up #
 @lru_cache()
 def get_graph_links():
+    # NOTE: other are ignored
     query = """
         SELECT DISTINCT ?person_a ?rel_type ?person_b ?url {
         VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
-                            'ent1_supports_ent2' 'ent2_supports_ent1'
-                            'ent1_other_ent2' 'ent2_other_ent1'} .
+                            'ent1_supports_ent2' 'ent2_supports_ent1'} .
         ?rel my_prefix:type ?rel_values .  
         ?rel my_prefix:ent1 ?person_a .
         ?rel my_prefix:ent2 ?person_b .        

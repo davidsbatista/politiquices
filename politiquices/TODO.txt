@@ -16,7 +16,9 @@ Web App
 
     Grafo
     -----
-     - um interface qualquer para poder selecionar as relações e o intervalo de datas
+        - Cor do node para cada partido
+        - Cor para o Edge conforme a relação
+        - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
 
     Low Priority
