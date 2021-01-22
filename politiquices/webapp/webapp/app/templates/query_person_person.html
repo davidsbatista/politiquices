@@ -95,15 +95,10 @@
         var color = Chart.helpers.color;
 
         var year_labels = {{ labels|tojson }};
-        var ent1_ent1_opposes_ent2 = {{ ent1_ent1_opposes_ent2|tojson }};
-        var ent1_ent1_supports_ent2 = {{ ent1_ent1_supports_ent2|tojson }};
-        var ent1_ent2_opposes_ent1 = {{ ent1_ent2_opposes_ent1|tojson }};
-        var ent1_ent2_supports_ent1 = {{ ent1_ent2_supports_ent1|tojson }};
-
-        var ent2_ent1_opposes_ent2 = {{ ent2_ent1_opposes_ent2|tojson }};
-        var ent2_ent1_supports_ent2 = {{ ent2_ent1_supports_ent2|tojson }};
-        var ent2_ent2_opposes_ent1 = {{ ent2_ent2_opposes_ent1|tojson }};
-        var ent2_ent2_supports_ent1 = {{ ent2_ent2_supports_ent1|tojson }};
+        var ent1_opposes_ent2 = {{ ent1_opposes_ent2|tojson }};
+        var ent1_supports_ent2 = {{ ent1_supports_ent2|tojson }};
+        var ent1_opposed_by_ent2 = {{ ent1_opposed_by_ent2|tojson }};
+        var ent1_supported_by_ent2= {{ ent1_supported_by_ent2|tojson }};
 
         var ent1_name = {{ entity_one.name|tojson }};
         var ent2_name = {{ entity_two.name|tojson }};
@@ -113,16 +108,10 @@
         data: {
           labels: year_labels,
           datasets: [
-            // entity one
-            {label: 'ENT1-ent1_acusa_ent2', backgroundColor: "#FF0000", fill: true, data: ent1_ent1_opposes_ent2},
-            {label: 'ENT1-ent1_apoia_ent2', backgroundColor: "#980000", fill: true, data: ent1_ent1_supports_ent2},
-            {label: 'ENT1-ent2_acusa_ent1', backgroundColor: "#44861E", fill: true, data: ent1_ent2_opposes_ent1},
-            {label: 'ENT1-ent2_apoia_ent1', backgroundColor: "#70DA33", fill: true, data: ent1_ent2_supports_ent1},
-            // entity two
-            {label: 'ENT2-ent1_acusa_ent2', backgroundColor: "#611808", fill: true, data: ent2_ent1_opposes_ent2},
-            {label: 'ENT2-ent1_apoia_ent2', backgroundColor: "#086159", fill: true, data: ent2_ent1_supports_ent2},
-            {label: 'ENT2-ent2_acusa_ent1', backgroundColor: "#083d61", fill: true, data: ent2_ent2_opposes_ent1},
-            {label: 'ENT2-ent2_apoia_ent1', backgroundColor: "#1e0861", fill: true, data: ent2_ent2_supports_ent1}
+            {label: 'ent1 acusa ent2', backgroundColor: "#FF0000", fill: true, data: ent1_opposes_ent2},
+            {label: 'ent1_apoia ent2', backgroundColor: "#44861E", fill: true, data: ent1_supports_ent2},
+            {label: 'ent1 acusado(a) por ent2', backgroundColor: "#980000", fill: true, data: ent1_opposed_by_ent2},
+            {label: 'ent1 apoiado(a) por ent2', backgroundColor: "#70DA33", fill: true, data: ent1_supported_by_ent2},
             ]
           },
         options: {

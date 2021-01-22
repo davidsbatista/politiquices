@@ -2,11 +2,11 @@ Web App
 =======
 
     - AJAX loading GIF: centrar
-    - Quando não há resultados, indicar e ficar no index.html
-    - Rever o gráfico em Person vs. Person:
-        e.g.: Manuela Ferreira Leite vs Aguiar Branco
+    - Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas -> maior e com feedback que é link
 
     - Indexar colecção CHAVE no server e fazer links para politiquices.pt
+
+    - Quando não há resultados, indicar e ficar no index.html
 
     Grafo
     -----

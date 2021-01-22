@@ -719,16 +719,17 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
         return {
             "ent1_opposes_ent2": 0,
             "ent1_supports_ent2": 0,
-            "ent2_opposes_ent1": 0,
-            "ent2_supports_ent1": 0,
+            "ent1_opposed_by_ent2": 0,
+            "ent1_supported_by_ent2": 0,
         }
-    rels_freq_by_year_ent1 = defaultdict(relationships_counter)
-    rels_freq_by_year_ent2 = defaultdict(relationships_counter)
 
+    rels_freq_by_year = defaultdict(relationships_counter)
     relationships = []
     for x in result["results"]["bindings"]:
+
         if 'other' in x["rel_type"]["value"]:
             continue
+
         relationships.append(
             {
                 "url": x["arquivo_doc"]["value"],
@@ -747,13 +748,28 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
         year = x["date"]["value"][0:4]
         rel_type = x["rel_type"]["value"]
 
-        if ent1_wiki_id == wiki_id_one:
-            rels_freq_by_year_ent1[year][rel_type] += 1
+        if rel_type.startswith("ent1"):
+            if ent1_wiki_id != wiki_id_one:
+                if 'supports' in rel_type:
+                    rels_freq_by_year[year]['ent1_supported_by_ent2'] += 1
+                if 'opposes' in rel_type:
+                    rels_freq_by_year[year]['ent1_opposed_by_ent2'] += 1
+            else:
+                rels_freq_by_year[year][rel_type] += 1
 
-        if ent1_wiki_id == wiki_id_two:
-            rels_freq_by_year_ent2[year][rel_type] += 1
+        if rel_type.startswith("ent2"):
+            if ent1_wiki_id != wiki_id_one:
+                if 'supports' in rel_type:
+                    rels_freq_by_year[year]['ent1_supports_ent2'] += 1
+                if 'opposes' in rel_type:
+                    rels_freq_by_year[year]['ent1_opposes_ent2'] += 1
+            else:
+                if 'supports' in rel_type:
+                    rels_freq_by_year[year]['ent1_supported_by_ent2'] += 1
+                if 'opposes' in rel_type:
+                    rels_freq_by_year[year]['ent1_opposed_by_ent2'] += 1
 
-    return relationships, rels_freq_by_year_ent1, rels_freq_by_year_ent2
+    return relationships, rels_freq_by_year
 
 
 @lru_cache

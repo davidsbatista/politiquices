@@ -344,51 +344,22 @@ def person_vs_person(entity_one, entity_two):
     person_two = entity_two
     person_one_info = get_person_info(person_one)
     person_two_info = get_person_info(person_two)
-    (
-        results,
-        rels_freq_by_year_ent1,
-        rels_freq_by_year_ent2,
-    ) = get_relationships_between_two_entities(person_one, person_two)
-
-    """
-    print(person_one_info.name)
-    for year in rels_freq_by_year_ent1:
-        print(year, rels_freq_by_year_ent1[year])
-    print()
-    print(person_two_info.name)
-    for year in rels_freq_by_year_ent1:
-        print(year, rels_freq_by_year_ent2[year])
-    """
+    results, rels_freq_by_year = get_relationships_between_two_entities(person_one, person_two)
 
     for r in results:
         per_vs_person_linkable(r)
 
-    labels = list(rels_freq_by_year_ent1.keys())
-    ent1_ent1_opposes_ent2 = [
-        rels_freq_by_year_ent1[year]["ent1_opposes_ent2"] for year in rels_freq_by_year_ent1
-    ]
-    ent1_ent1_supports_ent2 = [
-        rels_freq_by_year_ent1[year]["ent1_supports_ent2"] for year in rels_freq_by_year_ent1
-    ]
-    ent1_ent2_opposes_ent1 = [
-        rels_freq_by_year_ent1[year]["ent2_opposes_ent1"] for year in rels_freq_by_year_ent1
-    ]
-    ent1_ent2_supports_ent1 = [
-        rels_freq_by_year_ent1[year]["ent2_supports_ent1"] for year in rels_freq_by_year_ent1
-    ]
-
-    ent2_ent1_opposes_ent2 = [
-        rels_freq_by_year_ent2[year]["ent1_opposes_ent2"] for year in rels_freq_by_year_ent2
-    ]
-    ent2_ent1_supports_ent2 = [
-        rels_freq_by_year_ent2[year]["ent1_supports_ent2"] for year in rels_freq_by_year_ent2
-    ]
-    ent2_ent2_opposes_ent1 = [
-        rels_freq_by_year_ent1[year]["ent2_opposes_ent1"] for year in rels_freq_by_year_ent1
-    ]
-    ent2_ent2_supports_ent1 = [
-        rels_freq_by_year_ent1[year]["ent2_supports_ent1"] for year in rels_freq_by_year_ent1
-    ]
+    # information for chart
+    labels = list(rels_freq_by_year.keys())
+    ent1_opposes_ent2 = []
+    ent1_supports_ent2 = []
+    ent1_opposed_by_ent2 = []
+    ent1_supported_by_ent2 = []
+    for year in rels_freq_by_year:
+        ent1_opposes_ent2.append(rels_freq_by_year[year]["ent1_opposes_ent2"])
+        ent1_supports_ent2.append(rels_freq_by_year[year]["ent1_supports_ent2"])
+        ent1_opposed_by_ent2.append(rels_freq_by_year[year]["ent1_opposed_by_ent2"])
+        ent1_supported_by_ent2.append(rels_freq_by_year[year]["ent1_supported_by_ent2"])
 
     return render_template(
         "query_person_person.html",
@@ -396,14 +367,10 @@ def person_vs_person(entity_one, entity_two):
         entity_one=person_one_info,
         entity_two=person_two_info,
         labels=labels,
-        ent1_ent1_opposes_ent2=ent1_ent1_opposes_ent2,
-        ent1_ent1_supports_ent2=ent1_ent1_supports_ent2,
-        ent1_ent2_opposes_ent1=ent1_ent2_opposes_ent1,
-        ent1_ent2_supports_ent1=ent1_ent2_supports_ent1,
-        ent2_ent1_opposes_ent2=ent2_ent1_opposes_ent2,
-        ent2_ent1_supports_ent2=ent2_ent1_supports_ent2,
-        ent2_ent2_opposes_ent1=ent2_ent2_opposes_ent1,
-        ent2_ent2_supports_ent1=ent2_ent2_supports_ent1,
+        ent1_opposes_ent2=ent1_opposes_ent2,
+        ent1_supports_ent2=ent1_supports_ent2,
+        ent1_opposed_by_ent2=ent1_opposed_by_ent2,
+        ent1_supported_by_ent2=ent1_supported_by_ent2
     )
 
 
