@@ -8,25 +8,23 @@
 
     <div id="inner" class="w-100 p-1">
 
-    <br><br>
+    <br>
 
-    <div class="container d-flex align-items-center justify-content-center">
-        <div class="w-75 p-2" align="center">
-            <center>
-                <h4><a href="/entities"><b>{{items.nr_persons}} personalidades políticas</b></a></h4>
-            </center>
-            <br><br>
-            <center>
-                <h4><a href="/parties"><b>{{items.nr_parties}} partidos políticos</b></a></h4>
-            </center>
-         </div>
-    </div>
+    <center><h3><b>Análises Estátisticas</b></h3></center>
 
-    <br><br>
+    <br>
+
+    <center>
+    <h4>
+        <a href="/entities">{{items.nr_persons}} personalidades</a> e <a href="/parties">{{items.nr_parties}} partidos políticos</a>
+    </h4>
+    </center>
+
+    <br>
 
     <div class="container h-100">
         <div class="row h-100 justify-content-center align-items-center">
-            <h4><b>{{items.nr_articles}}</b> títulos de artigos analisados</h4>
+            <h4>{{items.nr_articles}} títulos de notícias</h4>
             <br><br>
             <canvas id="myChart" width="1000" height="250"></canvas>
         </div>
