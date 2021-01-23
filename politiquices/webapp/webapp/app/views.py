@@ -73,9 +73,6 @@ def list_entities():
 def load_entities():
     start = int(request.args.get("last_index"))
     end = start + entities_batch_size
-    print(start, end)
-    for x in all_entities_info[start:end]:
-        print(x)
     return jsonify(all_entities_info[start:end])
 
 
@@ -108,7 +105,7 @@ def detail_entity():
     supported_by_json = make_json(supported_by)
     other_json = make_json(other + other_by)
     all_relationships_json = (
-            opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
+        opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
     )
 
     items = {
@@ -222,54 +219,68 @@ def get_person_party():
 # Grafo
 @app.route("/graph")
 def graph():
+    # ToDo:
+    #   - provavelmente é preciso um endpoint para dar um rede baseada em critérios diferentes:
+    #     e.g.: personalidade, partido
+    #   - haverá outra maneira de fazer isto? provavelmente será tudo em JS...
+    #   - fazer a rede apenas para 1 ano de dados, mais simples talvez?
 
     nodes = set()
     elements = []
 
-    # ToDo: tip 'classes' no elemento para associar a um partido
+    # ToDo: normalizar as relações como na timeline? trará vantagens?
+    # ToDo: mapping de cores para o partido
+    edge_color_mapping = {
+        "ent1_opposes_ent2": "#FF0000",
+        "ent1_opposed_by_ent2": "#980000",
+        "ent1_supports_ent2": "#44861E",
+        "ent1_supported_by_ent2": "#70DA33",
+        "ent2_opposes_ent1": "#FF0000",
+        "ent2_opposed_by_ent1": "#980000",
+        "ent2_supports_ent1": "#44861E",
+        "ent2_supported_by_ent1": "#70DA33",
+    }
 
-    #
+    # ToDo: nodes com tip 'classes' no elemento para associar a um partido
+    #       numero de inlinks e outlinks ?
+
+    def add_node(name, wiki_id):
+        elements.append({"data": {"id": wiki_id, "label": name}})
+        nodes.add(name)
+
     for x in edges:
         name_a = wiki_id_info[x["person_a"].split("/")[-1]]["name"]
         name_b = wiki_id_info[x["person_b"].split("/")[-1]]["name"]
         wiki_id_a = x["person_a"].split("/")[-1]
         wiki_id_b = x["person_b"].split("/")[-1]
 
-        if wiki_id_a in nodes:
-            continue
-        else:
-            elements.append({"data": {"id": wiki_id_a, "label": name_a}})
-            nodes.add(name_a)
+        if wiki_id_a not in nodes:
+            add_node(name_a, wiki_id_a)
 
-        if wiki_id_b in nodes:
-            continue
-        else:
-            elements.append({"data": {"id": wiki_id_b, "label": name_b}})
-            nodes.add(name_b)
+        if wiki_id_b not in nodes:
+            add_node(name_b, wiki_id_b)
+
+        data = {
+            "id": x["url"],
+            "source": wiki_id_a,
+            "target": wiki_id_b,
+            "label": x["rel_type"],
+            "color": edge_color_mapping[x["rel_type"]],
+        }
 
         if x["rel_type"].startswith("ent1"):
-            elements.append(
-                {
-                    "data": {
-                        "id": x["url"],
-                        "source": wiki_id_a,
-                        "target": wiki_id_b,
-                        "label": x["rel_type"],
-                    }
-                }
-            )
+            data['source'] = wiki_id_a
+            data['target'] = wiki_id_b
 
         elif x["rel_type"].startswith("ent2"):
-            elements.append(
-                {
-                    "data": {
-                        "id": x["url"],
-                        "source": wiki_id_b,
-                        "target": wiki_id_a,
-                        "label": x["rel_type"],
-                    }
-                }
-            )
+            data['source'] = wiki_id_b
+            data['target'] = wiki_id_a
+
+        elements.append({"data": data})
+
+    for x in elements[:100]:
+        print(x)
+        print()
 
     return render_template("graph.html", elements=elements[:100])
 
@@ -300,8 +311,8 @@ def status():
     with open("webapp/app/static/json/top_co_occurrences.json") as f_in:
         top_co_occurrences = json.load(f_in)
     for x in top_co_occurrences:
-        co_occurrences_labels.append(x['person_a']['name'] + ' / ' + x['person_b']['name'])
-        co_occurrences_values.append(x['nr_occurrences'])
+        co_occurrences_labels.append(x["person_a"]["name"] + " / " + x["person_b"]["name"])
+        co_occurrences_values.append(x["nr_occurrences"])
 
     items = {
         "nr_parties": nr_parties,
@@ -312,7 +323,7 @@ def status():
         "per_freq_labels": per_freq_labels,
         "per_freq_values": per_freq_values,
         "per_co_occurrence_labels": co_occurrences_labels,
-        "per_co_occurrence_values": co_occurrences_values
+        "per_co_occurrence_values": co_occurrences_values,
     }
 
     return render_template("stats.html", items=items)
@@ -333,10 +344,10 @@ def complete():
 
 def get_info(wiki_id):
     if info := [entry for entry in all_parties_info if entry["wiki_id"] == wiki_id]:
-        return info[0], 'party'
+        return info[0], "party"
 
     if info := [entry for entry in all_entities_info if entry["wiki_id"] == wiki_id]:
-        return info[0], 'person'
+        return info[0], "person"
 
 
 def person_vs_person(entity_one, entity_two):
@@ -373,7 +384,7 @@ def person_vs_person(entity_one, entity_two):
         ent1_opposes_ent2=ent1_opposes_ent2,
         ent1_supports_ent2=ent1_supports_ent2,
         ent1_opposed_by_ent2=ent1_opposed_by_ent2,
-        ent1_supported_by_ent2=ent1_supported_by_ent2
+        ent1_supported_by_ent2=ent1_supported_by_ent2,
     )
 
 
@@ -443,10 +454,7 @@ def party_vs_party(party_a, party_b, relationship, party_a_info, party_b_info):
         per_vs_person_linkable(r)
 
     return render_template(
-        "query_party_party.html",
-        items=results,
-        party_one=party_a_info,
-        party_two=party_b_info,
+        "query_party_party.html", items=results, party_one=party_a_info, party_two=party_b_info,
     )
 
 
@@ -454,6 +462,7 @@ def party_vs_party(party_a, party_b, relationship, party_a_info, party_b_info):
 def queries():
 
     import time
+
     time.sleep(1)
 
     print(request.args)
@@ -471,14 +480,14 @@ def queries():
         e1_info, e1_type = get_info(entity_one)
         e2_info, e2_type = get_info(entity_two)
 
-        if e1_type == 'person' and e2_type == 'person':
+        if e1_type == "person" and e2_type == "person":
             return person_vs_person(entity_one, entity_two)
 
-        elif e1_type == 'party' and e2_type == 'person':
+        elif e1_type == "party" and e2_type == "person":
             return party_vs_person(entity_one, entity_two, relationship, e1_info, e2_info)
 
-        elif e1_type == 'person' and e2_type == 'party':
+        elif e1_type == "person" and e2_type == "party":
             return person_vs_party(entity_one, entity_two, relationship, e1_info, e2_info)
 
-        elif e1_type == 'party' and e2_type == 'party':
+        elif e1_type == "party" and e2_type == "party":
             return party_vs_party(entity_one, entity_two, relationship, e1_info, e2_info)

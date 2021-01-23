@@ -45,7 +45,6 @@
       container: document.getElementById('cy'), // container to render in
       elements: edges,
 
-      /*
       style: [
         {
           selector: 'node',
@@ -57,16 +56,15 @@
         {
           selector: 'edge',
           style: {
-            'label': 'data(label)',
+            'label': '',
             'width': 0.5,
-            'line-color': '#ccc',
+            'line-color': 'data(color)',
             'target-arrow-color': '#ccc',
             'target-arrow-shape': 'triangle',
             'curve-style': 'bezier'
           }
         }
       ],
-      */
 
       layout: {
         name: 'random',

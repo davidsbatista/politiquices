@@ -167,6 +167,7 @@ def personalities_json_cache():
 def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
+    """
     # personalities cache
     all_politiquices_persons, wiki_id = personalities_json_cache()
 
@@ -175,6 +176,7 @@ def main():
 
     # entities co-occurrences cache
     entities_top_co_occurrences(wiki_id)
+    """
 
     # graph edges cache
     graph_edges_cache()
