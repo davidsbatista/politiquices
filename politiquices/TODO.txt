@@ -1,14 +1,9 @@
 Web App
 =======
-
     - Top (Acusa | Apoia | Acusado(a) por | Apoiado(a) por) -> tirar scroll se <= 10
-
     - Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas -> maior e com feedback que é link
-
     - AJAX loading GIF: centrar
-
     - Indexar colecção CHAVE no server e fazer links para politiquices.pt
-
     - Quando não há resultados, indicar e ficar no index.html
 
     Stats
@@ -19,14 +14,36 @@ Web App
             - quais os partidos que acusam mais? e que partidos alvo?
 
         - existem relações familiares no grafo? entre quem?
+        - Todos: artigos por ano em stacked bar: oposição/apoio/ e other? ou remover?
+
 
     Grafo
     -----
+        - https://medium.com/neo4j/graph-visualization-with-neo4j-using-neovis-js-a2ecaaa7c379
         - Cor do node para cada partido
         - Cor para o Edge conforme a relação
+
         - um interface qualquer para poder selecionar as relações e o intervalo de datas
+
+        # ToDo: normalizar as relações como na timeline? trará vantagens?
+        # ToDo: mapping de cores para o partido
+        # ToDo: nodes com tip 'classes' no elemento para associar a um partido
+
+    edge_color_mapping = {
+        "ent1_opposes_ent2": "#FF0000",
+        "ent1_opposed_by_ent2": "#980000",
+        "ent1_supports_ent2": "#44861E",
+        "ent1_supported_by_ent2": "#70DA33",
+        "ent2_opposes_ent1": "#FF0000",
+        "ent2_opposed_by_ent1": "#980000",
+        "ent2_supports_ent1": "#44861E",
+        "ent2_supported_by_ent1": "#70DA33",
+    }
+
+
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
+
 
 
     Low Priority

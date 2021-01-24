@@ -105,7 +105,7 @@ def detail_entity():
     supported_by_json = make_json(supported_by)
     other_json = make_json(other + other_by)
     all_relationships_json = (
-        opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
+            opposed_json + supported_by_json + opposed_by_json + supported_by_json + other_json
     )
 
     items = {
@@ -219,76 +219,38 @@ def get_person_party():
 # Grafo
 @app.route("/graph")
 def graph():
-    # ToDo:
-    #   - provavelmente é preciso um endpoint para dar um rede baseada em critérios diferentes:
-    #     e.g.: personalidade, partido
-    #   - haverá outra maneira de fazer isto? provavelmente será tudo em JS...
-    #   - fazer a rede apenas para 1 ano de dados, mais simples talvez?
+    return render_template("graph.html")
 
-    nodes = set()
-    elements = []
 
-    # ToDo: normalizar as relações como na timeline? trará vantagens?
-    # ToDo: mapping de cores para o partido
-    edge_color_mapping = {
-        "ent1_opposes_ent2": "#FF0000",
-        "ent1_opposed_by_ent2": "#980000",
-        "ent1_supports_ent2": "#44861E",
-        "ent1_supported_by_ent2": "#70DA33",
-        "ent2_opposes_ent1": "#FF0000",
-        "ent2_opposed_by_ent1": "#980000",
-        "ent2_supports_ent1": "#44861E",
-        "ent2_supported_by_ent1": "#70DA33",
-    }
+# Grafo
+@app.route("/graph_all")
+def graph_all():
 
-    # ToDo: nodes com tip 'classes' no elemento para associar a um partido
-    #       numero de inlinks e outlinks ?
+    new_graph = []
 
-    def add_node(name, wiki_id):
-        elements.append({"data": {"id": wiki_id, "label": name}})
-        nodes.add(name)
+    valid = []
+    for entry in edges:
+        if 'freq' in entry['data'].keys():
+            if entry['data']['freq'] > 5:
+                valid.append(entry['data']['id'])
 
-    for x in edges:
-        name_a = wiki_id_info[x["person_a"].split("/")[-1]]["name"]
-        name_b = wiki_id_info[x["person_b"].split("/")[-1]]["name"]
-        wiki_id_a = x["person_a"].split("/")[-1]
-        wiki_id_b = x["person_b"].split("/")[-1]
-
-        if wiki_id_a not in nodes:
-            add_node(name_a, wiki_id_a)
-
-        if wiki_id_b not in nodes:
-            add_node(name_b, wiki_id_b)
-
-        data = {
-            "id": x["url"],
-            "source": wiki_id_a,
-            "target": wiki_id_b,
-            "label": x["rel_type"],
-            "color": edge_color_mapping[x["rel_type"]],
-        }
-
-        if x["rel_type"].startswith("ent1"):
-            data['source'] = wiki_id_a
-            data['target'] = wiki_id_b
-
-        elif x["rel_type"].startswith("ent2"):
-            data['source'] = wiki_id_b
-            data['target'] = wiki_id_a
-
-        elements.append({"data": data})
-
-    for x in elements[:100]:
+    for x in valid:
         print(x)
-        print()
 
-    return render_template("graph.html", elements=elements[:100])
+    for entry in edges:
+        if 'source' in entry['data'].keys():
+            if entry['data']['source'] in valid and entry['data']['target'] in valid:
+                new_graph.append(entry)
+
+    print(len(edges))
+    print(len(new_graph))
+
+    return render_template("graph_all.html", elements=new_graph)
 
 
 # Estatísticas
 @app.route("/stats")
 def status():
-
     # single values
     nr_persons = get_nr_of_persons()
     nr_parties = len(all_parties_info)
@@ -460,11 +422,6 @@ def party_vs_party(party_a, party_b, relationship, party_a_info, party_b_info):
 
 @app.route("/queries")
 def queries():
-
-    import time
-
-    time.sleep(1)
-
     print(request.args)
     query_nr = request.args.get("query_nr")
 

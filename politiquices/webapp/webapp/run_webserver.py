@@ -93,11 +93,43 @@ def get_all_parties_with_affiliated_count():
     return political_parties
 
 
-def graph_edges_cache():
-    edges = get_graph_links()
-    with open(static_data + "edges.json", "w") as f_out:
-        json.dump(edges, f_out, indent=4)
-    print(f"{len(edges)} graph edges extracted")
+def graph_edges_cache(wiki_id_info):
+    links = get_graph_links()
+    nodes = defaultdict(dict)
+    edges = []
+    for x in links:
+        wiki_id_a = x["person_a"].split("/")[-1]
+        wiki_id_b = x["person_b"].split("/")[-1]
+        name_a = wiki_id_info[wiki_id_a]["name"]
+        name_b = wiki_id_info[wiki_id_b]["name"]
+
+        # build nodes
+        if wiki_id_a not in nodes:
+            nodes[wiki_id_a] = name_a
+
+        if wiki_id_b not in nodes:
+            nodes[wiki_id_b] = name_b
+
+        # add direction and nodes
+        if x["rel_type"].startswith("ent1"):
+            edges.append((wiki_id_a, wiki_id_b, x["rel_type"]))
+
+        elif x["rel_type"].startswith("ent2"):
+            edges.append((wiki_id_b, wiki_id_a, x["rel_type"]))
+
+    with open(static_data+'nodes.csv', 'w') as f_out:
+        for k, v in nodes.items():
+            f_out.write(f'{k},{v}'+'\n')
+
+    f_out_opposes = open(static_data + 'edges_opposes.csv', 'w')
+    f_out_supports = open(static_data + 'edges_supports.csv', 'w')
+    for edge in edges:
+        if 'opposes' in edge[2]:
+            f_out_opposes.write(f'{edge[0]},{edge[1]}'+'\n')
+        if 'supports' in edge[2]:
+            f_out_supports.write(f'{edge[0]},{edge[1]}'+'\n')
+    f_out_opposes.close()
+    f_out_supports.close()
 
 
 def entities_top_co_occurrences(wiki_id):
@@ -105,9 +137,11 @@ def entities_top_co_occurrences(wiki_id):
     co_occurrences = []
     for x in raw_counts:
         co_occurrences.append(
-            {'person_a': wiki_id[x["person_a"].split("/")[-1]],
-             'person_b': wiki_id[x["person_b"].split("/")[-1]],
-             'nr_occurrences': x["n_artigos"]}
+            {
+                "person_a": wiki_id[x["person_a"].split("/")[-1]],
+                "person_b": wiki_id[x["person_b"].split("/")[-1]],
+                "nr_occurrences": x["n_artigos"],
+            }
         )
     with open(static_data + "top_co_occurrences.json", "w") as f_out:
         json.dump(co_occurrences, f_out, indent=4)
@@ -126,7 +160,7 @@ def parties_json_cache(all_politiquices_persons):
     parties = [
         {"name": x["party_label"], "wiki_id": x["wiki_id"], "image_url": x["party_logo"]}
         for x in sorted(parties_data, key=lambda x: x["party_label"])
-        if x["party_country"] == 'Portugal'
+        if x["party_country"] == "Portugal"
     ]
     with open(static_data + "parties.json", "w") as f_out:
         json.dump(parties, f_out, indent=4)
@@ -144,8 +178,10 @@ def parties_json_cache(all_politiquices_persons):
 
 
 def personalities_json_cache():
+
     # persons cache
     per_data = get_entities()
+
     # mapping: wiki_id -> person_info
     wiki_id = {x["wiki_id"]: {"name": x["name"], "image_url": x["image_url"]} for x in per_data}
     with open(static_data + "wiki_id_info.json", "w") as f_out:
@@ -153,6 +189,7 @@ def personalities_json_cache():
     print(f"{len(per_data)} entities card info (positions + wikidata_link + image + nr articles)")
     with open(static_data + "all_entities_info.json", "w") as f_out:
         json.dump(per_data, f_out, indent=4)
+
     # persons cache for search box
     persons = [
         {"name": x["name"], "wiki_id": x["wiki_id"], "image_url": x["image_url"]}
@@ -161,25 +198,24 @@ def personalities_json_cache():
     all_politiquices_persons = set([x["wiki_id"] for x in persons])
     with open(static_data + "persons.json", "wt") as f_out:
         json.dump(persons, f_out, indent=True)
+
     return all_politiquices_persons, wiki_id
 
 
 def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
-    """
     # personalities cache
     all_politiquices_persons, wiki_id = personalities_json_cache()
 
     # parties cache
-    parties_json_cache(all_politiquices_persons)
+    # parties_json_cache(all_politiquices_persons)
 
     # entities co-occurrences cache
-    entities_top_co_occurrences(wiki_id)
-    """
+    # entities_top_co_occurrences(wiki_id)
 
     # graph edges cache
-    graph_edges_cache()
+    graph_edges_cache(wiki_id)
 
     app.run(debug=True, host="0.0.0.0")
 

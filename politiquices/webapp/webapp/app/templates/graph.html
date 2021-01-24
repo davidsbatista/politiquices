@@ -4,70 +4,47 @@
 
 {% block body %}
 
-
-<style>
-    #cy {
-        width: 75%;
-        height: 98%;
-        background-color: #EFEEEE;
-        position: relative;
-        top: 1%;
-        left: 0%;
+<style type="text/css">
+    #viz {
+        width: 900px;
+        height: 700px;
     }
-    #inner {
-        position: relative;
-        width: 92rem;
-        height: 40rem;
-    }
-
 </style>
-
-<div class="container" id="container">
-
-    <div id="inner">
-        <div id="cy"></div>
-    </div>
-
-
-    <script src="static/vendor/cytoscape.min.js"></script>
-    <script>
-
-    var edges = {{elements|tojson}};
-
-    console.log(edges);
-
-    var cy = cytoscape({
-      container: document.getElementById('cy'), // container to render in
-      elements: edges,
-
-      style: [
-        {
-          selector: 'node',
-          style: {
-            'background-color': '#666',
-            'label': 'data(label)'
-          }
+<script src="https://rawgit.com/neo4j-contrib/neovis.js/master/dist/neovis.js"></script>
+<script>
+    function draw() {
+    var config = {
+        container_id: "viz",
+        server_url: "bolt://0.0.0.0:7687.",
+        server_user: "neo4j",
+        server_password: "s3cr3t",
+        labels: {
+            "Person": {
+                caption: "name",
+                size: "pagerank",
+                community: "community"
+            }
         },
-        {
-          selector: 'edge',
-          style: {
-            'label': '',
-            'width': 0.5,
-            'line-color': 'data(color)',
-            'target-arrow-color': '#ccc',
-            'target-arrow-shape': 'triangle',
-            'curve-style': 'bezier'
-          }
-        }
-      ],
+        relationships: {
+            "ACUSA": {
+                caption: false,
+                thickness: "count"
+            }
+        },
+        initial_cypher: "MATCH p=()-[r:APOIA]->() RETURN p LIMIT 2"
+    }
 
-      layout: {
-        name: 'random',
-        rows: 101
-      }
-    });
+var viz = new NeoVis.default(config);
+viz.render();
+};
 </script>
 
-</div>
+
+<body onload="draw()">
+    <div class="container" id="container">
+        <div id="viz"></div>
+    </div>
+
+</body>
 
 {% endblock %}
