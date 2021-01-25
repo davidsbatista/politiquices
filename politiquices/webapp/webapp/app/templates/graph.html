@@ -31,7 +31,7 @@
                 thickness: "count"
             }
         },
-        initial_cypher: "MATCH p=()-[r:APOIA]->() RETURN p LIMIT 2"
+        initial_cypher: "MATCH (p1:Person { id: 'Q182367' })<-[:ACUSA]-(p) RETURN p LIMIT 10"
     }
 
 var viz = new NeoVis.default(config);
@@ -44,6 +44,31 @@ viz.render();
     <div class="container" id="container">
         <div id="viz"></div>
     </div>
+
+    Cypher query: <textarea rows="4" cols=50 id="cypher"></textarea><br>
+    <input type="submit" value="Submit" id="reload">
+    <input type="submit" value="Stabilize" id="stabilize">
+
+    <script>
+	$("#reload").click(function() {
+
+		var cypher = $("#cypher").val();
+
+		if (cypher.length > 3) {
+			viz.renderWithCypher(cypher);
+		} else {
+			console.log("reload");
+			viz.reload();
+
+		}
+
+	});
+
+	$("#stabilize").click(function() {
+		viz.stabilize();
+	})
+
+</script>
 
 </body>
 

@@ -19,6 +19,16 @@ Web App
 
     Grafo
     -----
+        - https://github.com/neo4j-contrib/neovis.js/
+
+        - Tirar a rede do Sócrates: Q182367
+
+            MATCH (p:Person { id: 'Q182367' }) RETURN p
+
+            MATCH (p1:Person { id: 'Q182367' })<-[:ACUSA]-(p)
+            RETURN p
+            LIMIT 10
+
         - https://medium.com/neo4j/graph-visualization-with-neo4j-using-neovis-js-a2ecaaa7c379
         - Cor do node para cada partido
         - Cor para o Edge conforme a relação
