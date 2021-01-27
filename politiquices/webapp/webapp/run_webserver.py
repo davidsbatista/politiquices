@@ -117,12 +117,12 @@ def graph_edges_cache(wiki_id_info):
         elif x["rel_type"].startswith("ent2"):
             edges.append((wiki_id_b, wiki_id_a, x["rel_type"]))
 
-    with open(static_data+'nodes.csv', 'w') as f_out:
+    with open('neo4j_import/'+'nodes.csv', 'w') as f_out:
         for k, v in nodes.items():
             f_out.write(f'{k},{v}'+'\n')
 
-    f_out_opposes = open(static_data + 'edges_opposes.csv', 'w')
-    f_out_supports = open(static_data + 'edges_supports.csv', 'w')
+    f_out_opposes = open('neo4j_import/'+'edges_opposes.csv', 'w')
+    f_out_supports = open('neo4j_import/'+'edges_supports.csv', 'w')
     for edge in edges:
         if 'opposes' in edge[2]:
             f_out_opposes.write(f'{edge[0]},{edge[1]}'+'\n')

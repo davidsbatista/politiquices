@@ -19,6 +19,12 @@ Web App
 
     Grafo
     -----
+
+        - Relationship thickeness should be proportional to the weight property on the INTERACTS relationship.
+          How to add properies to the relationships?
+            - properties should be a listurls to the news articles
+            - count of how many urls
+
         - https://github.com/neo4j-contrib/neovis.js/
 
         - Tirar a rede do Sócrates: Q182367
