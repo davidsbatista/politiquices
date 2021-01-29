@@ -50,9 +50,6 @@ with open("webapp/app/static/json/party_members.json") as f_in:
 with open("webapp/app/static/json/wiki_id_info.json") as f_in:
     wiki_id_info = json.load(f_in)
 
-with open("webapp/app/static/json/edges.json") as f_in:
-    edges = json.load(f_in)
-
 entities_batch_size = 16
 
 

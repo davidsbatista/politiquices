@@ -23,7 +23,7 @@ web:
 
 
 neo4j:
-	docker run -dit -p7474:7474 -p7687:7687 -v $${HOME}/politiquices/politiquices/webapp/neo4j_import/:/var/lib/neo4j/import -e NEO4J_AUTH=neo4j/s3cr3t neo4j
+	docker run -dit -p7474:7474 -p7687:7687 -v $${HOME}/politiquices/politiquices/webapp/neo4j_import/:/var/lib/neo4j/import -e NEO4J_AUTH=neo4j/s3cr3t -e NEO4J_dbms.connector.bolt.address=0.0.0.0:7687 neo4j
 	sleep 40s;
 	docker exec -ti $$(docker ps | grep 'neo4j' | awk '{ print $$1 }') /var/lib/neo4j/bin/cypher-shell -u neo4j -p s3cr3t -f /var/lib/neo4j/import/load_data.cql
 
