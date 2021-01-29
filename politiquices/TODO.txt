@@ -1,17 +1,21 @@
 Web App
 =======
+
     - Top (Acusa | Apoia | Acusado(a) por | Apoiado(a) por) -> tirar scroll se <= 10
     - Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas -> maior e com feedback que é link
     - AJAX loading GIF: centrar
     - Indexar colecção CHAVE no server e fazer links para politiquices.pt
     - Quando não há resultados, indicar e ficar no index.html
 
+
     Stats
     -----
         - Absolutos e relativos:
             - Quem mais acusa? é acusado?
             - Quem mais defende? é defendido
-            - quais os partidos que acusam mais? e que partidos alvo?
+            - quais os partidos que acusam mais? e que partidos alvo?            
+            - Persons more supported than accused ?
+            - Persons more accused than supported ?
 
         - existem relações familiares no grafo? entre quem?
         - Todos: artigos por ano em stacked bar: oposição/apoio/ e other? ou remover?
@@ -19,11 +23,17 @@ Web App
 
     Grafo
     -----
+        - para cada personalidade mostrar a rede com a possibilidade de seleccionar o grau e as relações
 
-        - Relationship thickeness should be proportional to the weight property on the INTERACTS relationship.
-          How to add properies to the relationships?
-            - properties should be a listurls to the news articles
-            - count of how many urls
+        - https://community.neo4j.com/t/the-graph-display-on-using-neovis-js-can-be-more-presentable/2457/5
+        - NOTE: CSV files should not have any empty spaces
+
+
+            MATCH (a:Person),(b:Person)
+            WHERE a.name = 'A' AND b.name = 'B'
+            CREATE (a)-[r:RELTYPE { name: a.name + '<->' + b.name }]->(b)
+            RETURN type(r), r.name
+
 
         - https://github.com/neo4j-contrib/neovis.js/
 
@@ -41,9 +51,9 @@ Web App
 
         - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
-        # ToDo: normalizar as relações como na timeline? trará vantagens?
         # ToDo: mapping de cores para o partido
         # ToDo: nodes com tip 'classes' no elemento para associar a um partido
+
 
     edge_color_mapping = {
         "ent1_opposes_ent2": "#FF0000",
@@ -59,7 +69,6 @@ Web App
 
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
-
 
 
     Low Priority
@@ -90,6 +99,7 @@ Web App
          - tirar todos os alerts -> subsituir por uma pagina de erro
          - pesquisar: permitir pesquisar sem acentos
          - clicar no branco fazer collapse ao menu (hamburger)
+
 
          Agregacoes + info na personalidade:
          ------------------------------------

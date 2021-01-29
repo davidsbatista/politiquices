@@ -96,7 +96,8 @@ def get_all_parties_with_affiliated_count():
 def graph_edges_cache(wiki_id_info):
     links = get_graph_links()
     nodes = defaultdict(dict)
-    edges = []
+    edge_counts = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+
     for x in links:
         wiki_id_a = x["person_a"].split("/")[-1]
         wiki_id_b = x["person_b"].split("/")[-1]
@@ -112,10 +113,10 @@ def graph_edges_cache(wiki_id_info):
 
         # add direction and nodes
         if x["rel_type"].startswith("ent1"):
-            edges.append((wiki_id_a, wiki_id_b, x["rel_type"]))
+            edge_counts[wiki_id_a][wiki_id_b][x["rel_type"]] += 1
 
         elif x["rel_type"].startswith("ent2"):
-            edges.append((wiki_id_b, wiki_id_a, x["rel_type"]))
+            edge_counts[wiki_id_b][wiki_id_a][x["rel_type"]] += 1
 
     with open('neo4j_import/'+'nodes.csv', 'w') as f_out:
         for k, v in nodes.items():
@@ -123,11 +124,16 @@ def graph_edges_cache(wiki_id_info):
 
     f_out_opposes = open('neo4j_import/'+'edges_opposes.csv', 'w')
     f_out_supports = open('neo4j_import/'+'edges_supports.csv', 'w')
-    for edge in edges:
-        if 'opposes' in edge[2]:
-            f_out_opposes.write(f'{edge[0]},{edge[1]}'+'\n')
-        if 'supports' in edge[2]:
-            f_out_supports.write(f'{edge[0]},{edge[1]}'+'\n')
+    
+    for start_node, end_nodes in edge_counts.items():
+        for end_node, rels in end_nodes.items():
+            for rel_type, freq in rels.items():
+                if 'opposes' in rel_type:
+                    f_out_opposes.write(f'{str(start_node)},{str(end_node)},{str(freq)}'+'\n')
+
+                if 'supports' in rel_type:
+                    f_out_supports.write(f'{str(start_node)},{str(end_node)},{str(freq)}'+'\n')
+
     f_out_opposes.close()
     f_out_supports.close()
 

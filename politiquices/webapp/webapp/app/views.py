@@ -225,27 +225,7 @@ def graph():
 # Grafo
 @app.route("/graph_all")
 def graph_all():
-
-    new_graph = []
-
-    valid = []
-    for entry in edges:
-        if 'freq' in entry['data'].keys():
-            if entry['data']['freq'] > 5:
-                valid.append(entry['data']['id'])
-
-    for x in valid:
-        print(x)
-
-    for entry in edges:
-        if 'source' in entry['data'].keys():
-            if entry['data']['source'] in valid and entry['data']['target'] in valid:
-                new_graph.append(entry)
-
-    print(len(edges))
-    print(len(new_graph))
-
-    return render_template("graph_all.html", elements=new_graph)
+    return render_template("graph_all.html")
 
 
 # Estatísticas
