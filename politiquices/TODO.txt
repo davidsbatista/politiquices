@@ -1,6 +1,13 @@
 Web App
 =======
 
+    PER vs PER:
+    ----------
+        - Por no nome das pessoas no gráfico/labels
+        - "Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas" -> mostrar que está seleccionado
+        - person_vs_person(entity_one, entity_two):
+            tem que funcionar para dois casos, restricto nas relações e geral, há bugs
+
     Partido vs Partido
     ------------------
         - Mostrar um grafico das personalidades (CDS é um bom caso de uso, pequeno e com muita "batatada" entre eles)
@@ -11,13 +18,6 @@ Web App
     ------------------
         - mostrar o tipo de relação pela qual se está a filtrar
         - mostrar alguns gráficos, o que?
-
-
-
-    PER vs PER
-    ----------
-        - Por no nome das pessoas no gráfico/labels
-        - "Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas" -> mostrar que está seleccionado
 
 
     Geral

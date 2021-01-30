@@ -20,13 +20,13 @@ def add_icon(r):
 
 def per_vs_person_linkable(r):
 
-    ent1_wikid_id = r["ent1"].split("/")[-1]
+    ent1_wikid_id = r["ent1_wiki"].split("/")[-1]
     link_one = r["title"].replace(
         r["ent1_str"],
         '<a id="ent_1" href="entity?q=' + ent1_wikid_id + '">' + r["ent1_str"] + "</a>",
     )
 
-    ent2_wikid_id = r["ent2"].split("/")[-1]
+    ent2_wikid_id = r["ent2_wiki"].split("/")[-1]
     title_link = link_one.replace(
         r["ent2_str"],
         '<a id="ent_2" href="entity?q=' + ent2_wikid_id + '">' + r["ent2_str"] + "</a>",
@@ -34,11 +34,8 @@ def per_vs_person_linkable(r):
 
     r["title_clickable"] = title_link
     add_icon(r)
-    r[
-        "link"
-    ] = f"""<a href="{r["url"]}" target="_blank" rel="noopener noreferrer">
-                     <img src="{r['link_image']}" width="{r['image_width']}" height="20"> 
-                    </a>"""
+    r["link"] = f"""<a href="{r["url"]}" target="_blank" rel="noopener noreferrer">\
+                    <img src="{r['link_image']}" width="{r['image_width']}" height="20"></a>"""
 
 
 def clickable_title(r, wiki_id):
@@ -57,6 +54,9 @@ def clickable_title(r, wiki_id):
     add_icon(r)
 
     r['ent1_wiki'] = wiki_id
+    r['ent2_wiki'] = r['other_ent_url'].split('q=')[1]
+    r['ent1_str'] = r['focus_ent']
+    r['ent2_str'] = r['other_ent_name']
 
     return r
 
@@ -77,17 +77,16 @@ def make_json(relationships):
 
     for r in relationships:
         html_title = f"""{r['title_clickable']}"""
-        link = f"""<a href="{r["url"]}" target="_blank" rel="noopener noreferrer">
-                    <img src="{r['link_image']}" width="{r['image_width']}" height="20"> 
-                   </a>"""
+        link = f"""<a href="{r["url"]}" target="_blank" rel="noopener noreferrer">\
+                   <img src="{r['link_image']}" width="{r['image_width']}" height="20"></a>"""
         json_data.append({"data": r["date"],
                           "titulo": html_title,
                           "link": link,
                           "url": r["url"],
-                          'ent1': r['focus_ent'],
-                          'ent2': r['other_ent_name'],
+                          'ent1': r['ent1_str'],
+                          'ent2': r['ent2_str'],
                           'ent1_wiki': r['ent1_wiki'],
-                          'ent2_wiki': r['other_ent_url'].split('q=')[1]
+                          'ent2_wiki': r['ent2_wiki']
                           })
 
     return json_data

@@ -136,7 +136,9 @@ def detail_entity():
     if from_search:
         return render_template(
             "entity_info.html",
+            # common info from above goes in 'items', i.e.: person info, chart, top-relations
             items=items,
+            # JSONs for the tables
             opposed=opposed_json,
             supported=supported_json,
             opposed_by=opposed_by_json,
@@ -283,6 +285,12 @@ def person_vs_person(person_one, person_two):
     for r in results:
         per_vs_person_linkable(r)
 
+    opposed_json = make_json([r for r in results if r['rel_type'] == 'ent1_opposes_ent2'])
+    supported_json = make_json([r for r in results if r['rel_type'] == 'ent1_supports_ent2'])
+    opposed_by_json = make_json([r for r in results if r['rel_type'] == 'ent2_opposes_ent1'])
+    supported_by_json = make_json([r for r in results if r['rel_type'] == 'ent2_supports_ent1'])
+    all_json = (opposed_json + supported_by_json + opposed_by_json + supported_by_json)
+
     # build chart information
     labels = list(rels_freq_by_year.keys())
     ent1_opposes_ent2 = []
@@ -297,9 +305,16 @@ def person_vs_person(person_one, person_two):
 
     return render_template(
         "query_person_person.html",
-        items=results,
+        # title relationships
+        opposed=opposed_json,
+        supported=supported_json,
+        opposed_by=opposed_by_json,
+        supported_by=supported_by_json,
+        all_relationships=all_json,
+        # persons information
         entity_one=person_one_info,
         entity_two=person_two_info,
+        # chart information
         labels=labels,
         ent1_opposes_ent2=ent1_opposes_ent2,
         ent1_supports_ent2=ent1_supports_ent2,
@@ -386,6 +401,8 @@ def queries():
     if query_nr == "two":
         entity_one = request.args.get("e1")
         entity_two = request.args.get("e2")
+        print("entity_one: ", entity_one)
+        print("entity_two: ", entity_one)
         return person_vs_person(entity_one, entity_two)
 
     if query_nr == "one":
@@ -396,6 +413,8 @@ def queries():
         e2_info, e2_type = get_info(entity_two)
 
         if e1_type == "person" and e2_type == "person":
+            print("entity_one: ", entity_one)
+            print("entity_two: ", entity_one)
             return person_vs_person(entity_one, entity_two)
 
         elif e1_type == "party" and e2_type == "person":

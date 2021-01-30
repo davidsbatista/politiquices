@@ -715,9 +715,9 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
                 "title": x["title"]["value"],
                 "rel_type": x["rel_type"]["value"],
                 "score": x["score"]["value"][0:5],
-                "ent1": x["ent1"]["value"],
+                "ent1_wiki": x["ent1"]["value"],
                 "ent1_str": x["ent1_str"]["value"],
-                "ent2": x["ent2"]["value"],
+                "ent2_wiki": x["ent2"]["value"],
                 "ent2_str": x["ent2_str"]["value"],
             }
         )
