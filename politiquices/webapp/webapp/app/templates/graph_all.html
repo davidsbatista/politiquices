@@ -1,6 +1,12 @@
 <style type="text/css">
     #viz {
-        width: 100%;
+        width: 85%;
+        height: 98%;
+        border: 2px solid lightgray;
+        font: 12pt arial;
+    }
+    #controls {
+        width: 5%;
         height: 100%;
         border: 2px solid lightgray;
         font: 12pt arial;
@@ -49,9 +55,28 @@
 </script>
 
 <body onload="draw()">
+
     <div class="container">
-        <div id="viz"></div>
-    </div>
+
+        <div class="row"><div class="col-sm">
+             <div id="viz"></div>
+          </div>
+
+        <div class="col-sm">
+          <div id="controls"> controls  inputs</div>
+        </div>
+
+        <div class="col-sm">
+          One of three columns
+        </div>
+
+      </div>
+</div>
+
+
+
+
+
 </body>
 
 <script>

@@ -10,53 +10,56 @@
             <div id="outer_party" class="container d-flex align-items-center justify-content-center">
                 <div class="media">
                     <figure class="figure">
-                        <img class="figure-img img-fluid rounded" src="{{party.party_logo}}" width="120" height="150" alt="">
-                        <figcaption class="figure-caption" style="text-align:center;">
-                            <b>{{party.party_label}}</b>
-                        </figcaption>
+                        <a href=/party_members?q={{party.wiki_id}} target="_blank">
+                            <img class="figure-img img-fluid rounded" src="{{party.party_logo}}" width="120" height="150" alt="">
+                            <figcaption class="figure-caption" style="text-align:center;">
+                                <b>{{party.party_label}}</b>
+                            </figcaption>
+                        </a>
                     </figure>
                 </div>
             </div>
         </div>
 
         <div class="col-xs-6">
-            <center><h4><b>Relações encontradas</b></h4></center>
+            <center><h4><b>{{relationship_text}}</b></h4></center>
         </div>
 
         <div class="col-xs-6">
             <div id="outer_person" class="container d-flex align-items-center justify-content-center">
 
-                <!-- Foto -->
-                <div class="media">
-                    <figure class="figure">
-                        <a href=https://www.wikidata.org/wiki/{{person.wiki_id}} target="_blank">
+            <!-- Foto -->
+            <div class="media">
+                <figure class="figure">
+                    <a href=/entity?q={{person.wiki_id}} target="_blank">
                         <img src={{person.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{person.name}}" title="{{person.name}}">
-                        </a>
                         <figcaption class="figure-caption" style="text-align:center;">
                             <b>{{person.name}}</b>
                         </figcaption>
-                    </figure>
-                </div>
-
-                <!-- Partidos -->
-                <div class="col-auto">
-                    <table>
-                      <tbody>
-                      {% for item in person.parties %}
-                      <tr>
-                          <td>
-                            <a href="/party_members?q={{item.wiki_id}}" target="_blank">
-                                <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
-                            </a>
-                          </td>
-                      </tr>
-                      {% endfor %}
-                      </tbody>
-                    </table>
-                    </div>
-
+                    </a>
+                </figure>
             </div>
+
+            <!-- Partidos -->
+            <div class="col-auto">
+                <table>
+                  <tbody>
+                  {% for item in person.parties %}
+                  <tr>
+                      <td>
+                        <a href="/party_members?q={{item.wiki_id}}" target="_blank">
+                            <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
+                        </a>
+                      </td>
+                  </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+                </div>
+            </div>
+
         </div>
+
 
     </div>
     <br> <br>
@@ -80,7 +83,6 @@
             </thead>
         </table>
     </div>
-
 
 </div>
 

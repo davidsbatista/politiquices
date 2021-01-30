@@ -104,19 +104,8 @@ def build_relationships_year_month_freq(wiki_id: str):
 
 
 def get_chart_labels(opposed_by_freq, opposed_freq, supported_by_freq, supported_freq):
-    if (
-        len(opposed_freq)
-        == len(supported_freq)
-        == len(opposed_by_freq)
-        == len(supported_by_freq)
-        == 0
-    ):
-        max_date = "1994"
-        min_date = "2019"
-    else:
-        min_date, max_date = find_maximum_interval(
-            opposed_freq, supported_freq, opposed_by_freq, supported_by_freq
-        )
+    min_date = "1994"
+    max_date = "2019"
     all_years = []
     current_date = int(min_date)
     while current_date <= int(max_date):

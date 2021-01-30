@@ -53,8 +53,8 @@ def clickable_title(r, wiki_id):
     r["title_clickable"] = title_link
     add_icon(r)
 
-    r['ent1_wiki'] = wiki_id
-    r['ent2_wiki'] = r['other_ent_url'].split('q=')[1]
+    r['ent1_wiki'] = 'http://www.wikidata.org/entity/'+wiki_id
+    r['ent2_wiki'] = 'http://www.wikidata.org/entity/'+r['other_ent_url'].split('q=')[1]
     r['ent1_str'] = r['focus_ent']
     r['ent2_str'] = r['other_ent_name']
 
@@ -92,9 +92,7 @@ def make_json(relationships):
     return json_data
 
 
-def get_relationship(relationship):
-    if relationship == "opõe-se":
-        rel = "ent1_opposes_ent2"
-    elif relationship == "apoia":
-        rel = "ent1_supports_ent2"
-    return rel
+def get_relationship(rel_text):
+    if rel_text == "opõe-se":
+        return "ent1_opposes_ent2"
+    return "ent1_supports_ent2"

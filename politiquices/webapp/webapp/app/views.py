@@ -323,65 +323,56 @@ def person_vs_person(person_one, person_two):
     )
 
 
-def party_vs_person(party_wiki_id, person_wiki_id, relationship, party_info, person_info):
+def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_info):
     """
     relationships between (members of) a party and an entity
     """
-
-    rel = get_relationship(relationship)
-
+    rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_members_of_a_party_with_someone(
         party_wiki_id, person_wiki_id, rel
     )
-
     for r in results:
         per_vs_person_linkable(r)
-
     person_info = get_person_info(person_wiki_id)
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
-
     return render_template(
         "query_party_person.html",
+        relationship_text=rel_text,
         relationships=relationships_json,
         party=party_info,
         person=person_info,
     )
 
 
-def person_vs_party(person_wiki_id, party_wiki_id, relationship, person_info, party_info):
+def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_info):
     """
     relationships between an entity and (members of) a party
     """
-
-    rel = get_relationship(relationship)
-
+    rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_a_person_and_members_of_a_party(
         person_wiki_id, party_wiki_id, rel
     )
-
     for r in results:
         per_vs_person_linkable(r)
-
     person_info = get_person_info(person_wiki_id)
-
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
-
     return render_template(
         "query_person_party.html",
+        relationship_text=rel_text,
         relationships=relationships_json,
         person=person_info,
         party=party_info,
     )
 
 
-def party_vs_party(party_a, party_b, relationship, party_a_info, party_b_info):
+def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
     """
     relationships between (members of) a party and (members of) another party
     """
     party_a_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
     party_b_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
 
-    rel = get_relationship(relationship)
+    rel = get_relationship(rel_text)
 
     results = list_of_spec_relations_between_two_parties(party_a_members, party_b_members, rel)
 
@@ -392,6 +383,7 @@ def party_vs_party(party_a, party_b, relationship, party_a_info, party_b_info):
 
     return render_template(
         "query_party_party.html",
+        relationship_text=rel_text,
         relationships=relationships_json,
         party_one=party_a_info,
         party_two=party_b_info,

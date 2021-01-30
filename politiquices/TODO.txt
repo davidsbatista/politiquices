@@ -1,36 +1,26 @@
 Web App
 =======
 
-    Personalidade:
-    -------------
-        - Mostrar os anos todos em fez de squeeze, fica muito feio!
-
     PER vs PER:
     ----------
-        - Por no nome das pessoas no gráfico/labels
+        - Por no nome das pessoas no gráfico/labels e titulo?
         - "Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas" -> mostrar que está seleccionado
         - person_vs_person(entity_one, entity_two):
             tem que funcionar para dois casos, restricto nas relações e geral, há bugs
 
-
-    Partido vs Partido
-    ------------------
-        - mostrar o tipo de relação pela qual se está a filtrar no titulo da página, entre as entidades
-        - Clicar no partido mostra a pagina dos membros
-        - Mostrar um grafico das personalidades (CDS é um bom caso de uso, pequeno e com muita "batatada" entre eles)
-        - CDS opposes CDS: está mesmo a tirar tudo ? faz sentido verificar a direccao?
-
-
-    PER vs Partido
-    ------------------
-        - mostrar o tipo de relação pela qual se está a filtrar no titulo da página, entre as entidades
+    Partido vs Partido vs PER
+    --------------------------
+        - Por no nome das pessoas no gráfico/labels e titulo?
         - mostrar alguns gráficos, o que?
+            - Mostrar um grafico das personalidades (CDS é um bom caso de uso, pequeno e com muita "batatada" entre eles)
 
+        - bugs nas relaçoes e direcções?
+            - CDS opposes CDS: está mesmo a tirar tudo ? faz sentido verificar a direccao?
+            - está mesmo a tirar tudo ? faz sentido verificar a direccao?
 
 
     Geral
     -----
-        - export: tudo com full link http://www.wikidata.org/entity/Q10263926
         - AJAX loading GIF: centrar
         - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
