@@ -90,3 +90,11 @@ def make_json(relationships):
                           })
 
     return json_data
+
+
+def get_relationship(relationship):
+    if relationship == "opõe-se":
+        rel = "ent1_opposes_ent2"
+    elif relationship == "apoia":
+        rel = "ent1_supports_ent2"
+    return rel

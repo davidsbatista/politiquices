@@ -233,6 +233,7 @@ def personalities_json_cache():
 def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
+    """
     # personalities cache
     all_politiquices_persons, wiki_id = personalities_json_cache()
 
@@ -244,6 +245,7 @@ def main():
 
     # graph edges cache
     graph_edges_cache(wiki_id)
+    """
 
     app.run(debug=True, host="0.0.0.0")
 

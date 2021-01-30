@@ -785,9 +785,9 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(party, person
                 "title": x["title"]["value"],
                 "rel_type": relation,
                 "score": x["score"]["value"][0:5],
-                "ent1": x["ent1"]["value"],
+                "ent1_wiki": x["ent1"]["value"],
                 "ent1_str": x["ent1_str"]["value"],
-                "ent2": person,
+                "ent2_wiki": person,
                 "ent2_str": x["ent2_str"]["value"],
             }
         )
@@ -831,9 +831,9 @@ def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party
                 "title": x["title"]["value"],
                 "rel_type": relation,
                 "score": x["score"]["value"][0:5],
-                "ent1": person,
+                "ent1_wiki": person,
                 "ent1_str": x["ent1_str"]["value"],
-                "ent2": x["ent2"]["value"],
+                "ent2_wiki": x["ent2"]["value"],
                 "ent2_str": x["ent2_str"]["value"],
             }
         )
@@ -877,9 +877,9 @@ def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, r
                 "title": x["title"]["value"],
                 "rel_type": relation,
                 "score": x["score"]["value"][0:5],
-                "ent1": x["person_party_a"]["value"],
+                "ent1_wiki": x["person_party_a"]["value"],
                 "ent1_str": x["ent1_str"]["value"],
-                "ent2": x["person_party_b"]["value"],
+                "ent2_wiki": x["person_party_b"]["value"],
                 "ent2_str": x["ent2_str"]["value"],
             }
         )

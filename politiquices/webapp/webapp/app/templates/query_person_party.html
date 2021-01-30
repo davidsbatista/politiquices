@@ -1,9 +1,10 @@
 
 <br>
 
-<div class="container h-100">
+<div class="container">
 
-    <div class="row h-100 justify-content-center">
+    <!-- Info about the two entities -->
+    <div class="row justify-content-center">
 
         <div class="col-xs-6">
             <div id="outer_person" class="container d-flex align-items-center justify-content-center">
@@ -41,7 +42,7 @@
         </div>
 
         <div class="col-xs-6">
-            Relações de apoio/suporte entre XX e XX
+            <center><h4><b>Relações encontradas</b></h4></center>
         </div>
 
         <div class="col-xs-6">
@@ -61,27 +62,55 @@
 </div>
         </div>
 
-        <table data-pagination="true" data-search="true" data-toggle="table">
-        <thead>
-        <tr>
-            <th data-sortable="true" data-field="data">Data</th>
-            <th data-field="title">Título</th>
-            <th data-align="center" data-field="link">Artigo</th>
-        </tr>
-        </thead>
-        <tbody>
-          {% for item in items %}
-            <tr>
-              <td id="data">{{item.date}}</td>
-              <td id="title">{{item.title_clickable|safe}}</td>
-              <td id="link"><a href={{item.url}} target="_blank"><img src="{{item.link_image}}" width="{{item.image_width}}" height="20"></a></td>
-            </tr>
-          {% endfor %}
-          </tbody>
+    </div>
+    <br> <br>
+
+    <!-- Select list of relationships -->
+    <center id="relationships"><h4><b>Relações expressas em títulos de notícias</b></h4></center>
+    <br><br>
+    <div class="container" id="single_table">
+        <table id="table">
+            <thead>
+                <tr>
+                    <th data-sortable="true" data-field="data">Data</th>
+                    <th data-field="titulo">Título</th>
+                    <th data-field="ent1" data-force-export="true" data-visible="false">Personalidade_1</th>
+                    <th data-field="ent2" data-force-export="true" data-visible="false">Personalidade_2</th>
+                    <th data-field="ent1_wiki" data-force-export="true" data-visible="false">Wikidata_PER_1</th>
+                    <th data-field="ent2_wiki" data-force-export="true" data-visible="false">Wikidata_PER_2</th>
+                    <th data-align="center" data-force-hide="true" data-field="link">Artigo</th>
+                    <th data-field="url" data-force-export="true" data-visible="false">URL</th>
+                </tr>
+            </thead>
         </table>
     </div>
+
 </div>
 
-
 <!-- Datatables: for some reason this needs to reloaded to trigger the rendering of the table -->
-<script src="https://unpkg.com/bootstrap-table@1.18.1/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
+
+<script>
+    var relationships = {{ relationships|safe }};
+    var $table = $('#table');
+    $(function (table) {
+        $('#table').bootstrapTable({
+            data: relationships,
+            //toolbar: "#toolbar",
+            //pagination: true,
+            //sidePagination: "server",
+            //pageSize: "10",
+            //pageList: "[10, 25, 50, All]",
+            search: true,
+            height: "600",
+            showExport: true,
+            exportTypes: ['csv'],
+            exportDataType: 'all',
+            showFooter: false,
+            exportFooter: false
+        });
+    });
+    $(document).scrollTop( $(relationships).offset().top);
+    $('html,body').scrollTop(0);
+
+</script>
