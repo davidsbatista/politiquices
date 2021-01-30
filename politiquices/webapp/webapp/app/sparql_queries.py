@@ -395,28 +395,6 @@ def get_person_detailed_info(wiki_id):
 
 
 @lru_cache
-def get_party_of_entity(wiki_id):
-    query = f"""
-        SELECT DISTINCT ?party ?party_label {{
-            wd:{wiki_id} wdt:P31 wd:Q5.
-            SERVICE <{wikidata_endpoint}> {{ 
-                wd:{wiki_id} p:P102 ?partyStmnt .
-                ?partyStmnt ps:P102 ?party.
-                ?party rdfs:label ?party_label FILTER(LANG(?party_label)="pt") .  
-            }}  
-        }}
-        """
-
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
-    parties = []
-    for x in result["results"]["bindings"]:
-        parties.append(
-            {"wiki_id": x["party"]["value"].split("/")[-1], "name": x["party_label"]["value"]}
-        )
-    return parties
-
-
-@lru_cache
 def get_person_relationships(wiki_id):
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
@@ -927,7 +905,7 @@ def get_entities_without_image():
         entities.append(
             {"wikidata_id": x["item"]["value"].split("/")[-1], "label": x["label"]["value"]}
         )
-    print(len(entities), "entities retrieved")
+
     return entities
 
 

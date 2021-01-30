@@ -1,9 +1,9 @@
+
 <div class="container" id="container">
 
     <br>
 
     <center><h4><b>{{items.name}}</b></h4></center>
-
     <br>
 
     <div id="outer" class="container d-flex align-items-center justify-content-center">
@@ -84,12 +84,13 @@
     <br><br>
 
     <!-- Char with relationships throughout the years -->
+    <center><h4><b>Frequência das relações ao longo dos anos</b></h4></center>
+    <br>
     <div class="container h-100">
       <div class="row h-100 justify-content-center align-items-center">
         <canvas id="myChart" width="900" height="250"></canvas>
       </div>
     </div>
-
     <script>
     var ctx = document.getElementById('myChart');
     var color = Chart.helpers.color;
@@ -105,8 +106,8 @@
         data: {
           labels: year_labels,
           datasets: [
-            {label: 'acusa', backgroundColor: "#FF0000", fill: true, data: opposed_freq},
-            {label: 'é acusado(a)', backgroundColor: "#980000", fill: true, data: opposed_by_freq},
+            {label: 'opõe-se', backgroundColor: "#FF0000", fill: true, data: opposed_freq},
+            {label: 'é oposto(a) por', backgroundColor: "#980000", fill: true, data: opposed_by_freq},
             {label: 'apoia', backgroundColor: "#44861E", fill: true, data: supported_freq},
             {label: 'é apoiado(a)', backgroundColor: "#70DA33", fill: false, true: supported_by_freq}
             ]
@@ -118,7 +119,7 @@
         }
     });
 
-    // Click on table rows
+    // Click on table rows of most frequent related personalities
     jQuery(document).ready(function($) {
         $(".clickable-row").click(function() {
             var url = $(this).data("href")
@@ -145,16 +146,18 @@
     <br><br>
 
     <!-- Top personalities for each relationship type -->
+    <center><h4><b>Com quem se relaciona mais frequentemente?</b></h4></center>
+    <br>
     <div class="row justify-content-center">
 
       <div class="col-auto">
-          <b><center>Acusa</center></b>
+          <b><center>Opõe-se</center></b>
             <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_person_opposes %}
                 <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
-                    <td>{{item.name}}</td>
-                    <td>{{item.nr_articles}}</td>
+                    <td class="underline-on-hover">{{item.name}}</td>
+                    <td class="underline-on-hover">{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -167,8 +170,8 @@
               <tbody>
               {% for item in items.top_relations.who_person_supports %}
                 <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
-                    <td>{{item.name}}</td>
-                    <td>{{item.nr_articles}}</td>
+                    <td class="underline-on-hover">{{item.name}}</td>
+                    <td class="underline-on-hover">{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -176,13 +179,13 @@
       </div>
 
       <div class="col-auto">
-          <b><center>Acusado(a) por</center></b>
+          <b><center>Oposto(a) por</center></b>
           <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_opposes_person %}
                 <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
-                    <td>{{item.name}}</td>
-                    <td>{{item.nr_articles}}</td>
+                    <td class="underline-on-hover">{{item.name}}</td>
+                    <td class="underline-on-hover">{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -196,8 +199,8 @@
               <tbody>
               {% for item in items.top_relations.who_supports_person %}
                 <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
-                    <td>{{item.name}}</td>
-                    <td>{{item.nr_articles}}</td>
+                    <td class="underline-on-hover">{{item.name}}</td>
+                    <td class="underline-on-hover">{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -209,46 +212,43 @@
     <br><br>
 
     <!-- Select list of relationships -->
-    <div id="relationships" class="container">
-        <nav class="navbar navbar-expand-lg">
-        <div class="container">
-          <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav mr">
-              <li class="nav-item">
-                <a class="nav-link" id="opposes">Acusa</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="supports">Apoia</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="opposed_by">Acusado(a) por</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="supported_by">Apoiado(a) por</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="all">Todas</a>
-              </li>
-            </ul>
-          </div>
+    <center id="relationships"><h4><b>Relações expressas em títulos de notícias</b></h4></center>
+    <br>
+
+    <div class="container">
+      <div class="row">
+        <div id="opposes" class="h4 col-sm">
+          Opõe-se
         </div>
-    </nav>
+        <div id="supports" class="h4 col-sm">
+          Apoia
+        </div>
+        <div id="opposed_by" class="h4 col-sm">
+          Oposto(a) por
+        </div>
+        <div id="supported_by" class="h4 col-sm">
+          Apoiado(a) por
+        </div>
+        <div id="all" class="h4 col-sm">
+          Todas
+        </div>
+      </div>
     </div>
 
-    <!-- Tables with all the titles: see: https://examples.bootstrap-table.com/#welcome.html -->
+    <br>
+
     <div class="container" id="single_table">
-      <center><h3 id="table_title">Acusa</h3></center>
-        <table id="table"
-               data-pagination="true"
-               data-search="true"
-               data-toggle="table"
-               data-page-size="30">
+        <table id="table">
             <thead>
                 <tr>
                     <th data-sortable="true" data-field="data">Data</th>
                     <th data-field="titulo">Título</th>
-                    <th data-align="center" data-field="link">Artigo</th>
-                    <th data-field="url" data-visible="false">URL</th>
+                    <th data-field="ent1" data-force-export="true" data-visible="false">Personalidade_1</th>
+                    <th data-field="ent2" data-force-export="true" data-visible="false">Personalidade_2</th>
+                    <th data-field="ent1_wiki" data-force-export="true" data-visible="false">Wikidata_PER_1</th>
+                    <th data-field="ent2_wiki" data-force-export="true" data-visible="false">Wikidata_PER_2</th>
+                    <th data-align="center" data-force-hide="true" data-field="link">Artigo</th>
+                    <th data-field="url" data-force-export="true" data-visible="false">URL</th>
                 </tr>
             </thead>
         </table>
@@ -264,136 +264,52 @@
     var supported_by = {{ supported_by|safe }};
     var all_relationships =  {{ all_relationships|safe }};
 
-    // by default we show the 'opposed' table
+    console.log(opposed);
+
     var $table = $('#table');
+
     $(function (table) {
         $('#table').bootstrapTable({
-            data: opposed
+            data: opposed,  // by default we show the 'opposed' table
+            //toolbar: "#toolbar",
+            //pagination: true,
+            //sidePagination: "server",
+            //pageSize: "10",
+            //pageList: "[10, 25, 50, All]",
+            search: true,
+            height: "600",
+            showExport: true,
+            exportTypes: ['csv'],
+            exportDataType: 'all',
+            showFooter: false,
+            exportFooter: false
         });
     });
-
-    $(document).scrollTop( $(relationships).offset().top );
-
+    $(document).scrollTop( $(relationships).offset().top);
 
     $("#opposes").click(function() {
-      $('#single_table').empty();
-      $('#single_table').append('<center><h3> Acusa </h3></center>');
-      $('#single_table').append(
-      '<table id=\"table\"\
-             data-pagination=\"true\"\
-             data-search=\"true\"\
-             data-toggle=\"table\"\
-             data-page-size=\"30\">\
-          <thead>\
-              <tr>\
-                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
-                  <th data-field=\"titulo\">Título</th>\
-                  <th data-align="center" data-field="link">Artigo</th>\
-                  <th data-field="url" data-visible="false">URL</th>\
-              </tr>\
-          </thead>\
-      </table>');
-      $('#table').bootstrapTable({
-          data: opposed
-      });
-      $(document).scrollTop( $(relationships).offset().top );
+      $('#table').bootstrapTable('load', opposed);
+      $(document).scrollTop($(relationships).offset().top);
     });
 
     $("#supports").click(function() {
-      $('#single_table').empty();
-      $('#single_table').append('<center><h3> Apoia </h3></center>');
-      $('#single_table').append(
-      '<table id=\"table\"\
-             data-pagination=\"true\"\
-             data-search=\"true\"\
-             data-toggle=\"table\"\
-             data-page-size=\"30\">\
-          <thead>\
-              <tr>\
-                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
-                  <th data-field=\"titulo\">Título</th>\
-                  <th data-align="center" data-field="link">Artigo</th>\
-                  <th data-field="url" data-visible="false">URL</th>\
-              </tr>\
-          </thead>\
-      </table>');
-      $('#table').bootstrapTable({
-          data: supported
-      });
-      $(document).scrollTop( $(relationships).offset().top );
-
+      $('#table').bootstrapTable('load', supported);
+      $(document).scrollTop($(relationships).offset().top);
     });
 
     $("#opposed_by").click(function() {
-      $('#single_table').empty();
-      $('#single_table').append('<center><h3> Acusado(a) </h3></center>');
-      $('#single_table').append(
-      '<table id=\"table\"\
-             data-pagination=\"true\"\
-             data-search=\"true\"\
-             data-toggle=\"table\"\
-             data-page-size=\"30\">\
-          <thead>\
-              <tr>\
-                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
-                  <th data-field=\"titulo\">Título</th>\
-                  <th data-align="center" data-field="link">Artigo</th>\
-                  <th data-field="url" data-visible="false">URL</th>\
-              </tr>\
-          </thead>\
-      </table>');
-      $('#table').bootstrapTable({
-          data: opposed_by
-      });
-      $(document).scrollTop( $(relationships).offset().top );
+      $('#table').bootstrapTable('load', opposed_by);
+      $(document).scrollTop($(relationships).offset().top);
     });
 
     $("#supported_by").click(function() {
-      $('#single_table').empty();
-      $('#single_table').append('<center><h3> Apoiado(a) por </h3></center>');
-      $('#single_table').append(
-      '<table id=\"table\"\
-             data-pagination=\"true\"\
-             data-search=\"true\"\
-             data-toggle=\"table\"\
-             data-page-size=\"30\">\
-          <thead>\
-              <tr>\
-                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
-                  <th data-field=\"titulo\">Título</th>\
-                  <th data-align="center" data-field="link">Artigo</th>\
-                  <th data-field="url" data-visible="false">URL</th>\
-              </tr>\
-          </thead>\
-      </table>');
-      $('#table').bootstrapTable({
-          data: supported_by
-      });
-      $(document).scrollTop( $(relationships).offset().top );
+      $('#table').bootstrapTable('load', supported_by);
+      $(document).scrollTop($(relationships).offset().top);
     });
 
     $("#all").click(function() {
-      $('#single_table').empty();
-      $('#single_table').append('<center><h3> Todas as relações </h3></center>');
-      $('#single_table').append(
-      '<table id=\"table\"\
-             data-pagination=\"true\"\
-             data-search=\"true\"\
-             data-toggle=\"table\"\
-             data-page-size=\"30\">\
-          <thead>\
-              <tr>\
-                  <th data-sortable=\"true\" data-field=\"data\">Data</th>\
-                  <th data-field=\"titulo\">Título</th>\
-                  <th data-align="center" data-field="link">Artigo</th>\
-                  <th data-field="url" data-visible="false">URL</th>\
-              </tr>\
-          </thead>\
-      </table>');
-      $('#table').bootstrapTable({
-          data: all_relationships
-      });
-      $(document).scrollTop( $(relationships).offset().top );
+      $('#table').bootstrapTable('load', all_relationships);
+      $(document).scrollTop($(relationships).offset().top);
     });
 
     $('html,body').scrollTop(0);

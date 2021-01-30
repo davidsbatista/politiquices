@@ -1,16 +1,45 @@
 Web App
 =======
 
-    - Top (Acusa | Apoia | Acusado(a) por | Apoiado(a) por) -> tirar scroll se <= 10
-    - Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas -> maior e com feedback que é link
-    - AJAX loading GIF: centrar
-    - Indexar colecção CHAVE no server e fazer links para politiquices.pt
-    - Quando não há resultados, indicar e ficar no index.html
-    - Speed up party vs party queries, how?:    https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
-    - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
-    - 'Procurar' a funcionar com "ENTER":   https://stackoverflow.com/questions/24667090/jquery-autocomplete-enter-key-issue
-    - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
+    Partido vs Partido
+    ------------------
+        - Mostrar um grafico das personalidades (CDS é um bom caso de uso, pequeno e com muita "batatada" entre eles)
+        - mostrar o tipo de relação pela qual se está a filtrar
 
+
+    PER vs Partido
+    ------------------
+        - mostrar o tipo de relação pela qual se está a filtrar
+        - mostrar alguns gráficos, o que?
+
+
+
+    PER vs PER
+    ----------
+        - Por no nome das pessoas no gráfico/labels
+        - "Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas" -> mostrar que está seleccionado
+
+
+    Geral
+    -----
+        - AJAX loading GIF: centrar
+        - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
+        - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
+
+        - por o javascript todo local
+        - ver o javasript (tabelas carregado noutras paginas party_party, person_party, party_person)
+
+    Index
+    -----
+        - Quando não há resultados, indicar e ficar no index.html
+        - Mostrar actualizar o outro input box apenas com co-occorrências
+
+
+    Backend
+    -------
+        - server_url: "bolt://politiquices.pt:7687.", ou 0.0.0.0 dependendo de onde se está
+        - Indexar colecção CHAVE no server e fazer links para politiquices.pt
+        - Speed up party vs party queries, how?:    https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
     Stats
     -----
@@ -31,12 +60,6 @@ Web App
         - para cada personalidade mostrar a rede com a possibilidade de seleccionar o grau e as relações
 
         - https://community.neo4j.com/t/the-graph-display-on-using-neovis-js-can-be-more-presentable/2457/5
-
-            MATCH (a:Person),(b:Person)
-            WHERE a.name = 'A' AND b.name = 'B'
-            CREATE (a)-[r:RELTYPE { name: a.name + '<->' + b.name }]->(b)
-            RETURN type(r), r.name
-
         - https://medium.com/neo4j/graph-visualization-with-neo4j-using-neovis-js-a2ecaaa7c379
 
         - Cor do node para cada partido
@@ -46,52 +69,50 @@ Web App
 
         # ToDo: mapping de cores para o partido
 
-    edge_color_mapping = {
-        "ent1_opposes_ent2": "#FF0000",
-        "ent1_opposed_by_ent2": "#980000",
-        "ent1_supports_ent2": "#44861E",
-        "ent1_supported_by_ent2": "#70DA33",
-        "ent2_opposes_ent1": "#FF0000",
-        "ent2_opposed_by_ent1": "#980000",
-        "ent2_supports_ent1": "#44861E",
-        "ent2_supported_by_ent1": "#70DA33",
-    }
+        edge_color_mapping = {
+            "ent1_opposes_ent2": "#FF0000",
+            "ent1_opposed_by_ent2": "#980000",
+            "ent1_supports_ent2": "#44861E",
+            "ent1_supported_by_ent2": "#70DA33",
+            "ent2_opposes_ent1": "#FF0000",
+            "ent2_opposed_by_ent1": "#980000",
+            "ent2_supports_ent1": "#44861E",
+            "ent2_supported_by_ent1": "#70DA33",
+        }
 
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
 
-    Low Priority
-    ------------
-        Party Members
-        --------------
-         - load on scroll down
-
-        All Entities:
-        -------------
-         - mais imagens por linha
-         - cache + cópia do resize das imagens para este display
-         - size original para a página principal da entidade only
-
-        Varios:
-        -------
-         - Charts with links, possible ?
-         - Export table results: https://bootstrap-table.com/docs/extensions/export/
-         - ah tipo uma infobox, mas horizontal, com os dados da pessoa, é boa ideia
-         - tirar todos os alerts -> subsituir por uma pagina de erro
-         - pesquisar: permitir pesquisar sem acentos
-         - clicar no branco fazer collapse ao menu (hamburger)
+    Party Members
+    --------------
+        - load on scroll down
 
 
-         Agregacoes + info na personalidade:
-         ------------------------------------
-          - Governo
-          - Assembleias
-          - Profissao
-          - Educacao
-          - listar todos os membros do Governo X
-          - listar todos os que já foram Ministros <qq cena>
-          - quem acusou/apoiou <personalidade_com_um_cargo>
+    Agregacoes + info na personalidade:
+    ------------------------------------
+     - Governo
+     - Assembleias
+     - Profissao
+     - Educacao
+     - listar todos os membros do Governo X
+     - listar todos os que já foram Ministros <qq cena>
+
+
+    Personalidades:
+    -------------
+     - mais imagens por linha
+     - cache + cópia do resize das imagens para este display
+     - size original para a página principal da entidade only
+
+
+    Varios:
+    -------
+     - Charts with links, possible ?
+     - tirar todos os alerts -> subsituir por uma pagina de erro
+     - pesquisar: permitir pesquisar sem acentos
+     - clicar no branco fazer collapse ao menu (hamburger)
+
 
 
 
@@ -110,11 +131,8 @@ Backend-stuff
 
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
-        - timeline de contradições entre duas personalidades
-
         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
         - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
-
         - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
 
 

@@ -118,21 +118,21 @@ def graph_edges_cache(wiki_id_info):
         elif x["rel_type"].startswith("ent2"):
             edge_counts[wiki_id_b][wiki_id_a][x["rel_type"]] += 1
 
-    with open('neo4j_import/'+'nodes.csv', 'w') as f_out:
+    with open("neo4j_import/" + "nodes.csv", "w") as f_out:
         for k, v in nodes.items():
-            f_out.write(f'{k},{v}'+'\n')
+            f_out.write(f"{k},{v}" + "\n")
 
-    f_out_opposes = open('neo4j_import/'+'edges_opposes.csv', 'w')
-    f_out_supports = open('neo4j_import/'+'edges_supports.csv', 'w')
-    
+    f_out_opposes = open("neo4j_import/" + "edges_opposes.csv", "w")
+    f_out_supports = open("neo4j_import/" + "edges_supports.csv", "w")
+
     for start_node, end_nodes in edge_counts.items():
         for end_node, rels in end_nodes.items():
             for rel_type, freq in rels.items():
-                if 'opposes' in rel_type:
-                    f_out_opposes.write(f'{str(start_node)},{str(end_node)},{str(freq)}'+'\n')
+                if "opposes" in rel_type:
+                    f_out_opposes.write(f"{str(start_node)},{str(end_node)},{str(freq)}" + "\n")
 
-                if 'supports' in rel_type:
-                    f_out_supports.write(f'{str(start_node)},{str(end_node)},{str(freq)}'+'\n')
+                if "supports" in rel_type:
+                    f_out_supports.write(f"{str(start_node)},{str(end_node)},{str(freq)}" + "\n")
 
     f_out_opposes.close()
     f_out_supports.close()
@@ -156,6 +156,24 @@ def entities_top_co_occurrences(wiki_id):
 
 def parties_json_cache(all_politiquices_persons):
 
+    # rename parties names to include short-forms
+    parties_mapping = {
+        "Bloco de Esquerda": "BE - Bloco de Esquerda",
+        "Coliga\u00e7\u00e3o Democr\u00e1tica Unit\u00e1ria":
+            "CDU - Coliga\u00e7\u00e3o Democr\u00e1tica Unit\u00e1ria (PCP-PEV)",
+        "Juntos pelo Povo": "JPP - Juntos pelo Povo",
+        "Partido Comunista Portugu\u00eas": "PCP - Partido Comunista Portugu\u00eas",
+        "Partido Social Democrata": "PSD - Partido Social Democrata",
+        "Partido Socialista": "PS - Partido Socialista",
+        "Partido Socialista Revolucion\u00e1rio": "PSR - Partido Socialista Revolucion\u00e1rio",
+        "Partido Democr\u00e1tico Republicano": "PDR - Partido Democr\u00e1tico Republicano",
+        "Pessoas\u2013Animais\u2013Natureza": "PAN - Pessoas\u2013Animais\u2013Natureza",
+        "Partido Comunista dos Trabalhadores Portugueses":
+            "PCTP/MRPP - Partido Comunista dos Trabalhadores Portugueses",
+        "RIR": "RIR - Reagir Incluir Reciclar",
+        "Partido da Terra": "MPT - Partido da Terra"
+    }
+
     # parties cache
     parties_data = get_all_parties_with_affiliated_count()
     print(f"{len(parties_data)} parties info (image + nr affiliated personalities)")
@@ -164,7 +182,11 @@ def parties_json_cache(all_politiquices_persons):
 
     # parties cache for search box, filtering only portuguese political parties
     parties = [
-        {"name": x["party_label"], "wiki_id": x["wiki_id"], "image_url": x["party_logo"]}
+        {
+            "name": parties_mapping.get(x["party_label"], x["party_label"]),
+            "wiki_id": x["wiki_id"],
+            "image_url": x["party_logo"],
+        }
         for x in sorted(parties_data, key=lambda x: x["party_label"])
         if x["party_country"] == "Portugal"
     ]
@@ -212,7 +234,7 @@ def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
     # personalities cache
-    all_politiquices_persons, wiki_id = personalities_json_cache()
+    # all_politiquices_persons, wiki_id = personalities_json_cache()
 
     # parties cache
     # parties_json_cache(all_politiquices_persons)
@@ -221,7 +243,7 @@ def main():
     # entities_top_co_occurrences(wiki_id)
 
     # graph edges cache
-    graph_edges_cache(wiki_id)
+    # graph_edges_cache(wiki_id)
 
     app.run(debug=True, host="0.0.0.0")
 

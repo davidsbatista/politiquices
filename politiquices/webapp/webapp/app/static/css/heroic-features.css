@@ -82,6 +82,10 @@ body.loading .modal {
 
 [data-href] { cursor: pointer; }
 
+.underline-on-hover:hover {
+    text-decoration: underline;
+}
+
 
 /* Input Search box on the nav-bar drop-down show over the page*/
 #search-wrapper {

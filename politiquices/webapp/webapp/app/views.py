@@ -10,7 +10,6 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_entities_without_image,
     get_nr_articles_per_year,
     get_nr_of_persons,
-    get_party_of_entity,
     get_person_info,
     get_person_relationships,
     get_relationships_between_two_entities,
@@ -23,11 +22,7 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     all_persons_freq,
 )
 
-from politiquices.webapp.webapp.app.relationships import (
-    build_relationships_by_year,
-    get_chart_labels,
-    fill_zero_values,
-)
+from politiquices.webapp.webapp.app.relationships import build_relationships_by_year
 from politiquices.webapp.webapp.app.utils import clickable_title, make_json
 from politiquices.webapp.webapp.app.utils import per_vs_person_linkable
 
@@ -140,7 +135,7 @@ def detail_entity():
 
     if from_search:
         return render_template(
-            "entity_timeline.html",
+            "entity_info.html",
             items=items,
             opposed=opposed_json,
             supported=supported_json,
@@ -199,18 +194,6 @@ def party_members():
         logo=party_logo,
         party_wiki_id=wiki_id,
     )
-
-
-@app.route("/person_party")
-def get_person_party():
-    person_wiki_id = request.args.get("entity")
-    parties = get_party_of_entity(person_wiki_id)
-
-    if not parties:
-        return "None"
-
-    # ToDo: handle the case with several parties/other things
-    return jsonify(parties[0])
 
 
 # Grafo
@@ -289,12 +272,10 @@ def get_info(wiki_id):
         return info[0], "person"
 
 
-def person_vs_person(entity_one, entity_two):
+def person_vs_person(person_one, person_two):
     """
     relationships between two persons
     """
-    person_one = entity_one
-    person_two = entity_two
     person_one_info = get_person_info(person_one)
     person_two_info = get_person_info(person_two)
     results, rels_freq_by_year = get_relationships_between_two_entities(person_one, person_two)
@@ -302,7 +283,7 @@ def person_vs_person(entity_one, entity_two):
     for r in results:
         per_vs_person_linkable(r)
 
-    # information for chart
+    # build chart information
     labels = list(rels_freq_by_year.keys())
     ent1_opposes_ent2 = []
     ent1_supports_ent2 = []
@@ -332,7 +313,7 @@ def party_vs_person(party_wiki_id, person_wiki_id, relationship, party_info, per
     relationships between (members of) a party and an entity
     """
 
-    if relationship == "opoe-se":
+    if relationship == "opõe-se":
         rel = "ent1_opposes_ent2"
     elif relationship == "apoia":
         rel = "ent1_supports_ent2"
@@ -356,7 +337,7 @@ def person_vs_party(person_wiki_id, party_wiki_id, relationship, person_info, pa
     relationships between an entity and (members of) a party
     """
 
-    if relationship == "opoe-se":
+    if relationship == "opõe-se":
         rel = "ent1_opposes_ent2"
     elif relationship == "apoia":
         rel = "ent1_supports_ent2"
@@ -382,7 +363,7 @@ def party_vs_party(party_a, party_b, relationship, party_a_info, party_b_info):
     party_a_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
     party_b_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
 
-    if relationship == "opoe-se":
+    if relationship == "opõe-se":
         rel = "ent1_opposes_ent2"
     elif relationship == "apoia":
         rel = "ent1_supports_ent2"
