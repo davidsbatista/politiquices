@@ -234,16 +234,16 @@ def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
     # personalities cache
-    # all_politiquices_persons, wiki_id = personalities_json_cache()
+    all_politiquices_persons, wiki_id = personalities_json_cache()
 
     # parties cache
-    # parties_json_cache(all_politiquices_persons)
+    parties_json_cache(all_politiquices_persons)
 
     # entities co-occurrences cache
-    # entities_top_co_occurrences(wiki_id)
+    entities_top_co_occurrences(wiki_id)
 
     # graph edges cache
-    # graph_edges_cache(wiki_id)
+    graph_edges_cache(wiki_id)
 
     app.run(debug=True, host="0.0.0.0")
 
