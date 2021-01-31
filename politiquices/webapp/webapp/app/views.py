@@ -5,7 +5,8 @@ from app import app
 from flask import request, jsonify
 from flask import render_template
 
-from politiquices.webapp.webapp.app.sparql_queries import build_relationships_by_year
+from politiquices.webapp.webapp.app.sparql_queries import build_relationships_by_year, \
+    list_of_spec_relations_between_two_persons
 from politiquices.webapp.webapp.app.data_models import Person
 from politiquices.webapp.webapp.app.sparql_queries import (
     get_entities_without_image,
@@ -276,7 +277,7 @@ def get_info(wiki_id):
         return info[0], "person"
 
 
-def person_vs_person(person_one, person_two):
+def entity_vs_entity(person_one, person_two):
     """
     get all the relationships between two persons
     """
@@ -306,7 +307,7 @@ def person_vs_person(person_one, person_two):
         ent1_supported_by_ent2.append(rels_freq_by_year[year]["ent1_supported_by_ent2"])
 
     return render_template(
-        "query_person_person.html",
+        "entity_vs_entity.html",
         # title relationships
         opposed=opposed,
         supported=supported,
@@ -322,6 +323,21 @@ def person_vs_person(person_one, person_two):
         ent1_supports_ent2=ent1_supports_ent2,
         ent1_opposed_by_ent2=ent1_opposed_by_ent2,
         ent1_supported_by_ent2=ent1_supported_by_ent2,
+    )
+
+
+def person_vs_person_restricted(person_one, person_two, rel_text, person_one_info, person_two_info):
+    rel = get_relationship(rel_text)
+    results = list_of_spec_relations_between_two_persons(person_one, person_two, rel)
+    for r in results:
+        per_vs_person_linkable(r)
+    relationships_json = make_json([r for r in results if r['rel_type'] == rel])
+    return render_template(
+        "query_person_person.html",
+        relationship_text=rel_text,
+        relationships=relationships_json,
+        person_one=person_one_info,
+        person_two=person_two_info,
     )
 
 
@@ -400,29 +416,23 @@ def queries():
     if query_nr == "two":
         entity_one = request.args.get("e1")
         entity_two = request.args.get("e2")
-        print("query two")
-        print("entity_one: ", entity_one)
-        print("entity_two: ", entity_two)
-        return person_vs_person(entity_one, entity_two)
+        return entity_vs_entity(entity_one, entity_two)
 
     if query_nr == "one":
         entity_one = request.args.get("e1")
         entity_two = request.args.get("e2")
-        relationship = request.args.get("relationship")
+        rel_text = request.args.get("relationship")
         e1_info, e1_type = get_info(entity_one)
         e2_info, e2_type = get_info(entity_two)
 
         if e1_type == "person" and e2_type == "person":
-            print("query one+")
-            print("entity_one: ", entity_one)
-            print("entity_two: ", entity_one)
-            return person_vs_person(entity_one, entity_two)
+            return person_vs_person_restricted(entity_one, entity_two, rel_text, e1_info, e2_info)
 
         elif e1_type == "party" and e2_type == "person":
-            return party_vs_person(entity_one, entity_two, relationship, e1_info, e2_info)
+            return party_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info)
 
         elif e1_type == "person" and e2_type == "party":
-            return person_vs_party(entity_one, entity_two, relationship, e1_info, e2_info)
+            return person_vs_party(entity_one, entity_two, rel_text, e1_info, e2_info)
 
         elif e1_type == "party" and e2_type == "party":
-            return party_vs_party(entity_one, entity_two, relationship, e1_info, e2_info)
+            return party_vs_party(entity_one, entity_two, rel_text, e1_info, e2_info)

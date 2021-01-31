@@ -665,7 +665,6 @@ def build_relationships_by_year(wiki_id: str):
     }
 
 
-# Relationship Queries
 @lru_cache
 def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
     query = f"""
@@ -770,6 +769,47 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
         relationships.append(relationship)
 
     return relationships, rels_freq_by_year
+
+
+# Relationship Queries
+@lru_cache
+def list_of_spec_relations_between_two_persons(wiki_id_one, wiki_id_two, rel_type):
+    query = f"""
+        SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
+        WHERE {{          
+          ?rel my_prefix:ent1 wd:{wiki_id_one};
+               my_prefix:ent2 wd:{wiki_id_two};       
+               my_prefix:type '{rel_type}';
+               my_prefix:score ?score;
+               my_prefix:arquivo ?arquivo_doc;
+               my_prefix:ent1 ?ent1;
+               my_prefix:ent2 ?ent2;
+               my_prefix:ent1_str ?ent1_str;
+               my_prefix:ent2_str ?ent2_str.
+          
+          ?arquivo_doc dc:title ?title ;
+                       dc:date  ?date .
+        }}
+        ORDER BY ASC(?date)
+        """
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = []
+    for x in result["results"]["bindings"]:
+        results.append(
+            {
+                "url": x["arquivo_doc"]["value"],
+                "date": x["date"]["value"],
+                "title": x["title"]["value"],
+                "score": x["score"]["value"][0:5],
+                "rel_type": rel_type,
+                "ent1_wiki": wiki_id_one,
+                "ent1_str": x["ent1_str"]["value"],
+                "ent2_wiki": x["ent2"]["value"],
+                "ent2_str": x["ent2_str"]["value"],
+            }
+        )
+
+    return results
 
 
 @lru_cache

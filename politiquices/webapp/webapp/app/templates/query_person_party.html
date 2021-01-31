@@ -9,36 +9,35 @@
         <div class="col-xs-6">
             <div id="outer_person" class="container d-flex align-items-center justify-content-center">
 
-            <!-- Foto -->
-            <div class="media">
-                <figure class="figure">
-                    <a href=/entity?q={{person.wiki_id}} target="_blank">
-                        <img src={{person.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{person.name}}" title="{{person.name}}">
-                        <figcaption class="figure-caption" style="text-align:center;">
-                            <b>{{person.name}}</b>
-                        </figcaption>
-                    </a>
-                </figure>
-            </div>
-
-            <!-- Partidos -->
-            <div class="col-auto">
-                <table>
-                  <tbody>
-                  {% for item in person.parties %}
-                  <tr>
-                      <td>
-                        <a href="/party_members?q={{item.wiki_id}}" target="_blank">
-                            <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
+                <!-- Foto -->
+                <div class="media">
+                    <figure class="figure">
+                        <a href=/entity?q={{person.wiki_id}} target="_blank">
+                            <img src={{person.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{person.name}}" title="{{person.name}}">
+                            <figcaption class="figure-caption" style="text-align:center;">
+                                <b>{{person.name}}</b>
+                            </figcaption>
                         </a>
-                      </td>
-                  </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
+                    </figure>
                 </div>
-            </div>
 
+                <!-- Partidos -->
+                <div class="col-auto">
+                    <table>
+                      <tbody>
+                      {% for item in person.parties %}
+                      <tr>
+                          <td>
+                            <a href="/party_members?q={{item.wiki_id}}" target="_blank">
+                                <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
+                            </a>
+                          </td>
+                      </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                    </div>
+            </div>
         </div>
 
         <div class="col-xs-6">

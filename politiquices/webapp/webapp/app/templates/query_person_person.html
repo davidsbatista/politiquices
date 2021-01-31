@@ -7,57 +7,17 @@
     <div class="row justify-content-center">
 
         <div class="col-xs-6">
-
-            <div id="outer_ent1" class="container d-flex align-items-center justify-content-center">
-                <!-- Partidos -->
-                <div class="col-auto">
-                    <table>
-                      <tbody>
-                      {% for item in entity_one.parties %}
-                      <tr>
-                          <td>
-                            <a href="/party_members?q={{item.wiki_id}}" target="_blank">
-                                <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
-                            </a>
-                          </td>
-                      </tr>
-                      {% endfor %}
-                      </tbody>
-                    </table>
-                </div>
+            <div class="container d-flex align-items-center justify-content-center">
 
                 <!-- Foto -->
                 <div class="media">
                     <figure class="figure">
-                        <a href=/entity?q={{entity_one.wiki_id}} target="_blank">
-                        <img src={{entity_one.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{entity_one.name}}" title="{{entity_one.name}}">
+                        <a href=/entity?q={{person_one.wiki_id}} target="_blank">
+                            <img src={{person_one.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{person_one.name}}" title="{{person_one.name}}">
+                            <figcaption class="figure-caption" style="text-align:center;">
+                                <b>{{person_one.name}}</b>
+                            </figcaption>
                         </a>
-                        <figcaption class="figure-caption" style="text-align:center;">
-                            <b>{{entity_one.name}}</b>
-                        </figcaption>
-                    </figure>
-                </div>
-
-            </div>
-
-        </div>
-
-        <div class="col-xs-6">
-            <center><h4><b>Relações encontradas</b></h4></center>
-        </div>
-
-        <div class="col-xs-6">
-            <div id="outer_ent2" class="container d-flex align-items-center justify-content-center">
-
-                <!-- Foto -->
-                <div class="media">
-                    <figure class="figure">
-                        <a href=/entity?q={{entity_two.wiki_id}} target="_blank">
-                        <img src={{entity_two.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{entity_two.name}}" title="{{entity_two.name}}">
-                        </a>
-                        <figcaption class="figure-caption" style="text-align:center;">
-                            <b>{{entity_two.name}}</b>
-                        </figcaption>
                     </figure>
                 </div>
 
@@ -65,7 +25,7 @@
                 <div class="col-auto">
                     <table>
                       <tbody>
-                      {% for item in entity_two.parties %}
+                      {% for item in person_one.parties %}
                       <tr>
                           <td>
                             <a href="/party_members?q={{item.wiki_id}}" target="_blank">
@@ -77,75 +37,51 @@
                       </tbody>
                     </table>
                     </div>
+            </div>
+        </div>
 
+        <div class="col-xs-6">
+            <center><h4><b>{{relationship_text}}</b></h4></center>
+        </div>
+
+        <div class="col-xs-6">
+            <div class="container d-flex align-items-center justify-content-center">
+
+                <!-- Foto -->
+                <div class="media">
+                    <figure class="figure">
+                        <a href=/entity?q={{person_two.wiki_id}} target="_blank">
+                            <img src={{person_two.image_url}} class="figure-img img-fluid rounded" width="144" height="180" alt="{{person_two.name}}" title="{{person_two.name}}">
+                            <figcaption class="figure-caption" style="text-align:center;">
+                                <b>{{person_two.name}}</b>
+                            </figcaption>
+                        </a>
+                    </figure>
+                </div>
+
+                <!-- Partidos -->
+                <div class="col-auto">
+                    <table>
+                      <tbody>
+                      {% for item in person_two.parties %}
+                      <tr>
+                          <td>
+                            <a href="/party_members?q={{item.wiki_id}}" target="_blank">
+                                <img src={{item.image_url}} class="figure-img img-fluid rounded" width="60" height="75" alt="{{item.name}}" title="{{item.name}}">
+                            </a>
+                          </td>
+                      </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
+                    </div>
             </div>
         </div>
 
     </div>
-    <br><br>
-
-    <!-- Char with relationships throughout the years -->
-    <center><h4><b>Frequência das relações ao longo dos anos</b></h4></center>
-    <br>
-    <div class="container h-100">
-      <div class="row h-100 justify-content-center align-items-center">
-        <canvas id="myChart" width="900" height="250"></canvas>
-      </div>
-    </div>
-    <script>
-
-        var ctx = document.getElementById('myChart');
-        var color = Chart.helpers.color;
-
-        var year_labels = {{ labels|tojson }};
-        var ent1_opposes_ent2 = {{ ent1_opposes_ent2|tojson }};
-        var ent1_supports_ent2 = {{ ent1_supports_ent2|tojson }};
-        var ent1_opposed_by_ent2 = {{ ent1_opposed_by_ent2|tojson }};
-        var ent1_supported_by_ent2= {{ ent1_supported_by_ent2|tojson }};
-
-        // labels based on personalities names
-        var ent1 = {{ entity_one.name|tojson }};
-        var ent2 = {{ entity_two.name|tojson }};
-
-        var label_one = `${ent1} opõe-se ${ent2}`
-        var label_two = `${ent1} apoia ${ent2}`
-        var label_three = `${ent1} oposto(a) por ${ent2}`
-        var label_four = `${ent1} apoiado(a) por ${ent2}`
-
-
-        var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: year_labels,
-          datasets: [
-            {label: label_one, backgroundColor: "#FF0000", fill: true, data: ent1_opposes_ent2},
-            {label: label_two, backgroundColor: "#44861E", fill: true, data: ent1_supports_ent2},
-            {label: label_three, backgroundColor: "#980000", fill: true, data: ent1_opposed_by_ent2},
-            {label: label_four, backgroundColor: "#70DA33", fill: true, data: ent1_supported_by_ent2},
-            ]
-          },
-        options: {
-          scales: {
-            x: {stacked: true},
-          }
-        }
-    });
-
-    </script>
-    <br><br>
 
     <!-- Select list of relationships -->
     <center id="relationships"><h4><b>Relações expressas em títulos de notícias</b></h4></center>
-    <br>
-    <div class="container">
-      <div class="row">
-        <div id="opposes" role="button" class="underline-on-hover font-weight-bold h6 col-sm"></div>
-        <div id="supports" role="button" class="underline-on-hover font-weight-normal h6 col-sm"></div>
-        <div id="opposed_by" role="button" class="underline-on-hover font-weight-normal h6 col-sm"></div>
-        <div id="supported_by" role="button" class="underline-on-hover font-weight-normal h6 col-sm"></div>
-        <div id="all" role="button" class="underline-on-hover font-weight-normal h6 col-sm"></div>
-      </div>
-    </div>
     <br><br>
     <div class="container" id="single_table">
         <table id="table">
@@ -164,32 +100,17 @@
         </table>
     </div>
 
-    <script>
-        $("#opposes").text(label_one);
-        $("#supports").text(label_two);
-        $("#opposed_by").text(label_three);
-        $("#supported_by").text(label_four);
-        $("#all").text("Todas");
-    </script>
-
 </div>
 
-<!-- Datatables -->
+<!-- Datatables: for some reason this needs to reloaded to trigger the rendering of the table -->
 <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
 
 <script>
-
-    var opposed = {{ opposed|safe }};
-    var supported = {{ supported|safe }};
-    var opposed_by = {{ opposed_by|safe }};
-    var supported_by = {{ supported_by|safe }};
-    var all_relationships =  {{ all_relationships|safe }};
-
+    var relationships = {{ relationships|safe }};
     var $table = $('#table');
-
     $(function (table) {
         $('#table').bootstrapTable({
-            data: opposed,  // by default we show the 'opposed' table
+            data: relationships,
             //toolbar: "#toolbar",
             //pagination: true,
             //sidePagination: "server",
@@ -205,58 +126,6 @@
         });
     });
     $(document).scrollTop( $(relationships).offset().top);
-
-    $("#opposes").click(function() {
-      $('#table').bootstrapTable('load', opposed);
-      $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
-    });
-
-    $("#supports").click(function() {
-      $('#table').bootstrapTable('load', supported);
-      $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
-    });
-
-    $("#opposed_by").click(function() {
-      $('#table').bootstrapTable('load', opposed_by);
-      $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
-    });
-
-    $("#supported_by").click(function() {
-      $('#table').bootstrapTable('load', supported_by);
-      $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
-    });
-
-    $("#all").click(function() {
-      $('#table').bootstrapTable('load', all_relationships);
-      $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-
-    });
-
     $('html,body').scrollTop(0);
 
-  </script>
+</script>

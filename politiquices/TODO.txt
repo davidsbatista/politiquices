@@ -1,18 +1,13 @@
 Web App
 =======
 
-    Annotate: still has bugs in direction
+    Annotate:
+    ---------
+        - still has bugs in direction
 
-    PER vs PER:
-    ----------
-    - mostrar os numeros de relações encontradas
-    - person_vs_person(entity_one, entity_two):
-        - acrescentar o caso mais restricto e deixar o outro a funcionar
-
-    Partido vs Partido vs PER
+    Partido vs Partido vs PER vs PER
     --------------------------
     - mostrar os numeros de relações encontradas
-
     - Mostrar um grafico das personalidades
         (CDS é um bom caso de uso, pequeno e com muita "batatada" entre eles)
 
