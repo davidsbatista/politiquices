@@ -10,6 +10,7 @@ Web App
     Par vs Per / Per vs Partido:
         - histograma como nas stats das personalidades que mais estão envolvidas na relação:
 
+
     Geral
     -----
         - AJAX loading GIF: centrar

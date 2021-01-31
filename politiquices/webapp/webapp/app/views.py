@@ -1,5 +1,6 @@
 import json
 import logging
+from collections import defaultdict
 
 from app import app
 from flask import request, jsonify
@@ -49,10 +50,11 @@ with open("webapp/app/static/json/party_members.json") as f_in:
 with open("webapp/app/static/json/wiki_id_info.json") as f_in:
     wiki_id_info = json.load(f_in)
 
+# number of entity cards to read when scrolling down
 entities_batch_size = 16
 
 
-# Landing Page
+# Entry Page
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -360,12 +362,29 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
     )
     for r in results:
         per_vs_person_linkable(r)
-
-    # This can be removed?
-    person_info = get_person_info(person_wiki_id)
-
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
 
+    # chart entities per year
+    entities_freq_year = defaultdict(lambda: defaultdict(int))
+    labels = get_chart_labels_min_max()
+    for r in results:
+        # ToDo: make map of the cache to avoid this linear search
+        wiki_id = r['ent1_wiki'].split("/")[-1]
+        name = [p['name'] for p in all_entities_info if p['wiki_id'] == wiki_id][0]
+        year = r['date'][0:4]
+        entities_freq_year[name][year] += 1
+
+    heatmap = []
+
+    for name in entities_freq_year.keys():
+        per_freq_year = [0] * len(get_chart_labels_min_max())
+        for year in labels:
+            if year in entities_freq_year[name]:
+                per_freq_year.insert(labels.index(year), entities_freq_year[name][year])
+
+        heatmap.append({'name': name, 'data': per_freq_year})
+
+    # chart articles per year
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
         rel_freq_year[r['date'][0:4]] += 1
@@ -378,7 +397,8 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
         person=person_info,
         labels=get_chart_labels_min_max(),
         rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
-        rel_text=rel_text
+        rel_text=rel_text,
+        heatmap=heatmap
     )
 
 
@@ -392,9 +412,6 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
     )
     for r in results:
         per_vs_person_linkable(r)
-
-    # This can be removed?
-    person_info = get_person_info(person_wiki_id)
 
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
 
