@@ -5,10 +5,9 @@ from app import app
 from flask import request, jsonify
 from flask import render_template
 
-from politiquices.webapp.webapp.app.sparql_queries import build_relationships_by_year, \
-    list_of_spec_relations_between_two_persons
 from politiquices.webapp.webapp.app.data_models import Person
 from politiquices.webapp.webapp.app.sparql_queries import (
+    build_relationships_by_year,
     get_entities_without_image,
     get_nr_articles_per_year,
     get_nr_of_persons,
@@ -18,6 +17,7 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     get_top_relationships,
     get_total_nr_of_articles,
     get_wiki_id_affiliated_with_party,
+    list_of_spec_relations_between_two_persons,
     list_of_spec_relations_between_a_person_and_members_of_a_party,
     list_of_spec_relations_between_members_of_a_party_with_someone,
     list_of_spec_relations_between_two_parties,
@@ -27,8 +27,8 @@ from politiquices.webapp.webapp.app.utils import (
     clickable_title,
     make_json,
     get_relationship,
-    per_vs_person_linkable
-)
+    per_vs_person_linkable,
+    get_chart_labels_min_max)
 
 # ToDo: review have proper logging
 logger = logging.getLogger(__name__)
@@ -326,18 +326,27 @@ def entity_vs_entity(person_one, person_two):
     )
 
 
-def person_vs_person_restricted(person_one, person_two, rel_text, person_one_info, person_two_info):
+def person_vs_person(person_one, person_two, rel_text, person_one_info, person_two_info):
     rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_two_persons(person_one, person_two, rel)
+
     for r in results:
         per_vs_person_linkable(r)
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
+
+    rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
+    for r in results:
+        rel_freq_year[r['date'][0:4]] += 1
+
     return render_template(
         "query_person_person.html",
         relationship_text=rel_text,
         relationships=relationships_json,
         person_one=person_one_info,
         person_two=person_two_info,
+        labels=get_chart_labels_min_max(),
+        rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
+        rel_text=rel_text
     )
 
 
@@ -351,14 +360,25 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
     )
     for r in results:
         per_vs_person_linkable(r)
+
+    # This can be removed?
     person_info = get_person_info(person_wiki_id)
+
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
+
+    rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
+    for r in results:
+        rel_freq_year[r['date'][0:4]] += 1
+
     return render_template(
         "query_party_person.html",
         relationship_text=rel_text,
         relationships=relationships_json,
         party=party_info,
         person=person_info,
+        labels=get_chart_labels_min_max(),
+        rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
+        rel_text=rel_text
     )
 
 
@@ -372,14 +392,25 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
     )
     for r in results:
         per_vs_person_linkable(r)
+
+    # This can be removed?
     person_info = get_person_info(person_wiki_id)
+
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
+
+    rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
+    for r in results:
+        rel_freq_year[r['date'][0:4]] += 1
+
     return render_template(
         "query_person_party.html",
         relationship_text=rel_text,
         relationships=relationships_json,
         person=person_info,
         party=party_info,
+        labels=get_chart_labels_min_max(),
+        rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
+        rel_text=rel_text
     )
 
 
@@ -399,12 +430,19 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
 
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
 
+    rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
+    for r in results:
+        rel_freq_year[r['date'][0:4]] += 1
+
     return render_template(
         "query_party_party.html",
         relationship_text=rel_text,
         relationships=relationships_json,
         party_one=party_a_info,
         party_two=party_b_info,
+        labels=get_chart_labels_min_max(),
+        rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
+        rel_text=rel_text
     )
 
 
@@ -426,7 +464,7 @@ def queries():
         e2_info, e2_type = get_info(entity_two)
 
         if e1_type == "person" and e2_type == "person":
-            return person_vs_person_restricted(entity_one, entity_two, rel_text, e1_info, e2_info)
+            return person_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info)
 
         elif e1_type == "party" and e2_type == "person":
             return party_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info)

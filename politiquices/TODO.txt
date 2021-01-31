@@ -6,11 +6,9 @@ Web App
         - still has bugs in direction
 
     Partido vs Partido vs PER vs PER
-    --------------------------
-    - mostrar os numeros de relações encontradas
-    - Mostrar um grafico das personalidades
-        (CDS é um bom caso de uso, pequeno e com muita "batatada" entre eles)
-
+    --------------------------------
+    Par vs Per / Per vs Partido:
+        - histograma como nas stats das personalidades que mais estão envolvidas na relação:
 
     Geral
     -----
