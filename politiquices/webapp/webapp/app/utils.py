@@ -1,10 +1,3 @@
-from datetime import datetime
-
-
-def convert_dates(date: str):
-    date_obj = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
-    return date_obj.strftime("%Y %b")
-
 
 def add_icon(r):
     """adds either a arquivo.pt icon oder publico.pt icon"""
@@ -96,3 +89,24 @@ def get_relationship(rel_text):
     if rel_text == "opõe-se":
         return "ent1_opposes_ent2"
     return "ent1_supports_ent2"
+
+
+def fill_zero_values(labels, input_freq):
+    """
+    Make sures that 'input_freq' has as many entries as labels,
+    by setting to 0 the every non-existent 'label' in input_freq
+    """
+    zero_filled_values = [0] * len(labels)
+    for idx, label in enumerate(labels):
+        if label in input_freq.keys():
+            zero_filled_values[idx] = input_freq[label]
+    return zero_filled_values
+
+
+def get_chart_labels_min_max(min_date="1994", max_date="2019"):
+    all_years = []
+    current_date = int(min_date)
+    while current_date <= int(max_date):
+        all_years.append(current_date)
+        current_date += 1
+    return [str(year) for year in all_years]

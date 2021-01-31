@@ -1,21 +1,40 @@
 <style type="text/css">
     #viz {
         width: 85%;
-        height: 98%;
+        height: 95%;
         border: 2px solid lightgray;
         font: 12pt arial;
     }
     #controls {
         width: 15%;
-        height: 98%;
+        height: 95%;
         border: 2px solid lightgray;
         font: 12pt arial;
     }
 </style>
+
+<!-- Jquery needs to come first to avoid: 'Uncaught ReferenceError: $ is not defined' -->
+<script src="static/vendor/jquery/jquery.min.js"></script>
+
+<!-- Bootstrap
+<link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+-->
+
+<!-- Custom styles for this template
+<link href="static/css/heroic-features.css" rel="stylesheet">
+-->
+
+<!-- Jquery UI -->
+<link rel="stylesheet" href="static/css/jquery-ui.css">
+<script src="static/vendor/jquery-ui.js"></script>
+
 <script src="https://rawgit.com/neo4j-contrib/neovis.js/master/dist/neovis.js"></script>
 <script>
-    function draw() {
 
+    var viz; // needs to be defined becoming a global, so that it can be called from the bottom
+
+    function draw() {
         var config = {
             container_id: "viz",
             server_url: "bolt://politiquices.pt:7687.",
@@ -26,8 +45,8 @@
             labels: {
                 "Person": {
                     caption: "name",
-                    size: "pagerank",
-                    community: "community"
+                    // size: "pagerank",
+                    // community: "community"
                 }
             },
 
@@ -43,47 +62,75 @@
             },
             initial_cypher: "MATCH (n)-[r:ACUSA|APOIA]->(m) WHERE r.freq > 5 RETURN n,r,m"
 
-            // initial_cypher: "MATCH p=(:Person)-[:ACUSA|APOIA]->(:Person) RETURN p LIMIT 250"
-            // initial_cypher: "MATCH (n)-[r:INTERACTS]->(m) RETURN n,r,m"
-
         }
-
-        var viz = new NeoVis.default(config);
+        viz = new NeoVis.default(config);
         viz.render();
     };
+
+    nomes = [];
+    $.getJSON("static/json/persons.json", function(json_data){
+        for (var i = 0, len = json_data.length; i < len; i++) {
+            var person = {label: json_data[i].name, value: json_data[i].wiki_id};
+            nomes.push(person);
+        };
+    });
+
+    /* select a personality */
+    $(function() {
+      $("#autocomplete_person").autocomplete({
+        source: nomes,  // nomes is initialized in base.html
+        focus: function(event, ui) {
+            event.preventDefault();
+            $(this).val(ui.item.label);
+        },
+        select: function(event, ui) {
+            event.preventDefault();
+            $(this).val(ui.item.label);
+            $("#autocomplete_person_value").val(ui.item.value);
+        }
+      });
+    });
+
 
 </script>
 
 <body onload="draw()">
 
-    <div style="display: flex;" class="container d-flex">
+    <div class="container w-100">
 
         <div id="viz"></div>
 
-        <div id="controls"> controls  inputs</div>
+        <div id="controls">
+            <input id="autocomplete_person" class="span10" type="text" placeholder="Personalidade"/>
+            <input id="autocomplete_person_value" type="hidden" name="wiki">
+            <input type="text" rows="2" id="freq"/>
+            <input type="submit" value="Actualizar" id="reload"/>
+        </div>
 
     </div>
+
 
 </body>
 
 <script>
-
     $("#reload").click(function() {
-                
-        var cypher = $("#cypher").val();
+        var edge_weight = $("#freq").val();
+        var wiki_id = $("#autocomplete_person_value").val();
 
-        console.log(cypher);
-        
-        if (cypher.length > 3) {
-            viz.renderWithCypher(cypher);
-        } else {
-            console.log("reload");
-            viz.reload();
+        //var query = `MATCH p=(:Person)-[r:ACUSA|APOIA]->(p1:Person { id: '${wiki_id}' }) WHERE r.freq > ${edge_weight} RETURN p LIMIT 250`
+
+        var query = `
+            MATCH p1=(:Person)-[r1:ACUSA|APOIA]->(p:Person { id: '${wiki_id}' })
+            MATCH (p:Person { id: '${wiki_id}' })-[r2:ACUSA|APOIA]->(p2:Person)
+            MATCH (p:Person { id: '${wiki_id}' })-[r2:ACUSA|APOIA]->(p2:Person)
+            WHERE r1.freq > ${edge_weight} AND r2.freq > ${edge_weight}
+            RETURN p1,p2,r1,r2
+            `
+
+        console.log(query);
+        viz.renderWithCypher(query);
+        //console.log("reload");
+        //viz.reload();
         }
-    });
-        
-    $("#stabilize").click(function() {
-        viz.stabilize();
-    })
-
+    );
 </script>

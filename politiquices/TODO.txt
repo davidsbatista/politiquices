@@ -3,21 +3,18 @@ Web App
 
     PER vs PER:
     ----------
-        - Por no nome das pessoas no gráfico/labels e titulo?
-        - "Acusa | Apoia | Acusado(a) por | Apoiado(a) por | Todas" -> mostrar que está seleccionado
-        - person_vs_person(entity_one, entity_two):
-            tem que funcionar para dois casos, restricto nas relações e geral, há bugs
+    - person_vs_person(entity_one, entity_two):
+        - acrescentar o caso mais restricto e deixar o outro a funcionar
+
 
     Partido vs Partido vs PER
     --------------------------
-        - Por no nome das pessoas no gráfico/labels e titulo?
         - mostrar alguns gráficos, o que?
             - Mostrar um grafico das personalidades (CDS é um bom caso de uso, pequeno e com muita "batatada" entre eles)
 
         - bugs nas relaçoes e direcções?
             - CDS opposes CDS: está mesmo a tirar tudo ? faz sentido verificar a direccao?
             - está mesmo a tirar tudo ? faz sentido verificar a direccao?
-
 
     Geral
     -----

@@ -212,19 +212,19 @@
     <br>
     <div class="container">
       <div class="row">
-        <div id="opposes" class="h4 col-sm">
+        <div id="opposes" role="button" class="underline-on-hover font-weight-bold h4 col-sm">
           Opõe-se
         </div>
-        <div id="supports" class="h4 col-sm">
+        <div id="supports" role="button" class="underline-on-hover font-weight-normal h4 col-sm">
           Apoia
         </div>
-        <div id="opposed_by" class="h4 col-sm">
+        <div id="opposed_by" role="button" class="underline-on-hover font-weight-normal h4 col-sm">
           Oposto(a) por
         </div>
-        <div id="supported_by" class="h4 col-sm">
+        <div id="supported_by" role="button" class="underline-on-hover font-weight-normal h4 col-sm">
           Apoiado(a) por
         </div>
-        <div id="all" class="h4 col-sm">
+        <div id="all" role="button" class="underline-on-hover font-weight-normal h4 col-sm">
           Todas
         </div>
       </div>
@@ -281,26 +281,52 @@
     $("#opposes").click(function() {
       $('#table').bootstrapTable('load', opposed);
       $(document).scrollTop($(relationships).offset().top);
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
+      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
     });
 
     $("#supports").click(function() {
       $('#table').bootstrapTable('load', supported);
       $(document).scrollTop($(relationships).offset().top);
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
+      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
     });
 
     $("#opposed_by").click(function() {
       $('#table').bootstrapTable('load', opposed_by);
       $(document).scrollTop($(relationships).offset().top);
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
+      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
     });
 
     $("#supported_by").click(function() {
       $('#table').bootstrapTable('load', supported_by);
       $(document).scrollTop($(relationships).offset().top);
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
+      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
     });
 
     $("#all").click(function() {
       $('#table').bootstrapTable('load', all_relationships);
       $(document).scrollTop($(relationships).offset().top);
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
+      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
+
     });
 
     $('html,body').scrollTop(0);

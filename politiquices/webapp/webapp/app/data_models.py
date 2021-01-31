@@ -1,6 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime
-from enum import Enum
 from typing import List, Optional
 
 
@@ -26,23 +24,3 @@ class Person:
     positions: Optional[List[str]] = None
     education: Optional[List[str]] = None
     occupations: Optional[List[str]] = None
-
-
-@dataclass
-class RelationshipType(Enum):
-    # ToDo: add more
-    ent1_opposes_ent2 = "ent1_opposes_ent2"
-    SECOND = "ent2_opposes_ent1"
-    THREE = "ent1_supports_ent2"
-    FOUR = "ent2_supports_ent1"
-
-
-@dataclass
-class Relationship:
-    rel_type: RelationshipType
-    rel_score: float
-    article_title: str
-    article_url: str
-    article_date: datetime
-    ent1: Person
-    ent2: Person

@@ -5,6 +5,7 @@ from app import app
 from flask import request, jsonify
 from flask import render_template
 
+from politiquices.webapp.webapp.app.sparql_queries import build_relationships_by_year
 from politiquices.webapp.webapp.app.data_models import Person
 from politiquices.webapp.webapp.app.sparql_queries import (
     get_entities_without_image,
@@ -21,10 +22,12 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     list_of_spec_relations_between_two_parties,
     all_persons_freq,
 )
-
-from politiquices.webapp.webapp.app.relationships import build_relationships_by_year
-from politiquices.webapp.webapp.app.utils import clickable_title, make_json, get_relationship
-from politiquices.webapp.webapp.app.utils import per_vs_person_linkable
+from politiquices.webapp.webapp.app.utils import (
+    clickable_title,
+    make_json,
+    get_relationship,
+    per_vs_person_linkable
+)
 
 # ToDo: review have proper logging
 logger = logging.getLogger(__name__)
@@ -289,7 +292,7 @@ def person_vs_person(person_one, person_two):
     supported_json = make_json([r for r in results if r['rel_type'] == 'ent1_supports_ent2'])
     opposed_by_json = make_json([r for r in results if r['rel_type'] == 'ent2_opposes_ent1'])
     supported_by_json = make_json([r for r in results if r['rel_type'] == 'ent2_supports_ent1'])
-    all_json = (opposed_json + supported_by_json + opposed_by_json + supported_by_json)
+    all_json = opposed_json + supported_by_json + opposed_by_json + supported_by_json
 
     # build chart information
     labels = list(rels_freq_by_year.keys())

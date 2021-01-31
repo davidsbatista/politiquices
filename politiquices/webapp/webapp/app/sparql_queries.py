@@ -1,10 +1,11 @@
 import sys
 from typing import Tuple, List
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 from functools import lru_cache
 from SPARQLWrapper import SPARQLWrapper, JSON
 from politiquices.webapp.webapp.app.data_models import OfficePosition, Person, PoliticalParty
+from politiquices.webapp.webapp.app.utils import get_chart_labels_min_max, fill_zero_values
 
 wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
 live_wikidata = "https://query.wikidata.org/sparql"
@@ -279,7 +280,6 @@ def get_wiki_id_affiliated_with_party(political_party: str):
 
 
 # Personality Information
-# ToDo: merge get_person_info() and get_person_info2()
 @lru_cache
 def get_person_info(wiki_id):
     query = f"""
@@ -624,6 +624,7 @@ def get_person_rels_by_month_year(wiki_id, rel_type, ent="ent1"):
     return year_month_articles
 
 
+@lru_cache
 def get_person_rels_by_year(wiki_id, rel_type, ent="ent1"):
     query = f"""
         SELECT DISTINCT ?year (COUNT(?arquivo_doc) as ?nr_articles)
@@ -655,6 +656,49 @@ def get_person_rels_by_year(wiki_id, rel_type, ent="ent1"):
         year_articles[str(year)] = int(x["nr_articles"]["value"])
 
     return year_articles
+
+
+@lru_cache
+def build_relationships_by_year(wiki_id: str):
+
+    # some personality can support another personality in two different relationship directions
+    supported_freq_one = get_person_rels_by_year(wiki_id, "ent1_supports_ent2", ent="ent1")
+    supported_freq_two = get_person_rels_by_year(wiki_id, "ent2_supports_ent1", ent="ent2")
+    supported_freq_sum = Counter(supported_freq_one) + Counter(supported_freq_two)
+    supported_freq = {k: supported_freq_sum[k] for k in sorted(supported_freq_sum)}
+
+    # opposes
+    opposed_freq_one = get_person_rels_by_year(wiki_id, "ent1_opposes_ent2", ent="ent1")
+    opposed_freq_two = get_person_rels_by_year(wiki_id, "ent2_opposes_ent1", ent="ent2")
+    opposed_freq_sum = Counter(opposed_freq_one) + Counter(opposed_freq_two)
+    opposed_freq = {k: opposed_freq_sum[k] for k in sorted(opposed_freq_sum)}
+
+    # supported_by
+    supported_by_freq_one = get_person_rels_by_year(wiki_id, "ent2_supports_ent1", ent="ent1")
+    supported_by_freq_two = get_person_rels_by_year(wiki_id, "ent1_supports_ent2", ent="ent2")
+    supported_by_freq_sum = Counter(supported_by_freq_one) + Counter(supported_by_freq_two)
+    supported_by_freq = {k: supported_by_freq_sum[k] for k in sorted(supported_by_freq_sum)}
+
+    # opposed_by
+    opposed_by_freq_one = get_person_rels_by_year(wiki_id, "ent2_opposes_ent1", ent="ent1")
+    opposed_by_freq_two = get_person_rels_by_year(wiki_id, "ent1_opposes_ent2", ent="ent2")
+    opposed_by_freq_sum = Counter(opposed_by_freq_one) + Counter(opposed_by_freq_two)
+    opposed_by_freq = {k: opposed_by_freq_sum[k] for k in sorted(opposed_by_freq_sum)}
+
+    # normalize intervals considering the 4 data points and fill in zero values
+    labels = get_chart_labels_min_max()
+    opposed_freq = fill_zero_values(labels, opposed_freq)
+    supported_freq = fill_zero_values(labels, supported_freq)
+    opposed_by_freq = fill_zero_values(labels, opposed_by_freq)
+    supported_by_freq = fill_zero_values(labels, supported_by_freq)
+
+    return {
+        "labels": labels,
+        "opposed_freq": opposed_freq,
+        "supported_freq": supported_freq,
+        "opposed_by_freq": opposed_by_freq,
+        "supported_by_freq": supported_by_freq,
+    }
 
 
 # relationship queries
@@ -701,13 +745,17 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
             "ent1_supported_by_ent2": 0,
         }
 
+    # have an entry for each year between the min and maxyears in the dataset so that the graph
+    # contain all years
     rels_freq_by_year = defaultdict(relationships_counter)
+    labels = get_chart_labels_min_max()
+    for label in labels:
+        rels_freq_by_year[label]['ent1_opposes_ent2'] = 0
+
     relationships = []
     for x in result["results"]["bindings"]:
-
         if 'other' in x["rel_type"]["value"]:
             continue
-
         relationships.append(
             {
                 "url": x["arquivo_doc"]["value"],
