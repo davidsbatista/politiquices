@@ -1,29 +1,28 @@
 Web App
 =======
 
+    Annotate: still has bugs in direction
+
     PER vs PER:
     ----------
+    - mostrar os numeros de relações encontradas
     - person_vs_person(entity_one, entity_two):
         - acrescentar o caso mais restricto e deixar o outro a funcionar
 
-
     Partido vs Partido vs PER
     --------------------------
-        - mostrar alguns gráficos, o que?
-            - Mostrar um grafico das personalidades (CDS é um bom caso de uso, pequeno e com muita "batatada" entre eles)
+    - mostrar os numeros de relações encontradas
 
-        - bugs nas relaçoes e direcções?
-            - CDS opposes CDS: está mesmo a tirar tudo ? faz sentido verificar a direccao?
-            - está mesmo a tirar tudo ? faz sentido verificar a direccao?
+    - Mostrar um grafico das personalidades
+        (CDS é um bom caso de uso, pequeno e com muita "batatada" entre eles)
+
 
     Geral
     -----
         - AJAX loading GIF: centrar
         - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
-
         - por o javascript todo local
-        - ver o javasript (tabelas carregado noutras paginas party_party, person_party, party_person)
 
     Index
     -----
@@ -118,6 +117,9 @@ Backend-stuff
     - eliminate relationships between the same entity:
         wd:Q610788  <-> wd:Q610788
         António Costa - Costa recusa ter recuperado "fórmula" do Bloco Central - Política - DN
+
+    - http://0.0.0.0:5000/entity?q=Q2857730 (Bagão Felix vs Carlos César)
+        há muitos duplicados
 
     - alterar os namespaces para 'politiquices.pt'
         http://politiquices.pt/entity/<wikidata_person_id> -> todas as relações da pessoa

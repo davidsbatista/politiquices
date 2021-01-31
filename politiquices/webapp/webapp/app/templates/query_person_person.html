@@ -139,21 +139,11 @@
     <br>
     <div class="container">
       <div class="row">
-        <div id="opposes" role="button" class="underline-on-hover font-weight-bold h4 col-sm">
-          Opõe-se
-        </div>
-        <div id="supports" role="button" class="underline-on-hover font-weight-normal h4 col-sm">
-          Apoia
-        </div>
-        <div id="opposed_by" role="button" class="underline-on-hover font-weight-normal h4 col-sm">
-          Oposto(a) por
-        </div>
-        <div id="supported_by" role="button" class="underline-on-hover font-weight-normal h4 col-sm">
-          Apoiado(a) por
-        </div>
-        <div id="all" role="button" class="underline-on-hover font-weight-normal h4 col-sm">
-          Todas
-        </div>
+        <div id="opposes" role="button" class="underline-on-hover font-weight-bold h6 col-sm"></div>
+        <div id="supports" role="button" class="underline-on-hover font-weight-normal h6 col-sm"></div>
+        <div id="opposed_by" role="button" class="underline-on-hover font-weight-normal h6 col-sm"></div>
+        <div id="supported_by" role="button" class="underline-on-hover font-weight-normal h6 col-sm"></div>
+        <div id="all" role="button" class="underline-on-hover font-weight-normal h6 col-sm"></div>
       </div>
     </div>
     <br><br>
@@ -174,11 +164,18 @@
         </table>
     </div>
 
+    <script>
+        $("#opposes").text(label_one);
+        $("#supports").text(label_two);
+        $("#opposed_by").text(label_three);
+        $("#supported_by").text(label_four);
+        $("#all").text("Todas");
+    </script>
+
 </div>
 
 <!-- Datatables -->
 <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
-
 
 <script>
 
