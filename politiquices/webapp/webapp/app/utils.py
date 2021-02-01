@@ -86,9 +86,11 @@ def make_json(relationships):
 
 
 def get_relationship(rel_text):
+    opposes_gradient = '#E60001'
+    supports_gradient = '#44861E'
     if rel_text == "opõe-se":
-        return "ent1_opposes_ent2"
-    return "ent1_supports_ent2"
+        return opposes_gradient, "ent1_opposes_ent2"
+    return supports_gradient, "ent1_supports_ent2"
 
 
 def fill_zero_values(labels, input_freq):

@@ -329,7 +329,7 @@ def entity_vs_entity(person_one, person_two):
 
 
 def person_vs_person(person_one, person_two, rel_text, person_one_info, person_two_info):
-    rel = get_relationship(rel_text)
+    _, rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_two_persons(person_one, person_two, rel)
 
     for r in results:
@@ -356,7 +356,7 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
     """
     relationships between (members of) a party and an entity
     """
-    rel = get_relationship(rel_text)
+    gradient, rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_members_of_a_party_with_someone(
         party_wiki_id, person_wiki_id, rel
     )
@@ -364,7 +364,8 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
         per_vs_person_linkable(r)
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
 
-    # chart entities per year
+    # heatmap # ToDo: make this in a single loop
+    heatmap = []
     entities_freq_year = defaultdict(lambda: defaultdict(int))
     labels = get_chart_labels_min_max()
     for r in results:
@@ -374,17 +375,18 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
         year = r['date'][0:4]
         entities_freq_year[name][year] += 1
 
-    heatmap = []
-
     for name in entities_freq_year.keys():
-        per_freq_year = [0] * len(get_chart_labels_min_max())
+        per_freq_year = []
         for year in labels:
             if year in entities_freq_year[name]:
-                per_freq_year.insert(labels.index(year), entities_freq_year[name][year])
-
+                per_freq_year.append({'x': year, 'y': entities_freq_year[name][year]})
+            else:
+                per_freq_year.append({'x': year, 'y': 0})
         heatmap.append({'name': name, 'data': per_freq_year})
+    sorted_heatmap = sorted(heatmap, key=lambda x: x['name'], reverse=True)
+    heatmap_height = 20 * len(sorted_heatmap)
 
-    # chart articles per year
+    # chart: news articles/relationships per year
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
         rel_freq_year[r['date'][0:4]] += 1
@@ -398,7 +400,9 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
         labels=get_chart_labels_min_max(),
         rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
         rel_text=rel_text,
-        heatmap=heatmap
+        heatmap=sorted_heatmap,
+        heatmap_gradient=gradient,
+        heatmap_height=heatmap_height
     )
 
 
@@ -406,7 +410,7 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
     """
     relationships between an entity and (members of) a party
     """
-    rel = get_relationship(rel_text)
+    gradient, rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_a_person_and_members_of_a_party(
         person_wiki_id, party_wiki_id, rel
     )
@@ -415,6 +419,31 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
 
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
 
+    # heatmap # ToDo: make this in a single loop
+    heatmap = []
+    entities_freq_year = defaultdict(lambda: defaultdict(int))
+    labels = get_chart_labels_min_max()
+    for r in results:
+        # ToDo: make map of the cache to avoid this linear search
+        wiki_id = r['ent2_wiki'].split("/")[-1]
+        name = [p['name'] for p in all_entities_info if p['wiki_id'] == wiki_id][0]
+        year = r['date'][0:4]
+        entities_freq_year[name][year] += 1
+
+    for name in entities_freq_year.keys():
+        per_freq_year = []
+        for year in labels:
+            if year in entities_freq_year[name]:
+                per_freq_year.append({'x': year, 'y': entities_freq_year[name][year]})
+            else:
+                per_freq_year.append({'x': year, 'y': 0})
+        heatmap.append({'name': name, 'data': per_freq_year})
+    sorted_heatmap = sorted(heatmap, key=lambda x: x['name'], reverse=True)
+
+    print(len(sorted_heatmap))
+    heatmap_height = 20 * len(sorted_heatmap)
+
+    # chart: news articles/relationships per year
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
         rel_freq_year[r['date'][0:4]] += 1
@@ -427,7 +456,10 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
         party=party_info,
         labels=get_chart_labels_min_max(),
         rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
-        rel_text=rel_text
+        rel_text=rel_text,
+        heatmap=sorted_heatmap,
+        heatmap_gradient=gradient,
+        heatmap_height=heatmap_height
     )
 
 
@@ -438,7 +470,7 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
     party_a_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
     party_b_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
 
-    rel = get_relationship(rel_text)
+    _, rel = get_relationship(rel_text)
 
     results = list_of_spec_relations_between_two_parties(party_a_members, party_b_members, rel)
 
