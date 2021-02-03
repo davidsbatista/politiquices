@@ -11,7 +11,6 @@ Web App
             39 - 650    # PSD vs Sócrates
             36 - 650    # PS vs Sócrates
 
-
         25%
             12 - 350    # CDS vs Sócrates
             11 - 350
@@ -63,18 +62,21 @@ Web App
     Grafo
     -----
         - NOTE: CSV files should not have any empty spaces
-        - para cada personalidade mostrar a rede com a possibilidade de seleccionar o grau e as relações
         - https://community.neo4j.com/t/the-graph-display-on-using-neovis-js-can-be-more-presentable/2457/5
         - https://medium.com/neo4j/graph-visualization-with-neo4j-using-neovis-js-a2ecaaa7c379
 
-        - um unico grafo navegal? ver noticias entre duas pessoas e/ou numa comunidade
-        - um grafico estatico anual: tirar medidas, fazer uma animação com 26 estados
+        carregar dados:
+            - Cor do node para cada partido
+            - Cor para o Edge conforme a relação
+
+
+        idea para geral:
+            - um unico grafo navegal? ver noticias entre duas pessoas e/ou numa comunidade
+            - um grafico estatico anual: tirar medidas, fazer uma animação com 26 estados
+            - um interface qualquer para poder selecionar as relações e o intervalo de datas
+
+        - para cada personalidade mostrar a rede com a possibilidade de seleccionar o grau e as relações
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-
-        - Cor do node para cada partido
-        - Cor para o Edge conforme a relação
-
-        - um interface qualquer para poder selecionar as relações e o intervalo de datas
 
         # ToDo: mapping de cores para o partido
 
