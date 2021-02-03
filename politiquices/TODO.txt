@@ -3,19 +3,36 @@ Web App
 
     Partido vs Partido vs PER vs PER
     --------------------------------
+    <script src="static/vendor/apexcharts.js"></script> -> export table icon dissapers
     Par vs Per / Per vs Partido:
         - heatmap height:
+
+        70%
+            39 - 650    # PSD vs Sócrates
             36 - 650    # PS vs Sócrates
+
+
+        25%
             12 - 350    # CDS vs Sócrates
-             6 - 200    # CDU vs Sócrates
+            11 - 350
+
+        20%
+             6           # CDU opõe-se José Sócrates
+
+        15%
+             3           # Bloco Esquerda opõe-se José Sócrates
+
+        10%
+             1           # Bloco Esquerda apoia José Sócrates
+
 
     Geral
     -----
-        - Annotate:   still has bugs in direction
+        - Annotate: still has bugs in direction
+        - por o javascript todo local, apagar coisas desnecessárias
         - AJAX loading GIF: centrar
         - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
-        - por o javascript todo local, apagar coisas desnecessárias
 
 
     Index
@@ -52,6 +69,7 @@ Web App
 
         - um unico grafo navegal? ver noticias entre duas pessoas e/ou numa comunidade
         - um grafico estatico anual: tirar medidas, fazer uma animação com 26 estados
+        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
         - Cor do node para cada partido
         - Cor para o Edge conforme a relação
@@ -101,10 +119,10 @@ Web App
     -------
      - Charts with links, possible ?
      - tirar todos os alerts -> subsituir por uma pagina de erro
-     - pesquisar: permitir pesquisar sem acentos
+     - pesquisar: permitir pesquisar sem acentos:
+        https://alistapart.com/article/accent-folding-for-auto-complete/
+        https://stackoverflow.com/questions/4402838/jquery-autocomplete-with-special-characters-i-e-%C3%B6-%C3%84-%C3%A9-or-%C3%9F
      - clicar no branco fazer collapse ao menu (hamburger)
-
-
 
 
 
@@ -117,21 +135,14 @@ Backend-stuff
     - http://0.0.0.0:5000/entity?q=Q2857730 (Bagão Felix vs Carlos César)
         há muitos duplicados
 
-    - alterar os namespaces para 'politiquices.pt'
-        http://politiquices.pt/entity/<wikidata_person_id> -> todas as relações da pessoa
-        http://politiquices.pt/party/<wikidata_party_id> -> todas as pessoas desse partido
+    - alterar o namespace de 'myprefix' para 'politiquices.pt'
 
     SPARQL queries:
-
-        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-
         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
         - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
         - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
 
-
    - https://www.dafont.com/de/28-days-later.font?text=Politiquices&psize=l&back=theme
-
 
 SPARQL DB
 =========

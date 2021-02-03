@@ -386,6 +386,8 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
     sorted_heatmap = sorted(heatmap, key=lambda x: x['name'], reverse=True)
     heatmap_height = 20 * len(sorted_heatmap)
 
+    print(len(sorted_heatmap))
+
     # chart: news articles/relationships per year
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:

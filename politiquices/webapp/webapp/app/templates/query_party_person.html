@@ -60,8 +60,8 @@
 
         </div>
 
-
     </div>
+
     <br><br>
 
     <!-- Char with relationships throughout the years -->
@@ -112,37 +112,7 @@
 
     <!--Heat with relationships/persons throughout the years -->
     <center><h4><b>Frequência de outras personalidades nas relações ao longo dos anos</b></h4></center>
-    <script src="static/vendor/apexcharts.js"></script>
     <div id="chart"></div>
-    <script>
-
-        var heatmap = {{ heatmap|tojson }};
-        var heatmap_gradient = {{ heatmap_gradient|tojson }};
-        var heatmap_height = {{ heatmap_height|tojson }};
-
-        console.log(heatmap_height);
-
-        var options = {
-          series: heatmap,
-          chart: {
-            height: 650,
-            type: 'heatmap',
-        },
-
-        dataLabels: {
-          enabled: true,
-          style: {colors: ['#fff']}
-        },
-        xaxis: {
-          type: 'category',
-        },
-        colors: [heatmap_gradient],
-        title: {text: ''},
-        };
-
-        var chart = new ApexCharts(document.querySelector("#chart"), options);
-        chart.render();
-    </script>
 
     <!-- List of relationships -->
     <center id="relationships"><h4><b>Relações expressas em títulos de notícias</b></h4></center>
@@ -168,7 +138,6 @@
 
 <!-- Datatables: for some reason this needs to reloaded to trigger the rendering of the table -->
 <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
-
 <script>
     var relationships = {{ relationships|safe }};
     var $table = $('#table');
@@ -189,7 +158,37 @@
             exportFooter: false
         });
     });
-    $(document).scrollTop( $(relationships).offset().top);
-    $('html,body').scrollTop(0);
+    //$(document).scrollTop( $(relationships).offset().top);
+    //$('html,body').scrollTop(0);
 
+</script>
+
+<!--Aphexcharts: for some reason this needs to loaded after the tables to work -->
+<script src="static/vendor/apexcharts.js"></script>
+<script>
+    var heatmap = {{ heatmap|tojson }};
+    var heatmap_gradient = {{ heatmap_gradient|tojson }};
+    var heatmap_height = {{ heatmap_height|tojson }};
+    console.log(heatmap_height);
+
+    var options = {
+      series: heatmap,
+      chart: {
+        height: '50%',
+        type: 'heatmap',
+    },
+
+    dataLabels: {
+      enabled: true,
+      style: {colors: ['#fff']}
+    },
+    xaxis: {
+      type: 'category',
+    },
+    colors: [heatmap_gradient],
+    title: {text: ''},
+    };
+
+    var chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
 </script>
