@@ -217,6 +217,54 @@ def get_total_nr_articles_for_each_person():
     return prefixes + "\n" + query
 
 
+def get_nr_relationships_as_subject(relationship: str):
+
+    query = f"""    
+        SELECT DISTINCT ?person_a (COUNT(?url) as ?nr_articles) {{
+          {{ ?rel my_prefix:ent1 ?person_a .
+            ?rel my_prefix:type 'ent1_{relationship}_ent2'.
+          }}  
+          UNION 
+          {{ ?rel my_prefix:ent2 ?person_a .
+            ?rel my_prefix:type 'ent2_{relationship}_ent1'.
+          }}
+          ?rel my_prefix:arquivo ?url .
+        }}
+        GROUP BY ?person_a
+        ORDER BY DESC(?nr_articles)
+        """
+
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    return [
+        (x['person_a']['value'].split("/")[-1], int(x['nr_articles']['value']))
+        for x in results["results"]["bindings"]
+    ]
+
+
+def get_nr_relationships_as_target(relationship: str):
+
+    query = f"""    
+        SELECT DISTINCT ?person_a (COUNT(?url) as ?nr_articles) {{
+          {{ ?rel my_prefix:ent2 ?person_a .
+            ?rel my_prefix:type 'ent1_{relationship}_ent2'.
+          }}  
+          UNION 
+          {{ ?rel my_prefix:ent1 ?person_a .
+            ?rel my_prefix:type 'ent2_{relationship}_ent1'.
+          }}
+          ?rel my_prefix:arquivo ?url .
+        }}
+        GROUP BY ?person_a
+        ORDER BY DESC(?nr_articles)
+        """
+
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    return [
+        (x['person_a']['value'].split("/")[-1], int(x['nr_articles']['value']))
+        for x in results["results"]["bindings"]
+    ]
+
+
 # Parties
 @lru_cache
 def get_persons_affiliated_with_party(political_party: str):

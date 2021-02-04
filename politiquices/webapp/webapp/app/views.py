@@ -28,6 +28,7 @@ from politiquices.webapp.webapp.app.utils import (
     clickable_title,
     make_json,
     get_relationship,
+    get_ip,
     per_vs_person_linkable,
     get_chart_labels_min_max)
 
@@ -206,13 +207,13 @@ def party_members():
 # Grafo
 @app.route("/graph")
 def graph():
-    return render_template("graph.html")
+    return render_template("graph.html", ip_address=get_ip())
 
 
 # Grafo
 @app.route("/graph_all")
 def graph_all():
-    return render_template("graph_all.html")
+    return render_template("graph_all.html", ip_address=get_ip())
 
 
 # Estatísticas

@@ -33,11 +33,15 @@
 <script>
 
     var viz; // needs to be defined becoming a global, so that it can be called from the bottom
+    var ip_address = {{ ip_address|tojson }};
+    var url = `bolt://${ip_address}:7687.`
+    console.log(ip_address)
+    console.log(url)
 
     function draw() {
         var config = {
             container_id: "viz",
-            server_url: "bolt://politiquices.pt:7687.",
+            server_url: url,
             server_user: "neo4j",
             server_password: "s3cr3t",
             arrows: true,

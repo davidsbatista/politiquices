@@ -10,6 +10,8 @@ from politiquices.webapp.webapp.app.sparql_queries import all_entities
 from politiquices.webapp.webapp.app.sparql_queries import query_sparql
 from politiquices.webapp.webapp.app.sparql_queries import get_wiki_id_affiliated_with_party
 from politiquices.webapp.webapp.app.sparql_queries import get_total_nr_articles_for_each_person
+from politiquices.webapp.webapp.app.sparql_queries import get_nr_relationships_as_subject
+from politiquices.webapp.webapp.app.sparql_queries import get_nr_relationships_as_target
 
 ps_logo = "/static/images/Logo_do_Partido_Socialista(Portugal).png"
 no_image = "/static/images/no_picture.jpg"
@@ -230,6 +232,37 @@ def personalities_json_cache():
     return all_politiquices_persons, wiki_id
 
 
+def persons_relationships_counts_by_type():
+    opposes_subj = get_nr_relationships_as_subject('opposes')
+    supports_subj = get_nr_relationships_as_subject('supports')
+    opposes_target = get_nr_relationships_as_target('opposes')
+    supports_target = get_nr_relationships_as_target('supports')
+
+    def relationships_types():
+        return {'opposes': 0,
+                'supports': 0,
+                'is_opposed': 0,
+                'is_supported': 0,
+                }
+
+    relationships = defaultdict(lambda: relationships_types())
+
+    for entry in opposes_subj:
+        relationships[entry[0]]['opposes'] += entry[1]
+
+    for entry in supports_subj:
+        relationships[entry[0]]['supports'] += entry[1]
+
+    for entry in opposes_target:
+        relationships[entry[0]]['is_opposed'] += entry[1]
+
+    for entry in supports_target:
+        relationships[entry[0]]['is_supported'] += entry[1]
+
+    with open(static_data + "person_relationships_counts.json", "wt") as f_out:
+        json.dump(relationships, f_out, indent=True)
+
+
 def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
@@ -246,6 +279,8 @@ def main():
     # graph edges cache
     graph_edges_cache(wiki_id)
     """
+
+    persons_relationships_counts_by_type()
 
     app.run(debug=True, host="0.0.0.0")
 

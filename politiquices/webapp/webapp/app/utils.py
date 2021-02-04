@@ -1,3 +1,4 @@
+import socket
 
 def add_icon(r):
     """adds either a arquivo.pt icon oder publico.pt icon"""
@@ -112,3 +113,16 @@ def get_chart_labels_min_max(min_date="1994", max_date="2019"):
         all_years.append(current_date)
         current_date += 1
     return [str(year) for year in all_years]
+
+
+def get_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        # doesn't even have to be reachable
+        s.connect(('10.255.255.255', 1))
+        ip = s.getsockname()[0]
+    except Exception:
+        ip = '127.0.0.1'
+    finally:
+        s.close()
+    return ip

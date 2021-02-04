@@ -3,7 +3,6 @@ Web App
 
     Partido vs Partido vs PER vs PER
     --------------------------------
-    <script src="static/vendor/apexcharts.js"></script> -> export table icon dissapers
     Par vs Per / Per vs Partido:
         - heatmap height:
 
@@ -28,10 +27,28 @@ Web App
     Geral
     -----
         - Annotate: still has bugs in direction
-        - por o javascript todo local, apagar coisas desnecessárias
         - AJAX loading GIF: centrar
         - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
+        - party members: - load on scroll down
+
+
+    Personalidades:
+    -------------
+     - mais imagens por linha
+     - cache + cópia do resize das imagens para este display
+     - size original para a página principal da entidade only
+
+
+    Varios:
+    -------
+     - por o javascript: bootstrap-table/export e font-awesome not local
+     - Charts with links, possible ?
+     - tirar todos os alerts -> subsituir por uma pagina de erro
+     - pesquisar: permitir pesquisar sem acentos:
+        https://alistapart.com/article/accent-folding-for-auto-complete/
+        https://stackoverflow.com/questions/4402838/jquery-autocomplete-with-special-characters-i-e-%C3%B6-%C3%84-%C3%A9-or-%C3%9F
+     - clicar no branco fazer collapse ao menu (hamburger)
 
 
     Index
@@ -46,16 +63,21 @@ Web App
         - Indexar colecção CHAVE no server e fazer links para politiquices.pt
         - Speed up party vs party queries, how?:    https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
+
     Stats
     -----
+        - mesma coisa para os partidos:
+             -
+            - quais os partidos que acusam mais? e que partidos alvo?
+
         - Absolutos e relativos:
             - Quem mais acusa? é acusado?
             - Quem mais defende? é defendido
-            - quais os partidos que acusam mais? e que partidos alvo?
             - Persons more supported than accused ?
             - Persons more accused than supported ?
 
         - existem relações familiares no grafo? entre quem?
+
         - Todos: artigos por ano em stacked bar: oposição/apoio/ e other? ou remover?
 
 
@@ -95,10 +117,6 @@ Web App
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
 
-    Party Members
-    --------------
-        - load on scroll down
-
 
     Agregacoes + info na personalidade:
     ------------------------------------
@@ -110,21 +128,16 @@ Web App
      - listar todos os que já foram Ministros <qq cena>
 
 
-    Personalidades:
-    -------------
-     - mais imagens por linha
-     - cache + cópia do resize das imagens para este display
-     - size original para a página principal da entidade only
 
 
-    Varios:
-    -------
-     - Charts with links, possible ?
-     - tirar todos os alerts -> subsituir por uma pagina de erro
-     - pesquisar: permitir pesquisar sem acentos:
-        https://alistapart.com/article/accent-folding-for-auto-complete/
-        https://stackoverflow.com/questions/4402838/jquery-autocomplete-with-special-characters-i-e-%C3%B6-%C3%84-%C3%A9-or-%C3%9F
-     - clicar no branco fazer collapse ao menu (hamburger)
+
+
+
+
+
+
+
+
 
 
 

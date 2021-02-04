@@ -19,11 +19,15 @@
 <script>
     
     var viz; // needs to be defined becoming a global, so that it can be called from the bottom
-    
+    var ip_address = {{ ip_address|tojson }};
+    var url = `bolt://${ip_address}:7687.`
+    console.log(ip_address)
+    console.log(url)
+
     function draw() {
         var config = {
             container_id: "viz",
-            server_url: "bolt://politiquices.pt:7687.",
+            server_url: url,
             server_user: "neo4j",
             server_password: "s3cr3t",
             arrows: true,
@@ -46,7 +50,8 @@
                     thickness: "freq",
                 }
             },
-            initial_cypher: "MATCH p=(:Person)-[r:ACUSA|APOIA]->(p1:Person { id: 'Q182367' }) WHERE r.freq > 5 RETURN p LIMIT 250"
+            //initial_cypher: "MATCH p=(:Person)-[r:ACUSA|APOIA]->(p1:Person { id: 'Q182367' }) WHERE r.freq > 5 RETURN p LIMIT 250"
+            initial_cypher: "MATCH (n)-[r:ACUSA|APOIA]->(m) WHERE r.freq > 5 RETURN n,r,m"
         }
     
         viz = new NeoVis.default(config);
