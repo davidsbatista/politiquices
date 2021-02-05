@@ -17,19 +17,6 @@ Web App
         - Indexar colecção CHAVE no server e fazer links para politiquices.pt
         - Speed up party vs party queries, how?:    https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
-    Stats
-    -----
-        - Todos: artigos por ano em stacked bar: oposição/apoio/ e other? ou remover?
-        - mesma coisa para os partidos:
-            - quais os partidos que acusam mais? e que partidos alvo?
-
-        - Absolutos e relativos:
-            - Quem mais acusa? é acusado?
-            - Quem mais defende? é defendido
-            - Persons more supported than accused ?
-            - Persons more accused than supported ?
-
-        - existem relações familiares no grafo? entre quem?
 
     Grafo
     -----
@@ -67,6 +54,20 @@ Web App
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
 
+    Stats
+    -----
+        - Todos: artigos por ano em stacked bar: oposição/apoio/ e other? ou remover?
+        - mesma coisa para os partidos:
+            - quais os partidos que acusam mais? e que partidos alvo?
+
+        - Absolutos e relativos:
+            - Quem mais acusa? é acusado?
+            - Quem mais defende? é defendido
+            - Persons more supported than accused ?
+            - Persons more accused than supported ?
+
+        - existem relações familiares no grafo? entre quem?
+
 
     Agregacoes + info na personalidade:
     ------------------------------------
@@ -88,7 +89,6 @@ Web App
 
     Geral (low)
     ----------
-        - AJAX loading GIF: centrar
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
         - party members: - load on scroll down
         - clicar no branco fazer collapse ao menu (hamburger)

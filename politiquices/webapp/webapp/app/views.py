@@ -275,24 +275,22 @@ def complete():
 def determine_heatmap_height(nr_persons):
 
     class Switch(dict):
-
         def __getitem__(self, item):
             for key in self.keys():
                 if item in key:
                     return super().__getitem__(key)
-
             raise KeyError(item)
 
     switch = Switch({
-        range(0, 2): "10%",
-        range(3, 4): "15%",
-        range(5, 10): "25%",
-        range(11, 15): "30%",
-        range(16, 20): "33%",
-        range(21, 25): "40%",
-        range(25, 35): "45%",
-        range(36, 40): "60%",
-        range(41, 100): "75%",
+        range(0, 3): "10%",
+        range(3, 5): "15%",
+        range(5, 10): "30%",
+        range(10, 15): "35%",
+        range(15, 20): "40%",
+        range(20, 25): "45%",
+        range(25, 35): "50%",
+        range(35, 40): "60%",
+        range(40, 9999): "75%",
     })
 
     print(nr_persons)
