@@ -30,7 +30,7 @@ from politiquices.webapp.webapp.app.utils import (
     get_relationship,
     get_ip,
     per_vs_person_linkable,
-    get_chart_labels_min_max)
+    get_chart_labels_min_max, determine_heatmap_height)
 
 # ToDo: review have proper logging
 logger = logging.getLogger(__name__)
@@ -270,34 +270,6 @@ def about():
 def complete():
     result = get_entities_without_image()
     return render_template("incomplete_entities.html", items=result)
-
-
-def determine_heatmap_height(nr_persons):
-
-    class Switch(dict):
-        def __getitem__(self, item):
-            for key in self.keys():
-                if item in key:
-                    return super().__getitem__(key)
-            raise KeyError(item)
-
-    switch = Switch({
-        range(0, 3): "10%",
-        range(3, 5): "15%",
-        range(5, 10): "30%",
-        range(10, 15): "35%",
-        range(15, 20): "40%",
-        range(20, 25): "45%",
-        range(25, 35): "50%",
-        range(35, 40): "60%",
-        range(40, 9999): "75%",
-    })
-
-    print(nr_persons)
-    print(switch[nr_persons])
-    print("---\n")
-
-    return switch[nr_persons]
 
 
 def get_info(wiki_id):

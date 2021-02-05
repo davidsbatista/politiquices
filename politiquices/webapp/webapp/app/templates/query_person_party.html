@@ -167,26 +167,22 @@
     var heatmap = {{ heatmap|tojson }};
     var heatmap_gradient = {{ heatmap_gradient|tojson }};
     var heatmap_height = {{ heatmap_height|tojson }};
-    console.log(heatmap_height);
-
     var options = {
       series: heatmap,
       chart: {
         height: heatmap_height,
         type: 'heatmap',
-    },
-
-    dataLabels: {
-      enabled: true,
-      style: {colors: ['#fff']}
-    },
-    xaxis: {
-      type: 'category',
-    },
-    colors: [heatmap_gradient],
-    title: {text: ''},
+      },
+      dataLabels: {
+        enabled: true,
+        style: {colors: ['#fff']}
+      },
+      xaxis: {
+          type: 'category',
+      },
+      colors: [heatmap_gradient],
+      title: {text: ''},
     };
-
     var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
 </script>

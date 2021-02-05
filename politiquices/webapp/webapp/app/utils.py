@@ -1,5 +1,14 @@
 import socket
 
+
+class Switch(dict):
+    def __getitem__(self, item):
+        for key in self.keys():
+            if item in key:
+                return super().__getitem__(key)
+        raise KeyError(item)
+
+
 def add_icon(r):
     """adds either a arquivo.pt icon oder publico.pt icon"""
 
@@ -126,3 +135,24 @@ def get_ip():
     finally:
         s.close()
     return ip
+
+
+def determine_heatmap_height(nr_persons):
+
+    switch = Switch({
+        range(0, 3): "10%",
+        range(3, 5): "15%",
+        range(5, 10): "30%",
+        range(10, 15): "35%",
+        range(15, 20): "40%",
+        range(20, 25): "45%",
+        range(25, 35): "45%",
+        range(35, 40): "60%",
+        range(40, 9999): "75%",
+    })
+
+    print(nr_persons)
+    print(switch[nr_persons])
+    print("---\n")
+
+    return switch[nr_persons]

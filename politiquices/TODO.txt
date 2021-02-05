@@ -7,11 +7,12 @@ Web App
 
     Geral
     -----
-        - Annotate: still has bugs in direction
-        - Charts with links, possible ?
         - pesquisar: permitir pesquisar sem acentos:
+            https://stackoverflow.com/questions/9710922/jquery-accent-insensitive-with-multiple-values-autocomplete
             https://alistapart.com/article/accent-folding-for-auto-complete/
             https://stackoverflow.com/questions/4402838/jquery-autocomplete-with-special-characters-i-e-%C3%B6-%C3%84-%C3%A9-or-%C3%9F
+        - Annotate: still has bugs in direction
+        - Charts with links, possible ?
 
     Backend
     -------
@@ -116,6 +117,7 @@ Backend-stuff
         - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
 
    - https://www.dafont.com/de/28-days-later.font?text=Politiquices&psize=l&back=theme
+
 
 SPARQL DB
 =========
