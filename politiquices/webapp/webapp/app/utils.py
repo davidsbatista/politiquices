@@ -15,10 +15,17 @@ def add_icon(r):
     if r["url"].startswith("http://publico.pt"):
         r["link_image"] = "/static/images/114px-Logo_publico.png"
         r["image_width"] = "20"
+        r["image_height"] = "20"
+
+    elif r["url"].startswith("http://politiquices.pt/PUBLICO-"):
+        r["link_image"] = "/static/images/linguateca_logo.png"
+        r["image_width"] = "68"
+        r["image_height"] = "20"
 
     else:
         r["link_image"] = "/static/images/color_vertical.svg"
         r["image_width"] = "39.8"
+        r["image_height"] = "20"
 
 
 def per_vs_person_linkable(r):
@@ -38,7 +45,8 @@ def per_vs_person_linkable(r):
     r["title_clickable"] = title_link
     add_icon(r)
     r["link"] = f"""<a href="{r["url"]}" target="_blank" rel="noopener noreferrer">\
-                    <img src="{r['link_image']}" width="{r['image_width']}" height="20"></a>"""
+                    <img src="{r['link_image']}" width="{r['image_width']}" \
+                    height="{r['image_height']}"></a>"""
 
 
 def clickable_title(r, wiki_id):

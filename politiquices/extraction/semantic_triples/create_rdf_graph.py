@@ -190,7 +190,7 @@ def process_classified_titles(titles):
         url_type = 'arquivo'
         if any(url.startswith(x) for x in publico_pt):
             url_type = 'publico'
-        elif url.startswith('http://politiquices.pt/PUBLICO-'):
+        elif url.startswith('https://www.linguateca.pt/CHAVE?'):
             url_type = 'chave'
 
         # special case to transform publico.pt urls to: http://publico.pt/<news_id>
