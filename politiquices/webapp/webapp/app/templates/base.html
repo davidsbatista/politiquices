@@ -27,8 +27,9 @@
   <script src="static/vendor/jquery-ui.js"></script>
 
   <script>
-    $body = $("body");
 
+    $body = $("body");
+    
     $( document ).ajaxStart(function() {
       $('#loading').show();
     });
@@ -37,6 +38,110 @@
       $('#loading').hide();
     });
 
+    persons_only = [];
+    var persons2wiki_id = {};
+    $.getJSON("static/json/persons.json", function(json_data){
+          for (var i = 0, len = json_data.length; i < len; i++) {
+            persons_only.push(json_data[i].name);
+            persons2wiki_id[json_data[i].name] = json_data[i].wiki_id
+          };
+      });
+
+    
+    // taken from: https://stackoverflow.com/questions/9710922/jquery-accent-insensitive-with-multiple-values-autocomplete
+    var normalize = function(term) {
+      var ret = "";
+      for (var i = 0; i < term.length; i++) {
+        ret += accentMap[term.charAt(i)] || term.charAt(i);
+      }
+        return ret;
+    };
+
+    function split(val) {
+      return val.split(/,\s*/);
+    }
+
+    function extractLast(term) {
+      return split(term).pop();
+    }
+
+    var accentMap = {
+        "à": "a", "â": "a", "ã": "a",
+        "é": "e", "è": "e", "ê": "e", "ë": "e",
+        "ï": "i", "î": "i", 
+        "ô": "o", "ö": "o", "ó": "o",
+        "û": "u", "ù": "u"
+    };
+
+    $(function() {
+      $('#autocomplete_nav_bar').keydown(function(e) {          
+        if (e.keyCode === $.ui.keyCode.TAB &&
+          $(this).data("autocomplete").menu.active) {
+          e.preventDefault();
+        }
+        
+        if (e.which == 13) {
+          e.preventDefault();
+        }
+
+        $('#autocomplete_nav_bar').autocomplete({
+
+          minLength: 1,
+          autoFocus: true,
+          
+          //with accent check        
+          source: function(request, response) {
+            var matcher = new RegExp($.ui.autocomplete.escapeRegex(extractLast(request.term)), "i");
+            response($.grep(persons_only, function(value) {
+              value = value.truc || value.value || value;
+              return matcher.test(value) || matcher.test(normalize(value));
+            }));
+          },
+          
+          focus: function() {
+            // prevent value inserted on focus
+            return false;
+          },
+
+          select: function(event, ui) {   
+            var terms = split(this.value);
+            
+            // remove the current input
+            terms.pop();
+            
+            // add the selected item
+            terms.push(ui.item.value);
+            
+            this.value = ui.item.value;
+            $("#autocomplete_nav_bar-value").val(persons2wiki_id[ui.item.value]);
+
+            // make an AJAX request
+            var wiki_id = $('#autocomplete_nav_bar-value').val();
+            var data = { q: wiki_id, search: true};
+            console.log(data);
+              $.ajax({
+                type: 'get',
+                data: data,
+                url: '/entity',
+                error: function () {
+                  alert("There was an error processing this page.");
+                  return false;
+                },
+                complete: function (output) {
+                  $(window).off();    // remove $('#auto-scroll') if in 'Personalidades' page
+                  $('#container').empty();
+                  $('#container').html(output.responseText);
+                }
+              });
+
+            return false;
+          }
+        })        
+      })
+    });
+
+
+    /* Relações de um Personalidade
     nomes = [];
     $.getJSON("static/json/persons.json", function(json_data){
         for (var i = 0, len = json_data.length; i < len; i++) {
@@ -45,7 +150,6 @@
         };
     });
 
-    /* Relações de um Personalidade */
     $(function() {
       $("#autocomplete_nav_bar").autocomplete({
         source: nomes,
@@ -81,6 +185,7 @@
         }
       });
     });
+    */
 
   </script>
 

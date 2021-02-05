@@ -8,20 +8,11 @@
 
     <script>
 
-      parties = [];
-      all_entities = [];
-      personalities = [];
-      
       all_entities_only = [];
       var entity2wiki_id = {};
       
       $.getJSON("static/json/parties.json", function(json_data){
-          for (var i = 0, len = json_data.length; i < len; i++) {
-              var party = {label: json_data[i].name, value: json_data[i].wiki_id};
-              parties.push(party);
-              all_entities.push(party);
-              
-              // just the string
+          for (var i = 0, len = json_data.length; i < len; i++) {              
               all_entities_only.push(json_data[i].name);
               entity2wiki_id[json_data[i].name] = json_data[i].wiki_id
           };
@@ -29,11 +20,6 @@
       
       $.getJSON("static/json/persons.json", function(json_data){
           for (var i = 0, len = json_data.length; i < len; i++) {
-              var person = {label: json_data[i].name, value: json_data[i].wiki_id};
-              personalities.push(person);
-              all_entities.push(person);
-              
-              // just the string
               all_entities_only.push(json_data[i].name);
               entity2wiki_id[json_data[i].name] = json_data[i].wiki_id
           };
