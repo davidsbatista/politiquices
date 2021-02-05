@@ -71,30 +71,36 @@
                         e1: wiki_id_one,
                         e2: wiki_id_two,
                         relationship: e.textContent};
-            $.ajax({
-              type: 'get',
-              data: data,
-              url: '/queries',
-              error: function () {
-                alert("There was an error processing this page.");
-                return false;
-              },
-              complete: function (output) {
-                // bit dirty, checks the size of the returned HTML
-                // if == 1 it's a no results HTML, otherwise the it's results
 
-                var html = $(output.responseText);
-                if (html.length == 1) {
-                    $('#inner').append(html);
-                }
-                else {
-                    $('#inner').html(output.responseText);
-                }    
+            if (wiki_id_one == '' || wiki_id_two == '') 
+              { 
+                alert("Tem que preencher as input boxes")
               }
-            });
+              else {
+                $.ajax({
+                  type: 'get',
+                  data: data,
+                  url: '/queries',
+                  error: function () {
+                    alert("There was an error processing this page.");
+                    return false;
+                  },
+                  complete: function (output) {
+                    // bit dirty, if size of the returned HTML == 1, no results
+                    // iotherwise present the it's results
+                    var html = $(output.responseText);
+                    if (html.length == 1) {
+                        $('#inner').append(html);
+                    }
+                    else {
+                        $('#inner').html(output.responseText);
+                    }    
+                  }
+                });
+              }            
         });
 
-        /* Dropdown to correct/annotataed relationships */
+        /* Dropdown to correct/annotated relationships */
         $(document).ready(function() {
           $(".dropdown-menu").on('click', 'a', function(){
             $(this).parents('.dropdown').find('button').text($(this).text());

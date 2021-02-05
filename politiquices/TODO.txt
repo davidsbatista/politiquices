@@ -1,22 +1,22 @@
 Web App
 =======
 
+    - no relationships?
+        - Abel Batista
+        - Ricardo Batista Leite
+
     Geral
     -----
+        - Annotate: still has bugs in direction
         - Charts with links, possible ?
         - pesquisar: permitir pesquisar sem acentos:
             https://alistapart.com/article/accent-folding-for-auto-complete/
             https://stackoverflow.com/questions/4402838/jquery-autocomplete-with-special-characters-i-e-%C3%B6-%C3%84-%C3%A9-or-%C3%9F
-        
-        - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
-        - Annotate: still has bugs in direction
-
 
     Backend
     -------
         - Indexar colecção CHAVE no server e fazer links para politiquices.pt
-        - Speed up party vs party queries, how?:    https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
-
+        - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
     Grafo
     -----
@@ -27,7 +27,6 @@ Web App
         carregar dados:
             - Cor do node para cada partido
             - Cor para o Edge conforme a relação
-
 
         idea para geral:
             - um unico grafo navegal? ver noticias entre duas pessoas e/ou numa comunidade

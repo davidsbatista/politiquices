@@ -316,7 +316,7 @@ def entity_vs_entity(person_one, person_two):
     person_two_info = get_person_info(person_two)
     results, rels_freq_by_year = get_relationships_between_two_entities(person_one, person_two)
     if len(results) == 0:
-        return render_template('index.html')
+        return render_template("no_results.html")
 
     for r in results:
         per_vs_person_linkable(r)
@@ -396,7 +396,7 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
         party_wiki_id, person_wiki_id, rel
     )
     if len(results) == 0:
-        return render_template('index.html')
+        return render_template("no_results.html")
 
     for r in results:
         per_vs_person_linkable(r)
@@ -453,7 +453,7 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
         person_wiki_id, party_wiki_id, rel
     )
     if len(results) == 0:
-        return render_template('index.html')
+        return render_template("no_results.html")
 
     for r in results:
         per_vs_person_linkable(r)
@@ -513,7 +513,7 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
 
     results = list_of_spec_relations_between_two_parties(party_a_members, party_b_members, rel)
     if len(results) == 0:
-        return render_template('index.html')
+        return render_template("no_results.html")
 
     for r in results:
         per_vs_person_linkable(r)
