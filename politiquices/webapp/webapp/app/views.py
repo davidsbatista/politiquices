@@ -272,6 +272,36 @@ def complete():
     return render_template("incomplete_entities.html", items=result)
 
 
+def determine_heatmap_height(nr_persons):
+
+    class Switch(dict):
+
+        def __getitem__(self, item):
+            for key in self.keys():
+                if item in key:
+                    return super().__getitem__(key)
+
+            raise KeyError(item)
+
+    switch = Switch({
+        range(0, 2): "10%",
+        range(3, 4): "15%",
+        range(5, 10): "25%",
+        range(11, 15): "30%",
+        range(16, 20): "33%",
+        range(21, 25): "40%",
+        range(25, 35): "45%",
+        range(36, 40): "60%",
+        range(41, 100): "75%",
+    })
+
+    print(nr_persons)
+    print(switch[nr_persons])
+    print("---\n")
+
+    return switch[nr_persons]
+
+
 def get_info(wiki_id):
     if info := [entry for entry in all_parties_info if entry["wiki_id"] == wiki_id]:
         return info[0], "party"
@@ -287,6 +317,8 @@ def entity_vs_entity(person_one, person_two):
     person_one_info = get_person_info(person_one)
     person_two_info = get_person_info(person_two)
     results, rels_freq_by_year = get_relationships_between_two_entities(person_one, person_two)
+    if len(results) == 0:
+        return render_template('index.html')
 
     for r in results:
         per_vs_person_linkable(r)
@@ -330,8 +362,12 @@ def entity_vs_entity(person_one, person_two):
 
 
 def person_vs_person(person_one, person_two, rel_text, person_one_info, person_two_info):
+
     _, rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_two_persons(person_one, person_two, rel)
+
+    if len(results) == 0:
+        return render_template("no_results.html")
 
     for r in results:
         per_vs_person_linkable(r)
@@ -361,6 +397,9 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
     results = list_of_spec_relations_between_members_of_a_party_with_someone(
         party_wiki_id, person_wiki_id, rel
     )
+    if len(results) == 0:
+        return render_template('index.html')
+
     for r in results:
         per_vs_person_linkable(r)
     relationships_json = make_json([r for r in results if r['rel_type'] == rel])
@@ -385,9 +424,7 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
                 per_freq_year.append({'x': year, 'y': 0})
         heatmap.append({'name': name, 'data': per_freq_year})
     sorted_heatmap = sorted(heatmap, key=lambda x: x['name'], reverse=True)
-    heatmap_height = 20 * len(sorted_heatmap)
-
-    print(len(sorted_heatmap))
+    heatmap_height = determine_heatmap_height(len(sorted_heatmap))
 
     # chart: news articles/relationships per year
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
@@ -417,6 +454,9 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
     results = list_of_spec_relations_between_a_person_and_members_of_a_party(
         person_wiki_id, party_wiki_id, rel
     )
+    if len(results) == 0:
+        return render_template('index.html')
+
     for r in results:
         per_vs_person_linkable(r)
 
@@ -442,9 +482,7 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
                 per_freq_year.append({'x': year, 'y': 0})
         heatmap.append({'name': name, 'data': per_freq_year})
     sorted_heatmap = sorted(heatmap, key=lambda x: x['name'], reverse=True)
-
-    print(len(sorted_heatmap))
-    heatmap_height = 20 * len(sorted_heatmap)
+    heatmap_height = determine_heatmap_height(len(sorted_heatmap))
 
     # chart: news articles/relationships per year
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
@@ -476,6 +514,8 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
     _, rel = get_relationship(rel_text)
 
     results = list_of_spec_relations_between_two_parties(party_a_members, party_b_members, rel)
+    if len(results) == 0:
+        return render_template('index.html')
 
     for r in results:
         per_vs_person_linkable(r)

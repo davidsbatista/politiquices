@@ -29,6 +29,13 @@ body {
   z-index: 100;
 }
 
+#alert_no_results{
+  position: absolute;
+  top: 50%;
+  left: 240px;
+  z-index: 100;
+}
+
 
 
 /* Start by setting display:none to make this hidden.

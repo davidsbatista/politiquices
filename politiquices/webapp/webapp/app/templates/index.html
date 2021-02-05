@@ -80,8 +80,16 @@
                 return false;
               },
               complete: function (output) {
-                $('#inner').html(output.responseText);
-    
+                // bit dirty, checks the size of the returned HTML
+                // if == 1 it's a no results HTML, otherwise the it's results
+
+                var html = $(output.responseText);
+                if (html.length == 1) {
+                    $('#inner').append(html);
+                }
+                else {
+                    $('#inner').html(output.responseText);
+                }    
               }
             });
         });

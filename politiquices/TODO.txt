@@ -1,73 +1,26 @@
 Web App
 =======
 
-    Partido vs Partido vs PER vs PER
-    --------------------------------
-    Par vs Per / Per vs Partido:
-        - heatmap height:
-
-        70%
-            39 - 650    # PSD vs Sócrates
-            36 - 650    # PS vs Sócrates
-
-        25%
-            12 - 350    # CDS vs Sócrates
-            11 - 350
-
-        20%
-             6           # CDU opõe-se José Sócrates
-
-        15%
-             3           # Bloco Esquerda opõe-se José Sócrates
-
-        10%
-             1           # Bloco Esquerda apoia José Sócrates
-
-
     Geral
     -----
-        - Annotate: still has bugs in direction
-        - AJAX loading GIF: centrar
+        - Charts with links, possible ?
+        - pesquisar: permitir pesquisar sem acentos:
+            https://alistapart.com/article/accent-folding-for-auto-complete/
+            https://stackoverflow.com/questions/4402838/jquery-autocomplete-with-special-characters-i-e-%C3%B6-%C3%84-%C3%A9-or-%C3%9F
+        
         - Pesquisar/Seleccionar: não permitir value associado à input box estar vazio
-        - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
-        - party members: - load on scroll down
-
-
-    Personalidades:
-    -------------
-     - mais imagens por linha
-     - cache + cópia do resize das imagens para este display
-     - size original para a página principal da entidade only
-
-
-    Varios:
-    -------
-     - por o javascript: bootstrap-table/export e font-awesome not local
-     - Charts with links, possible ?
-     - tirar todos os alerts -> subsituir por uma pagina de erro
-     - pesquisar: permitir pesquisar sem acentos:
-        https://alistapart.com/article/accent-folding-for-auto-complete/
-        https://stackoverflow.com/questions/4402838/jquery-autocomplete-with-special-characters-i-e-%C3%B6-%C3%84-%C3%A9-or-%C3%9F
-     - clicar no branco fazer collapse ao menu (hamburger)
-
-
-    Index
-    -----
-        - Quando não há resultados, indicar e ficar no index.html
-        - Mostrar actualizar o outro input box apenas com co-occorrências
+        - Annotate: still has bugs in direction
 
 
     Backend
     -------
-        - server_url: "bolt://politiquices.pt:7687.", ou 0.0.0.0 dependendo de onde se está
         - Indexar colecção CHAVE no server e fazer links para politiquices.pt
         - Speed up party vs party queries, how?:    https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
-
     Stats
     -----
+        - Todos: artigos por ano em stacked bar: oposição/apoio/ e other? ou remover?
         - mesma coisa para os partidos:
-             -
             - quais os partidos que acusam mais? e que partidos alvo?
 
         - Absolutos e relativos:
@@ -77,9 +30,6 @@ Web App
             - Persons more accused than supported ?
 
         - existem relações familiares no grafo? entre quem?
-
-        - Todos: artigos por ano em stacked bar: oposição/apoio/ e other? ou remover?
-
 
     Grafo
     -----
@@ -129,12 +79,21 @@ Web App
 
 
 
+    Personalidades:
+    -------------
+     - mais imagens por linha
+     - cache + cópia do resize das imagens para este display
+     - size original para a página principal da entidade only
 
 
-
-
-
-
+    Geral (low)
+    ----------
+        - AJAX loading GIF: centrar
+        - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
+        - party members: - load on scroll down
+        - clicar no branco fazer collapse ao menu (hamburger)
+        - tirar todos os alerts -> subsituir por uma pagina de erro
+        - Mostrar actualizar o outro input box apenas com co-occorrências
 
 
 
