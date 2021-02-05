@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+  <meta name="description" content="">
+  <meta name="author" content="David S. Batista">
+
+  <!-- Jquery needs to come first to avoid: 'Uncaught ReferenceError: $ is not defined' -->
+  <script src="static/vendor/jquery/jquery.min.js"></script>
+
+  <!-- Bootstrap -->
+  <link href="static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <!-- Custom styles for this template -->
+  <link href="static/css/heroic-features.css" rel="stylesheet">
+
+  <!-- Jquery UI -->
+  <link rel="stylesheet" href="static/css/jquery-ui.css">
+  <script src="static/vendor/jquery-ui.js"></script>
+
+  <title> Colecção CHAVE </title>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <h3><center>Artigo pertencete à Colecção CHAVE</center></h3>
+        <br>
+    </div>
+
+    <div id="container" class="container">
+
+        <hr>
+        <p><b>Data publicação: {{article.date}}</b></p>
+        <p><b>Categoria: {{article.category}}</b></p>
+        <b>Autor: {{article.author}}</b>
+        {{article.text |safe}}
+        <hr>
+
+    </div>
+
+</body>

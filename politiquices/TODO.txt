@@ -1,7 +1,7 @@
 Web App
 =======
 
-    - no relationships?
+    - no relationships, probably only 'other':
         - Abel Batista
         - Ricardo Batista Leite
 

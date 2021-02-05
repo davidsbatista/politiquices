@@ -51,6 +51,10 @@ with open("webapp/app/static/json/party_members.json") as f_in:
 with open("webapp/app/static/json/wiki_id_info.json") as f_in:
     wiki_id_info = json.load(f_in)
 
+with open("webapp/app/static/json/CHAVE-Publico_94_95.jsonl") as f_in:
+    chave_publico = [json.loads(line) for line in f_in]
+
+
 # number of entity cards to read when scrolling down
 entities_batch_size = 16
 
@@ -270,6 +274,15 @@ def about():
 def complete():
     result = get_entities_without_image()
     return render_template("incomplete_entities.html", items=result)
+
+
+# to render documents from the CHAVE collection
+@app.route("/chave")
+def chave():
+    chave_id = request.args.get("q")
+    article = [article for article in chave_publico if article['id'] == chave_id][0]
+    article['text'] = article['text'].replace('\n', '<br><br>')
+    return render_template("chave_template.html", article=article)
 
 
 def get_info(wiki_id):
