@@ -17,7 +17,10 @@ def add_icon(r):
         r["image_width"] = "20"
         r["image_height"] = "20"
 
-    elif r["url"].startswith("http://politiquices.pt/PUBLICO-"):
+    elif r["url"].startswith("https://www.linguateca.pt/CHAVE"):
+        # https://www.linguateca.pt/CHAVE/?PUBLICO-19940130-087
+        r["url"] = r['url'].replace('?', '')
+        r["url"] = r['url'].replace('https://www.linguateca.pt/CHAVE', 'chave?q=')
         r["link_image"] = "/static/images/linguateca_logo.png"
         r["image_width"] = "68"
         r["image_height"] = "20"

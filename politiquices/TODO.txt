@@ -1,18 +1,6 @@
 Web App
 =======
 
-    gerar assim o TTL:
-        - https://www.linguateca.pt/CHAVE/?PUBLICO-123 (pagina default do CHAVE)
-        - no view.py re-escrever o URL qnd se lê do SPARL
-
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19940130-087
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19941018-089
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19940610-120
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19951020-096
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19951020-117
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19951029-089
-
-
     - no relationships, probably only 'other':
         - Abel Batista
         - Ricardo Batista Leite
@@ -21,6 +9,7 @@ Web App
     -----
         - Charts with links, possible ?
         - Indexar colecção CHAVE no server e fazer links para politiquices.pt
+        - no view.py re-escrever o URL qnd se lê do SPARQL
         - Annotate: still has bugs in direction
         - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
@@ -115,6 +104,17 @@ Backend-stuff
         há muitos duplicados
 
     - alterar o namespace de 'myprefix' para 'politiquices.pt'
+
+    - gerar assim o TTL:
+        - https://www.linguateca.pt/CHAVE?PUBLICO-19940130-087
+        - https://www.linguateca.pt/CHAVE?PUBLICO-19941018-089
+        - https://www.linguateca.pt/CHAVE?PUBLICO-19940610-120
+        - https://www.linguateca.pt/CHAVE?PUBLICO-19951020-096
+        - https://www.linguateca.pt/CHAVE?PUBLICO-19951020-117
+        - https://www.linguateca.pt/CHAVE?PUBLICO-19951029-089
+
+
+
 
     SPARQL queries:
         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
