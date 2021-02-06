@@ -10,6 +10,7 @@ Web App
     -----
         - carregar dados: 
             - partido para cada node
+        
         - idea geral:
             - um unico grafo navegável? ver noticias entre duas pessoas e/ou numa comunidade
             - um grafico estatico anual: tirar medidas, fazer uma animação com 26 estados
