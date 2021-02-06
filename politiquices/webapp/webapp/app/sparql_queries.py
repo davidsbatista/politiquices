@@ -821,7 +821,7 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
 
 # Relationship Queries
 @lru_cache
-def list_of_spec_relations_between_two_persons(wiki_id_one, wiki_id_two, rel_type):
+def list_of_spec_relations_between_two_persons(wiki_id_one, wiki_id_two, rel_type, year=None):
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
         WHERE {{          
@@ -843,6 +843,8 @@ def list_of_spec_relations_between_two_persons(wiki_id_one, wiki_id_two, rel_typ
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
+        if year is not None and x["date"]["value"][0:4] != year:
+            continue
         results.append(
             {
                 "url": x["arquivo_doc"]["value"],

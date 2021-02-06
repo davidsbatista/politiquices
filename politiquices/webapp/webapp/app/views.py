@@ -344,10 +344,10 @@ def entity_vs_entity(person_one, person_two):
     )
 
 
-def person_vs_person(person_one, person_two, rel_text, person_one_info, person_two_info):
+def person_vs_person(person_one, person_two, rel_text, person_one_info, person_two_info, year=None):
 
-    _, rel = get_relationship(rel_text)
-    results = list_of_spec_relations_between_two_persons(person_one, person_two, rel)
+    gradient, rel = get_relationship(rel_text)
+    results = list_of_spec_relations_between_two_persons(person_one, person_two, rel, year)
 
     if len(results) == 0:
         return render_template("no_results.html")
@@ -368,7 +368,7 @@ def person_vs_person(person_one, person_two, rel_text, person_one_info, person_t
         person_two=person_two_info,
         labels=get_chart_labels_min_max(),
         rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
-        rel_text=rel_text
+        rel_text=rel_text,
     )
 
 
@@ -532,6 +532,12 @@ def queries():
         return entity_vs_entity(entity_one, entity_two)
 
     if query_nr == "one":
+
+        if 'year' in request.args:
+            year = request.args.get("year")
+        else:
+            year = None
+
         entity_one = request.args.get("e1")
         entity_two = request.args.get("e2")
         rel_text = request.args.get("relationship")
@@ -539,7 +545,7 @@ def queries():
         e2_info, e2_type = get_info(entity_two)
 
         if e1_type == "person" and e2_type == "person":
-            return person_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info)
+            return person_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info, year)
 
         elif e1_type == "party" and e2_type == "person":
             return party_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info)

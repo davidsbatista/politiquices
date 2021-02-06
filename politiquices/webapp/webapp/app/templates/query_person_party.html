@@ -167,11 +167,43 @@
     var heatmap = {{ heatmap|tojson }};
     var heatmap_gradient = {{ heatmap_gradient|tojson }};
     var heatmap_height = {{ heatmap_height|tojson }};
+    var ent1_wiki_id = {{ person.wiki_id|tojson }};
     var options = {
       series: heatmap,
       chart: {
         height: heatmap_height,
         type: 'heatmap',
+        events: {
+            dataPointSelection: function(event, chartContext, config) {
+                var person = heatmap[config['seriesIndex']]['name'];
+                var year = config['dataPointIndex']+1994;
+                var ent2_wiki_id = persons2wiki_id[person];
+
+                // make an AJAX request
+                var data = {
+                    query_nr: 'one',
+                    e1: ent1_wiki_id,
+                    e2: ent2_wiki_id,
+                    year: year,
+                    relationship: rel_text
+                };
+
+                $.ajax({
+                    type: 'get',
+                    data: data,
+                    url: '/queries',
+                    error: function () {
+                        alert("There was an error processing this page.");
+                        return false;
+                    },
+                    complete: function (output) {
+                        $('#container').empty();
+                        $('#container').html(output.responseText);
+                    }
+                });
+
+            }
+        }
       },
       dataLabels: {
         enabled: true,

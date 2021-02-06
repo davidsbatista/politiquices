@@ -8,8 +8,6 @@ Web App
     Geral
     -----
         - Charts with links, possible ?
-        - Indexar colecção CHAVE no server e fazer links para politiquices.pt
-        - no view.py re-escrever o URL qnd se lê do SPARQL
         - Annotate: still has bugs in direction
         - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 

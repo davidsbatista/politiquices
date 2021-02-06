@@ -153,7 +153,7 @@ def determine_heatmap_height(nr_persons):
     switch = Switch({
         range(0, 3): "10%",
         range(3, 5): "15%",
-        range(5, 10): "30%",
+        range(5, 10): "25%",
         range(10, 15): "35%",
         range(15, 20): "40%",
         range(20, 25): "45%",

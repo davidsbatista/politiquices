@@ -101,12 +101,10 @@
           if (e.keyCode === $.ui.keyCode.TAB &&
             $(this).data("autocomplete").menu.active) {
             e.preventDefault();
-            console.log('key_1')
           }
           
           if (e.which == 13) {
             e.preventDefault();
-            console.log('key_2')
           }
 
           $('#autocomplete_entity_one').autocomplete({
@@ -146,17 +144,14 @@
           })
         })
 
-
         $('#autocomplete_entity_two').keydown(function(e) {
           if (e.keyCode === $.ui.keyCode.TAB &&
             $(this).data("autocomplete").menu.active) {
             e.preventDefault();
-            console.log('key_1')
           }
 
           if (e.which == 13) {
             e.preventDefault();
-            console.log('key_2')
           }
 
           $('#autocomplete_entity_two').autocomplete({
