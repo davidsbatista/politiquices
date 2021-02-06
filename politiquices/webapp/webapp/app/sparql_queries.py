@@ -568,6 +568,7 @@ def get_person_relationships(wiki_id):
                 "focus_ent": focus_ent,
                 "other_ent_url": "entity?q=" + other_ent_url,
                 "other_ent_name": other_ent_name,
+                "rel_type": rel_type
             }
         )
 

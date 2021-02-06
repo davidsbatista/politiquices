@@ -1,47 +1,22 @@
 Web App
 =======
 
-    - no relationships, probably only 'other':
-        - Abel Batista
-        - Ricardo Batista Leite
-
     Geral
     -----
-        - Charts with links, possible ?
-        - Annotate: still has bugs in direction
+        - Remove all 'Other' reationships
         - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
     Grafo
     -----
-        - NOTE: CSV files should not have any empty spaces
-        - https://community.neo4j.com/t/the-graph-display-on-using-neovis-js-can-be-more-presentable/2457/5
-        - https://medium.com/neo4j/graph-visualization-with-neo4j-using-neovis-js-a2ecaaa7c379
-
-        carregar dados:
-            - Cor do node para cada partido
-            - Cor para o Edge conforme a relação
-
-        idea para geral:
-            - um unico grafo navegal? ver noticias entre duas pessoas e/ou numa comunidade
+        - carregar dados: 
+            - partido para cada node
+        - idea geral:
+            - um unico grafo navegável? ver noticias entre duas pessoas e/ou numa comunidade
             - um grafico estatico anual: tirar medidas, fazer uma animação com 26 estados
             - um interface qualquer para poder selecionar as relações e o intervalo de datas
+            - para cada personalidade mostrar a rede com a possibilidade de seleccionar o grau e as relações ?
 
-        - para cada personalidade mostrar a rede com a possibilidade de seleccionar o grau e as relações
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-
-        # ToDo: mapping de cores para o partido
-
-        edge_color_mapping = {
-            "ent1_opposes_ent2": "#FF0000",
-            "ent1_opposed_by_ent2": "#980000",
-            "ent1_supports_ent2": "#44861E",
-            "ent1_supported_by_ent2": "#70DA33",
-            "ent2_opposes_ent1": "#FF0000",
-            "ent2_opposed_by_ent1": "#980000",
-            "ent2_supports_ent1": "#44861E",
-            "ent2_supported_by_ent1": "#70DA33",
-        }
-
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
@@ -58,7 +33,7 @@ Web App
             - Persons more supported than accused ?
             - Persons more accused than supported ?
 
-        - existem relações familiares no grafo? entre quem?
+        - Download de todos os stats em .csv
 
 
     Agregacoes + info na personalidade:
@@ -69,7 +44,7 @@ Web App
      - Educacao
      - listar todos os membros do Governo X
      - listar todos os que já foram Ministros <qq cena>
-
+     - existem relações familiares no grafo? entre quem?
 
 
     Personalidades:
@@ -84,10 +59,7 @@ Web App
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
         - party members: - load on scroll down
         - clicar no branco fazer collapse ao menu (hamburger)
-        - tirar todos os alerts -> subsituir por uma pagina de erro
-        - Mostrar actualizar o outro input box apenas com co-occorrências
-
-
+        - tirar todos os alerts -> subsituir por uma pagina de erro -> ir para index.html
 
 
 
@@ -106,13 +78,6 @@ Backend-stuff
     - gerar assim o TTL:
         - https://www.linguateca.pt/CHAVE?PUBLICO-19940130-087
         - https://www.linguateca.pt/CHAVE?PUBLICO-19941018-089
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19940610-120
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19951020-096
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19951020-117
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19951029-089
-
-
-
 
     SPARQL queries:
         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
@@ -147,11 +112,8 @@ classifiers
 
     relationship:
     -------------
-        - look at predictions, analyse, annotate and train/test again
         - explorar os padroes encontrados
         - controlar overfitting?
-
-        - fix plots, it's a mess!
 
         - Transformer models: https://huggingface.co/transformers/quicktour.html
 
