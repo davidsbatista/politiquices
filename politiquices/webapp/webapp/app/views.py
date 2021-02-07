@@ -23,7 +23,7 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     list_of_spec_relations_between_members_of_a_party_with_someone,
     list_of_spec_relations_between_two_parties,
     all_persons_freq,
-    get_total_articles_by_year_by_relationship_type)
+    get_total_articles_by_year_by_relationship_type, get_all_other_to_annotate)
 from politiquices.webapp.webapp.app.utils import (
     clickable_title,
     make_json,
@@ -292,6 +292,25 @@ def chave():
     article = [article for article in chave_publico if article['id'] == chave_id][0]
     article['text'] = article['text'].replace('\n', '<br><br>')
     return render_template("chave_template.html", article=article)
+
+
+@app.route("/annotate")
+def annotate():
+    to_annotate = get_all_other_to_annotate()
+
+    for idx, r in enumerate(to_annotate):
+        link_one = r["title"].replace(
+            r['ent1_str'],
+            '<a id="ent_1" href="entity?q='+r['ent1'].split("/")[-1] + '">'+r['ent1_str']+"</a>")
+
+        title_link = link_one.replace(
+            r["ent2_str"],
+            '<a id="ent_2" href="entity?q='+r['ent2'].split("/")[-1] + '">'+r['ent2_str']+"</a>")
+
+        r["title_clickable"] = title_link
+        r["id"] = idx
+
+    return render_template("annotate_other.html", items=to_annotate)
 
 
 def get_info(wiki_id):

@@ -124,8 +124,8 @@ def get_total_articles_by_year_by_relationship_type():
     values = defaultdict(list)
 
     for x in results["results"]["bindings"]:
-        years.append(x['year']['value'])
-        values[x['rel_type']['value']].append(x['nr_articles']['value'])
+        years.append(x["year"]["value"])
+        values[x["rel_type"]["value"]].append(x["nr_articles"]["value"])
 
     return years, values
 
@@ -278,7 +278,7 @@ def get_nr_relationships_as_subject(relationship: str):
 
     results = query_sparql(prefixes + "\n" + query, "politiquices")
     return [
-        (x['person_a']['value'].split("/")[-1], int(x['nr_articles']['value']))
+        (x["person_a"]["value"].split("/")[-1], int(x["nr_articles"]["value"]))
         for x in results["results"]["bindings"]
     ]
 
@@ -302,7 +302,7 @@ def get_nr_relationships_as_target(relationship: str):
 
     results = query_sparql(prefixes + "\n" + query, "politiquices")
     return [
-        (x['person_a']['value'].split("/")[-1], int(x['nr_articles']['value']))
+        (x["person_a"]["value"].split("/")[-1], int(x["nr_articles"]["value"]))
         for x in results["results"]["bindings"]
     ]
 
@@ -610,7 +610,7 @@ def get_person_relationships(wiki_id):
                 "focus_ent": focus_ent,
                 "other_ent_url": "entity?q=" + other_ent_url,
                 "other_ent_name": other_ent_name,
-                "rel_type": rel_type
+                "rel_type": rel_type,
             }
         )
 
@@ -804,26 +804,26 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
     rels_freq_by_year = defaultdict(relationships_counter)
     labels = get_chart_labels_min_max()
     for label in labels:
-        rels_freq_by_year[label]['ent1_opposes_ent2'] = 0
+        rels_freq_by_year[label]["ent1_opposes_ent2"] = 0
 
     relationships = []
     for x in result["results"]["bindings"]:
 
         # ignore 'other' relationships
-        if 'other' in x["rel_type"]["value"]:
+        if "other" in x["rel_type"]["value"]:
             continue
 
         relationship = {
-                "url": x["arquivo_doc"]["value"],
-                "date": x["date"]["value"],
-                "title": x["title"]["value"],
-                "rel_type": x["rel_type"]["value"],
-                "score": x["score"]["value"][0:5],
-                "ent1_wiki": x["ent1"]["value"],
-                "ent1_str": x["ent1_str"]["value"],
-                "ent2_wiki": x["ent2"]["value"],
-                "ent2_str": x["ent2_str"]["value"],
-            }
+            "url": x["arquivo_doc"]["value"],
+            "date": x["date"]["value"],
+            "title": x["title"]["value"],
+            "rel_type": x["rel_type"]["value"],
+            "score": x["score"]["value"][0:5],
+            "ent1_wiki": x["ent1"]["value"],
+            "ent1_str": x["ent1_str"]["value"],
+            "ent2_wiki": x["ent2"]["value"],
+            "ent2_str": x["ent2_str"]["value"],
+        }
 
         ent1_wiki_id = x["ent1"]["value"].split("/")[-1]
         year = x["date"]["value"][0:4]
@@ -831,31 +831,31 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
 
         if rel_type.startswith("ent1"):
             if ent1_wiki_id != wiki_id_one:
-                if 'supports' in rel_type:
-                    rels_freq_by_year[year]['ent1_supported_by_ent2'] += 1
-                    relationship['rel_type_new'] = 'ent1_supported_by_ent2'
-                if 'opposes' in rel_type:
-                    rels_freq_by_year[year]['ent1_opposed_by_ent2'] += 1
-                    relationship['rel_type_new'] = 'ent1_opposed_by_ent2'
+                if "supports" in rel_type:
+                    rels_freq_by_year[year]["ent1_supported_by_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_supported_by_ent2"
+                if "opposes" in rel_type:
+                    rels_freq_by_year[year]["ent1_opposed_by_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_opposed_by_ent2"
             else:
                 rels_freq_by_year[year][rel_type] += 1
-                relationship['rel_type_new'] = rel_type
+                relationship["rel_type_new"] = rel_type
 
         if rel_type.startswith("ent2"):
             if ent1_wiki_id != wiki_id_one:
-                if 'supports' in rel_type:
-                    rels_freq_by_year[year]['ent1_supports_ent2'] += 1
-                    relationship['rel_type_new'] = 'ent1_supports_ent2'
-                if 'opposes' in rel_type:
-                    rels_freq_by_year[year]['ent1_opposes_ent2'] += 1
-                    relationship['rel_type_new'] = 'ent1_opposes_ent2'
+                if "supports" in rel_type:
+                    rels_freq_by_year[year]["ent1_supports_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_supports_ent2"
+                if "opposes" in rel_type:
+                    rels_freq_by_year[year]["ent1_opposes_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_opposes_ent2"
             else:
-                if 'supports' in rel_type:
-                    rels_freq_by_year[year]['ent1_supported_by_ent2'] += 1
-                    relationship['rel_type_new'] = 'ent1_supported_by_ent2'
-                if 'opposes' in rel_type:
-                    rels_freq_by_year[year]['ent1_opposed_by_ent2'] += 1
-                    relationship['rel_type_new'] = 'ent1_opposed_by_ent2'
+                if "supports" in rel_type:
+                    rels_freq_by_year[year]["ent1_supported_by_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_supported_by_ent2"
+                if "opposes" in rel_type:
+                    rels_freq_by_year[year]["ent1_opposed_by_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_opposed_by_ent2"
 
         relationships.append(relationship)
 
@@ -1065,6 +1065,48 @@ def get_entities_without_image():
         )
 
     return entities
+
+
+# annotate
+def get_all_other_to_annotate():
+    query = """
+        SELECT ?date ?url ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
+        WHERE {
+          ?x my_prefix:arquivo ?url;
+             my_prefix:type ?rel_type;
+             my_prefix:score ?score;
+             my_prefix:ent1 ?ent1;
+             my_prefix:ent2 ?ent2;
+             my_prefix:ent1_str ?ent1_str;
+             my_prefix:ent2_str ?ent2_str;
+             my_prefix:arquivo ?arquivo_doc.
+        
+          ?arquivo_doc dc:date ?date .
+          ?arquivo_doc dc:title ?title ;
+                       dc:date  ?date .
+        
+          FILTER(REGEX(?rel_type,"other")).
+        }
+        ORDER BY ?date ?score
+        LIMIT 1000
+    """
+    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    to_annotate = []
+    for x in result["results"]["bindings"]:
+        to_annotate.append(
+            {'date': x["date"]["value"],
+             'url': x["url"]["value"],
+             'title': x["title"]["value"],
+             'rel_type': x["rel_type"]["value"],
+             'score': x["score"]["value"][0:5],
+             'ent1': x["ent1"]["value"],
+             'ent1_str': x["ent1_str"]["value"],
+             'ent2': x["ent2"]["value"],
+             'ent2_str': x["ent2_str"]["value"]
+             }
+        )
+
+    return to_annotate
 
 
 def query_sparql(query, endpoint):

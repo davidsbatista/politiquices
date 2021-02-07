@@ -1,6 +1,8 @@
 Web App
 =======
 
+    - Partidos should not show members with just one person
+
     - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
     Grafo
@@ -12,7 +14,9 @@ Web App
             - um unico grafo navegável? ver noticias entre duas pessoas e/ou numa comunidade
             - um grafico estatico anual: tirar medidas, fazer uma animação com 26 estados
             - um interface qualquer para poder selecionar as relações e o intervalo de datas
-            - para cada personalidade mostrar a rede com a possibilidade de seleccionar o grau e as relações ?
+
+            - para cada personalidade mostrar a rede com a possibilidade de seleccionar o grau e as
+              relações ?
 
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
