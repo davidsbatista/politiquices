@@ -13,16 +13,11 @@
     }
 </style>
 <script src="static/vendor/neovis/neovis.js"></script>
-
-<!-- https://rawgit.com/neo4j-contrib/neovis.js/master/dist/neovis.js -->
-
 <script>
     
     var viz; // needs to be defined becoming a global, so that it can be called from the bottom
     var ip_address = {{ ip_address|tojson }};
     var url = `bolt://${ip_address}:7687.`
-    console.log(ip_address)
-    console.log(url)
 
     function draw() {
         var config = {
@@ -31,6 +26,8 @@
             server_user: "neo4j",
             server_password: "s3cr3t",
             arrows: true,
+
+            hierarchical: true,
 
             labels: {
                 "Person": {
