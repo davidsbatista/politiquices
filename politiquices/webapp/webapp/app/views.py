@@ -23,7 +23,7 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     list_of_spec_relations_between_members_of_a_party_with_someone,
     list_of_spec_relations_between_two_parties,
     all_persons_freq,
-)
+    get_total_articles_by_year_by_relationship_type)
 from politiquices.webapp.webapp.app.utils import (
     clickable_title,
     make_json,
@@ -231,6 +231,9 @@ def status():
     nr_articles_year_labels, nr_articles_year_values = get_nr_articles_per_year()
     nr_articles = get_total_nr_of_articles()
 
+    # articles per relationship type per year chart
+    years, values = get_total_articles_by_year_by_relationship_type()
+
     # personality frequency chart
     per_freq_labels = []
     per_freq_values = []
@@ -258,6 +261,12 @@ def status():
         "per_freq_values": per_freq_values,
         "per_co_occurrence_labels": co_occurrences_labels,
         "per_co_occurrence_values": co_occurrences_values,
+        "ent1_opposes_ent2": [freq_year for freq_year in values['ent1_opposes_ent2']],
+        "ent2_opposes_ent1": [freq_year for freq_year in values['ent2_opposes_ent1']],
+        "ent1_supports_ent2": [freq_year for freq_year in values['ent1_supports_ent2']],
+        "ent2_supports_ent1": [freq_year for freq_year in values['ent2_supports_ent1']],
+        "ent1_other_ent2": [freq_year for freq_year in values['ent1_other_ent2']],
+        "ent2_other_ent1": [freq_year for freq_year in values['ent2_other_ent1']]
     }
 
     return render_template("stats.html", items=items)

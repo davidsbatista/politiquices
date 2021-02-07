@@ -76,16 +76,58 @@ def get_total_nr_of_articles() -> int:
 
 @lru_cache
 def get_nr_of_persons() -> int:
+
+    # NOTE: persons with only 'ent1_other_ent2' and 'ent2_other_ent1' relationships
+    #       are not considered
+
     query = """
         PREFIX wd: <http://www.wikidata.org/entity/>
         PREFIX wdt: <http://www.wikidata.org/prop/direct/>
         
-        SELECT (COUNT(?x) as ?nr_persons) WHERE {
-            ?x wdt:P31 wd:Q5
-            } 
+        SELECT (COUNT(DISTINCT ?person) as ?nr_persons) {
+            ?person wdt:P31 wd:Q5 ;
+            {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
+            ?rel my_prefix:type ?rel_type FILTER(!REGEX(?rel_type,"other") ) .
+        } 
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
     return results["results"]["bindings"][0]["nr_persons"]["value"]
+
+
+def get_total_articles_by_relationship_type():
+    query = """
+        SELECT ?rel_type (COUNT(?rel_type) AS ?nr_articles)
+        WHERE {
+            ?x my_prefix:arquivo ?url .	
+            ?x my_prefix:type ?rel_type .
+        }
+        GROUP BY ?rel_type 
+        ORDER BY DESC((COUNT(?rel_type)))
+    """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+
+
+def get_total_articles_by_year_by_relationship_type():
+    query = """
+        SELECT ?year ?rel_type (COUNT(?rel_type) AS ?nr_articles)
+        WHERE {
+            ?x my_prefix:arquivo ?url .	
+            ?x my_prefix:type ?rel_type .
+            ?x my_prefix:arquivo ?arquivo_doc .
+            ?arquivo_doc dc:date ?date .      
+        }
+        GROUP BY (YEAR(?date) AS ?year) ?rel_type 
+        ORDER BY ?year
+        """
+    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    years = []
+    values = defaultdict(list)
+
+    for x in results["results"]["bindings"]:
+        years.append(x['year']['value'])
+        values[x['rel_type']['value']].append(x['nr_articles']['value'])
+
+    return years, values
 
 
 # Run once on start-up for caching
@@ -165,14 +207,14 @@ def all_persons_freq():
         SELECT DISTINCT ?person (COUNT (?url) as ?n_artigos) {  
         VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
                             'ent1_supports_ent2' 'ent2_supports_ent1'} .
-        ?rel my_prefix:type ?rel_values .          
+        ?rel my_prefix:type ?rel_values .
         { ?rel my_prefix:ent1 ?person .} UNION { ?rel my_prefix:ent2 ?person . }              
         ?rel my_prefix:arquivo ?url .
-        ?rel my_prefix:type ?rel_type .        
+        ?rel my_prefix:type ?rel_type .
         }
         GROUP BY ?person
         HAVING (?n_artigos > 0)
-        ORDER BY DESC(?n_artigos)        
+        ORDER BY DESC(?n_artigos)
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
     top_freq = [
@@ -201,15 +243,15 @@ def all_entities():
 
 @lru_cache
 def get_total_nr_articles_for_each_person():
+
+    # NOTE: 'ent1_other_ent2' and 'ent2_other_ent1' relationships are being discarded
+
     query = """
         SELECT ?person_name ?person (COUNT(*) as ?count){
           ?person wdt:P31 wd:Q5 ;
-                  rdfs:label ?person_name .            
+                  rdfs:label ?person_name .                    
           {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
-           ?rel my_prefix:type ?rel_type 
-             FILTER(?rel_type!="other") .
-          ?rel my_prefix:arquivo ?arquivo_doc .
-          ?arquivo_doc dc:title ?title .
+          ?rel my_prefix:type ?rel_type FILTER(!REGEX(?rel_type,"other") ) .
         }
         GROUP BY ?person_name ?person
         ORDER BY DESC (?count) ASC (?person_name)

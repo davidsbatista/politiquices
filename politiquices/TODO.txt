@@ -1,15 +1,10 @@
 Web App
 =======
 
-    Geral
-    -----
-        - Remove all 'Other' reationships
-        
-        - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
+    - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
     Grafo
     -----
-        
         - carregar dados: 
             - partido para cada node
         
