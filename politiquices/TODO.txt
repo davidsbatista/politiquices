@@ -21,15 +21,12 @@ Web App
 
     Stats
     -----
-        - Todos: artigos por ano em stacked bar: oposição/apoio/ e other? ou remover?
-        - mesma coisa para os partidos:
-            - quais os partidos que acusam mais? e que partidos alvo?
-
         - Absolutos e relativos:
             - Quem mais acusa? é acusado?
             - Quem mais defende? é defendido
             - Persons more supported than accused ?
             - Persons more accused than supported ?
+            - mesma coisa para os partidos: partidos que acusam mais? e que partidos alvo?
 
         - Download de todos os stats em .csv
 
