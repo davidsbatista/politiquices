@@ -10,9 +10,9 @@ Web App
         - https://community.neo4j.com/t/the-graph-display-on-using-neovis-js-can-be-more-presentable/2457/5
         - https://medium.com/neo4j/graph-visualization-with-neo4j-using-neovis-js-a2ecaaa7c379
 
-        - carregar dados: 
+        - carregar dados:
             - partido para cada node
-        
+
         - idea geral:
             - um unico grafo navegável? ver noticias entre duas pessoas e/ou numa comunidade
             - um grafico estatico anual: tirar medidas, fazer uma animação com 26 estados
@@ -146,6 +146,8 @@ classifiers
 
     named entity recognition
     ------------------------
+    - [Jorge] Jardim Gonçalves
+
     'Cavaco Silva nomeou cunhada para assessorar antiga primeira-dama Maria Cavaco Silva'
     -> 'Cavaco Silva'
     -> 'Maria Cavaco Silva'
