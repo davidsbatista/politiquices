@@ -25,7 +25,7 @@
 # directories
 data/
 open_ie/
-politiquices/extraction/classifiers/news_titles/experiments/
-politiquices/extraction/classifiers/news_titles/resources/
-politiquices/extraction/classifiers/news_titles/trained_models/
-politiquices/extraction/classifiers/entity_linking/wiki_jsons/
+politiquices/classifiers/news_titles/experiments/
+politiquices/classifiers/news_titles/resources/
+politiquices/classifiers/news_titles/trained_models/
+politiquices/classifiers/entity_linking/wiki_jsons/
