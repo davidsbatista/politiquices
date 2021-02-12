@@ -1,6 +1,6 @@
 import pt_core_news_lg
 
-from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
+from politiquices.classifiers.ner.rule_based_ner import RuleBasedNer
 
 samples = [
     {'sentence': "PSD e CDS querem ouvir Marcelo, Freitas e Castro Caldas",

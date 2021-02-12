@@ -1,6 +1,6 @@
 import pt_core_news_lg
 
-from politiquices.extraction.utils import read_ground_truth, clean_title_re
+from politiquices.extraction.utils.utils import read_ground_truth, clean_title_re
 
 nlp = pt_core_news_lg.load(disable=["tagger", "parser"])
 

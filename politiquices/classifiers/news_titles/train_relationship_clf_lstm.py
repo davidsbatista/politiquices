@@ -3,9 +3,8 @@ from collections import Counter
 
 from sklearn.model_selection import StratifiedKFold
 
-from politiquices.extraction.classifiers.news_titles.models.embeddings_utils import get_embeddings
-from politiquices.extraction.classifiers.news_titles.models.relationship_clf import \
-    RelationshipClassifier
+from politiquices.classifiers.news_titles.models.embeddings_utils import get_embeddings
+from politiquices.classifiers.news_titles.models.relationship_clf import RelationshipClassifier
 from politiquices.extraction.utils.utils import read_ground_truth
 from politiquices.extraction.utils.utils import clean_title_re
 from politiquices.extraction.utils.utils import clean_title_quotes

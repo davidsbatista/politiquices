@@ -1,13 +1,20 @@
 ## politiquices.pt
 
-Extraction and identify relationships of support and opposition relationships between politicians from archived newspapers.
+Extraction and identify relationships of support and opposition relationships between politicians 
+from archived newspapers.
+
+
+__classifiers__
+   - ML and rule-based classifiers
 
 __extraction__ 
-   
-   - crawling arquivo.pt, training ML classifiers, and linking entities against Wikidata
-   
-__webapp__
+   - data sources: arquivo.pt, publico.pt and CHAVE collections
+   - ner + linking entities against Wikidata
+   - relationship extraction 
 
-   - an interface on top of a SPARQL engine to analyse the results 
-   
- 
+__webapp__
+   - an interface on top of a SPARQL engine + NEO4J to analyse the results 
+
+
+__tests__
+   - all related tests

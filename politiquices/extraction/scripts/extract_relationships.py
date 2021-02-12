@@ -6,9 +6,9 @@ import joblib
 import jsonlines
 import pt_core_news_lg
 
-from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
+from politiquices.classifiers.ner.rule_based_ner import RuleBasedNer
 
-from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import (
+from politiquices.classifiers.entity_linking.entitly_linking_clf import (
     query_kb,
     expand_entities,
     find_perfect_match,
@@ -16,8 +16,7 @@ from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf impo
     fuzzy_match
 )
 
-from politiquices.extraction.classifiers.news_titles.relationship_direction_clf import \
-    detect_direction
+from politiquices.classifiers.news_titles.relationship_direction_clf import detect_direction
 from politiquices.extraction.utils.utils import clean_title_quotes, clean_title_re
 from politiquices.extraction.scripts.utils import get_text_newspaper
 

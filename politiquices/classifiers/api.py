@@ -9,11 +9,10 @@ from fastapi import FastAPI, Query
 
 from keras.models import load_model
 
-from politiquices.extraction.classifiers.news_titles.relationship_direction_clf import \
-    detect_direction
+from politiquices.classifiers.news_titles.relationship_direction_clf import detect_direction
 from politiquices.extraction.utils.utils import clean_title_re
 from politiquices.extraction.utils.utils import clean_title_quotes
-from politiquices.extraction.classifiers.news_titles.models.relationship_clf import Attention
+from politiquices.classifiers.news_titles.models.relationship_clf import Attention
 
 app = FastAPI()
 

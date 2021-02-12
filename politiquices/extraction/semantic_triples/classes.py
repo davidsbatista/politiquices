@@ -18,7 +18,7 @@ class Article:
     title: str
     source: Optional[str]
     date: Optional[datetime]
-    crawled_date: Optional[datetime]
+    crawled_date: Optional[str]
 
 
 @dataclass

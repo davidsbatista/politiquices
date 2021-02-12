@@ -22,7 +22,7 @@ from keras.preprocessing.text import Tokenizer
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.preprocessing import LabelEncoder
 
-from politiquices.extraction.classifiers.news_titles.models.callbacks import Metrics
+from politiquices.classifiers.news_titles.models.callbacks import Metrics
 
 
 class KerasTextClassifier(BaseEstimator, TransformerMixin):

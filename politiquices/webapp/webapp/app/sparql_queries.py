@@ -64,7 +64,7 @@ def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
 def get_total_nr_of_articles() -> int:
     query = """
         SELECT (COUNT(?x) as ?nr_articles) WHERE {
-            ?x politiquices:arquivo ?y .
+            ?x politiquices:url ?y .
         }
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
@@ -92,7 +92,7 @@ def get_total_articles_by_relationship_type():
     query = """
         SELECT ?rel_type (COUNT(?rel_type) AS ?nr_articles)
         WHERE {
-            ?x politiquices:arquivo ?url .	
+            ?x politiquices:url ?url .	
             ?x politiquices:type ?rel_type .
         }
         GROUP BY ?rel_type 
@@ -105,9 +105,9 @@ def get_total_articles_by_year_by_relationship_type():
     query = """
         SELECT ?year ?rel_type (COUNT(?rel_type) AS ?nr_articles)
         WHERE {
-            ?x politiquices:arquivo ?url .	
+            ?x politiquices:url ?url .	
             ?x politiquices:type ?rel_type .
-            ?x politiquices:arquivo ?arquivo_doc .
+            ?x politiquices:url ?arquivo_doc .
             ?arquivo_doc dc:date ?date .      
         }
         GROUP BY (YEAR(?date) AS ?year) ?rel_type 
@@ -136,7 +136,7 @@ def get_graph_links():
         ?rel politiquices:ent1 ?person_a .
         ?rel politiquices:ent2 ?person_b .        
         ?rel politiquices:type ?rel_type .
-        ?rel politiquices:arquivo ?url .
+        ?rel politiquices:url ?url .
         }
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
@@ -168,7 +168,7 @@ def top_co_occurrences():
             ?rel politiquices:ent2 ?person_a .
             ?rel politiquices:ent1 ?person_b .
           }
-          ?rel politiquices:arquivo ?url .
+          ?rel politiquices:url ?url .
           ?rel politiquices:type ?rel_type .
         }
         GROUP BY ?person_a ?person_b
@@ -198,7 +198,7 @@ def all_persons_freq():
                             'ent1_supports_ent2' 'ent2_supports_ent1'} .
         ?rel politiquices:type ?rel_values .
         { ?rel politiquices:ent1 ?person .} UNION { ?rel politiquices:ent2 ?person . }              
-        ?rel politiquices:arquivo ?url .
+        ?rel politiquices:url ?url .
         ?rel politiquices:type ?rel_type .
         }
         GROUP BY ?person
@@ -259,7 +259,7 @@ def get_nr_relationships_as_subject(relationship: str):
           {{ ?rel politiquices:ent2 ?person_a .
             ?rel politiquices:type 'ent2_{relationship}_ent1'.
           }}
-          ?rel politiquices:arquivo ?url .
+          ?rel politiquices:url ?url .
         }}
         GROUP BY ?person_a
         ORDER BY DESC(?nr_articles)
@@ -283,7 +283,7 @@ def get_nr_relationships_as_target(relationship: str):
           {{ ?rel politiquices:ent1 ?person_a .
             ?rel politiquices:type 'ent2_{relationship}_ent1'.
           }}
-          ?rel politiquices:arquivo ?url .
+          ?rel politiquices:url ?url .
         }}
         GROUP BY ?person_a
         ORDER BY DESC(?nr_articles)
@@ -487,7 +487,7 @@ def get_person_relationships(wiki_id):
                   politiquices:ent2 ?ent2 ;
                   politiquices:ent1_str ?ent1_str ;
                   politiquices:ent2_str ?ent2_str ;
-                  politiquices:arquivo ?arquivo_doc .
+                  politiquices:url ?arquivo_doc .
          
               ?arquivo_doc dc:title ?title ;
                            dc:date  ?date .
@@ -616,7 +616,7 @@ def get_top_relationships(wiki_id: str):
           ?rel politiquices:ent2 ?ent2 .
           ?ent2 rdfs:label ?ent2_name .
           ?rel politiquices:type ?rel_type .
-          ?rel politiquices:arquivo ?arquivo_doc .
+          ?rel politiquices:url ?arquivo_doc .
           FILTER(?rel_type != "other")
         }} GROUP BY ?rel_type ?ent2 ?ent2_name
         ORDER BY ?rel_type DESC(?nr_articles)
@@ -639,7 +639,7 @@ def get_top_relationships(wiki_id: str):
           ?ent1 rdfs:label ?ent1_name .
           ?rel politiquices:ent2 wd:{wiki_id}  .
           ?rel politiquices:type ?rel_type .
-          ?rel politiquices:arquivo ?arquivo_doc .
+          ?rel politiquices:url ?arquivo_doc .
           FILTER(?rel_type != "other")
         }}
         GROUP BY ?rel_type ?ent1 ?ent1_name
@@ -684,7 +684,7 @@ def get_person_rels_by_year(wiki_id, rel_type, ent="ent1"):
                    politiquices:ent2 ?ent2 ;
                    politiquices:ent1_str ?ent1_str ;
                    politiquices:ent2_str ?ent2_str ;
-                   politiquices:arquivo ?arquivo_doc .
+                   politiquices:url ?arquivo_doc .
 
               ?arquivo_doc dc:title ?title ;
                            dc:date  ?date .
@@ -755,7 +755,7 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
                politiquices:ent2 wd:{wiki_id_two};       
                politiquices:type ?rel_type;
                politiquices:score ?score;
-               politiquices:arquivo ?arquivo_doc;
+               politiquices:url ?arquivo_doc;
                politiquices:ent1 ?ent1;
                politiquices:ent2 ?ent2;
                politiquices:ent1_str ?ent1_str;
@@ -767,7 +767,7 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
                politiquices:ent1 wd:{wiki_id_two};       
                politiquices:type ?rel_type;
                politiquices:score ?score;
-               politiquices:arquivo ?arquivo_doc;
+               politiquices:url ?arquivo_doc;
                politiquices:ent1 ?ent1;
                politiquices:ent2 ?ent2;
                politiquices:ent1_str ?ent1_str;
@@ -861,7 +861,7 @@ def list_of_spec_relations_between_two_persons(wiki_id_one, wiki_id_two, rel_typ
                politiquices:ent2 wd:{wiki_id_two};       
                politiquices:type '{rel_type}';
                politiquices:score ?score;
-               politiquices:arquivo ?arquivo_doc;
+               politiquices:url ?arquivo_doc;
                politiquices:ent1 ?ent1;
                politiquices:ent2 ?ent2;
                politiquices:ent1_str ?ent1_str;
@@ -905,7 +905,7 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(party, person
                  politiquices:ent2 wd:{person};                                              
                  politiquices:ent2_str ?ent2_str;                 
                  politiquices:score ?score;
-                 politiquices:arquivo ?arquivo_doc .            
+                 politiquices:url ?arquivo_doc .            
             
             ?arquivo_doc dc:title ?title;
                          dc:date ?date.
@@ -951,7 +951,7 @@ def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party
                  politiquices:ent2 ?ent2;
                  politiquices:ent2_str ?ent2_str;
                  politiquices:score ?score;
-                 politiquices:arquivo ?arquivo_doc .
+                 politiquices:url ?arquivo_doc .
             
             ?arquivo_doc dc:title ?title;
                          dc:date ?date.
@@ -1004,7 +1004,7 @@ def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, r
              politiquices:ent2_str ?ent2_str;
              
              politiquices:score ?score;
-             politiquices:arquivo ?arquivo_doc.
+             politiquices:url ?arquivo_doc.
         
         ?arquivo_doc dc:title ?title;
                      dc:date ?date.             
@@ -1061,14 +1061,13 @@ def get_all_other_to_annotate():
     query = """
         SELECT ?date ?url ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
         WHERE {
-          ?x politiquices:arquivo ?url;
+          ?x politiquices:url ?url;
              politiquices:type ?rel_type;
              politiquices:score ?score;
              politiquices:ent1 ?ent1;
              politiquices:ent2 ?ent2;
              politiquices:ent1_str ?ent1_str;
-             politiquices:ent2_str ?ent2_str;
-             politiquices:arquivo ?arquivo_doc.
+             politiquices:ent2_str ?ent2_str.
         
           ?arquivo_doc dc:date ?date .
           ?arquivo_doc dc:title ?title ;

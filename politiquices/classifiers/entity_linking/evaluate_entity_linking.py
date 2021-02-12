@@ -1,5 +1,5 @@
 import sys
-from politiquices.extraction.classifiers.entity_linking.entitly_linking_clf import query_kb
+from politiquices.classifiers.entity_linking.entitly_linking_clf import query_kb
 from politiquices.extraction.utils.utils import read_ground_truth, write_iterator_to_file
 
 ent_string = []

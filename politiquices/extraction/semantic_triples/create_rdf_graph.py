@@ -305,14 +305,12 @@ def populate_graph(articles, persons, relationships, args):
         # ToDo: set score to 1.0 when indexing annotated data
         # g.add((_rel, ns1.score, Literal(1.0, datatype=XSD.float)))
 
-        g.add((_rel, ns1.arquivo, URIRef(rel.url)))
+        g.add((_rel, ns1.url, URIRef(rel.url)))
         g.add((_rel, ns1.ent1, URIRef(f"http://www.wikidata.org/entity/{rel.ent1}")))
         g.add((_rel, ns1.ent2, URIRef(f"http://www.wikidata.org/entity/{rel.ent2}")))
         g.add((_rel, ns1.ent1_str, Literal(rel.ent1_str)))
         g.add((_rel, ns1.ent2_str, Literal(rel.ent2_str)))
 
-    # print out the entire Graph in the RDF Turtle format
-    # "xml", "n3", "turtle", "nt", "pretty-xml", "trix", "trig" and "nquads" are built in.
     date_time = datetime.now().strftime("%Y-%m-%d_%H%M")
     f_name = f"politiquices_{date_time}.ttl"
     g.serialize(destination=f_name, format="turtle")

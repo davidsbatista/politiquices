@@ -1,5 +1,5 @@
-from politiquices.extraction.classifiers.news_titles.models.embeddings_utils import get_embeddings
-from politiquices.extraction.classifiers.news_titles.models.relationship_clf import (
+from politiquices.classifiers.news_titles.models.embeddings_utils import get_embeddings
+from politiquices.classifiers.news_titles.models.relationship_clf import (
     pre_process_train_data,
     LSTMAtt,
 )

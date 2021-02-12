@@ -4,7 +4,7 @@ from functools import lru_cache
 
 from elasticsearch import Elasticsearch
 
-from politiquices.extraction.classifiers.ner.rule_based_ner import RuleBasedNer
+from politiquices.classifiers.ner.rule_based_ner import RuleBasedNer
 
 print("Setting up connection with ElasticSearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
