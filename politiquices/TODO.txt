@@ -146,7 +146,9 @@ classifiers
 
     named entity recognition
     ------------------------
-    - [Jorge] Jardim Gonçalves
+    - Jorge 'Jardim Gonçalves'
+    - 'Edgar Correia' e 'Carlos Luís' Figueira expulsos do PCP
+    - 'Ana Gomes' propõe condecoração de 'Sérgio Vieira' de Mello
 
     'Cavaco Silva nomeou cunhada para assessorar antiga primeira-dama Maria Cavaco Silva'
     -> 'Cavaco Silva'

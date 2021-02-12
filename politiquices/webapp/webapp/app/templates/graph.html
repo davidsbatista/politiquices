@@ -19,6 +19,8 @@
     var ip_address = {{ ip_address|tojson }};
     var url = `bolt://${ip_address}:7687.`
 
+    console.log(url)
+
     function draw() {
         var config = {
             container_id: "viz",
@@ -27,12 +29,12 @@
             server_password: "s3cr3t",
             arrows: true,
 
-            hierarchical: true,
+            hierarchical: false,
 
             labels: {
                 "Person": {
                     caption: "name",
-                    //size: "pagerank",
+                    size: "pagerank",
                     //community: "community"
                 }
             },

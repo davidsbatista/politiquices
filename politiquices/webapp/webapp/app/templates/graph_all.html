@@ -55,8 +55,11 @@
             labels: {
                 "Person": {
                     caption: "name",
-                    // size: "pagerank",
+                    size: "pagerank",
                     // community: "community"
+                    "title_properties": [
+                            "name",
+                        ]
                 }
             },
 
@@ -70,7 +73,7 @@
                     thickness: "freq",
                 }
             },
-            initial_cypher: "MATCH (n)-[r:ACUSA|APOIA]->(m) WHERE r.freq > 5 RETURN n,r,m"
+            initial_cypher: "MATCH (n)-[r:ACUSA|APOIA]->(m) WHERE r.freq > 3 RETURN n,r,m"
 
         }
         viz = new NeoVis.default(config);

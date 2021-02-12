@@ -1,0 +1,37 @@
+# newspapers
+http://www.dinheirovivo.pt/
+http://www.dn.pt/
+http://www.dnoticias.pt/
+http://www.expresso.pt
+http://www.publico.pt/
+http://www.sabado.pt/
+http://www.jn.pt/
+http://www.jornaldenegocios.pt/
+http://www.ionline.pt/
+http://observador.pt
+https://jornaldiabo.com/
+
+# TV and radio
+http://www.rtp.pt/
+http://www.rr.pt
+http://www.tsf.pt/
+http://sicnoticias.pt/
+http://www.tvi24.iol.pt/
+http://tvi24.iol.pt/
+
+# under sapo.pt domain
+http://dinheirodigital.sapo.pt/
+http://dn.sapo.pt/
+http://economico.sapo.pt/
+http://expresso.sapo.pt/
+http://ionline.sapo.pt/
+http://jornaleconomico.sapo.pt/
+http://noticias.sapo.pt/
+http://sicnoticias.sapo.pt/
+http://sol.sapo.pt/
+http://visao.sapo.pt/
+
+# portals
+http://www.aeiou.pt/
+http://www.iol.pt/
+http://zap.aeiou.pt/
