@@ -2,17 +2,10 @@ Web App
 =======
 
     - Partidos should not show members with just one person
-
     - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
     Grafo
     -----
-        - https://community.neo4j.com/t/the-graph-display-on-using-neovis-js-can-be-more-presentable/2457/5
-        - https://medium.com/neo4j/graph-visualization-with-neo4j-using-neovis-js-a2ecaaa7c379
-
-        - carregar dados:
-            - partido para cada node
-
         - idea geral:
             - um unico grafo navegável? ver noticias entre duas pessoas e/ou numa comunidade
             - um grafico estatico anual: tirar medidas, fazer uma animação com 26 estados
@@ -25,6 +18,13 @@ Web App
 
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
+
+
+        - https://community.neo4j.com/t/the-graph-display-on-using-neovis-js-can-be-more-presentable/2457/5
+        - https://medium.com/neo4j/graph-visualization-with-neo4j-using-neovis-js-a2ecaaa7c379
+
+        - carregar dados:
+            - partido para cada node
 
 
     Stats
@@ -84,8 +84,6 @@ Backend-stuff
 
 
 
-
-
 arquivo_pt:
 ==========
     queries:
@@ -142,6 +140,7 @@ classifiers
     -> 'Maria Cavaco Silva'
 
 
+
     entity_linking
     --------------
         - 'Costa':
@@ -163,17 +162,7 @@ classifiers
             https://www.wikidata.org/wiki/Q52112309
             https://www.wikidata.org/wiki/Q72310730
 
+
     create_graph
     ------------
         - exactly same input, pre-processing should be in another file
-
-
-
-
-Future Work
------------
-    - mostrar mais relações:
-        - apoia/defende c/ as duas direções
-        - acusa/opoem-se c/ as duas direções
-
-    - text index in SPARQL: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09

@@ -1,0 +1,6 @@
+- mostrar mais relações:
+    - apoia/defende c/ as duas direções
+    - acusa/opoem-se c/ as duas direções
+
+- text index in SPARQL:
+    https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09

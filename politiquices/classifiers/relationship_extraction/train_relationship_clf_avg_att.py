@@ -4,7 +4,7 @@ from collections import Counter
 from sklearn.metrics import classification_report
 from sklearn.model_selection import StratifiedKFold
 
-from politiquices.classifiers.news_titles.models.lstm_with_atten import KerasTextClassifier
+from politiquices.classifiers.relationship_extraction.models.lstm_with_atten import KerasTextClassifier
 from politiquices.extraction.utils.utils import (
     clean_title_quotes,
     clean_title_re,

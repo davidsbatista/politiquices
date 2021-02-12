@@ -9,15 +9,15 @@ from fastapi import FastAPI, Query
 
 from keras.models import load_model
 
-from politiquices.classifiers.news_titles.relationship_direction_clf import detect_direction
+from politiquices.classifiers.relationship_extraction.relationship_direction_clf import detect_direction
 from politiquices.extraction.utils.utils import clean_title_re
 from politiquices.extraction.utils.utils import clean_title_quotes
-from politiquices.classifiers.news_titles.models.relationship_clf import Attention
+from politiquices.classifiers.relationship_extraction.models.relationship_clf import Attention
 
 app = FastAPI()
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-MODELS = os.path.join(APP_ROOT, "../classifiers/news_titles/trained_models/")
+MODELS = os.path.join(APP_ROOT, "relationship_extraction/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
 
 print("Loading spaCy model...")
