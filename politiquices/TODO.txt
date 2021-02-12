@@ -1,8 +1,12 @@
 Web App
 =======
 
-    - Partidos should not show members with just one person
+    - https://stackoverflow.com/questions/12269537/is-the-server-bundled-with-flask-safe-to-use-in-production
+
+    - Partidos should not show members with just one person or show only PT parties
+
     - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
+
 
     Grafo
     -----
@@ -59,10 +63,13 @@ Web App
 
     Geral (low)
     ----------
-        - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
-        - party members: - load on scroll down
+
         - clicar no branco fazer collapse ao menu (hamburger)
         - tirar todos os alerts -> subsituir por uma pagina de erro -> ir para index.html
+        - limpar todos os console.log(
+
+        - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
+        - party members: - load on scroll down
 
 
 

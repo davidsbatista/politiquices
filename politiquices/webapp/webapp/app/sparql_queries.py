@@ -1061,17 +1061,16 @@ def get_all_other_to_annotate():
     query = """
         SELECT ?date ?url ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
         WHERE {
-          ?x politiquices:url ?url;
-             politiquices:type ?rel_type;
+          ?x politiquices:type ?rel_type; 
              politiquices:score ?score;
              politiquices:ent1 ?ent1;
              politiquices:ent2 ?ent2;
              politiquices:ent1_str ?ent1_str;
-             politiquices:ent2_str ?ent2_str.
+             politiquices:ent2_str ?ent2_str;
+             politiquices:url ?url.
         
-          ?arquivo_doc dc:date ?date .
-          ?arquivo_doc dc:title ?title ;
-                       dc:date  ?date .
+          ?url dc:date ?date ;
+               dc:title ?title .
         
           FILTER(REGEX(?rel_type,"other")).
         }

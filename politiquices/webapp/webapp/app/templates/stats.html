@@ -115,8 +115,6 @@
         var ent1_other_ent2 = {{ items['ent1_other_ent2']|tojson }};
         var ent2_other_ent1 = {{ items['ent2_other_ent1']|tojson }};
 
-        console.log(ent1_opposes_ent2)
-
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -124,32 +122,32 @@
                 datasets: [
                 {
                     label: 'ent1_opposes_ent2',
-                    backgroundColor: "#caf270",
+                    backgroundColor: "#FF0000",
                     data: ent1_opposes_ent2
                 }, 
                 {
                     label: 'ent2_opposes_ent1',
-                    backgroundColor: "#45c490",
+                    backgroundColor: "#980000",
                     data: ent2_opposes_ent1,
                 }, 
                 {
                     label: 'ent1_supports_ent2',
-                    backgroundColor: "#008d93",
+                    backgroundColor: "#44861E",
                     data: ent1_supports_ent2,
                 }, 
                 {
                     label: 'ent2_supports_ent1',
-                    backgroundColor: "#2e5468",
+                    backgroundColor: "#70DA33",
                     data: ent2_supports_ent1,
                 },
                 {
                     label: 'ent1_other_ent2',
-                    backgroundColor: "#ff5468",
+                    backgroundColor: "#d4d4d4",
                     data: ent1_other_ent2,
                 },
                 {
                     label: 'ent2_other_ent1',
-                    backgroundColor: "#2e54ff",
+                    backgroundColor: "#171717",
                     data: ent2_other_ent1,
                 },
                 ],
@@ -182,6 +180,8 @@
             }
         });
 
+
+
         // Person Freq.
         var ctx = document.getElementById('barChart_per_freq');
         var per_freq_labels = {{ items['per_freq_labels']|tojson }};
@@ -197,7 +197,9 @@
                         }]
                 }
         });
-        
+
+
+
         // Person Co-Occur. Freq.
         var ctx = document.getElementById('barChart_co_occurr');
         var per_co_occ_labels = {{ items['per_co_occurrence_labels']|tojson }};

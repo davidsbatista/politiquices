@@ -1,7 +1,8 @@
 ## politiquices.pt
 
-Extraction and identify relationships of support and opposition relationships between politicians 
-from archived newspapers.
+This is the code for the project [www.politiquices.pt](http://www.politiquices.pt]), which extracts
+support and oppositions relationships between politicians expressed in news titles from archived 
+newspapers.
 
 
 __classifiers__
