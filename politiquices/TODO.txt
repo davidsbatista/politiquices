@@ -22,6 +22,7 @@ Web App
               relações ?
 
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
 
@@ -75,25 +76,14 @@ Backend-stuff
     - http://0.0.0.0:5000/entity?q=Q2857730 (Bagão Felix vs Carlos César)
         há muitos duplicados
 
-    - alterar o namespace de 'myprefix' para 'politiquices.pt'
-
-    - gerar assim o TTL:
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19940130-087
-        - https://www.linguateca.pt/CHAVE?PUBLICO-19941018-089
 
     SPARQL queries:
         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
         - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
         - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
 
-   - https://www.dafont.com/de/28-days-later.font?text=Politiquices&psize=l&back=theme
 
 
-SPARQL DB
-=========
-    - text index in SPARQL: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
-    - use OR in FILTER to avoid doing two queries:
-        https://stackoverflow.com/questions/30501124/or-in-a-sparql-query
 
 
 arquivo_pt:
@@ -105,6 +95,7 @@ arquivo_pt:
     - mais dominios ?
     - datas dos dominos crawlados, alteraram-se ?
     - method to detect semantically similar titles
+
 
 
 classifiers
@@ -138,10 +129,6 @@ classifiers
             - catch negations, how?
                 - defende != não + defende
             - tool to visualize embeddings
-
-        - mostrar mais relações:
-            - apoia/defende c/ as duas direções
-            - acusa/opoem-se c/ as duas direções
 
 
     named entity recognition
@@ -179,3 +166,14 @@ classifiers
     create_graph
     ------------
         - exactly same input, pre-processing should be in another file
+
+
+
+
+Future Work
+-----------
+    - mostrar mais relações:
+        - apoia/defende c/ as duas direções
+        - acusa/opoem-se c/ as duas direções
+
+    - text index in SPARQL: https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09

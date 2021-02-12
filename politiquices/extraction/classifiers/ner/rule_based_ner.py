@@ -83,18 +83,29 @@ class RuleBasedNer:
     def build_ner(self):
         # load spaCy PT (large) model and disable part-of-speech tagging and syntactic parsing
         nlp = pt_core_news_lg.load(disable=["tagger", "parser"])
+        config = {
+            "phrase_matcher_attr": None,
+            "validate": True,
+            "overwrite_ents": False,
+            "ent_id_sep": "||",
+        }
+        entity_ruler = nlp.add_pipe("entity_ruler", config=config)
 
         # hard code some entities, note this are phrase patterns
         self.patterns.append({'label': 'PER', 'pattern': 'Marinho e Pinto'})
         self.patterns.append({'label': 'PER', 'pattern': 'Ribeiro e Castro'})
 
+        # entity_ruler.initalize()
+        entity_ruler.initialize(lambda: [], nlp=nlp, patterns=self.patterns)
+
         # add rule-based Entity Recognizer which don't overwrites entities recognized by the model
-        ruler_person_entities = EntityRuler(nlp, overwrite_ents=False)
-        ruler_person_entities.add_patterns(self.patterns)
-        ruler_person_entities.name = 'person_entities'
+        # ruler_person_entities = EntityRuler(nlp, overwrite_ents=False)
+        # ruler_person_entities.add_patterns(self.patterns)
+        # ruler_person_entities.name = 'person_entities'
 
         # runs before the ner
-        nlp.add_pipe(ruler_person_entities, before="ner")
+        # nlp.add_pipe(ruler_person_entities, before="ner", name='person_entities')
+        # nlp.add_pipe('person_entities', before="ner")
 
         return nlp
 

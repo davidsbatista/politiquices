@@ -13,10 +13,10 @@ live_wikidata = "https://query.wikidata.org/sparql"
 no_image = "/static/images/no_picture.jpg"
 ps_logo = "/static/images/Logo_do_Partido_Socialista(Portugal).png"
 
-politiquices_prefixes = """    
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
+politiquices_prefixes = """
+    PREFIX politiquices: <http://www.politiquices.pt/>    
     PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
+    PREFIX        dc: <http://purl.org/dc/elements/1.1/>        
     PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
     PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
     """
@@ -25,24 +25,24 @@ wikidata_prefixes = """
     PREFIX        wd: <http://www.wikidata.org/entity/>
     PREFIX       wds: <http://www.wikidata.org/entity/statement/>
     PREFIX       wdv: <http://www.wikidata.org/value/>
-    PREFIX       wdt: <http://www.wikidata.org/prop/direct/>
-    PREFIX  wikibase: <http://wikiba.se/ontology#>
+    PREFIX       wdt: <http://www.wikidata.org/prop/direct/>    
     PREFIX         p: <http://www.wikidata.org/prop/>
     PREFIX        ps: <http://www.wikidata.org/prop/statement/>
     PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX        bd: <http://www.bigdata.com/rdf#>
     """
 
-prefixes = politiquices_prefixes + wikidata_prefixes
+others = """   
+    PREFIX        bd: <http://www.bigdata.com/rdf#>
+    PREFIX  wikibase: <http://wikiba.se/ontology#>
+    """
+
+prefixes = politiquices_prefixes + wikidata_prefixes + others
 
 
 # Status/Statistics #
 @lru_cache
 def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
-    query = """
-        PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    
+    query = """    
         SELECT ?year (COUNT(?x) as ?nr_articles) WHERE {
           ?x dc:date ?date .
         }
@@ -63,11 +63,8 @@ def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
 @lru_cache
 def get_total_nr_of_articles() -> int:
     query = """
-        PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-        PREFIX my_prefix: <http://some.namespace/with/name#>
-
         SELECT (COUNT(?x) as ?nr_articles) WHERE {
-            ?x my_prefix:arquivo ?y .
+            ?x politiquices:arquivo ?y .
         }
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
@@ -80,14 +77,11 @@ def get_nr_of_persons() -> int:
     # NOTE: persons with only 'ent1_other_ent2' and 'ent2_other_ent1' relationships
     #       are not considered
 
-    query = """
-        PREFIX wd: <http://www.wikidata.org/entity/>
-        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-        
+    query = """        
         SELECT (COUNT(DISTINCT ?person) as ?nr_persons) {
             ?person wdt:P31 wd:Q5 ;
-            {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
-            ?rel my_prefix:type ?rel_type FILTER(!REGEX(?rel_type,"other") ) .
+            {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
+            ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other") ) .
         } 
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
@@ -98,8 +92,8 @@ def get_total_articles_by_relationship_type():
     query = """
         SELECT ?rel_type (COUNT(?rel_type) AS ?nr_articles)
         WHERE {
-            ?x my_prefix:arquivo ?url .	
-            ?x my_prefix:type ?rel_type .
+            ?x politiquices:arquivo ?url .	
+            ?x politiquices:type ?rel_type .
         }
         GROUP BY ?rel_type 
         ORDER BY DESC((COUNT(?rel_type)))
@@ -111,9 +105,9 @@ def get_total_articles_by_year_by_relationship_type():
     query = """
         SELECT ?year ?rel_type (COUNT(?rel_type) AS ?nr_articles)
         WHERE {
-            ?x my_prefix:arquivo ?url .	
-            ?x my_prefix:type ?rel_type .
-            ?x my_prefix:arquivo ?arquivo_doc .
+            ?x politiquices:arquivo ?url .	
+            ?x politiquices:type ?rel_type .
+            ?x politiquices:arquivo ?arquivo_doc .
             ?arquivo_doc dc:date ?date .      
         }
         GROUP BY (YEAR(?date) AS ?year) ?rel_type 
@@ -138,11 +132,11 @@ def get_graph_links():
         SELECT DISTINCT ?person_a ?rel_type ?person_b ?url {
         VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
                             'ent1_supports_ent2' 'ent2_supports_ent1'} .
-        ?rel my_prefix:type ?rel_values .  
-        ?rel my_prefix:ent1 ?person_a .
-        ?rel my_prefix:ent2 ?person_b .        
-        ?rel my_prefix:type ?rel_type .
-        ?rel my_prefix:arquivo ?url .
+        ?rel politiquices:type ?rel_values .  
+        ?rel politiquices:ent1 ?person_a .
+        ?rel politiquices:ent2 ?person_b .        
+        ?rel politiquices:type ?rel_type .
+        ?rel politiquices:arquivo ?url .
         }
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
@@ -160,27 +154,22 @@ def get_graph_links():
 
 @lru_cache()
 def top_co_occurrences():
-    query = """
-        PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-        PREFIX wd: <http://www.wikidata.org/entity/>
-        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-        PREFIX my_prefix: <http://some.namespace/with/name#>
-        
+    query = """        
         SELECT DISTINCT ?person_a ?person_b (COUNT (?url) as ?n_artigos) {
           VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
                               'ent1_supports_ent2' 'ent2_supports_ent1'} .
               
-          ?rel my_prefix:type ?rel_values .
+          ?rel politiquices:type ?rel_values .
           {
-            ?rel my_prefix:ent1 ?person_a .
-            ?rel my_prefix:ent2 ?person_b .
+            ?rel politiquices:ent1 ?person_a .
+            ?rel politiquices:ent2 ?person_b .
           }
           UNION {
-            ?rel my_prefix:ent2 ?person_a .
-            ?rel my_prefix:ent1 ?person_b .
+            ?rel politiquices:ent2 ?person_a .
+            ?rel politiquices:ent1 ?person_b .
           }
-          ?rel my_prefix:arquivo ?url .
-          ?rel my_prefix:type ?rel_type .
+          ?rel politiquices:arquivo ?url .
+          ?rel politiquices:type ?rel_type .
         }
         GROUP BY ?person_a ?person_b
         ORDER BY DESC(?n_artigos)
@@ -207,10 +196,10 @@ def all_persons_freq():
         SELECT DISTINCT ?person (COUNT (?url) as ?n_artigos) {  
         VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
                             'ent1_supports_ent2' 'ent2_supports_ent1'} .
-        ?rel my_prefix:type ?rel_values .
-        { ?rel my_prefix:ent1 ?person .} UNION { ?rel my_prefix:ent2 ?person . }              
-        ?rel my_prefix:arquivo ?url .
-        ?rel my_prefix:type ?rel_type .
+        ?rel politiquices:type ?rel_values .
+        { ?rel politiquices:ent1 ?person .} UNION { ?rel politiquices:ent2 ?person . }              
+        ?rel politiquices:arquivo ?url .
+        ?rel politiquices:type ?rel_type .
         }
         GROUP BY ?person
         HAVING (?n_artigos > 0)
@@ -250,8 +239,8 @@ def get_total_nr_articles_for_each_person():
         SELECT ?person_name ?person (COUNT(*) as ?count){
           ?person wdt:P31 wd:Q5 ;
                   rdfs:label ?person_name .                    
-          {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
-          ?rel my_prefix:type ?rel_type FILTER(!REGEX(?rel_type,"other") ) .
+          {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
+          ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other") ) .
         }
         GROUP BY ?person_name ?person
         ORDER BY DESC (?count) ASC (?person_name)
@@ -263,14 +252,14 @@ def get_nr_relationships_as_subject(relationship: str):
 
     query = f"""    
         SELECT DISTINCT ?person_a (COUNT(?url) as ?nr_articles) {{
-          {{ ?rel my_prefix:ent1 ?person_a .
-            ?rel my_prefix:type 'ent1_{relationship}_ent2'.
+          {{ ?rel politiquices:ent1 ?person_a .
+            ?rel politiquices:type 'ent1_{relationship}_ent2'.
           }}  
           UNION 
-          {{ ?rel my_prefix:ent2 ?person_a .
-            ?rel my_prefix:type 'ent2_{relationship}_ent1'.
+          {{ ?rel politiquices:ent2 ?person_a .
+            ?rel politiquices:type 'ent2_{relationship}_ent1'.
           }}
-          ?rel my_prefix:arquivo ?url .
+          ?rel politiquices:arquivo ?url .
         }}
         GROUP BY ?person_a
         ORDER BY DESC(?nr_articles)
@@ -287,14 +276,14 @@ def get_nr_relationships_as_target(relationship: str):
 
     query = f"""    
         SELECT DISTINCT ?person_a (COUNT(?url) as ?nr_articles) {{
-          {{ ?rel my_prefix:ent2 ?person_a .
-            ?rel my_prefix:type 'ent1_{relationship}_ent2'.
+          {{ ?rel politiquices:ent2 ?person_a .
+            ?rel politiquices:type 'ent1_{relationship}_ent2'.
           }}  
           UNION 
-          {{ ?rel my_prefix:ent1 ?person_a .
-            ?rel my_prefix:type 'ent2_{relationship}_ent1'.
+          {{ ?rel politiquices:ent1 ?person_a .
+            ?rel politiquices:type 'ent2_{relationship}_ent1'.
           }}
-          ?rel my_prefix:arquivo ?url .
+          ?rel politiquices:arquivo ?url .
         }}
         GROUP BY ?person_a
         ORDER BY DESC(?nr_articles)
@@ -489,16 +478,16 @@ def get_person_relationships(wiki_id):
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
         WHERE {{
-         {{ ?rel my_prefix:ent1 wd:{wiki_id} }} UNION {{?rel my_prefix:ent2 wd:{wiki_id} }}
+         {{ ?rel politiquices:ent1 wd:{wiki_id} }} UNION {{?rel politiquices:ent2 wd:{wiki_id} }}
         
-            ?rel my_prefix:type ?rel_type;
-                 my_prefix:score ?score.
+            ?rel politiquices:type ?rel_type;
+                 politiquices:score ?score.
     
-             ?rel my_prefix:ent1 ?ent1 ;
-                  my_prefix:ent2 ?ent2 ;
-                  my_prefix:ent1_str ?ent1_str ;
-                  my_prefix:ent2_str ?ent2_str ;
-                  my_prefix:arquivo ?arquivo_doc .
+             ?rel politiquices:ent1 ?ent1 ;
+                  politiquices:ent2 ?ent2 ;
+                  politiquices:ent1_str ?ent1_str ;
+                  politiquices:ent2_str ?ent2_str ;
+                  politiquices:arquivo ?arquivo_doc .
          
               ?arquivo_doc dc:title ?title ;
                            dc:date  ?date .
@@ -623,11 +612,11 @@ def get_top_relationships(wiki_id: str):
     query = f"""
         SELECT ?rel_type ?ent2 ?ent2_name (COUNT(?arquivo_doc) as ?nr_articles)
         WHERE {{ 
-          ?rel my_prefix:ent1 wd:{wiki_id}  .
-          ?rel my_prefix:ent2 ?ent2 .
+          ?rel politiquices:ent1 wd:{wiki_id}  .
+          ?rel politiquices:ent2 ?ent2 .
           ?ent2 rdfs:label ?ent2_name .
-          ?rel my_prefix:type ?rel_type .
-          ?rel my_prefix:arquivo ?arquivo_doc .
+          ?rel politiquices:type ?rel_type .
+          ?rel politiquices:arquivo ?arquivo_doc .
           FILTER(?rel_type != "other")
         }} GROUP BY ?rel_type ?ent2 ?ent2_name
         ORDER BY ?rel_type DESC(?nr_articles)
@@ -646,11 +635,11 @@ def get_top_relationships(wiki_id: str):
     query = f"""
         SELECT ?rel_type ?ent1 ?ent1_name (COUNT(?arquivo_doc) as ?nr_articles)
         WHERE {{ 
-          ?rel my_prefix:ent1 ?ent1  .
+          ?rel politiquices:ent1 ?ent1  .
           ?ent1 rdfs:label ?ent1_name .
-          ?rel my_prefix:ent2 wd:{wiki_id}  .
-          ?rel my_prefix:type ?rel_type .
-          ?rel my_prefix:arquivo ?arquivo_doc .
+          ?rel politiquices:ent2 wd:{wiki_id}  .
+          ?rel politiquices:type ?rel_type .
+          ?rel politiquices:arquivo ?arquivo_doc .
           FILTER(?rel_type != "other")
         }}
         GROUP BY ?rel_type ?ent1 ?ent1_name
@@ -685,17 +674,17 @@ def get_person_rels_by_year(wiki_id, rel_type, ent="ent1"):
         SELECT DISTINCT ?year (COUNT(?arquivo_doc) as ?nr_articles)
         WHERE {{
 
-              ?rel my_prefix:{ent} wd:{wiki_id} .
-              ?rel my_prefix:type ?rel_type ;
-                   my_prefix:score ?score.
+              ?rel politiquices:{ent} wd:{wiki_id} .
+              ?rel politiquices:type ?rel_type ;
+                   politiquices:score ?score.
 
               FILTER (?rel_type = "{rel_type}")
 
-              ?rel my_prefix:ent1 ?ent1 ;
-                   my_prefix:ent2 ?ent2 ;
-                   my_prefix:ent1_str ?ent1_str ;
-                   my_prefix:ent2_str ?ent2_str ;
-                   my_prefix:arquivo ?arquivo_doc .
+              ?rel politiquices:ent1 ?ent1 ;
+                   politiquices:ent2 ?ent2 ;
+                   politiquices:ent1_str ?ent1_str ;
+                   politiquices:ent2_str ?ent2_str ;
+                   politiquices:arquivo ?arquivo_doc .
 
               ?arquivo_doc dc:title ?title ;
                            dc:date  ?date .
@@ -762,27 +751,27 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
         WHERE {{
           {{
-          ?rel my_prefix:ent1 wd:{wiki_id_one};
-               my_prefix:ent2 wd:{wiki_id_two};       
-               my_prefix:type ?rel_type;
-               my_prefix:score ?score;
-               my_prefix:arquivo ?arquivo_doc;
-               my_prefix:ent1 ?ent1;
-               my_prefix:ent2 ?ent2;
-               my_prefix:ent1_str ?ent1_str;
-               my_prefix:ent2_str ?ent2_str.
+          ?rel politiquices:ent1 wd:{wiki_id_one};
+               politiquices:ent2 wd:{wiki_id_two};       
+               politiquices:type ?rel_type;
+               politiquices:score ?score;
+               politiquices:arquivo ?arquivo_doc;
+               politiquices:ent1 ?ent1;
+               politiquices:ent2 ?ent2;
+               politiquices:ent1_str ?ent1_str;
+               politiquices:ent2_str ?ent2_str.
           ?arquivo_doc dc:title ?title ;
                        dc:date  ?date .
               }} UNION {{
-          ?rel my_prefix:ent2 wd:{wiki_id_one};
-               my_prefix:ent1 wd:{wiki_id_two};       
-               my_prefix:type ?rel_type;
-               my_prefix:score ?score;
-               my_prefix:arquivo ?arquivo_doc;
-               my_prefix:ent1 ?ent1;
-               my_prefix:ent2 ?ent2;
-               my_prefix:ent1_str ?ent1_str;
-               my_prefix:ent2_str ?ent2_str.
+          ?rel politiquices:ent2 wd:{wiki_id_one};
+               politiquices:ent1 wd:{wiki_id_two};       
+               politiquices:type ?rel_type;
+               politiquices:score ?score;
+               politiquices:arquivo ?arquivo_doc;
+               politiquices:ent1 ?ent1;
+               politiquices:ent2 ?ent2;
+               politiquices:ent1_str ?ent1_str;
+               politiquices:ent2_str ?ent2_str.
           ?arquivo_doc dc:title ?title ;
                        dc:date  ?date .
             }}
@@ -868,15 +857,15 @@ def list_of_spec_relations_between_two_persons(wiki_id_one, wiki_id_two, rel_typ
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
         WHERE {{          
-          ?rel my_prefix:ent1 wd:{wiki_id_one};
-               my_prefix:ent2 wd:{wiki_id_two};       
-               my_prefix:type '{rel_type}';
-               my_prefix:score ?score;
-               my_prefix:arquivo ?arquivo_doc;
-               my_prefix:ent1 ?ent1;
-               my_prefix:ent2 ?ent2;
-               my_prefix:ent1_str ?ent1_str;
-               my_prefix:ent2_str ?ent2_str.
+          ?rel politiquices:ent1 wd:{wiki_id_one};
+               politiquices:ent2 wd:{wiki_id_two};       
+               politiquices:type '{rel_type}';
+               politiquices:score ?score;
+               politiquices:arquivo ?arquivo_doc;
+               politiquices:ent1 ?ent1;
+               politiquices:ent2 ?ent2;
+               politiquices:ent1_str ?ent1_str;
+               politiquices:ent2_str ?ent2_str.
           
           ?arquivo_doc dc:title ?title ;
                        dc:date  ?date .
@@ -910,13 +899,13 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(party, person
     query = f"""        
         SELECT DISTINCT ?ent1 ?ent1_str ?ent2_str ?arquivo_doc ?date ?title ?score
         WHERE {{
-            ?rel my_prefix:type '{relation}';
-                 my_prefix:ent1 ?ent1;
-                 my_prefix:ent1_str ?ent1_str;
-                 my_prefix:ent2 wd:{person};                                              
-                 my_prefix:ent2_str ?ent2_str;                 
-                 my_prefix:score ?score;
-                 my_prefix:arquivo ?arquivo_doc .            
+            ?rel politiquices:type '{relation}';
+                 politiquices:ent1 ?ent1;
+                 politiquices:ent1_str ?ent1_str;
+                 politiquices:ent2 wd:{person};                                              
+                 politiquices:ent2_str ?ent2_str;                 
+                 politiquices:score ?score;
+                 politiquices:arquivo ?arquivo_doc .            
             
             ?arquivo_doc dc:title ?title;
                          dc:date ?date.
@@ -956,13 +945,13 @@ def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party
         SELECT DISTINCT ?ent2 ?ent2_str ?ent1_str ?arquivo_doc ?date ?title ?score
         WHERE {{
             
-            ?rel my_prefix:type '{relation}';
-                 my_prefix:ent1 wd:{person};
-                 my_prefix:ent1_str ?ent1_str;
-                 my_prefix:ent2 ?ent2;
-                 my_prefix:ent2_str ?ent2_str;
-                 my_prefix:score ?score;
-                 my_prefix:arquivo ?arquivo_doc .
+            ?rel politiquices:type '{relation}';
+                 politiquices:ent1 wd:{person};
+                 politiquices:ent1_str ?ent1_str;
+                 politiquices:ent2 ?ent2;
+                 politiquices:ent2_str ?ent2_str;
+                 politiquices:score ?score;
+                 politiquices:arquivo ?arquivo_doc .
             
             ?arquivo_doc dc:title ?title;
                          dc:date ?date.
@@ -1008,14 +997,14 @@ def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, r
         VALUES ?person_party_b {{ {values_party_b} }}
         VALUES ?rel_values {{ '{relation}' }}
         
-        ?rel my_prefix:type ?rel_values;
-             my_prefix:ent1 ?person_party_a;
-             my_prefix:ent1_str ?ent1_str;
-             my_prefix:ent2 ?person_party_b;
-             my_prefix:ent2_str ?ent2_str;
+        ?rel politiquices:type ?rel_values;
+             politiquices:ent1 ?person_party_a;
+             politiquices:ent1_str ?ent1_str;
+             politiquices:ent2 ?person_party_b;
+             politiquices:ent2_str ?ent2_str;
              
-             my_prefix:score ?score;
-             my_prefix:arquivo ?arquivo_doc.
+             politiquices:score ?score;
+             politiquices:arquivo ?arquivo_doc.
         
         ?arquivo_doc dc:title ?title;
                      dc:date ?date.             
@@ -1072,14 +1061,14 @@ def get_all_other_to_annotate():
     query = """
         SELECT ?date ?url ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
         WHERE {
-          ?x my_prefix:arquivo ?url;
-             my_prefix:type ?rel_type;
-             my_prefix:score ?score;
-             my_prefix:ent1 ?ent1;
-             my_prefix:ent2 ?ent2;
-             my_prefix:ent1_str ?ent1_str;
-             my_prefix:ent2_str ?ent2_str;
-             my_prefix:arquivo ?arquivo_doc.
+          ?x politiquices:arquivo ?url;
+             politiquices:type ?rel_type;
+             politiquices:score ?score;
+             politiquices:ent1 ?ent1;
+             politiquices:ent2 ?ent2;
+             politiquices:ent1_str ?ent1_str;
+             politiquices:ent2_str ?ent2_str;
+             politiquices:arquivo ?arquivo_doc.
         
           ?arquivo_doc dc:date ?date .
           ?arquivo_doc dc:title ?title ;

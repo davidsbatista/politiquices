@@ -16,7 +16,9 @@
 
     <center>
     <h4>
-        <a href="/entities">{{items.nr_persons}} personalidades</a> e <a href="/parties">{{items.nr_parties}} partidos políticos</a>
+        <a href="/entities">{{items.nr_persons}} personalidades</a>
+        <br><br>
+        <a href="/parties">{{items.nr_parties}} partidos políticos</a>
     </h4>
     </center>
 
@@ -42,10 +44,16 @@
 
     <br><br>
 
+
+    <h4><b><center>Nº Relações/Artigos por Personalidade</center></b></h4>
+    <center>
+    <button class="btn btn-primary" type="button" data-toggle="collapse"
+            data-target="#rel_articles_per" aria-expanded="false"
+            aria-controls="rel_articles_per">Mostrar
+    </button>
+    </center>
     <div class="container h-100">
-        <h4><b><center>Nº Relações/Artigos por Personalidade</center></b></h4>        
-        <div class="row h-100 justify-content-center align-items-center">            
-            <br><br>
+        <div class="collapse" id="rel_articles_per">
             <canvas id="barChart_per_freq" width="100" height="250"></canvas>
         </div>
     </div>
@@ -53,10 +61,15 @@
 
     <br><br>
 
+    <h4><b><center>Personalidades com mais co-ocorrências</center></b></h4>
+    <center>
+        <button class="btn btn-primary" type="button" data-toggle="collapse"
+                data-target="#per_co_occurrence" aria-expanded="false"
+                aria-controls="per_co_occurrence">Mostrar
+        </button>
+    </center>
     <div class="container h-100">
-        <h4><b><center>Personalidades com mais co-ocorrências</center></b></h4>
-        <div class="row h-100 justify-content-center align-items-center">            
-            <br><br>
+        <div class="collapse" id="per_co_occurrence">
             <canvas id="barChart_co_occurr" width="100" height="250"></canvas>
         </div>
     </div>

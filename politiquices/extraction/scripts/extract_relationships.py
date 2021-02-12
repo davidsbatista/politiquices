@@ -71,7 +71,7 @@ def entity_linking(entity, url):
             return full_match_label[0]
 
     # try to expand named-entity based on article's complete text
-    if url.startswith('http://politiquices.pt/PUBLICO'):
+    if url.startswith('https://www.linguateca.pt/CHAVE?'):
         text = chave_full_text[url]
 
     elif url.startswith(publico_pt):
@@ -158,7 +158,7 @@ def load_chave_texts():
     with open('full_text_cache/CHAVE-Publico_94_95.jsonl') as f_in:
         for line in f_in:
             entry = json.loads(line)
-            chave_full_text['http://politiquices.pt/'+entry['id']] = entry['text']
+            chave_full_text['https://www.linguateca.pt/CHAVE?'+entry['id']] = entry['text']
 
 
 def main():

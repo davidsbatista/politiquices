@@ -239,12 +239,11 @@ def process_classified_titles(titles):
 def populate_graph(articles, persons, relationships, args):
     g = Graph()
 
-    ns1 = Namespace("http://some.namespace/with/name#")
-    g.bind("my_prefix", ns1)
+    ns1 = Namespace("http://www.politiquices.pt/")
+    g.bind("politiquices", ns1)
 
     wiki_prop = Namespace("http://www.wikidata.org/prop/direct/")
     wiki_item = Namespace("http://www.wikidata.org/entity/")
-
     g.bind("wd", wiki_item)
     g.bind("wdt", wiki_prop)
 

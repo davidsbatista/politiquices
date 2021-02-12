@@ -9,6 +9,7 @@ mmh3
 networkx
 nltk==3.5
 numpy==1.18.4
+newspaper3k
 pydantic
 requests
 scikit-learn==0.23.1
