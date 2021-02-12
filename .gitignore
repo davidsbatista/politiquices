@@ -1,3 +1,10 @@
+# PyCharm and MacOSx stuff
+.DS_Store
+.idea
+
+# Python cache
+__pycache__/
+
 # LaTeX temporary files
 *.aux
 *.log
@@ -22,10 +29,11 @@
 *.bbl
 *.blg
 
-# directories
+# project specific directories + files
 data/
+old_ttls/
 open_ie/
+politiquices/classifiers/entity_linking/wiki_jsons/
 politiquices/classifiers/news_titles/experiments/
 politiquices/classifiers/news_titles/resources/
 politiquices/classifiers/news_titles/trained_models/
-politiquices/classifiers/entity_linking/wiki_jsons/
