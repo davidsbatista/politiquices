@@ -63,10 +63,9 @@ Web App
 
     Geral (low)
     ----------
-
         - clicar no branco fazer collapse ao menu (hamburger)
         - tirar todos os alerts -> subsituir por uma pagina de erro -> ir para index.html
-        - limpar todos os console.log(
+        - limpar todos os console.log()
 
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
         - party members: - load on scroll down

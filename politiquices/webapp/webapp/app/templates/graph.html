@@ -6,9 +6,11 @@
 
 <style type="text/css">
     #viz {
-        width: 1125px;
-        height: 650px;
-        border: 1px solid lightgray;
+        margin-top: 5px;
+        margin-bottom: 5px;
+        width: 1130px;
+        height: 800px;
+        border: 1px solid rgb(0, 0, 0);
         font: 6pt arial;
     }
 </style>
@@ -18,19 +20,22 @@
     var viz; // needs to be defined becoming a global, so that it can be called from the bottom
     var ip_address = {{ ip_address|tojson }};
     var url = `bolt://${ip_address}:7687.`
-
-    console.log(url)
-
     function draw() {
         var config = {
             container_id: "viz",
-            server_url: url,
+            server_url: 'bolt://localhost:7687',
             server_user: "neo4j",
             server_password: "s3cr3t",
             arrows: true,
 
             hierarchical: false,
+            fix_nodes_in_place_on_drag: true,
 
+            visConfig: {
+                nodes: {
+                    shape: 'square'
+                }
+            },
             labels: {
                 "Person": {
                     caption: "name",
@@ -49,7 +54,6 @@
                     thickness: "freq",
                 }
             },
-            //initial_cypher: "MATCH p=(:Person)-[r:ACUSA|APOIA]->(p1:Person { id: 'Q182367' }) WHERE r.freq > 5 RETURN p LIMIT 250"
             initial_cypher: "MATCH (n)-[r:ACUSA|APOIA]->(m) WHERE r.freq > 5 RETURN n,r,m"
         }
     
@@ -58,38 +62,29 @@
         //console.log(viz);
     };
 
-    /* select a personality */
-    $(function() {
-      $("#autocomplete_person").autocomplete({
-        source: nomes,  // nomes is initialized in base.html
-        focus: function(event, ui) {
-            event.preventDefault();
-            $(this).val(ui.item.label);
-        },
-        select: function(event, ui) {
-            event.preventDefault();
-            $(this).val(ui.item.label);
-            $("#autocomplete_person_value").val(ui.item.value);            
-        }
-      });
-    });
-
 </script>
 
 <body onload="draw()">
-    <div class="container">
+
+    <!-- TODO: add default values -->
+
+    <div class="container" id="container">
         <div class="row">
-            <!--
-            <div class="col-xs-6">
-                <br>
-                <input id="autocomplete_person" class="span10" type="text" placeholder="Personalidade"/>
-                <input id="autocomplete_person_value" type="hidden" name="wiki">
-                <input type="text" id="freq"/>
-                <input type="submit" value="Actualizar" id="reload"/>
-                <br>
+            <div class="form-inline">
+                <div class="col-xs-2">
+                    <input type="text" id="freq" class="form-control" value="5" placeholder="5">
+                    <select class="form-control" id="rel_type" >
+                        <option value="supports">Apoia</option>
+                        <option value="opposes">Acusa</option>
+                        <option value="all">Todas</option>
+                    </select>
+                    <select class="form-control" id="ano_from"></select>
+                    <select class="form-control" id="ano_to" ></select>
+                    <input type="submit" value="Actualizar" id="reload"/>
+                    <br>
+                </div>
             </div>
-            -->
-            <div class="col-xs-6">
+            <div class="col-xs-2">
                 <div id="viz"></div>
             </div>
         </div>
@@ -100,21 +95,44 @@
 </body>
 
 <script>
+
+    var years = ["1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", 
+                 "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018"];
+
+    for (var i=0; i< years.length;i++) {
+        jQuery('<option/>', {
+            value: years[i],
+            html: years[i]
+        }).appendTo('#ano_from, #ano_to');
+    }
+
+
     $("#reload").click(function() {
+
+        // select time span
+        var ano_from = $("#ano_from").val();
+        var ano_to = $("#ano_to").val();
+
+        // select the filter for the 
         var edge_weight = $("#freq").val();
-        var wiki_id = $("#autocomplete_person_value").val();
         
-        //var query = `MATCH p=(:Person)-[r:ACUSA|APOIA]->(p1:Person { id: '${wiki_id}' }) WHERE r.freq > ${edge_weight} RETURN p LIMIT 250`
+        // extract the selected relationship
+        var rel_type = $("#rel_type").val();
+        if (rel_type == 'supports') {
+            relation = 'APOIA'
+        }
+        else if (rel_type == 'opposes') {
+            relation = 'ACUSA'
+        }
+        else relation = 'ACUSA|APOIA'
+
+        console.log(ano_from)
+        console.log(ano_to)
+
         
-        var query = `
-            MATCH p1=(:Person)-[r1:ACUSA|APOIA]->(p:Person { id: '${wiki_id}' }) 
-            MATCH (p:Person { id: '${wiki_id}' })-[r2:ACUSA|APOIA]->(p2:Person) RETURN p1,p2,r1,r2
-            `
-        
-        console.log(query);     
+        var query = `MATCH (n)-[r:${relation}]->(m) WHERE r.freq > ${edge_weight} RETURN n,r,m`
+        console.log(query);
         viz.renderWithCypher(query);
-        //console.log("reload");
-        //viz.reload();
         }
     );
 </script>
