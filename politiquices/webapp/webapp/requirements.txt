@@ -6,6 +6,7 @@ Werkzeug==1.0.1
 click==7.1.2
 isodate==0.6.0
 itsdangerous==1.1.0
+neo4j
 pyparsing==2.4.7
 rdflib==5.0.0
 six==1.15.0

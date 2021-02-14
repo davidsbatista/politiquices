@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %} Grafo de Relações {% endblock %}
+
+{% block body %}
+
+<style type="text/css">
+      #mynetwork {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        width: 1130px;
+        height: 800px;
+        border: 1px solid rgb(0, 0, 0);
+        font: 6pt arial;
+      }
+</style>
+  <script
+      type="text/javascript"
+      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
+    ></script>
+
+  <body>
+      <div class="container" id="container">
+        <div class="row">
+            <div class="form-inline">
+                <div class="col-xs-2">
+                    <input type="text" id="freq" class="form-control" value="5" placeholder="5">
+                    <select class="form-control" id="rel_type" >
+                        <option value="supports">Apoia</option>
+                        <option value="opposes">Acusa</option>
+                        <option value="all">Todas</option>
+                    </select>
+                    <select class="form-control" id="ano_from"></select>
+                    <select class="form-control" id="ano_to" ></select>
+                    <input type="submit" value="Actualizar" id="reload"/>
+                    <br>
+                </div>
+            </div>
+            <div class="col-xs-2">
+                <div id="mynetwork"></div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+
+      // create an array with nodes
+      var nodes = new vis.DataSet([
+        { id: 1, label: "Node 1" },
+        { id: 2, label: "Node 2" },
+        { id: 3, label: "Node 3" },
+        { id: 4, label: "Node 4" },
+        { id: 5, label: "Node 5" },
+      ]);
+
+      // create an array with edges
+      var edges = new vis.DataSet([
+        { from: 1, to: 3 },
+        { from: 1, to: 2 },
+        { from: 2, to: 4 },
+        { from: 2, to: 5 },
+        { from: 3, to: 3 },
+      ]);
+
+      // create a network
+      var container = document.getElementById("mynetwork");
+      var data = {
+        nodes: nodes,
+        edges: edges,
+      };
+
+      var options = {};
+      var network = new vis.Network(container, data, options);
+
+    </script>
+
+  </body>
+
+{% endblock %}
