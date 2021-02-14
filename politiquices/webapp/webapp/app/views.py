@@ -7,6 +7,7 @@ from flask import request, jsonify
 from flask import render_template
 
 from politiquices.webapp.webapp.app.data_models import Person
+from politiquices.webapp.webapp.app.neo4j import Neo4jConnection
 from politiquices.webapp.webapp.app.sparql_queries import (
     build_relationships_by_year,
     get_entities_without_image,
@@ -551,43 +552,42 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
 
 @app.route("/neo4j")
 def neo4j():
-    from neo4j import GraphDatabase
 
-    class Neo4jConnection:
-
-        def __init__(self, uri, user, pwd):
-            self.__uri = uri
-            self.__user = user
-            self.__pwd = pwd
-            self.__driver = None
-            try:
-                self.__driver = GraphDatabase.driver(self.__uri, auth=(self.__user, self.__pwd))
-            except Exception as e:
-                print("Failed to create the driver:", e)
-
-        def close(self):
-            if self.__driver is not None:
-                self.__driver.close()
-
-        def query(self, query, db=None):
-            assert self.__driver is not None, "Driver not initialized!"
-            session = None
-            response = None
-            try:
-                session = self.__driver.session(
-                    database=db) if db is not None else self.__driver.session()
-                response = list(session.run(query))
-            except Exception as e:
-                print("Query failed:", e)
-            finally:
-                if session is not None:
-                    session.close()
-            return response
+    print(request.args)
 
     conn = Neo4jConnection(uri="bolt://localhost:7687", user="neo4j", pwd="s3cr3t")
-    conn.query("MATCH (n)-[r:ACUSA|APOIA]->(m) WHERE r.freq > 10 RETURN n,r,m")
+    results = conn.query("MATCH (s)-[r:ACUSA|APOIA]->(t) "
+                         "WHERE r.freq > 10 "
+                         "RETURN s,r,t")
+    conn.close()
 
-    return render_template("vis_sample.html")
+    nodes_done = set()
+    nodes = []
+    edges = []
+
+    for x in results:
+        if x['s'].id not in nodes_done:
+            nodes.append(
+                {'id': x['s'].id,
+                 'label': x['s']['name'],
+                 'wiki_id': x['s']['id'],
+                 'pagerank': x['s']['pagerank']
+                 })
+            nodes_done.add(x['s'].id)
+        if x['s'].id not in nodes_done:
+            nodes.append(
+                {'id': x['t'].id,
+                 'label': x['t']['name'],
+                 'wiki_id': x['t']['id'],
+                 'pagerank': x['t']['pagerank']})
+            nodes_done.add(x['s'].id)
+        edges.append(
+            {'from': x['r'].start_node.id,
+             'to': x['r'].end_node.id,
+             'freq': x['r']['freq'],
+             'title': x['r'].type})
+
+    return render_template("vis_sample.html", nodes=nodes, edges=edges)
 
 
 @app.route("/queries")

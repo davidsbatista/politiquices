@@ -130,7 +130,9 @@
         console.log(ano_to)
 
         var query = `MATCH (n)-[r:${relation}]->(m) WHERE r.freq > ${edge_weight} RETURN n,r,m`
+
         console.log(query);
+
         viz.renderWithCypher(query);
         }
     );

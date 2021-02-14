@@ -14,12 +14,15 @@
         font: 6pt arial;
       }
 </style>
-  <script
-      type="text/javascript"
-      src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"
-    ></script>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+<script>
+    var nodes_lst = {{ nodes|tojson }};
+    var edges_lst = {{ edges|tojson }};
+    var nodes = new vis.DataSet(nodes_lst)
+    var edges = new vis.DataSet(edges_lst)
+</script>
 
-  <body>
+<body>
       <div class="container" id="container">
         <div class="row">
             <div class="form-inline">
@@ -43,25 +46,6 @@
     </div>
 
     <script type="text/javascript">
-
-      // create an array with nodes
-      var nodes = new vis.DataSet([
-        { id: 1, label: "Node 1" },
-        { id: 2, label: "Node 2" },
-        { id: 3, label: "Node 3" },
-        { id: 4, label: "Node 4" },
-        { id: 5, label: "Node 5" },
-      ]);
-
-      // create an array with edges
-      var edges = new vis.DataSet([
-        { from: 1, to: 3 },
-        { from: 1, to: 2 },
-        { from: 2, to: 4 },
-        { from: 2, to: 5 },
-        { from: 3, to: 3 },
-      ]);
-
       // create a network
       var container = document.getElementById("mynetwork");
       var data = {
@@ -69,11 +53,90 @@
         edges: edges,
       };
 
-      var options = {};
+      var options = {
+        nodes: {
+          shape: 'dot',
+          font: {
+            size: 26,
+            strokeWidth: 7},
+          },
+        edges: {
+          arrows: {
+            to: { enabled: true }
+          },
+          length: 200
+        },
+        layout: {
+          improvedLayout: false,
+          hierarchical: {
+            enabled: false,
+            sortMethod: 'hubsize'
+          }
+        },
+      };
+
       var network = new vis.Network(container, data, options);
 
     </script>
 
   </body>
+
+<script>
+
+    var years = ["1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003",
+                 "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013",
+                 "2014", "2015", "2016", "2017", "2018"];
+
+    for (var i=0; i< years.length;i++) {
+        jQuery('<option/>', {
+            value: years[i],
+            html: years[i]
+        }).appendTo('#ano_from, #ano_to');
+    }
+
+    $("#reload").click(function() {
+
+        // select time span
+        var ano_from = $("#ano_from").val();
+        var ano_to = $("#ano_to").val();
+
+        // select the filter for the
+        var edge_weight = $("#freq").val();
+
+        // extract the selected relationship
+        var rel_type = $("#rel_type").val();
+        if (rel_type == 'supports') {
+            relation = 'APOIA'
+        }
+        else if (rel_type == 'opposes') {
+            relation = 'ACUSA'
+        }
+        else relation = 'ACUSA|APOIA'
+
+        console.log(ano_from)
+        console.log(ano_to)
+
+        var query = `MATCH (n)-[r:${relation}]->(m) WHERE r.freq > ${edge_weight} RETURN r`
+        console.log(query);
+
+        data = {query: query}
+
+        //query neo4j
+        $.ajax({
+            type: 'get',
+            data: data,
+            url: '/neo4j',
+            error: function () {
+                alert("There was an error processing this page.");
+                return false;
+            },
+            complete: function (output) {
+                  console.log(output)
+            }
+        })
+
+      });
+
+</script>
 
 {% endblock %}
