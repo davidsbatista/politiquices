@@ -112,12 +112,7 @@
             relation = 'ACUSA'
         }
         else relation = 'ACUSA|APOIA'
-
-        console.log(ano_from)
-        console.log(ano_to)
-
-        var query = `MATCH (n)-[r:${relation}]->(m) WHERE r.freq > ${edge_weight} RETURN r`
-        console.log(query);
+        var query = `MATCH (s)-[r:${relation}]->(t) WHERE r.freq > ${edge_weight} RETURN s,r,t`
 
         data = {query: query}
 
@@ -131,7 +126,12 @@
                 return false;
             },
             complete: function (output) {
-                  console.log(output)
+              console.log("DONE!")
+              var data = {
+                nodes: output.responseJSON['nodes'],
+                edges: output.responseJSON['edges']
+              };
+              var network = new vis.Network(container, data, options);
             }
         })
 

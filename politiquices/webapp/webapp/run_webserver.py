@@ -95,7 +95,7 @@ def get_all_parties_with_affiliated_count():
     return political_parties
 
 
-def create_graph_nods_edges_cache(wiki_id_info):
+def create_graph_nodes_edges_cache(wiki_id_info):
     links = get_graph_links()
     nodes = defaultdict(dict)
     edge_counts = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))

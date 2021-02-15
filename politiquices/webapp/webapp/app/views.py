@@ -553,39 +553,50 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
 @app.route("/neo4j")
 def neo4j():
 
-    print(request.args)
+    query = None
+    if 'query' in request.args:
+        query = request.args.get("query")
+        print(query)
 
     conn = Neo4jConnection(uri="bolt://localhost:7687", user="neo4j", pwd="s3cr3t")
-    results = conn.query("MATCH (s)-[r:ACUSA|APOIA]->(t) "
-                         "WHERE r.freq > 10 "
-                         "RETURN s,r,t")
+
+    if query:
+        results = conn.query(query)
+    else:
+        results = conn.query("MATCH (s)-[r:ACUSA|APOIA]->(t) "
+                             "WHERE r.freq > 10 "
+                             "RETURN s,r,t")
     conn.close()
 
     nodes_done = set()
     nodes = []
     edges = []
-
     for x in results:
         if x['s'].id not in nodes_done:
             nodes.append(
                 {'id': x['s'].id,
                  'label': x['s']['name'],
                  'wiki_id': x['s']['id'],
-                 'pagerank': x['s']['pagerank']
+                 'value': x['s']['pagerank']
                  })
             nodes_done.add(x['s'].id)
-        if x['s'].id not in nodes_done:
+
+        if x['t'].id not in nodes_done:
             nodes.append(
                 {'id': x['t'].id,
                  'label': x['t']['name'],
                  'wiki_id': x['t']['id'],
-                 'pagerank': x['t']['pagerank']})
-            nodes_done.add(x['s'].id)
+                 'value': x['t']['pagerank']})
+            nodes_done.add(x['t'].id)
+
         edges.append(
             {'from': x['r'].start_node.id,
              'to': x['r'].end_node.id,
              'freq': x['r']['freq'],
-             'title': x['r'].type})
+             'label': x['r'].type})
+
+    if 'query' in request.args:
+        return jsonify({'nodes': nodes, 'edges': edges})
 
     return render_template("vis_sample.html", nodes=nodes, edges=edges)
 

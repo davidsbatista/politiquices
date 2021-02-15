@@ -1,6 +1,7 @@
 import networkx as nx
 from networkx.algorithms.community.centrality import girvan_newman
 from networkx.algorithms.link_analysis.pagerank_alg import pagerank
+from networkx.algorithms.community import k_clique_communities
 
 node_info = dict()
 
@@ -41,30 +42,34 @@ def load_nodes():
 
 
 def load_edges(wiki_id2node_id):
-    edges = []
+    edges_opposes = []
+    edges_supports = []
+
     with open('edges_opposes.csv') as f_in:
         for idx, line in enumerate(f_in):
             source, target, weight = line.split(",")
-            edges.append(
+            edges_opposes.append(
                 (wiki_id2node_id[source], wiki_id2node_id[target],
                  {'weight': int(weight), 'rel_type': 'opposes'})
             )
+
     with open('edges_supports.csv') as f_in:
         for idx, line in enumerate(f_in):
             source, target, weight = line.split(",")
-            edges.append((wiki_id2node_id[source], wiki_id2node_id[target],
-                          {'weight': int(weight), 'rel_type': 'supports'})
-                         )
-    return edges
+            edges_supports.append((wiki_id2node_id[source], wiki_id2node_id[target],
+                                   {'weight': int(weight), 'rel_type': 'supports'})
+                                  )
+
+    return edges_opposes, edges_supports
 
 
 def main():
     # read the data and load into the Graph
     nodes, wiki_id2node_id, nxid2wiki_id = load_nodes()
-    edges = load_edges(wiki_id2node_id)
+    edges_opposes, edges_supports = load_edges(wiki_id2node_id)
     g = nx.Graph()
-    g.add_nodes_from(nodes)
-    g.add_edges_from(edges)
+    # g.add_nodes_from(edges_opposes)
+    g.add_edges_from(edges_supports)
 
     # compute the metrics
     # see: https://networkx.org/documentation/stable/tutorial.html#analyzing-graphs
@@ -73,14 +78,21 @@ def main():
 
     page_rank_values = pagerank(g)
 
+    communities = list(k_clique_communities(g, 4))
+    for c in communities:
+        for n in c:
+            print(n, node_info[nxid2wiki_id[n]])
+        print("\n-----------")
+
+    exit(-1)
+
+    # write output in neo4j CSV format
     with open("nodes_page_rank.csv", "w") as f_out:
         for k, v in page_rank_values.items():
             wiki_id = nxid2wiki_id[k]
             name = node_info[wiki_id]['name']
             print(wiki_id, name, v)
             f_out.write(f"{wiki_id},{name},{v}" + "\n")
-
-    # write output in neo4j CSV format
 
 
 if __name__ == '__main__':
