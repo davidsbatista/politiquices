@@ -209,12 +209,6 @@ def party_members():
     )
 
 
-# Grafo
-@app.route("/graph_old")
-def graph_old():
-    return render_template("graph_old.html", ip_address=get_ip())
-
-
 # Estatísticas
 @app.route("/stats")
 def status():
