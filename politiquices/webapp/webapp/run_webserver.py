@@ -266,7 +266,6 @@ def persons_relationships_counts_by_type():
 def main():
     print("\nCaching static stuff from SPARQL engine :-)")
 
-    """
     # personalities cache
     all_politiquices_persons, wiki_id = personalities_json_cache()
 
@@ -277,11 +276,10 @@ def main():
     entities_top_co_occurrences(wiki_id)
 
     # graph edges cache
-    create_graph_nods_edges_cache(wiki_id)
+    create_graph_nodes_edges_cache(wiki_id)
 
     # unique number of relationships for each person
     persons_relationships_counts_by_type()
-    """
 
     app.run(debug=True, host="0.0.0.0")
 
