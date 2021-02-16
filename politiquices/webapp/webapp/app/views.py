@@ -210,15 +210,9 @@ def party_members():
 
 
 # Grafo
-@app.route("/graph")
-def graph():
-    return render_template("graph.html", ip_address=get_ip())
-
-
-# Grafo
-@app.route("/graph_all")
-def graph_all():
-    return render_template("graph_all.html", ip_address=get_ip())
+@app.route("/graph_old")
+def graph_old():
+    return render_template("graph_old.html", ip_address=get_ip())
 
 
 # Estatísticas
@@ -550,8 +544,8 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
     )
 
 
-@app.route("/neo4j")
-def neo4j():
+@app.route("/graph")
+def graph():
 
     query = None
     if 'query' in request.args:
@@ -598,7 +592,7 @@ def neo4j():
     if 'query' in request.args:
         return jsonify({'nodes': nodes, 'edges': edges})
 
-    return render_template("vis_sample.html", nodes=nodes, edges=edges)
+    return render_template("graph.html", nodes=nodes, edges=edges)
 
 
 @app.route("/queries")

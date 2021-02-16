@@ -5,70 +5,25 @@
 {% block body %}
 
 <style type="text/css">
-    #viz {
+      #mynetwork {
         margin-top: 5px;
         margin-bottom: 5px;
         width: 1130px;
         height: 800px;
         border: 1px solid rgb(0, 0, 0);
         font: 6pt arial;
-    }
+      }
 </style>
-<script src="static/vendor/neovis/neovis.js"></script>
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <script>
-    
-    var viz; // needs to be defined becoming a global, so that it can be called from the bottom
-    var ip_address = {{ ip_address|tojson }};
-    var url = `bolt://${ip_address}:7687.`
-    function draw() {
-        var config = {
-            container_id: "viz",
-            server_url: 'bolt://localhost:7687',
-            server_user: "neo4j",
-            server_password: "s3cr3t",
-            arrows: true,
-
-            hierarchical: false,
-            fix_nodes_in_place_on_drag: true,
-
-            visConfig: {
-                nodes: {
-                    shape: 'square'
-                }
-            },
-            labels: {
-                "Person": {
-                    caption: "name",
-                    size: "pagerank",
-                    //community: "community"
-                }
-            },
-
-            relationships: {
-                "ACUSA": {
-                    caption: true,
-                    thickness: "freq",
-                },
-                "APOIA": {
-                    caption: true,
-                    thickness: "freq",
-                }
-            },
-            initial_cypher: "MATCH (n)-[r:ACUSA|APOIA]->(m) WHERE r.freq > 5 RETURN n,r,m"
-        }
-    
-        viz = new NeoVis.default(config);
-        viz.render();
-        //console.log(viz);
-    };
-
+    var nodes_lst = {{ nodes|tojson }};
+    var edges_lst = {{ edges|tojson }};
+    var nodes = new vis.DataSet(nodes_lst)
+    var edges = new vis.DataSet(edges_lst)
 </script>
 
-<body onload="draw()">
-
-    <!-- TODO: add default values -->
-
-    <div class="container" id="container">
+<body>
+      <div class="container" id="container">
         <div class="row">
             <div class="form-inline">
                 <div class="col-xs-2">
@@ -85,19 +40,52 @@
                 </div>
             </div>
             <div class="col-xs-2">
-                <div id="viz"></div>
+                <div id="mynetwork"></div>
             </div>
         </div>
     </div>
 
-    
-    
-</body>
+    <script type="text/javascript">
+      // create a network
+      var container = document.getElementById("mynetwork");
+      var data = {
+        nodes: nodes,
+        edges: edges,
+      };
+
+      var options = {
+        nodes: {
+          shape: 'dot',
+          font: {
+            size: 26,
+            strokeWidth: 7},
+          },
+        edges: {
+          arrows: {
+            to: { enabled: true }
+          },
+          length: 200
+        },
+        layout: {
+          improvedLayout: false,
+          hierarchical: {
+            enabled: false,
+            sortMethod: 'hubsize'
+          }
+        },
+      };
+
+      var network = new vis.Network(container, data, options);
+
+    </script>
+
+  </body>
 
 <script>
 
-    var years = ["1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", 
-                 "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018"];
+    var years = ["1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003",
+                 "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013",
+                 "2014", "2015", "2016", "2017", "2018"];
 
     for (var i=0; i< years.length;i++) {
         jQuery('<option/>', {
@@ -106,16 +94,15 @@
         }).appendTo('#ano_from, #ano_to');
     }
 
-
     $("#reload").click(function() {
 
         // select time span
         var ano_from = $("#ano_from").val();
         var ano_to = $("#ano_to").val();
 
-        // select the filter for the 
+        // select the filter for the
         var edge_weight = $("#freq").val();
-        
+
         // extract the selected relationship
         var rel_type = $("#rel_type").val();
         if (rel_type == 'supports') {
@@ -125,17 +112,31 @@
             relation = 'ACUSA'
         }
         else relation = 'ACUSA|APOIA'
+        var query = `MATCH (s)-[r:${relation}]->(t) WHERE r.freq > ${edge_weight} RETURN s,r,t`
 
-        console.log(ano_from)
-        console.log(ano_to)
+        data = {query: query}
 
-        var query = `MATCH (n)-[r:${relation}]->(m) WHERE r.freq > ${edge_weight} RETURN n,r,m`
+        //query neo4j
+        $.ajax({
+            type: 'get',
+            data: data,
+            url: '/neo4j',
+            error: function () {
+                alert("There was an error processing this page.");
+                return false;
+            },
+            complete: function (output) {
+              console.log("DONE!")
+              var data = {
+                nodes: output.responseJSON['nodes'],
+                edges: output.responseJSON['edges']
+              };
+              var network = new vis.Network(container, data, options);
+            }
+        })
 
-        console.log(query);
+      });
 
-        viz.renderWithCypher(query);
-        }
-    );
 </script>
 
 {% endblock %}
