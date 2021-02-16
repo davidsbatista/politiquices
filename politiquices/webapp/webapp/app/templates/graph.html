@@ -27,7 +27,7 @@
         <div class="row">
             <div class="form-inline">
                 <div class="col-xs-2">
-                    <input type="text" id="freq" class="form-control" value="5" placeholder="5">
+                    <input type="text" id="freq" class="form-control" value="10" placeholder="10">
                     <select class="form-control" id="rel_type" >
                         <option value="supports">Apoia</option>
                         <option value="opposes">Acusa</option>
@@ -76,6 +76,14 @@
       };
 
       var network = new vis.Network(container, data, options);
+
+      network.on("selectEdge", function (obj) {
+        console.log(obj);
+      });
+
+      network.on("selectNode", function (obj) {
+        console.log(obj);
+      });
 
     </script>
 
@@ -126,7 +134,6 @@
                 return false;
             },
             complete: function (output) {
-              console.log("DONE!")
               var data = {
                 nodes: output.responseJSON['nodes'],
                 edges: output.responseJSON['edges']

@@ -580,6 +580,7 @@ def graph():
         edges.append(
             {'from': x['r'].start_node.id,
              'to': x['r'].end_node.id,
+             'id': len(edges)+1,
              'freq': x['r']['freq'],
              'label': x['r'].type})
 
