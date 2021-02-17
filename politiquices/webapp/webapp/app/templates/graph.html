@@ -18,6 +18,9 @@
 <script>
     var nodes_lst = {{ nodes|tojson }};
     var edges_lst = {{ edges|tojson }};
+
+    console.log(nodes_lst)
+
     var nodes = new vis.DataSet(nodes_lst)
     var edges = new vis.DataSet(edges_lst)
 </script>
@@ -128,7 +131,7 @@
         $.ajax({
             type: 'get',
             data: data,
-            url: '/neo4j',
+            url: '/graph',
             error: function () {
                 alert("There was an error processing this page.");
                 return false;

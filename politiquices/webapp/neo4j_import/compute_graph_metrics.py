@@ -1,30 +1,12 @@
+import json
+from collections import defaultdict
+
 import networkx as nx
-from networkx.algorithms.community.centrality import girvan_newman
 from networkx.algorithms.link_analysis.pagerank_alg import pagerank
-from networkx.algorithms.community import k_clique_communities
+
+from politiquices.webapp.webapp.utils.sparql_queries import get_graph_links
 
 node_info = dict()
-
-
-class Node:
-    def __init__(self, nx_id, name, wiki_id):
-        self.nx_id = nx_id
-        self.name = name
-        self.wiki_id = wiki_id
-
-    def to_nx_format(self):
-        return self.nx_id, {"name": self.name, "wiki_id": self.wiki_id}
-
-    def to_neo4j_format(self):
-        return self.wiki_id, self.name
-
-
-class Edge:
-    def __init__(self, source, target, weight, rel_type):
-        self.source = source
-        self.target = target
-        self.weight = weight
-        self.rel_type = rel_type
 
 
 def load_nodes():
@@ -63,7 +45,65 @@ def load_edges(wiki_id2node_id):
     return edges_opposes, edges_supports
 
 
+def get_graph_from_sparql():
+    links = get_graph_links()
+    nodes = defaultdict(dict)
+    edge_counts = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
+
+    with open("../webapp/app/static/json/wiki_id_info.json") as f_in:
+        wiki_id_info = json.load(f_in)
+
+    all_edges = open('all_edges_urls.csv', 'w')
+
+    for x in links:
+        wiki_id_a = x["person_a"].split("/")[-1]
+        wiki_id_b = x["person_b"].split("/")[-1]
+        name_a = wiki_id_info[wiki_id_a]["name"]
+        name_b = wiki_id_info[wiki_id_b]["name"]
+
+        # build nodes
+        if wiki_id_a not in nodes:
+            nodes[wiki_id_a] = name_a
+
+        if wiki_id_b not in nodes:
+            nodes[wiki_id_b] = name_b
+
+        # add direction and nodes
+        if x["rel_type"].startswith("ent1"):
+            edge_counts[wiki_id_a][wiki_id_b][x["rel_type"]] += 1
+            rel = 'ACUSA' if "opposes" in x['rel_type'] else 'APOIA'
+            all_edges.write(f"{wiki_id_a},{wiki_id_b},{x['date']},{x['url']},{rel}"+"\n")
+
+        elif x["rel_type"].startswith("ent2"):
+            edge_counts[wiki_id_b][wiki_id_a][x["rel_type"]] += 1
+            rel = 'ACUSA' if "opposes" in x['rel_type'] else 'APOIA'
+            all_edges.write(f"{wiki_id_b},{wiki_id_a},{x['date']},{x['url']},{rel}"+"\n")
+
+    with open("nodes.csv", "w") as f_out:
+        for k, v in nodes.items():
+            f_out.write(f"{k},{v}" + "\n")
+
+    f_out_opposes = open("edges_opposes.csv", "w")
+    f_out_supports = open("edges_supports.csv", "w")
+
+    for start_node, end_nodes in edge_counts.items():
+        for end_node, rels in end_nodes.items():
+            for rel_type, freq in rels.items():
+                if "opposes" in rel_type:
+                    f_out_opposes.write(f"{str(start_node)},{str(end_node)},{str(freq)}" + "\n")
+
+                if "supports" in rel_type:
+                    f_out_supports.write(f"{str(start_node)},{str(end_node)},{str(freq)}" + "\n")
+
+    f_out_opposes.close()
+    f_out_supports.close()
+
+
 def main():
+    print("Querying SPARQL..")
+    get_graph_from_sparql()
+
+    print("Computing metrics..")
     # read the data and load into the Graph
     nodes, wiki_id2node_id, nxid2wiki_id = load_nodes()
     edges_opposes, edges_supports = load_edges(wiki_id2node_id)
@@ -77,21 +117,19 @@ def main():
     #     print(x)
 
     page_rank_values = pagerank(g)
-
+    """
     communities = list(k_clique_communities(g, 4))
     for c in communities:
         for n in c:
             print(n, node_info[nxid2wiki_id[n]])
         print("\n-----------")
-
-    exit(-1)
+    """
 
     # write output in neo4j CSV format
     with open("nodes_page_rank.csv", "w") as f_out:
         for k, v in page_rank_values.items():
             wiki_id = nxid2wiki_id[k]
             name = node_info[wiki_id]['name']
-            print(wiki_id, name, v)
             f_out.write(f"{wiki_id},{name},{v}" + "\n")
 
 

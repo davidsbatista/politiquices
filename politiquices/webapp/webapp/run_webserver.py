@@ -4,14 +4,14 @@ from collections import defaultdict
 
 from app import app
 
-from politiquices.webapp.webapp.app.sparql_queries import prefixes, get_graph_links
-from politiquices.webapp.webapp.app.sparql_queries import top_co_occurrences
-from politiquices.webapp.webapp.app.sparql_queries import all_entities
-from politiquices.webapp.webapp.app.sparql_queries import query_sparql
-from politiquices.webapp.webapp.app.sparql_queries import get_wiki_id_affiliated_with_party
-from politiquices.webapp.webapp.app.sparql_queries import get_total_nr_articles_for_each_person
-from politiquices.webapp.webapp.app.sparql_queries import get_nr_relationships_as_subject
-from politiquices.webapp.webapp.app.sparql_queries import get_nr_relationships_as_target
+from politiquices.webapp.webapp.utils.sparql_queries import prefixes
+from politiquices.webapp.webapp.utils.sparql_queries import top_co_occurrences
+from politiquices.webapp.webapp.utils.sparql_queries import all_entities
+from politiquices.webapp.webapp.utils.sparql_queries import query_sparql
+from politiquices.webapp.webapp.utils.sparql_queries import get_wiki_id_affiliated_with_party
+from politiquices.webapp.webapp.utils.sparql_queries import get_total_nr_articles_for_each_person
+from politiquices.webapp.webapp.utils.sparql_queries import get_nr_relationships_as_subject
+from politiquices.webapp.webapp.utils.sparql_queries import get_nr_relationships_as_target
 
 ps_logo = "/static/images/Logo_do_Partido_Socialista(Portugal).png"
 no_image = "/static/images/no_picture.jpg"
@@ -93,51 +93,6 @@ def get_all_parties_with_affiliated_count():
         )
 
     return political_parties
-
-
-def create_graph_nodes_edges_cache(wiki_id_info):
-    links = get_graph_links()
-    nodes = defaultdict(dict)
-    edge_counts = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
-
-    for x in links:
-        wiki_id_a = x["person_a"].split("/")[-1]
-        wiki_id_b = x["person_b"].split("/")[-1]
-        name_a = wiki_id_info[wiki_id_a]["name"]
-        name_b = wiki_id_info[wiki_id_b]["name"]
-
-        # build nodes
-        if wiki_id_a not in nodes:
-            nodes[wiki_id_a] = name_a
-
-        if wiki_id_b not in nodes:
-            nodes[wiki_id_b] = name_b
-
-        # add direction and nodes
-        if x["rel_type"].startswith("ent1"):
-            edge_counts[wiki_id_a][wiki_id_b][x["rel_type"]] += 1
-
-        elif x["rel_type"].startswith("ent2"):
-            edge_counts[wiki_id_b][wiki_id_a][x["rel_type"]] += 1
-
-    with open("neo4j_import/" + "nodes.csv", "w") as f_out:
-        for k, v in nodes.items():
-            f_out.write(f"{k},{v}" + "\n")
-
-    f_out_opposes = open("neo4j_import/" + "edges_opposes.csv", "w")
-    f_out_supports = open("neo4j_import/" + "edges_supports.csv", "w")
-
-    for start_node, end_nodes in edge_counts.items():
-        for end_node, rels in end_nodes.items():
-            for rel_type, freq in rels.items():
-                if "opposes" in rel_type:
-                    f_out_opposes.write(f"{str(start_node)},{str(end_node)},{str(freq)}" + "\n")
-
-                if "supports" in rel_type:
-                    f_out_supports.write(f"{str(start_node)},{str(end_node)},{str(freq)}" + "\n")
-
-    f_out_opposes.close()
-    f_out_supports.close()
 
 
 def entities_top_co_occurrences(wiki_id):
@@ -264,6 +219,8 @@ def persons_relationships_counts_by_type():
 
 
 def main():
+
+    """
     print("\nCaching static stuff from SPARQL engine :-)")
 
     # personalities cache
@@ -275,11 +232,9 @@ def main():
     # entities co-occurrences cache
     entities_top_co_occurrences(wiki_id)
 
-    # graph edges cache
-    create_graph_nodes_edges_cache(wiki_id)
-
     # unique number of relationships for each person
     persons_relationships_counts_by_type()
+    """
 
     app.run(debug=True, host="0.0.0.0")
 

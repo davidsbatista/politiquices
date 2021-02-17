@@ -4,8 +4,8 @@ from collections import Counter, defaultdict
 
 from functools import lru_cache
 from SPARQLWrapper import SPARQLWrapper, JSON
-from politiquices.webapp.webapp.app.data_models import OfficePosition, Person, PoliticalParty
-from politiquices.webapp.webapp.app.utils import get_chart_labels_min_max, fill_zero_values
+from politiquices.webapp.webapp.utils.data_models import OfficePosition, Person, PoliticalParty
+from politiquices.webapp.webapp.utils.utils import get_chart_labels_min_max, fill_zero_values
 
 wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
 live_wikidata = "https://query.wikidata.org/sparql"
@@ -129,7 +129,7 @@ def get_total_articles_by_year_by_relationship_type():
 def get_graph_links():
     # NOTE: 'other' relationship types are ignored
     query = """
-        SELECT DISTINCT ?person_a ?rel_type ?person_b ?url {
+        SELECT DISTINCT ?person_a ?rel_type ?person_b ?date ?url {
         VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
                             'ent1_supports_ent2' 'ent2_supports_ent1'} .
         ?rel politiquices:type ?rel_values .  
@@ -137,6 +137,7 @@ def get_graph_links():
         ?rel politiquices:ent2 ?person_b .        
         ?rel politiquices:type ?rel_type .
         ?rel politiquices:url ?url .
+        ?url dc:date ?date .
         }
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
@@ -146,6 +147,7 @@ def get_graph_links():
             "person_b": x["person_b"]["value"],
             "rel_type": x["rel_type"]["value"],
             "url": x["url"]["value"],
+            "date": x["date"]["value"],
         }
         for x in results["results"]["bindings"]
     ]

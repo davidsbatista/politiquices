@@ -6,9 +6,9 @@ from app import app
 from flask import request, jsonify
 from flask import render_template
 
-from politiquices.webapp.webapp.app.data_models import Person
+from politiquices.webapp.webapp.utils.data_models import Person
 from politiquices.webapp.webapp.app.neo4j import Neo4jConnection
-from politiquices.webapp.webapp.app.sparql_queries import (
+from politiquices.webapp.webapp.utils.sparql_queries import (
     build_relationships_by_year,
     get_entities_without_image,
     get_nr_articles_per_year,
@@ -25,11 +25,10 @@ from politiquices.webapp.webapp.app.sparql_queries import (
     list_of_spec_relations_between_two_parties,
     all_persons_freq,
     get_total_articles_by_year_by_relationship_type, get_all_other_to_annotate)
-from politiquices.webapp.webapp.app.utils import (
+from politiquices.webapp.webapp.utils.utils import (
     clickable_title,
     make_json,
     get_relationship,
-    get_ip,
     per_vs_person_linkable,
     get_chart_labels_min_max, determine_heatmap_height)
 
@@ -543,6 +542,7 @@ def graph():
 
     query = None
     if 'query' in request.args:
+        print("HERE!!")
         query = request.args.get("query")
         print(query)
 
@@ -562,24 +562,22 @@ def graph():
     for x in results:
         if x['s'].id not in nodes_done:
             nodes.append(
-                {'id': x['s'].id,
+                {'id': x['s']['id'],
                  'label': x['s']['name'],
-                 'wiki_id': x['s']['id'],
                  'value': x['s']['pagerank']
                  })
             nodes_done.add(x['s'].id)
 
         if x['t'].id not in nodes_done:
             nodes.append(
-                {'id': x['t'].id,
+                {'id': x['t']['id'],
                  'label': x['t']['name'],
-                 'wiki_id': x['t']['id'],
                  'value': x['t']['pagerank']})
             nodes_done.add(x['t'].id)
 
         edges.append(
-            {'from': x['r'].start_node.id,
-             'to': x['r'].end_node.id,
+            {'from': x['r'].start_node['id'],
+             'to': x['r'].end_node['id'],
              'id': len(edges)+1,
              'freq': x['r']['freq'],
              'label': x['r'].type})

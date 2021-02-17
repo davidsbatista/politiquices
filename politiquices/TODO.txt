@@ -10,6 +10,8 @@ Web App
 
     Grafo
     -----
+        - load all_edges.csv into NEO4J and do aggregate/count queries
+
         - idea geral:
             - um unico grafo navegável? ver noticias entre duas pessoas e/ou numa comunidade
             - um grafico estatico anual: tirar medidas, fazer uma animação com 26 estados
