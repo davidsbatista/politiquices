@@ -19,9 +19,9 @@ env:
 
 
 web:
+	. $${HOME}/politiquices_webapp_venv/bin/activate; \
 	cd $${HOME}/politiquices/politiquices/webapp/; \
 	PYTHONPATH=$${HOME}/politiquices python webapp/run_webserver.py;
-
 
 neo4j:
 	. $${HOME}/politiquices_webapp_venv/bin/activate; \
@@ -31,5 +31,6 @@ neo4j:
 	sleep 40s;
 	docker exec -ti $$(docker ps | grep 'neo4j' | awk '{ print $$1 }') /var/lib/neo4j/bin/cypher-shell -u neo4j -p s3cr3t -f /var/lib/neo4j/import/load_data.cql
 
+webapp: env web
 
 all: sparql	env neo4j web
