@@ -4,21 +4,16 @@ Web App
     - Partidos should not show members with just one person or show only PT parties
 
     - lula ladrao da silva -> limpar
+    - todo o texto em Portugues
 
     - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
-    - agradecimentos no sobre a quem deu feedback
-
-    - texto introdutório ao grafo
-
-nao, isso é uma cena a fazer é associar um largura ou cor conforme o peso da seta, que representa uma relação e as noticias de suporte a essa relação entre duas bolinhas - as duas personalidades
-ok, eu já percebi que tenho que escrever um texto introdutório para o grafo
 
     Grafo
     -----
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
+
 
     Stats
     -----
@@ -49,15 +44,20 @@ ok, eu já percebi que tenho que escrever um texto introdutório para o grafo
      - cache + cópia do resize das imagens para este display
      - size original para a página principal da entidade only
 
+
+    Final checks:
+    ------------
+        - agradecimentos no sobre a quem deu feedback
+        - texto introdutório ao grafo
+
+
     Geral (low)
     ----------
         - clicar no branco fazer collapse ao menu (hamburger)
         - tirar todos os alerts -> subsituir por uma pagina de erro -> ir para index.html
         - limpar todos os console.log()
-
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
         - party members: - load on scroll down
-
 
 
 

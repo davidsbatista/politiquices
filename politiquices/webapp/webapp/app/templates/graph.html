@@ -123,10 +123,14 @@
         <div class="row">
             <div class="form-inline">
                 <div class="col-xs-2">
-                    Peso da ligação (nr. min. notícias)
+                    Peso da ligação em nr. de notícias: Min.
                     <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                            class="form-control" style="width:50px;" maxlength="2"
-                           id="freq" value="10" placeholder="10">
+                           id="freq_min" value="10" placeholder="10">
+                    Max.
+                    <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                           class="form-control" style="width:50px;" maxlength="2"
+                           id="freq_max" value="30" placeholder="30">
                     Relação:
                     <select class="form-control" id="rel_type">
                         <option value="supports">Apoia</option>
@@ -191,15 +195,20 @@
       var network = new vis.Network(container, data, options);
 
       network.on("selectEdge", function (obj) {
-        edge_id = obj['edges'][0];
+        edge_id = obj['edges'][0]
+        rel_text = network.body.edges[edge_id].options.label;
         from = network.body.edges[edge_id]["fromId"]
         to = network.body.edges[edge_id]["toId"]
-        console.log(from + ' ' + to)
+        hostname = window.location.origin
+        url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&relationship=${rel_text}&html=true`
+        window.open(url, '_blank')
       });
 
       network.on("selectNode", function (obj) {
         node_id = obj['nodes'][0];
-        console.log(node_id)
+        hostname = window.location.origin
+        url = `${hostname}/entity?q=${node_id}`
+        window.open(url, '_blank')
       });
 
       network.on("stabilizationProgress", function (params) {
@@ -212,6 +221,7 @@
           document.getElementById("text").innerText =
             Math.round(widthFactor * 100) + "%";
         });
+
       network.once("stabilizationIterationsDone", function () {
         document.getElementById("text").innerText = "100%";
         document.getElementById("bar").style.width = "496px";
@@ -246,10 +256,12 @@
 
         var date_from = $("#ano_from").val();
         var date_to = $("#ano_to").val();
-        var edge_weight = $("#freq").val();
+        var freq_min = $("#freq_min").val();
+        var freq_max = $("#freq_max").val();
         var rel_type = $("#rel_type").val();
 
-        data = {freq: edge_weight,
+        data = {freq_min: freq_min,
+                freq_max: freq_max,
                 rel_type: rel_type,
                 date_from: date_from,
                 date_to: date_to}

@@ -374,7 +374,8 @@ def entity_vs_entity(person_one, person_two):
     )
 
 
-def person_vs_person(person_one, person_two, rel_text, person_one_info, person_two_info, year=None):
+def person_vs_person(person_one, person_two, rel_text, person_one_info, person_two_info, year=None,
+                     html=False):
 
     gradient, rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_two_persons(person_one, person_two, rel, year)
@@ -389,6 +390,18 @@ def person_vs_person(person_one, person_two, rel_text, person_one_info, person_t
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
         rel_freq_year[r["date"][0:4]] += 1
+
+    if html:
+        return render_template(
+            "query_person_person_full.html",
+            relationship_text=rel_text,
+            relationships=relationships_json,
+            person_one=person_one_info,
+            person_two=person_two_info,
+            labels=get_chart_labels_min_max(),
+            rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
+            rel_text=rel_text,
+        )
 
     return render_template(
         "query_person_person.html",
@@ -558,9 +571,14 @@ def graph():
     relation = 'ACUSA|APOIA'
     date_from = '2000'
     date_to = '2019'
+    freq_min = 10
+    freq_max = 30
 
-    if "freq" in request.args:
-        freq_threshold = int(request.args.get("freq"))
+    if "freq_min" in request.args:
+        freq_min = int(request.args.get("freq_min"))
+
+    if "freq_max" in request.args:
+        freq_max = int(request.args.get("freq_max"))
 
     if "rel_type" in request.args:
         rel_type = request.args.get("rel_type")
@@ -585,6 +603,7 @@ def graph():
 
     # build the structure to pass to vis js network
     nodes_info = {}
+    max_freq = 0
     edges_agg = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
     for x in results:
         if x["s"].id not in nodes_info:
@@ -600,17 +619,44 @@ def graph():
                 "value": x["t"]["pagerank"],
             }
         edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]] += 1
+        if edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]] > max_freq:
+            max_freq = edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]]
+
     edges = []
     nodes_in_graph = []
+
+    def normalize(abs_freq):
+        return (abs_freq - freq_threshold) / (freq_max - freq_threshold)
+
     for rel_type, rels in edges_agg.items():
         for s, targets in rels.items():
             for t, freq in targets.items():
-                if freq >= freq_threshold:
+                if freq_min <= freq <= freq_max:
+
+                    if rel_type == 'ACUSA':
+                        rel_text = 'opõe-se'
+                        color = '#FF0000'
+                        highlight = '#780000'
+                    else:
+                        rel_text = 'apoia'
+                        color = '#44861E'
+                        highlight = '#1d4a03'
+
                     edges.append(
-                        {"from": s, "to": t, "id": len(edges) + 1, "freq": freq, "label": rel_type}
+                        {"from": s,
+                         "to": t,
+                         "id": len(edges) + 1,
+                         "color": {
+                             "color": color,
+                             "highlight": highlight,
+                         },
+                         "title": freq,
+                         # "value": 0.2, #normalize(freq)
+                         "label": rel_text}
                     )
                     nodes_in_graph.append(s)
                     nodes_in_graph.append(t)
+
     nodes = [node_info for node_id, node_info in nodes_info.items() if node_id in nodes_in_graph]
 
     if "rel_type" in request.args:
@@ -636,6 +682,9 @@ def queries():
         else:
             year = None
 
+        if 'html' in request.args:
+            html = True
+
         entity_one = request.args.get("e1")
         entity_two = request.args.get("e2")
         rel_text = request.args.get("relationship")
@@ -643,7 +692,8 @@ def queries():
         e2_info, e2_type = get_info(entity_two)
 
         if e1_type == "person" and e2_type == "person":
-            return person_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info, year)
+            return person_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info, year,
+                                    html=html)
 
         elif e1_type == "party" and e2_type == "person":
             return party_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info)
