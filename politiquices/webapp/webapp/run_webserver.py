@@ -236,7 +236,7 @@ def main():
     persons_relationships_counts_by_type()
     """
 
-    app.run(debug=True, host="0.0.0.0", port=int("80"))
+    app.run(debug=True, host="0.0.0.0")
 
 
 if __name__ == "__main__":
