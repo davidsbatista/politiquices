@@ -605,7 +605,7 @@ def graph():
     for rel_type, rels in edges_agg.items():
         for s, targets in rels.items():
             for t, freq in targets.items():
-                if freq > freq_threshold:
+                if freq >= freq_threshold:
                     edges.append(
                         {"from": s, "to": t, "id": len(edges) + 1, "freq": freq, "label": rel_type}
                     )
