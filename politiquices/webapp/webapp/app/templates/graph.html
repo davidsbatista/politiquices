@@ -18,9 +18,6 @@
 <script>
     var nodes_lst = {{ nodes|tojson }};
     var edges_lst = {{ edges|tojson }};
-
-    console.log(nodes_lst)
-
     var nodes = new vis.DataSet(nodes_lst)
     var edges = new vis.DataSet(edges_lst)
 </script>
@@ -31,7 +28,8 @@
             <div class="form-inline">
                 <div class="col-xs-2">
                     <input type="text" id="freq" class="form-control" value="10" placeholder="10">
-                    <select class="form-control" id="rel_type" >
+                    <!--$('.rel_type').selectpicker('val', 'Acusa');-->
+                    <select class="form-control" id="rel_type">
                         <option value="supports">Apoia</option>
                         <option value="opposes">Acusa</option>
                         <option value="all">Todas</option>
@@ -107,25 +105,15 @@
 
     $("#reload").click(function() {
 
-        // select time span
-        var ano_from = $("#ano_from").val();
-        var ano_to = $("#ano_to").val();
-
-        // select the filter for the
+        var date_from = $("#ano_from").val();
+        var date_to = $("#ano_to").val();
         var edge_weight = $("#freq").val();
-
-        // extract the selected relationship
         var rel_type = $("#rel_type").val();
-        if (rel_type == 'supports') {
-            relation = 'APOIA'
-        }
-        else if (rel_type == 'opposes') {
-            relation = 'ACUSA'
-        }
-        else relation = 'ACUSA|APOIA'
-        var query = `MATCH (s)-[r:${relation}]->(t) WHERE r.freq > ${edge_weight} RETURN s,r,t`
 
-        data = {query: query}
+        data = {freq: edge_weight,
+                rel_type: rel_type,
+                date_from: date_from,
+                date_to: date_to}
 
         //query neo4j
         $.ajax({
@@ -137,16 +125,25 @@
                 return false;
             },
             complete: function (output) {
-              var data = {
-                nodes: output.responseJSON['nodes'],
-                edges: output.responseJSON['edges']
-              };
-              var network = new vis.Network(container, data, options);
+              if (output.responseJSON['nodes'].length == 0) {
+                alert("Não foram encontrados resultados");
+              }
+              else {
+                var data = {
+                    nodes: output.responseJSON['nodes'],
+                    edges: output.responseJSON['edges']
+                };
+                var network = new vis.Network(container, data, options);
+                network.on("selectEdge", function (obj) {
+                    console.log(obj);
+                });
+                network.on("selectNode", function (obj) {
+                    console.log(obj);
+                });
+              }
             }
         })
-
       });
-
 </script>
 
 {% endblock %}

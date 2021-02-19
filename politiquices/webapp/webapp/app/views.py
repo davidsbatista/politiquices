@@ -24,13 +24,17 @@ from politiquices.webapp.webapp.utils.sparql_queries import (
     list_of_spec_relations_between_members_of_a_party_with_someone,
     list_of_spec_relations_between_two_parties,
     all_persons_freq,
-    get_total_articles_by_year_by_relationship_type, get_all_other_to_annotate)
+    get_total_articles_by_year_by_relationship_type,
+    get_all_other_to_annotate,
+)
 from politiquices.webapp.webapp.utils.utils import (
     clickable_title,
     make_json,
     get_relationship,
     per_vs_person_linkable,
-    get_chart_labels_min_max, determine_heatmap_height)
+    get_chart_labels_min_max,
+    determine_heatmap_height,
+)
 
 # ToDo: review have proper logging
 logger = logging.getLogger(__name__)
@@ -249,12 +253,12 @@ def status():
         "per_freq_values": per_freq_values,
         "per_co_occurrence_labels": co_occurrences_labels,
         "per_co_occurrence_values": co_occurrences_values,
-        "ent1_opposes_ent2": [freq_year for freq_year in values['ent1_opposes_ent2']],
-        "ent2_opposes_ent1": [freq_year for freq_year in values['ent2_opposes_ent1']],
-        "ent1_supports_ent2": [freq_year for freq_year in values['ent1_supports_ent2']],
-        "ent2_supports_ent1": [freq_year for freq_year in values['ent2_supports_ent1']],
-        "ent1_other_ent2": [freq_year for freq_year in values['ent1_other_ent2']],
-        "ent2_other_ent1": [freq_year for freq_year in values['ent2_other_ent1']]
+        "ent1_opposes_ent2": [freq_year for freq_year in values["ent1_opposes_ent2"]],
+        "ent2_opposes_ent1": [freq_year for freq_year in values["ent2_opposes_ent1"]],
+        "ent1_supports_ent2": [freq_year for freq_year in values["ent1_supports_ent2"]],
+        "ent2_supports_ent1": [freq_year for freq_year in values["ent2_supports_ent1"]],
+        "ent1_other_ent2": [freq_year for freq_year in values["ent1_other_ent2"]],
+        "ent2_other_ent1": [freq_year for freq_year in values["ent2_other_ent1"]],
     }
 
     return render_template("stats.html", items=items)
@@ -277,8 +281,8 @@ def complete():
 @app.route("/chave")
 def chave():
     chave_id = request.args.get("q")
-    article = [article for article in chave_publico if article['id'] == chave_id][0]
-    article['text'] = article['text'].replace('\n', '<br><br>')
+    article = [article for article in chave_publico if article["id"] == chave_id][0]
+    article["text"] = article["text"].replace("\n", "<br><br>")
     return render_template("chave_template.html", article=article)
 
 
@@ -288,12 +292,22 @@ def annotate():
 
     for idx, r in enumerate(to_annotate):
         link_one = r["title"].replace(
-            r['ent1_str'],
-            '<a id="ent_1" href="entity?q='+r['ent1'].split("/")[-1] + '">'+r['ent1_str']+"</a>")
+            r["ent1_str"],
+            '<a id="ent_1" href="entity?q='
+            + r["ent1"].split("/")[-1]
+            + '">'
+            + r["ent1_str"]
+            + "</a>",
+        )
 
         title_link = link_one.replace(
             r["ent2_str"],
-            '<a id="ent_2" href="entity?q='+r['ent2'].split("/")[-1] + '">'+r['ent2_str']+"</a>")
+            '<a id="ent_2" href="entity?q='
+            + r["ent2"].split("/")[-1]
+            + '">'
+            + r["ent2_str"]
+            + "</a>",
+        )
 
         r["title_clickable"] = title_link
         r["id"] = idx
@@ -322,10 +336,10 @@ def entity_vs_entity(person_one, person_two):
     for r in results:
         per_vs_person_linkable(r)
 
-    opposed = make_json([r for r in results if r['rel_type_new'] == 'ent1_opposes_ent2'])
-    supported = make_json([r for r in results if r['rel_type_new'] == 'ent1_supports_ent2'])
-    opposed_by = make_json([r for r in results if r['rel_type_new'] == 'ent1_opposed_by_ent2'])
-    supported_by = make_json([r for r in results if r['rel_type_new'] == 'ent1_supported_by_ent2'])
+    opposed = make_json([r for r in results if r["rel_type_new"] == "ent1_opposes_ent2"])
+    supported = make_json([r for r in results if r["rel_type_new"] == "ent1_supports_ent2"])
+    opposed_by = make_json([r for r in results if r["rel_type_new"] == "ent1_opposed_by_ent2"])
+    supported_by = make_json([r for r in results if r["rel_type_new"] == "ent1_supported_by_ent2"])
     all_json = opposed + supported + opposed_by + supported_by
 
     # build chart information
@@ -370,11 +384,11 @@ def person_vs_person(person_one, person_two, rel_text, person_one_info, person_t
 
     for r in results:
         per_vs_person_linkable(r)
-    relationships_json = make_json([r for r in results if r['rel_type'] == rel])
+    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
 
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
-        rel_freq_year[r['date'][0:4]] += 1
+        rel_freq_year[r["date"][0:4]] += 1
 
     return render_template(
         "query_person_person.html",
@@ -401,7 +415,7 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
 
     for r in results:
         per_vs_person_linkable(r)
-    relationships_json = make_json([r for r in results if r['rel_type'] == rel])
+    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
 
     # heatmap # ToDo: make this in a single loop
     heatmap = []
@@ -409,26 +423,26 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
     labels = get_chart_labels_min_max()
     for r in results:
         # ToDo: make map of the cache to avoid this linear search
-        wiki_id = r['ent1_wiki'].split("/")[-1]
-        name = [p['name'] for p in all_entities_info if p['wiki_id'] == wiki_id][0]
-        year = r['date'][0:4]
+        wiki_id = r["ent1_wiki"].split("/")[-1]
+        name = [p["name"] for p in all_entities_info if p["wiki_id"] == wiki_id][0]
+        year = r["date"][0:4]
         entities_freq_year[name][year] += 1
 
     for name in entities_freq_year.keys():
         per_freq_year = []
         for year in labels:
             if year in entities_freq_year[name]:
-                per_freq_year.append({'x': year, 'y': entities_freq_year[name][year]})
+                per_freq_year.append({"x": year, "y": entities_freq_year[name][year]})
             else:
-                per_freq_year.append({'x': year, 'y': 0})
-        heatmap.append({'name': name, 'data': per_freq_year})
-    sorted_heatmap = sorted(heatmap, key=lambda x: x['name'], reverse=True)
+                per_freq_year.append({"x": year, "y": 0})
+        heatmap.append({"name": name, "data": per_freq_year})
+    sorted_heatmap = sorted(heatmap, key=lambda x: x["name"], reverse=True)
     heatmap_height = determine_heatmap_height(len(sorted_heatmap))
 
     # chart: news articles/relationships per year
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
-        rel_freq_year[r['date'][0:4]] += 1
+        rel_freq_year[r["date"][0:4]] += 1
 
     return render_template(
         "query_party_person.html",
@@ -441,7 +455,7 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
         rel_text=rel_text,
         heatmap=sorted_heatmap,
         heatmap_gradient=gradient,
-        heatmap_height=heatmap_height
+        heatmap_height=heatmap_height,
     )
 
 
@@ -459,7 +473,7 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
     for r in results:
         per_vs_person_linkable(r)
 
-    relationships_json = make_json([r for r in results if r['rel_type'] == rel])
+    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
 
     # heatmap # ToDo: make this in a single loop
     heatmap = []
@@ -467,26 +481,26 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
     labels = get_chart_labels_min_max()
     for r in results:
         # ToDo: make map of the cache to avoid this linear search
-        wiki_id = r['ent2_wiki'].split("/")[-1]
-        name = [p['name'] for p in all_entities_info if p['wiki_id'] == wiki_id][0]
-        year = r['date'][0:4]
+        wiki_id = r["ent2_wiki"].split("/")[-1]
+        name = [p["name"] for p in all_entities_info if p["wiki_id"] == wiki_id][0]
+        year = r["date"][0:4]
         entities_freq_year[name][year] += 1
 
     for name in entities_freq_year.keys():
         per_freq_year = []
         for year in labels:
             if year in entities_freq_year[name]:
-                per_freq_year.append({'x': year, 'y': entities_freq_year[name][year]})
+                per_freq_year.append({"x": year, "y": entities_freq_year[name][year]})
             else:
-                per_freq_year.append({'x': year, 'y': 0})
-        heatmap.append({'name': name, 'data': per_freq_year})
-    sorted_heatmap = sorted(heatmap, key=lambda x: x['name'], reverse=True)
+                per_freq_year.append({"x": year, "y": 0})
+        heatmap.append({"name": name, "data": per_freq_year})
+    sorted_heatmap = sorted(heatmap, key=lambda x: x["name"], reverse=True)
     heatmap_height = determine_heatmap_height(len(sorted_heatmap))
 
     # chart: news articles/relationships per year
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
-        rel_freq_year[r['date'][0:4]] += 1
+        rel_freq_year[r["date"][0:4]] += 1
 
     return render_template(
         "query_person_party.html",
@@ -499,7 +513,7 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
         rel_text=rel_text,
         heatmap=sorted_heatmap,
         heatmap_gradient=gradient,
-        heatmap_height=heatmap_height
+        heatmap_height=heatmap_height,
     )
 
 
@@ -519,11 +533,11 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
     for r in results:
         per_vs_person_linkable(r)
 
-    relationships_json = make_json([r for r in results if r['rel_type'] == rel])
+    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
 
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
-        rel_freq_year[r['date'][0:4]] += 1
+        rel_freq_year[r["date"][0:4]] += 1
 
     return render_template(
         "query_party_party.html",
@@ -533,57 +547,76 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
         party_two=party_b_info,
         labels=get_chart_labels_min_max(),
         rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
-        rel_text=rel_text
+        rel_text=rel_text,
     )
 
 
 @app.route("/graph")
 def graph():
 
-    query = None
-    if 'query' in request.args:
-        print("HERE!!")
-        query = request.args.get("query")
-        print(query)
+    freq_threshold = 10
+    relation = 'ACUSA|APOIA'
+    date_from = '2010'
+    date_to = '2017'
+
+    if "freq" in request.args:
+        freq_threshold = int(request.args.get("freq"))
+
+    if "rel_type" in request.args:
+        rel_type = request.args.get("rel_type")
+        if rel_type == 'supports':
+            relation = 'APOIA'
+        elif rel_type == 'opposes':
+            relation = 'ACUSA'
+        else:
+            relation = 'ACUSA|APOIA'
+
+    if "date_from" in request.args and "date_to" in request.args:
+        date_from = request.args.get("date_from")
+        date_to = request.args.get("date_to")
+
+    query = f"MATCH (s)-[r:{relation}]->(t) " \
+            f"WHERE r.data >= date('{date_from}-01-01') AND r.data <= date('{date_to}-12-31') " \
+            "RETURN s, t, r"
 
     conn = Neo4jConnection(uri="bolt://localhost:7687", user="neo4j", pwd="s3cr3t")
-
-    if query:
-        results = conn.query(query)
-    else:
-        results = conn.query("MATCH (s)-[r:ACUSA|APOIA]->(t) "
-                             "WHERE r.freq > 10 "
-                             "RETURN s,r,t")
+    results = conn.query(query)
     conn.close()
 
-    nodes_done = set()
-    nodes = []
-    edges = []
+    # build the structure to pass to vis js network
+    nodes_info = {}
+    edges_agg = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
     for x in results:
-        if x['s'].id not in nodes_done:
-            nodes.append(
-                {'id': x['s']['id'],
-                 'label': x['s']['name'],
-                 'value': x['s']['pagerank']
-                 })
-            nodes_done.add(x['s'].id)
+        if x["s"].id not in nodes_info:
+            nodes_info[x["s"]["id"]] = {
+                "id": x["s"]["id"],
+                "label": x["s"]["name"],
+                "value": x["s"]["pagerank"],
+            }
+        if x["t"].id not in nodes_info:
+            nodes_info[x["t"]["id"]] = {
+                "id": x["t"]["id"],
+                "label": x["t"]["name"],
+                "value": x["t"]["pagerank"],
+            }
+        edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]] += 1
+    edges = []
+    nodes_in_graph = []
+    for rel_type, rels in edges_agg.items():
+        for s, targets in rels.items():
+            for t, freq in targets.items():
+                if freq > freq_threshold:
+                    edges.append(
+                        {"from": s, "to": t, "id": len(edges) + 1, "freq": freq, "label": rel_type}
+                    )
+                    nodes_in_graph.append(s)
+                    nodes_in_graph.append(t)
+    nodes = [node_info for node_id, node_info in nodes_info.items() if node_id in nodes_in_graph]
 
-        if x['t'].id not in nodes_done:
-            nodes.append(
-                {'id': x['t']['id'],
-                 'label': x['t']['name'],
-                 'value': x['t']['pagerank']})
-            nodes_done.add(x['t'].id)
+    print("edges:", len(edges))
 
-        edges.append(
-            {'from': x['r'].start_node['id'],
-             'to': x['r'].end_node['id'],
-             'id': len(edges)+1,
-             'freq': x['r']['freq'],
-             'label': x['r'].type})
-
-    if 'query' in request.args:
-        return jsonify({'nodes': nodes, 'edges': edges})
+    if "rel_type" in request.args:
+        return jsonify({"nodes": nodes, "edges": edges})
 
     return render_template("graph.html", nodes=nodes, edges=edges)
 
@@ -600,7 +633,7 @@ def queries():
 
     if query_nr == "one":
 
-        if 'year' in request.args:
+        if "year" in request.args:
             year = request.args.get("year")
         else:
             year = None
