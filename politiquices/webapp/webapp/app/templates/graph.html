@@ -5,6 +5,7 @@
 {% block body %}
 
 <style type="text/css">
+
       #mynetwork {
         margin-top: 5px;
         margin-bottom: 5px;
@@ -13,6 +14,108 @@
         border: 1px solid rgb(0, 0, 0);
         font: 6pt arial;
       }
+
+      #loadingBar {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 902px;
+        height: 902px;
+        background-color: rgba(200, 200, 200, 0.8);
+        -webkit-transition: all 0.5s ease;
+        -moz-transition: all 0.5s ease;
+        -ms-transition: all 0.5s ease;
+        -o-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+        opacity: 1;
+      }
+
+      #wrapper {
+        position: relative;
+        width: 900px;
+        height: 900px;
+      }
+
+      #text {
+        position: absolute;
+        top: 8px;
+        left: 530px;
+        width: 30px;
+        height: 50px;
+        margin: auto auto auto auto;
+        font-size: 22px;
+        color: #000000;
+      }
+
+      div.outerBorder {
+        position: relative;
+        top: 400px;
+        width: 600px;
+        height: 44px;
+        margin: auto auto auto auto;
+        border: 8px solid rgba(0, 0, 0, 0.1);
+        background: rgb(252, 252, 252); /* Old browsers */
+        background: -moz-linear-gradient(
+          top,
+          rgba(252, 252, 252, 1) 0%,
+          rgba(237, 237, 237, 1) 100%
+        ); /* FF3.6+ */
+        background: -webkit-gradient(
+          linear,
+          left top,
+          left bottom,
+          color-stop(0%, rgba(252, 252, 252, 1)),
+          color-stop(100%, rgba(237, 237, 237, 1))
+        ); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(
+          top,
+          rgba(252, 252, 252, 1) 0%,
+          rgba(237, 237, 237, 1) 100%
+        ); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(
+          top,
+          rgba(252, 252, 252, 1) 0%,
+          rgba(237, 237, 237, 1) 100%
+        ); /* Opera 11.10+ */
+        background: -ms-linear-gradient(
+          top,
+          rgba(252, 252, 252, 1) 0%,
+          rgba(237, 237, 237, 1) 100%
+        ); /* IE10+ */
+        background: linear-gradient(
+          to bottom,
+          rgba(252, 252, 252, 1) 0%,
+          rgba(237, 237, 237, 1) 100%
+        ); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+        border-radius: 72px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      #border {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 500px;
+        height: 23px;
+        margin: auto auto auto auto;
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+        border-radius: 10px;
+      }
+
+      #bar {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        width: 20px;
+        height: 20px;
+        margin: auto auto auto auto;
+        border-radius: 11px;
+        border: 2px solid rgba(30, 30, 30, 0.05);
+        background: rgb(0, 173, 246); /* Old browsers */
+        box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.4);
+      }
+
 </style>
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <script>
@@ -27,16 +130,15 @@
         <div class="row">
             <div class="form-inline">
                 <div class="col-xs-2">
-                    Nr. Notícias
+                    Peso da ligação (nr. min. notícias)
                     <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                            class="form-control" style="width:50px;" maxlength="2"
                            id="freq" value="10" placeholder="10">
-                    <!--$('.rel_type').selectpicker('val', 'Acusa');-->
                     Relação:
                     <select class="form-control" id="rel_type">
                         <option value="supports">Apoia</option>
                         <option value="opposes">Acusa</option>
-                        <option value="all">Todas</option>
+                        <option value="all" selected>Todas</option>
                     </select>
                     De:
                     <select class="form-control" id="ano_from"></select>
@@ -48,6 +150,14 @@
             </div>
             <div class="col-xs-2">
                 <div id="mynetwork"></div>
+                    <div id="loadingBar">
+                      <div class="outerBorder">
+                        <div id="text">0%</div>
+                        <div id="border">
+                          <div id="bar"></div>
+                        </div>
+                      </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -61,6 +171,9 @@
       };
 
       var options = {
+        interaction: {
+            navigationButtons: true
+        },
         nodes: {
           shape: 'dot',
           font: {
@@ -83,13 +196,30 @@
       };
 
       var network = new vis.Network(container, data, options);
-
       network.on("selectEdge", function (obj) {
         console.log(obj);
       });
-
       network.on("selectNode", function (obj) {
         console.log(obj);
+      });
+      network.on("stabilizationProgress", function (params) {
+          var maxWidth = 496;
+          var minWidth = 20;
+          var widthFactor = params.iterations / params.total;
+          var width = Math.max(minWidth, maxWidth * widthFactor);
+
+          document.getElementById("bar").style.width = width + "px";
+          document.getElementById("text").innerText =
+            Math.round(widthFactor * 100) + "%";
+        });
+      network.once("stabilizationIterationsDone", function () {
+        document.getElementById("text").innerText = "100%";
+        document.getElementById("bar").style.width = "496px";
+        document.getElementById("loadingBar").style.opacity = 0;
+        // really clean the dom element
+        setTimeout(function () {
+          document.getElementById("loadingBar").style.display = "none";
+        }, 500);
       });
 
     </script>
@@ -100,7 +230,7 @@
 
     var years = ["1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003",
                  "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013",
-                 "2014", "2015", "2016", "2017", "2018"];
+                 "2014", "2015", "2016", "2017", "2018", "2019"];
 
     for (var i=0; i< years.length;i++) {
         jQuery('<option/>', {
@@ -108,6 +238,9 @@
             html: years[i]
         }).appendTo('#ano_from, #ano_to');
     }
+
+    $('#ano_from option').eq((2000-1994)).prop('selected', true);
+    $('#ano_to option').eq((2019-1994)).prop('selected', true);
 
     $("#reload").click(function() {
 
@@ -131,22 +264,48 @@
                 return false;
             },
             complete: function (output) {
+
               if (output.responseJSON['nodes'].length == 0) {
                 alert("Não foram encontrados resultados");
               }
+
               else {
+
                 var data = {
                     nodes: output.responseJSON['nodes'],
                     edges: output.responseJSON['edges']
                 };
+
                 var network = new vis.Network(container, data, options);
-                network.on("selectEdge", function (obj) {
-                    console.log(obj);
+
+                network.on("selectEdge", function (obj) {console.log(obj);});
+                network.on("selectNode", function (obj) {console.log(obj);});
+
+                network.on("stabilizationProgress", function (params) {
+                    document.getElementById('loadingBar').style.opacity = 1;
+                    //document.getElementById('loadingBar').display = flex;
+                    $("#loadingBar").css("display", "flex");
+                    var maxWidth = 496;
+                    var minWidth = 20;
+                    var widthFactor = params.iterations / params.total;
+                    var width = Math.max(minWidth, maxWidth * widthFactor);
+                    console.log(width);
+                    document.getElementById('bar').style.width = width + 'px';
+                    document.getElementById('text').innerHTML = Math.round(widthFactor * 100) + '%';
                 });
-                network.on("selectNode", function (obj) {
-                    console.log(obj);
+
+                network.on("stabilizationIterationsDone", function () {
+                    document.getElementById('text').innerHTML = '100%';
+                    document.getElementById('bar').style.width = '496px';
+                    document.getElementById("loadingBar").style.opacity = 0;
+                    // really clean the dom element
+                    setTimeout(function () {
+                      document.getElementById("loadingBar").style.display = "none";
+                    }, 500);
                 });
+
               }
+
             }
         })
       });

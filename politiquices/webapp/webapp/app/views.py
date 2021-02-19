@@ -556,8 +556,8 @@ def graph():
 
     freq_threshold = 10
     relation = 'ACUSA|APOIA'
-    date_from = '2010'
-    date_to = '2017'
+    date_from = '2000'
+    date_to = '2019'
 
     if "freq" in request.args:
         freq_threshold = int(request.args.get("freq"))

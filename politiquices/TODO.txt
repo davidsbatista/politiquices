@@ -1,24 +1,24 @@
 Web App
 =======
-
     - https://stackoverflow.com/questions/12269537/is-the-server-bundled-with-flask-safe-to-use-in-production
-
     - Partidos should not show members with just one person or show only PT parties
 
-    - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
+    - lula ladrao da silva -> limpar
 
+    - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
+    - agradecimentos no sobre a quem deu feedback
+
+    - texto introdutório ao grafo
+
+nao, isso é uma cena a fazer é associar um largura ou cor conforme o peso da seta, que representa uma relação e as noticias de suporte a essa relação entre duas bolinhas - as duas personalidades
+ok, eu já percebi que tenho que escrever um texto introdutório para o grafo
 
     Grafo
     -----
-        - idea geral:
-            - um unico grafo navegável? ver noticias entre duas pessoas e/ou numa comunidade
-            - para cada personalidade mostrar a rede com a possibilidade de seleccionar o grau e as
-              relações ?
-
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
-
 
     Stats
     -----
@@ -48,7 +48,6 @@ Web App
      - mais imagens por linha
      - cache + cópia do resize das imagens para este display
      - size original para a página principal da entidade only
-
 
     Geral (low)
     ----------

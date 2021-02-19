@@ -36,11 +36,6 @@ body {
   z-index: 100;
 }
 
-/* New way of prioritization */
-#test{
-  width: 2;
-}
-
 
 /* Start by setting display:none to make this hidden.
    Then we position it in relation to the viewport window
