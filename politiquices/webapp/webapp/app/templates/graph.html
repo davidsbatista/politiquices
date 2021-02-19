@@ -27,14 +27,20 @@
         <div class="row">
             <div class="form-inline">
                 <div class="col-xs-2">
-                    <input type="text" id="freq" class="form-control" value="10" placeholder="10">
+                    Nr. Notícias
+                    <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                           class="form-control" style="width:50px;" maxlength="2"
+                           id="freq" value="10" placeholder="10">
                     <!--$('.rel_type').selectpicker('val', 'Acusa');-->
+                    Relação:
                     <select class="form-control" id="rel_type">
                         <option value="supports">Apoia</option>
                         <option value="opposes">Acusa</option>
                         <option value="all">Todas</option>
                     </select>
+                    De:
                     <select class="form-control" id="ano_from"></select>
+                    Até:
                     <select class="form-control" id="ano_to" ></select>
                     <input type="submit" value="Actualizar" id="reload"/>
                     <br>

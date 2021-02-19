@@ -36,6 +36,10 @@ body {
   z-index: 100;
 }
 
+/* New way of prioritization */
+#test{
+  width: 2;
+}
 
 
 /* Start by setting display:none to make this hidden.
@@ -68,17 +72,6 @@ body.loading .modal {
 body.loading .modal {
     display: block;
 }
-
-
-
-#cy {
-    width: 80%;
-    height: 50%;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-}
-
 
 /*
 .table-hover tbody tr:hover > td {

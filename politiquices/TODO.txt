@@ -22,12 +22,12 @@ Web App
 
     Stats
     -----
-        - Absolutos e relativos:
+        - Absolutos e relativos (personalidades)
             - Quem mais acusa? é acusado?
             - Quem mais defende? é defendido
             - Persons more supported than accused ?
             - Persons more accused than supported ?
-            - mesma coisa para os partidos: partidos que acusam mais? e que partidos alvo?
+        - mesma coisa para os partidos: partidos que acusam mais? e que partidos alvo?
 
         - Download de todos os stats em .csv
 
