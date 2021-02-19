@@ -18,9 +18,7 @@
       #loadingBar {
         position: absolute;
         top: 0px;
-        left: 0px;
-        width: 902px;
-        height: 902px;
+        left: 33%;
         background-color: rgba(200, 200, 200, 0.8);
         -webkit-transition: all 0.5s ease;
         -moz-transition: all 0.5s ease;
@@ -30,11 +28,6 @@
         opacity: 1;
       }
 
-      #wrapper {
-        position: relative;
-        width: 900px;
-        height: 900px;
-      }
 
       #text {
         position: absolute;
@@ -196,12 +189,19 @@
       };
 
       var network = new vis.Network(container, data, options);
+
       network.on("selectEdge", function (obj) {
-        console.log(obj);
+        edge_id = obj['edges'][0];
+        from = network.body.edges[edge_id]["fromId"]
+        to = network.body.edges[edge_id]["toId"]
+        console.log(from + ' ' + to)
       });
+
       network.on("selectNode", function (obj) {
-        console.log(obj);
+        node_id = obj['nodes'][0];
+        console.log(node_id)
       });
+
       network.on("stabilizationProgress", function (params) {
           var maxWidth = 496;
           var minWidth = 20;
@@ -278,8 +278,17 @@
 
                 var network = new vis.Network(container, data, options);
 
-                network.on("selectEdge", function (obj) {console.log(obj);});
-                network.on("selectNode", function (obj) {console.log(obj);});
+                network.on("selectEdge", function (obj) {
+                  edge_id = obj['edges'][0];
+                  from = network.body.edges[edge_id]["fromId"]
+                  to = network.body.edges[edge_id]["toId"]
+                  console.log(from + ' ' + to)
+                });
+
+                network.on("selectNode", function (obj) {
+                  node_id = obj['nodes'][0];
+                  console.log(node_id)
+                });
 
                 network.on("stabilizationProgress", function (params) {
                     document.getElementById('loadingBar').style.opacity = 1;
