@@ -613,8 +613,6 @@ def graph():
                     nodes_in_graph.append(t)
     nodes = [node_info for node_id, node_info in nodes_info.items() if node_id in nodes_in_graph]
 
-    print("edges:", len(edges))
-
     if "rel_type" in request.args:
         return jsonify({"nodes": nodes, "edges": edges})
 
