@@ -4,12 +4,15 @@ Web App
     - Partidos should not show members with just one person or show only PT parties
     - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
+    - filtro de tempo ano_from -> ano_to para:
+        - per vs per;
+        - party vs. person;
+
     Grafo
     -----
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - criar redes de apoio e acusação em função do tempo por exemplo, para ver as mudanças de
           alianças, depois podes fazer cena a longo prazo para veres quem são os grandes aliados
-
 
     Stats
     -----
@@ -32,7 +35,6 @@ Web App
      - listar todos os membros do Governo X
      - listar todos os que já foram Ministros <qq cena>
      - existem relações familiares no grafo? entre quem?
-
 
     Personalidades:
     -------------
@@ -68,7 +70,6 @@ Backend-stuff
 
     - http://0.0.0.0:5000/entity?q=Q2857730 (Bagão Felix vs Carlos César)
         há muitos duplicados
-
 
     SPARQL queries:
         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador

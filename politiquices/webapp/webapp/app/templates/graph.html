@@ -9,8 +9,8 @@
       #mynetwork {
         margin-top: 5px;
         margin-bottom: 5px;
-        width: 1130px;
-        height: 800px;
+        width: 1000px;
+        height: 700px;
         border: 1px solid rgb(0, 0, 0);
         font: 6pt arial;
       }
@@ -109,6 +109,18 @@
         box-shadow: 2px 0px 4px rgba(0, 0, 0, 0.4);
       }
 
+      #big-container" {
+        border: 3px solid #fff;
+        padding: 20px;
+    }
+
+      #float-child {
+        width: 50%;
+        float: left;
+        padding: 20px;
+        border: 2px solid red;
+    }
+
 </style>
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <script>
@@ -119,44 +131,50 @@
 </script>
 
 <body>
-      <div class="container" id="container">
-        <div class="row">
-            <div class="form-inline">
-                <div class="col-xs-2">
-                    Peso da ligação em nr. de notícias: Min.
-                    <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                           class="form-control" style="width:50px;" maxlength="2"
-                           id="freq_min" value="10" placeholder="10">
-                    Max.
-                    <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                           class="form-control" style="width:50px;" maxlength="2"
-                           id="freq_max" value="30" placeholder="30">
-                    Relação:
-                    <select class="form-control" id="rel_type">
-                        <option value="supports">Apoia</option>
-                        <option value="opposes">Acusa</option>
-                        <option value="all" selected>Todas</option>
-                    </select>
-                    De:
-                    <select class="form-control" id="ano_from"></select>
-                    Até:
-                    <select class="form-control" id="ano_to" ></select>
-                    <input type="submit" value="Actualizar" id="reload"/>
-                    <br>
-                </div>
-            </div>
-            <div class="col-xs-2">
-                <div id="mynetwork"></div>
-                    <div id="loadingBar">
-                      <div class="outerBorder">
-                        <div id="text">0%</div>
-                        <div id="border">
-                          <div id="bar"></div>
-                        </div>
-                      </div>
-                    </div>
-            </div>
+    <div class="container" id="container">
+      <div class="row">
+        <div class="col" style="max-width: 10%" id="controls">
+            Min.
+            <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                   class="form-control" style="width:50px;" maxlength="2"
+                   id="freq_min" value="10" placeholder="10">
+            Max.
+            <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                   class="form-control" style="width:50px;" maxlength="2"
+                   id="freq_max" value="30" placeholder="30">
+            Relação:
+            <select style="width:85px;" class="form-control" id="rel_type">
+                <option value="supports">Apoia</option>
+                <option value="opposes">Acusa</option>
+                <option value="all" selected>Todas</option>
+            </select>
+            De:
+            <select style="width:75px;" class="form-control" id="ano_from"></select>
+            Até:
+            <select style="width:75px;" class="form-control" id="ano_to" ></select>
+            <br>
+            <input type="submit" value="Actualizar" id="reload"/>
+            <hr>
+            <div id="selected_node"></div>
+            <div id="from_node"></div>
+            <div id="select_rel_type"></div>
+            <div id="to_node"></div>
+            <div id="selected_edge"></div>
+            <br>
         </div>
+        <hr>
+        <div class="col" style="max-width: 90%" id="graph">
+          <div id="mynetwork"></div>
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                  <div id="border">
+                    <div id="bar"></div>
+                  </div>
+                </div>
+              </div>
+        </div>
+      </div>
     </div>
 
     <script type="text/javascript">
@@ -169,7 +187,8 @@
 
       var options = {
         interaction: {
-            navigationButtons: true
+            navigationButtons: true,
+            selectConnectedEdges: false
         },
         nodes: {
           shape: 'dot',
@@ -194,21 +213,45 @@
 
       var network = new vis.Network(container, data, options);
 
-      network.on("selectEdge", function (obj) {
-        edge_id = obj['edges'][0]
-        rel_text = network.body.edges[edge_id].options.label;
-        from = network.body.edges[edge_id]["fromId"]
-        to = network.body.edges[edge_id]["toId"]
-        hostname = window.location.origin
-        url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&relationship=${rel_text}&html=true`
-        window.open(url, '_blank')
+      network.on("selectNode", function (obj) {
+        var node_id = obj['nodes'][0];
+        var node_name = network.body.nodes[node_id].options['label']
+        var hostname = window.location.origin
+        var url = `${hostname}/entity?q=${node_id}`
+        var html = `<a href=${url} target="_blank">${node_name}</a>`
+
+        // clean edge info
+        $('#from_node').text('');
+        $('#to_node').text('');
+        $('#select_rel_type').text('');
+        $('#selected_edge').html('');
+
+        // show node info
+        $('#selected_node').html(html);
+
       });
 
-      network.on("selectNode", function (obj) {
-        node_id = obj['nodes'][0];
-        hostname = window.location.origin
-        url = `${hostname}/entity?q=${node_id}`
-        window.open(url, '_blank')
+      network.on("selectEdge", function (obj) {
+        var edge_id = obj['edges'][0]
+        var rel_text = network.body.edges[edge_id].options.label;
+        var freq = network.body.edges[edge_id].options.title
+        var from = network.body.edges[edge_id]["fromId"]
+        var to = network.body.edges[edge_id]["toId"]
+        var from_name = network.body.nodes[from].options['label']
+        var to_name = network.body.nodes[to].options['label']
+        var hostname = window.location.origin
+        var url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&relationship=${rel_text}&html=true`
+        var html = `<a href=${url} target="_blank">${freq} notícias</a>`
+
+        // clean node info
+        $('#selected_node').html(' ');
+
+        // show edge info
+        $('#from_node').text(from_name);
+        $('#to_node').text(to_name);
+        $('#select_rel_type').text(rel_text);
+        $('#selected_edge').html(html);
+
       });
 
       network.on("stabilizationProgress", function (params) {
@@ -216,7 +259,6 @@
           var minWidth = 20;
           var widthFactor = params.iterations / params.total;
           var width = Math.max(minWidth, maxWidth * widthFactor);
-
           document.getElementById("bar").style.width = width + "px";
           document.getElementById("text").innerText =
             Math.round(widthFactor * 100) + "%";
@@ -290,17 +332,25 @@
 
                 var network = new vis.Network(container, data, options);
 
-                network.on("selectEdge", function (obj) {
-                  edge_id = obj['edges'][0];
-                  from = network.body.edges[edge_id]["fromId"]
-                  to = network.body.edges[edge_id]["toId"]
-                  console.log(from + ' ' + to)
+                network.on("selectNode", function (obj) {
+                   var node_id = obj['nodes'][0];
+                   var node_name = network.body.nodes[node_id].options['label']
+                   var hostname = window.location.origin
+                   var url = `${hostname}/entity?q=${node_id}`
+                   html = `<a href=${url} target="_blank">${node_name}</a>`
+                   $('#selected_node').html(html);
                 });
 
-                network.on("selectNode", function (obj) {
-                  node_id = obj['nodes'][0];
-                  console.log(node_id)
-                });
+                network.on("selectEdge", function (obj) {
+                    edge_id = obj['edges'][0]
+                    rel_text = network.body.edges[edge_id].options.label;
+                    from = network.body.edges[edge_id]["fromId"]
+                    to = network.body.edges[edge_id]["toId"]
+                    hostname = window.location.origin
+                    // url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&relationship=${rel_text}&html=true`
+                    // window.open(url, '_blank')
+                    $('#selected_edge').text(`&e1=${from}&e2=${to}&` + ' ' + rel_text);
+                  });
 
                 network.on("stabilizationProgress", function (params) {
                     document.getElementById('loadingBar').style.opacity = 1;
@@ -310,7 +360,6 @@
                     var minWidth = 20;
                     var widthFactor = params.iterations / params.total;
                     var width = Math.max(minWidth, maxWidth * widthFactor);
-                    console.log(width);
                     document.getElementById('bar').style.width = width + 'px';
                     document.getElementById('text').innerHTML = Math.round(widthFactor * 100) + '%';
                 });
