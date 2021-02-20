@@ -677,6 +677,8 @@ def queries():
 
     if query_nr == "one":
 
+        html = False
+
         if "year" in request.args:
             year = request.args.get("year")
         else:
