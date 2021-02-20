@@ -19,11 +19,19 @@
         "first_crawl": "19961013180344",
         "last_crawl": "20201223093625"
     },
+    "http://ultimahora.publico.pt/": {
+        "first_crawl": "19991127135635",
+        "last_crawl": "20181026145720"
+    },
     "http://www.sabado.pt/": {
         "first_crawl": "20061028151233",
         "last_crawl": "20190723113033"
     },
     "http://www.jn.pt/": {
+        "first_crawl": "19981212030154",
+        "last_crawl": "20201223093959"
+    },
+    "http:/jn.pt/": {
         "first_crawl": "19981212030154",
         "last_crawl": "20201223093959"
     },
@@ -42,6 +50,38 @@
     "https://jornaldiabo.com/": {
         "first_crawl": "20150921170213",
         "last_crawl": "20190630170512"
+    },
+    "http://www.jornaldamadeira.pt/": {
+        "first_crawl": "20010222115146",
+        "last_crawl": "20160211100437"
+    },
+    "http:/www.noticiasaominuto.com/": {
+        "first_crawl": "20131105154232",
+        "last_crawl": "20190723113030"
+    },
+    "http:/ptjornal.com/": {
+        "first_crawl": "20150511213324",
+        "last_crawl": "20191014172405"
+    },
+    "http:/www.sabado.pt/": {
+        "first_crawl": "20061028151233",
+        "last_crawl": "20190723113033"
+    },
+    "http:/www.semanario.pt/": {
+        "first_crawl": "19981206023040",
+        "last_crawl": "20181027015333"
+    },
+    "http://sol.sapo.pt/": {
+        "first_crawl": "20061016125521",
+        "last_crawl": "20201223094009"
+    },
+    "http://aeiou.visao.pt/": {
+        "first_crawl": "20071011000826",
+        "last_crawl": "20190522161157"
+    },
+    "http://acorianooriental.pt": {
+        "first_crawl": "20000229220408",
+        "last_crawl": "20201223093321"
     },
     "http://www.rtp.pt/": {
         "first_crawl": "19980127095945",
@@ -67,6 +107,22 @@
         "first_crawl": "20090629025659",
         "last_crawl": "20201223094015"
     },
+    "http://online.expresso.clix.pt/": {
+        "first_crawl": "20040626144441",
+        "last_crawl": "20181101023612"
+    },
+    "http://www.publico.clix.pt/": {
+        "first_crawl": "20050222085705",
+        "last_crawl": "20190630171803"
+    },
+    "http:/www.acorianooriental.sapo.pt/": {
+        "first_crawl": "20020121182210",
+        "last_crawl": "20181115041745"
+    },
+    "http://diariodigital.sapo.pt/": {
+        "first_crawl": "20031213054017",
+        "last_crawl": "20190522140657"
+    },
     "http://dinheirodigital.sapo.pt/": {
         "first_crawl": "20040130044619",
         "last_crawl": "20190416173410"
@@ -91,6 +147,10 @@
         "first_crawl": "20160916170256",
         "last_crawl": "20201223101102"
     },
+    "http://jn.sapo.pt/": {
+        "first_crawl": "20011215001539",
+        "last_crawl": "20190608063108"
+    },
     "http://noticias.sapo.pt/": {
         "first_crawl": "19981212020017",
         "last_crawl": "20190618182352"
@@ -99,13 +159,13 @@
         "first_crawl": "20030805051322",
         "last_crawl": "20200226121709"
     },
-    "http://sol.sapo.pt/": {
-        "first_crawl": "20061016125521",
-        "last_crawl": "20201223094009"
-    },
     "http://visao.sapo.pt/": {
         "first_crawl": "20120312160227",
         "last_crawl": "20201223093612"
+    },
+    "http://www.clix.pt/": {
+        "first_crawl": "19991129021750",
+        "last_crawl": "20201223095615"
     },
     "http://www.aeiou.pt/": {
         "first_crawl": "19970331013744",

@@ -1,6 +1,6 @@
 
 from elasticsearch import Elasticsearch
-from politiquices.extraction.utils import write_iterator_to_file
+from politiquices.extraction.utils.utils import write_iterator_to_file
 
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
 

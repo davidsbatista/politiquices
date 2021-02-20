@@ -7,13 +7,23 @@ import requests
 from jsonlines import jsonlines
 from loguru import logger
 
-from politiquices.extraction.utils.utils import load_domains
+from politiquices.extraction.utils.utils import load_domains, just_sleep
 
 # https://docs.google.com/spreadsheets/d/1f4OZWE1BOtMS7JJcruNh8Rpem-MbmBVnLrERcmP9OZU/edit#gid=0
 
+OUTPUT_DIR = "crawled"
 URL_REQUEST = "http://arquivo.pt/textsearch"
 
 domains_crawled_dates = None
+
+
+def load_entities():
+    names = []
+    with open('data/entities_names.txt', 'rt') as f_in:
+        for line in f_in:
+            if not line.startswith('#') and len(line) > 1:
+                names.append(line.strip('\n'))
+    return names
 
 
 def runner(domains, query):
@@ -25,6 +35,8 @@ def runner(domains, query):
                 url = future_to_url[future]
                 data = future.result()
                 all_results[url] = data
+                # start_date = domains_crawled_dates[url]['first_crawl']
+                # end_date = domains_crawled_dates[url]['last_crawl']
                 logger.info(f'{url}\t{len(data)}')
                 # ToDo: log success for query,url,from,to
 
@@ -36,7 +48,7 @@ def runner(domains, query):
 
 def query_arquivo(query, domain, timeout=10, n_attempts=10):
 
-    # ToDo: add 'linkToExtractedText' and get the text
+    # ToDo: do more queries to the same domain for smaller time intervals
     params = {
         "q": query,
         "from": domains_crawled_dates[domain]['first_crawl'],
@@ -52,6 +64,7 @@ def query_arquivo(query, domain, timeout=10, n_attempts=10):
         if i > 0:
             print(query, domain, "attempt: ", i)
         try:
+            just_sleep(3)
             response = requests.get(URL_REQUEST, params=params, timeout=timeout+(i*3))
             if response.status_code == 200:
                 response_dict = response.json()
@@ -62,15 +75,6 @@ def query_arquivo(query, domain, timeout=10, n_attempts=10):
             print(query, domain)
 
     return None
-
-
-def load_entities():
-    names = []
-    with open('data/entities_names.txt', 'rt') as f_in:
-        for line in f_in:
-            if not line.startswith('#') and len(line) > 1:
-                names.append(line.strip('\n'))
-    return names
 
 
 def main():
@@ -88,13 +92,11 @@ def main():
         domains_crawled_dates = json.load(f_in)
 
     for name in names:
-        if name < 'Ricardo Mourinho Félix':
-            continue
         print(name)
         f_name = '_'.join(name.split()) + '.jsonl'
         results = runner(domains, name)
         if results:
-            with jsonlines.open(f_name, mode='w') as writer:
+            with jsonlines.open(OUTPUT_DIR+"/"+f_name, mode='w') as writer:
                 for k, v in results.items():
                     for r in v:
                         writer.write(r)
