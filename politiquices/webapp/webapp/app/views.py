@@ -601,9 +601,8 @@ def graph():
     results = conn.query(query)
     conn.close()
 
-    # build the structure to pass to vis js network
+    # build the nodes structure to pass to vis js network and counts edges with counts
     nodes_info = {}
-    max_freq = 0
     edges_agg = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
     for x in results:
         if x["s"].id not in nodes_info:
@@ -619,15 +618,17 @@ def graph():
                 "value": x["t"]["pagerank"],
             }
         edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]] += 1
-        if edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]] > max_freq:
-            max_freq = edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]]
 
+    # Todo: build a networkx structure, compute communites, add communities color to nodes_info
+    networkx_nodes = []
+    networkx_edges = []
+    # networkx_nodes.append(wiki_id)
+    # networkx_edges.append((wiki_id2node_id[source], wiki_id2node_id[target], {'weight': int(weight), 'rel_type': 'supports'}) )
+    # G.add_edges_from([(1, 2), (1, 3)])
+
+    # build final structure to pass to vis-network js
     edges = []
     nodes_in_graph = []
-
-    def normalize(abs_freq):
-        return (abs_freq - freq_threshold) / (freq_max - freq_threshold)
-
     for rel_type, rels in edges_agg.items():
         for s, targets in rels.items():
             for t, freq in targets.items():
