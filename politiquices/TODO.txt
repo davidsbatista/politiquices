@@ -4,6 +4,8 @@ Web App
     - Partidos should not show members with just one person or show only PT parties
     - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
+    - BUG: arcos nº notícias
+
     - filtro de tempo ano_from -> ano_to para:
         - per vs per;
         - party vs. person;

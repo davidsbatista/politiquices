@@ -730,13 +730,14 @@ def graph():
         17: "#a9a9a",
     }
 
-    # add communities color to nodes_info
+    # set node size as the value of the pagerank
     page_rank_values = nx.pagerank(g)
     for k, v in page_rank_values.items():
         for node in nodes:
             if node["id"] == k:
                 node["value"] = v
 
+    # add communities color to nodes_info
     communities = list(k_clique_communities(g, 3))
     for idx, c in enumerate(communities):
         for n in c:
