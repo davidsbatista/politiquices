@@ -333,24 +333,45 @@
                 var network = new vis.Network(container, data, options);
 
                 network.on("selectNode", function (obj) {
-                   var node_id = obj['nodes'][0];
-                   var node_name = network.body.nodes[node_id].options['label']
-                   var hostname = window.location.origin
-                   var url = `${hostname}/entity?q=${node_id}`
-                   html = `<a href=${url} target="_blank">${node_name}</a>`
-                   $('#selected_node').html(html);
+                  var node_id = obj['nodes'][0];
+                  var node_name = network.body.nodes[node_id].options['label']
+                  var hostname = window.location.origin
+                  var url = `${hostname}/entity?q=${node_id}`
+                  var html = `<a href=${url} target="_blank">${node_name}</a>`
+
+                  // clean edge info
+                  $('#from_node').text('');
+                  $('#to_node').text('');
+                  $('#select_rel_type').text('');
+                  $('#selected_edge').html('');
+
+                  // show node info
+                  $('#selected_node').html(html);
+
                 });
 
                 network.on("selectEdge", function (obj) {
-                    edge_id = obj['edges'][0]
-                    rel_text = network.body.edges[edge_id].options.label;
-                    from = network.body.edges[edge_id]["fromId"]
-                    to = network.body.edges[edge_id]["toId"]
-                    hostname = window.location.origin
-                    // url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&relationship=${rel_text}&html=true`
-                    // window.open(url, '_blank')
-                    $('#selected_edge').text(`&e1=${from}&e2=${to}&` + ' ' + rel_text);
-                  });
+                  var edge_id = obj['edges'][0]
+                  var rel_text = network.body.edges[edge_id].options.label;
+                  var freq = network.body.edges[edge_id].options.title
+                  var from = network.body.edges[edge_id]["fromId"]
+                  var to = network.body.edges[edge_id]["toId"]
+                  var from_name = network.body.nodes[from].options['label']
+                  var to_name = network.body.nodes[to].options['label']
+                  var hostname = window.location.origin
+                  var url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&relationship=${rel_text}&html=true`
+                  var html = `<a href=${url} target="_blank">${freq} notícias</a>`
+
+                  // clean node info
+                  $('#selected_node').html(' ');
+
+                  // show edge info
+                  $('#from_node').text(from_name);
+                  $('#to_node').text(to_name);
+                  $('#select_rel_type').text(rel_text);
+                  $('#selected_edge').html(html);
+
+                });
 
                 network.on("stabilizationProgress", function (params) {
                     document.getElementById('loadingBar').style.opacity = 1;
@@ -375,10 +396,11 @@
                 });
 
               }
-
             }
         })
+
       });
+
 </script>
 
 {% endblock %}

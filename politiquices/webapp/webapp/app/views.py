@@ -376,8 +376,9 @@ def entity_vs_entity(person_one, person_two):
     )
 
 
-def person_vs_person(person_one, person_two, rel_text, person_one_info, person_two_info, year=None,
-                     html=False):
+def person_vs_person(
+    person_one, person_two, rel_text, person_one_info, person_two_info, year=None, html=False
+):
 
     gradient, rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_two_persons(person_one, person_two, rel, year)
@@ -387,6 +388,24 @@ def person_vs_person(person_one, person_two, rel_text, person_one_info, person_t
 
     for r in results:
         per_vs_person_linkable(r)
+
+    if "annotate" in request.args:
+        items = []
+        for r in results:
+            items.append(
+                {'url': r['url'],
+                 'date': r['date'],
+                 'title': r['title'],
+                 'title_clickable': r['title_clickable'],
+                 'score': r['score'],
+                 'rel_type': r['rel_type']}
+            )
+
+        return render_template("query_person_person_annotate.html",
+                               entity_one=person_one_info,
+                               entity_two=person_two_info,
+                               items=items)
+
     relationships_json = make_json([r for r in results if r["rel_type"] == rel])
 
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
@@ -570,9 +589,9 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
 def graph():
 
     freq_threshold = 10
-    relation = 'ACUSA|APOIA'
-    date_from = '2000'
-    date_to = '2019'
+    relation = "ACUSA|APOIA"
+    date_from = "2000"
+    date_to = "2019"
     freq_min = 10
     freq_max = 30
 
@@ -584,20 +603,22 @@ def graph():
 
     if "rel_type" in request.args:
         rel_type = request.args.get("rel_type")
-        if rel_type == 'supports':
-            relation = 'APOIA'
-        elif rel_type == 'opposes':
-            relation = 'ACUSA'
+        if rel_type == "supports":
+            relation = "APOIA"
+        elif rel_type == "opposes":
+            relation = "ACUSA"
         else:
-            relation = 'ACUSA|APOIA'
+            relation = "ACUSA|APOIA"
 
     if "date_from" in request.args and "date_to" in request.args:
         date_from = request.args.get("date_from")
         date_to = request.args.get("date_to")
 
-    query = f"MATCH (s)-[r:{relation}]->(t) " \
-            f"WHERE r.data >= date('{date_from}-01-01') AND r.data <= date('{date_to}-12-31') " \
-            "RETURN s, t, r"
+    query = (
+        f"MATCH (s)-[r:{relation}]->(t) "
+        f"WHERE r.data >= date('{date_from}-01-01') AND r.data <= date('{date_to}-12-31') "
+        "RETURN s, t, r"
+    )
 
     conn = Neo4jConnection(uri="bolt://localhost:7687", user="neo4j", pwd="s3cr3t")
     results = conn.query(query)
@@ -611,27 +632,21 @@ def graph():
             nodes_info[x["s"]["id"]] = {
                 "id": x["s"]["id"],
                 "label": x["s"]["name"],
-                'color': {
-                        'border': '#2B7CE9',
-                        'background': '#97C2FC',
-                        'highlight': {
-                            'border': '#2B7CE9',
-                            'background': '#D2E5FF'
-                        }
-                    },
+                "color": {
+                    "border": "#2B7CE9",
+                    "background": "#97C2FC",
+                    "highlight": {"border": "#2B7CE9", "background": "#D2E5FF"},
+                },
             }
         if x["t"].id not in nodes_info:
             nodes_info[x["t"]["id"]] = {
                 "id": x["t"]["id"],
                 "label": x["t"]["name"],
-                'color': {
-                        'border': '#2B7CE9',
-                        'background': '#97C2FC',
-                        'highlight': {
-                            'border': '#2B7CE9',
-                            'background': '#D2E5FF'
-                        }
-                    },
+                "color": {
+                    "border": "#2B7CE9",
+                    "background": "#97C2FC",
+                    "highlight": {"border": "#2B7CE9", "background": "#D2E5FF"},
+                },
             }
         edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]] += 1
 
@@ -639,85 +654,101 @@ def graph():
     # and nodes connected to these edges
     edges = []
     nodes_in_graph = []
+
+    tmp_edges = defaultdict(list)
+    bidirectional_edges = defaultdict(list)
+
     for rel_type, rels in edges_agg.items():
         for s, targets in rels.items():
             for t, freq in targets.items():
                 if freq_min <= freq <= freq_max:
 
-                    if rel_type == 'ACUSA':
-                        rel_text = 'opõe-se'
-                        color = '#FF0000'
-                        highlight = '#780000'
+                    if rel_type == "ACUSA":
+                        rel_text = "opõe-se"
+                        color = "#FF0000"
+                        highlight = "#780000"
                     else:
-                        rel_text = 'apoia'
-                        color = '#44861E'
-                        highlight = '#1d4a03'
+                        rel_text = "apoia"
+                        color = "#44861E"
+                        highlight = "#1d4a03"
 
                     edges.append(
-                        {"from": s,
-                         "to": t,
-                         "id": len(edges) + 1,
-                         "color": {
-                             "color": color,
-                             "highlight": highlight,
-                         },
-                         "title": freq,
-                         # "value": 0.2, #normalize(freq)
-                         "label": rel_text}
+                        {
+                            "from": s,
+                            "to": t,
+                            "id": len(edges) + 1,
+                            "color": {
+                                "color": color,
+                                "highlight": highlight,
+                            },
+                            "title": freq,
+                            # "value": 0.2, #normalize(freq)
+                            "label": rel_text,
+                        }
                     )
                     nodes_in_graph.append(s)
                     nodes_in_graph.append(t)
+
+                    # extract bi-directional relationship
+                    tmp_edges[s].append(t)
+                    if s in tmp_edges[t]:
+                        bidirectional_edges[s].append(t)
+
     nodes = [node_info for node_id, node_info in nodes_info.items() if node_id in nodes_in_graph]
 
     # build a networkx structure, compute communities
-    networkx_nodes = [node_id for node_id in nodes_info]
-    networkx_edges = [(edge['from'], edge['to']) for edge in edges]
+    networkx_nodes = []
+    networkx_edges = []
+    for node, other in bidirectional_edges.items():
+        for n in other:
+            networkx_edges.append((node, n))
+    for edge in networkx_edges:
+        networkx_nodes.append(edge[0])
+        networkx_nodes.append(edge[1])
+
     g = nx.Graph()
     g.add_nodes_from(networkx_nodes)
     g.add_edges_from(networkx_edges)
-
     communities_colors = {
-        0: '#33ff49',
-        1: '#4363d84',
-        2: '#f582315',
-        3: '#911eb46',
-        4: '#42d4f47',
-        5: '#f032e68',
-        6: '#bfef459',
-        7: '#fabed410',
-        8: '#46999011',
-        9: '#dcbeff12',
-        10: '#9A632413',
-        11: '#fffac814',
-        12: '#80000015',
-        13: '#aaffc316',
-        14: '#80800017',
-        15: '#ffd8b118',
-        16: '#00007519',
-        17: '#a9a9a'
+        0: "#33ff49",
+        1: "#4363d84",
+        2: "#f582315",
+        3: "#911eb46",
+        4: "#42d4f47",
+        5: "#f032e68",
+        6: "#bfef459",
+        7: "#fabed410",
+        8: "#46999011",
+        9: "#dcbeff12",
+        10: "#9A632413",
+        11: "#fffac814",
+        12: "#80000015",
+        13: "#aaffc316",
+        14: "#80800017",
+        15: "#ffd8b118",
+        16: "#00007519",
+        17: "#a9a9a",
     }
 
     # add communities color to nodes_info
     page_rank_values = nx.pagerank(g)
     for k, v in page_rank_values.items():
         for node in nodes:
-            if node['id'] == k:
-                node['value'] = v
+            if node["id"] == k:
+                node["value"] = v
 
     communities = list(k_clique_communities(g, 3))
     for idx, c in enumerate(communities):
         for n in c:
             for node in nodes:
-                if node['id'] == n:
-                    node['color'] = {
-                        'border': '#222222',
-                        'background': communities_colors[idx],
-                        'highlight': {
-                            'border': '#2B7CE9',
-                            'background': '#D2E5FF'
-                        }
+                if node["id"] == n:
+                    node["color"] = {
+                        "border": "#222222",
+                        "background": communities_colors[idx],
+                        "highlight": {"border": "#2B7CE9", "background": "#D2E5FF"},
                     }
 
+    # return and render the results
     if "rel_type" in request.args:
         return jsonify({"nodes": nodes, "edges": edges})
 
@@ -743,7 +774,7 @@ def queries():
         else:
             year = None
 
-        if 'html' in request.args:
+        if "html" in request.args:
             html = True
 
         entity_one = request.args.get("e1")
@@ -753,8 +784,9 @@ def queries():
         e2_info, e2_type = get_info(entity_two)
 
         if e1_type == "person" and e2_type == "person":
-            return person_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info, year,
-                                    html=html)
+            return person_vs_person(
+                entity_one, entity_two, rel_text, e1_info, e2_info, year, html=html
+            )
 
         elif e1_type == "party" and e2_type == "person":
             return party_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info)
