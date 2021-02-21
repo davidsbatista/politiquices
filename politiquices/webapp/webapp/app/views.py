@@ -2,9 +2,11 @@ import json
 import logging
 from collections import defaultdict
 
+import networkx as nx
 from app import app
 from flask import request, jsonify
 from flask import render_template
+from networkx.algorithms.community import k_clique_communities
 
 from politiquices.webapp.webapp.utils.data_models import Person
 from politiquices.webapp.webapp.app.neo4j import Neo4jConnection
@@ -609,24 +611,32 @@ def graph():
             nodes_info[x["s"]["id"]] = {
                 "id": x["s"]["id"],
                 "label": x["s"]["name"],
-                "value": x["s"]["pagerank"],
+                'color': {
+                        'border': '#2B7CE9',
+                        'background': '#97C2FC',
+                        'highlight': {
+                            'border': '#2B7CE9',
+                            'background': '#D2E5FF'
+                        }
+                    },
             }
         if x["t"].id not in nodes_info:
             nodes_info[x["t"]["id"]] = {
                 "id": x["t"]["id"],
                 "label": x["t"]["name"],
-                "value": x["t"]["pagerank"],
+                'color': {
+                        'border': '#2B7CE9',
+                        'background': '#97C2FC',
+                        'highlight': {
+                            'border': '#2B7CE9',
+                            'background': '#D2E5FF'
+                        }
+                    },
             }
         edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]] += 1
 
-    # Todo: build a networkx structure, compute communites, add communities color to nodes_info
-    networkx_nodes = []
-    networkx_edges = []
-    # networkx_nodes.append(wiki_id)
-    # networkx_edges.append((wiki_id2node_id[source], wiki_id2node_id[target], {'weight': int(weight), 'rel_type': 'supports'}) )
-    # G.add_edges_from([(1, 2), (1, 3)])
-
-    # build final structure to pass to vis-network js
+    # filter to show only edges within: freq_min <= freq <= freq_max
+    # and nodes connected to these edges
     edges = []
     nodes_in_graph = []
     for rel_type, rels in edges_agg.items():
@@ -657,8 +667,56 @@ def graph():
                     )
                     nodes_in_graph.append(s)
                     nodes_in_graph.append(t)
-
     nodes = [node_info for node_id, node_info in nodes_info.items() if node_id in nodes_in_graph]
+
+    # build a networkx structure, compute communities
+    networkx_nodes = [node_id for node_id in nodes_info]
+    networkx_edges = [(edge['from'], edge['to']) for edge in edges]
+    g = nx.Graph()
+    g.add_nodes_from(networkx_nodes)
+    g.add_edges_from(networkx_edges)
+
+    communities_colors = {
+        0: '#33ff49',
+        1: '#4363d84',
+        2: '#f582315',
+        3: '#911eb46',
+        4: '#42d4f47',
+        5: '#f032e68',
+        6: '#bfef459',
+        7: '#fabed410',
+        8: '#46999011',
+        9: '#dcbeff12',
+        10: '#9A632413',
+        11: '#fffac814',
+        12: '#80000015',
+        13: '#aaffc316',
+        14: '#80800017',
+        15: '#ffd8b118',
+        16: '#00007519',
+        17: '#a9a9a'
+    }
+
+    # add communities color to nodes_info
+    page_rank_values = nx.pagerank(g)
+    for k, v in page_rank_values.items():
+        for node in nodes:
+            if node['id'] == k:
+                node['value'] = v
+
+    communities = list(k_clique_communities(g, 3))
+    for idx, c in enumerate(communities):
+        for n in c:
+            for node in nodes:
+                if node['id'] == n:
+                    node['color'] = {
+                        'border': '#222222',
+                        'background': communities_colors[idx],
+                        'highlight': {
+                            'border': '#2B7CE9',
+                            'background': '#D2E5FF'
+                        }
+                    }
 
     if "rel_type" in request.args:
         return jsonify({"nodes": nodes, "edges": edges})
