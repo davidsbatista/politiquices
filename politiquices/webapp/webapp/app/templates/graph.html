@@ -7,10 +7,10 @@
 <style type="text/css">
 
       #mynetwork {
-        margin-top: 5px;
+        margin-top: 3px;
         margin-bottom: 5px;
         width: 1000px;
-        height: 700px;
+        height: 735px;
         border: 1px solid rgb(0, 0, 0);
         font: 6pt arial;
       }
@@ -134,6 +134,7 @@
     <div class="container" id="container">
       <div class="row">
         <div class="col" style="max-width: 10%" id="controls">
+            <hr>
             Min.
             <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                    class="form-control" style="width:50px;" maxlength="2"
@@ -142,25 +143,25 @@
             <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                    class="form-control" style="width:50px;" maxlength="2"
                    id="freq_max" value="30" placeholder="30">
+            <hr>
             Relação:
             <select style="width:85px;" class="form-control" id="rel_type">
                 <option value="supports">Apoia</option>
                 <option value="opposes">Acusa</option>
                 <option value="all" selected>Todas</option>
             </select>
+            <hr>
             De:
             <select style="width:75px;" class="form-control" id="ano_from"></select>
             Até:
             <select style="width:75px;" class="form-control" id="ano_to" ></select>
+            <hr>
+            k-clique:
+            <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                    class="form-control" style="width:50px;" maxlength="2"
+                   id="k_clique" value="3" placeholder="3">
             <br>
             <input type="submit" value="Actualizar" id="reload"/>
-            <hr>
-            <div id="selected_node"></div>
-            <div id="from_node"></div>
-            <div id="select_rel_type"></div>
-            <div id="to_node"></div>
-            <div id="selected_edge"></div>
-            <br>
         </div>
         <hr>
         <div class="col" style="max-width: 90%" id="graph">
@@ -175,6 +176,12 @@
               </div>
         </div>
       </div>
+        <div class="row">
+            <div class="col" style="max-width: 10%"></div>
+            <div class="col d-flex justify-content-center" id="selection_info">&nbsp;</div>
+        </div>
+        <br>
+    </div>
     </div>
 
     <script type="text/javascript">
@@ -220,14 +227,11 @@
         var url = `${hostname}/entity?q=${node_id}`
         var html = `<a href=${url} target="_blank">${node_name}</a>`
 
-        // clean edge info
-        $('#from_node').text('');
-        $('#to_node').text('');
-        $('#select_rel_type').text('');
-        $('#selected_edge').html('');
+        // clean node info
+        $('#selection_info').html(' ');
 
-        // show node info
-        $('#selected_node').html(html);
+        // show edge info
+        $('#selection_info').html(html);
 
       });
 
@@ -241,17 +245,19 @@
         var to_name = network.body.nodes[to].options['label']
         var hostname = window.location.origin
         var url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&relationship=${rel_text}&html=true`
-        var html = `<a href=${url} target="_blank">${freq} notícias</a>`
+        var noticias_html = `<a href=${url} target="_blank">${freq} notícias</a>`
+        var e1_url = `${hostname}/entity?q=${from}`
+        var e1_html = `<a href=${e1_url} target="_blank">${from_name}</a>`
+        var e2_url = `${hostname}/entity?q=${to}`
+        var e2_html = `<a href=${e2_url} target="_blank">${to_name}</a>`
+        rel_html = `<b>${rel_text}</b>`
+        all_html = e1_html + '&nbsp;' + rel_html + '&nbsp;' + e2_html + ':&nbsp;&nbsp;' + noticias_html
 
         // clean node info
-        $('#selected_node').html(' ');
+        $('#selection_info').html(' ');
 
         // show edge info
-        $('#from_node').text(from_name);
-        $('#to_node').text(to_name);
-        $('#select_rel_type').text(rel_text);
-        $('#selected_edge').html(html);
-
+        $('#selection_info').html(all_html);
       });
 
       network.on("stabilizationProgress", function (params) {
@@ -301,12 +307,14 @@
         var freq_min = $("#freq_min").val();
         var freq_max = $("#freq_max").val();
         var rel_type = $("#rel_type").val();
+        var k_clique = $("#k_clique").val();
 
         data = {freq_min: freq_min,
                 freq_max: freq_max,
                 rel_type: rel_type,
                 date_from: date_from,
-                date_to: date_to}
+                date_to: date_to,
+                k_clique: k_clique}
 
         //query neo4j
         $.ajax({
@@ -333,45 +341,44 @@
                 var network = new vis.Network(container, data, options);
 
                 network.on("selectNode", function (obj) {
-                  var node_id = obj['nodes'][0];
-                  var node_name = network.body.nodes[node_id].options['label']
-                  var hostname = window.location.origin
-                  var url = `${hostname}/entity?q=${node_id}`
-                  var html = `<a href=${url} target="_blank">${node_name}</a>`
+                    var node_id = obj['nodes'][0];
+                    var node_name = network.body.nodes[node_id].options['label']
+                    var hostname = window.location.origin
+                    var url = `${hostname}/entity?q=${node_id}`
+                    var html = `<a href=${url} target="_blank">${node_name}</a>`
 
-                  // clean edge info
-                  $('#from_node').text('');
-                  $('#to_node').text('');
-                  $('#select_rel_type').text('');
-                  $('#selected_edge').html('');
+                    // clean node info
+                    $('#selection_info').html(' ');
 
-                  // show node info
-                  $('#selected_node').html(html);
+                    // show edge info
+                    $('#selection_info').html(html);
 
-                });
+                  });
 
-                network.on("selectEdge", function (obj) {
-                  var edge_id = obj['edges'][0]
-                  var rel_text = network.body.edges[edge_id].options.label;
-                  var freq = network.body.edges[edge_id].options.title
-                  var from = network.body.edges[edge_id]["fromId"]
-                  var to = network.body.edges[edge_id]["toId"]
-                  var from_name = network.body.nodes[from].options['label']
-                  var to_name = network.body.nodes[to].options['label']
-                  var hostname = window.location.origin
-                  var url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&relationship=${rel_text}&html=true`
-                  var html = `<a href=${url} target="_blank">${freq} notícias</a>`
+                  network.on("selectEdge", function (obj) {
+                    var edge_id = obj['edges'][0]
+                    var rel_text = network.body.edges[edge_id].options.label;
+                    var freq = network.body.edges[edge_id].options.title
+                    var from = network.body.edges[edge_id]["fromId"]
+                    var to = network.body.edges[edge_id]["toId"]
+                    var from_name = network.body.nodes[from].options['label']
+                    var to_name = network.body.nodes[to].options['label']
+                    var hostname = window.location.origin
+                    var url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&relationship=${rel_text}&html=true`
+                    var noticias_html = `<a href=${url} target="_blank">${freq} notícias</a>`
+                    var e1_url = `${hostname}/entity?q=${from}`
+                    var e1_html = `<a href=${e1_url} target="_blank">${from_name}</a>`
+                    var e2_url = `${hostname}/entity?q=${to}`
+                    var e2_html = `<a href=${e2_url} target="_blank">${to_name}</a>`
+                    rel_html = `<b>${rel_text}</b>`
+                    all_html = e1_html + '&nbsp;' + rel_html + '&nbsp;' + e2_html + ':&nbsp;&nbsp;' + noticias_html
 
-                  // clean node info
-                  $('#selected_node').html(' ');
+                    // clean node info
+                    $('#selection_info').html(' ');
 
-                  // show edge info
-                  $('#from_node').text(from_name);
-                  $('#to_node').text(to_name);
-                  $('#select_rel_type').text(rel_text);
-                  $('#selected_edge').html(html);
-
-                });
+                    // show edge info
+                    $('#selection_info').html(all_html);
+                  });
 
                 network.on("stabilizationProgress", function (params) {
                     document.getElementById('loadingBar').style.opacity = 1;
@@ -394,11 +401,9 @@
                       document.getElementById("loadingBar").style.display = "none";
                     }, 500);
                 });
-
               }
             }
         })
-
       });
 
 </script>

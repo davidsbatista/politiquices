@@ -588,12 +588,12 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
 @app.route("/graph")
 def graph():
 
-    freq_threshold = 10
     relation = "ACUSA|APOIA"
     date_from = "2000"
     date_to = "2019"
     freq_min = 10
     freq_max = 30
+    k_clique = 3
 
     if "freq_min" in request.args:
         freq_min = int(request.args.get("freq_min"))
@@ -609,6 +609,9 @@ def graph():
             relation = "ACUSA"
         else:
             relation = "ACUSA|APOIA"
+
+    if 'k_clique' in request.args:
+        k_clique = int(request.args.get("k_clique"))
 
     if "date_from" in request.args and "date_to" in request.args:
         date_from = request.args.get("date_from")
@@ -682,7 +685,6 @@ def graph():
                                 "highlight": highlight,
                             },
                             "title": freq,
-                            # "value": 0.2, #normalize(freq)
                             "label": rel_text,
                         }
                     )
@@ -737,17 +739,18 @@ def graph():
             if node["id"] == k:
                 node["value"] = v
 
-    # add communities color to nodes_info
-    communities = list(k_clique_communities(g, 3))
-    for idx, c in enumerate(communities):
-        for n in c:
-            for node in nodes:
-                if node["id"] == n:
-                    node["color"] = {
-                        "border": "#222222",
-                        "background": communities_colors[idx],
-                        "highlight": {"border": "#2B7CE9", "background": "#D2E5FF"},
-                    }
+    if k_clique > 1:
+        # add communities color to nodes_info
+        communities = list(k_clique_communities(g, k_clique))
+        for idx, c in enumerate(communities):
+            for n in c:
+                for node in nodes:
+                    if node["id"] == n:
+                        node["color"] = {
+                            "border": "#222222",
+                            "background": communities_colors[idx],
+                            "highlight": {"border": "#2B7CE9", "background": "#D2E5FF"},
+                        }
 
     # return and render the results
     if "rel_type" in request.args:
