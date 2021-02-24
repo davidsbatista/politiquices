@@ -342,7 +342,11 @@ def get_persons_affiliated_with_party(political_party: str):
 
         image = x["image_url"]["value"] if "image_url" in x else no_image
         persons.append(
-            Person(name=wiki_id, wiki_id=x["person"]["value"].split("/")[-1], image_url=image,)
+            Person(
+                name=wiki_id,
+                wiki_id=x["person"]["value"].split("/")[-1],
+                image_url=image,
+            )
         )
         seen.add(wiki_id)
 
@@ -855,7 +859,9 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
 
 # Relationship Queries
 @lru_cache
-def list_of_spec_relations_between_two_persons(wiki_id_one, wiki_id_two, rel_type, year=None):
+def list_of_spec_relations_between_two_persons(
+    wiki_id_one, wiki_id_two, rel_type, start_year=None, end_year=None
+):
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
         WHERE {{          
@@ -877,21 +883,22 @@ def list_of_spec_relations_between_two_persons(wiki_id_one, wiki_id_two, rel_typ
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
-        if year is not None and x["date"]["value"][0:4] != year:
-            continue
-        results.append(
-            {
-                "url": x["arquivo_doc"]["value"],
-                "date": x["date"]["value"],
-                "title": x["title"]["value"],
-                "score": x["score"]["value"][0:5],
-                "rel_type": rel_type,
-                "ent1_wiki": wiki_id_one,
-                "ent1_str": x["ent1_str"]["value"],
-                "ent2_wiki": x["ent2"]["value"],
-                "ent2_str": x["ent2_str"]["value"],
-            }
-        )
+        # ToDo: can be done like this because it's fast but this doesn't scale
+        date = x["date"]["value"][0:4]
+        if start_year <= date <= end_year:
+            results.append(
+                {
+                    "url": x["arquivo_doc"]["value"],
+                    "date": x["date"]["value"],
+                    "title": x["title"]["value"],
+                    "score": x["score"]["value"][0:5],
+                    "rel_type": rel_type,
+                    "ent1_wiki": wiki_id_one,
+                    "ent1_str": x["ent1_str"]["value"],
+                    "ent2_wiki": x["ent2"]["value"],
+                    "ent2_str": x["ent2_str"]["value"],
+                }
+            )
 
     return results
 
@@ -1083,16 +1090,17 @@ def get_all_other_to_annotate():
     to_annotate = []
     for x in result["results"]["bindings"]:
         to_annotate.append(
-            {'date': x["date"]["value"],
-             'url': x["url"]["value"],
-             'title': x["title"]["value"],
-             'rel_type': x["rel_type"]["value"],
-             'score': x["score"]["value"][0:5],
-             'ent1': x["ent1"]["value"],
-             'ent1_str': x["ent1_str"]["value"],
-             'ent2': x["ent2"]["value"],
-             'ent2_str': x["ent2_str"]["value"]
-             }
+            {
+                "date": x["date"]["value"],
+                "url": x["url"]["value"],
+                "title": x["title"]["value"],
+                "rel_type": x["rel_type"]["value"],
+                "score": x["score"]["value"][0:5],
+                "ent1": x["ent1"]["value"],
+                "ent1_str": x["ent1_str"]["value"],
+                "ent2": x["ent2"]["value"],
+                "ent2_str": x["ent2_str"]["value"],
+            }
         )
 
     return to_annotate

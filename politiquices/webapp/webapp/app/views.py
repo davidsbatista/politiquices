@@ -377,11 +377,18 @@ def entity_vs_entity(person_one, person_two):
 
 
 def person_vs_person(
-    person_one, person_two, rel_text, person_one_info, person_two_info, year=None, html=False
+    person_one,
+    person_two,
+    rel_text,
+    person_one_info,
+    person_two_info,
+    start_year=None,
+    end_year=None,
+    html=False,
 ):
-
     gradient, rel = get_relationship(rel_text)
-    results = list_of_spec_relations_between_two_persons(person_one, person_two, rel, year)
+    results = list_of_spec_relations_between_two_persons(person_one, person_two, rel,
+                                                         start_year, end_year)
 
     if len(results) == 0:
         return render_template("no_results.html")
@@ -393,21 +400,24 @@ def person_vs_person(
         items = []
         for r in results:
             items.append(
-                {'url': r['url'],
-                 'date': r['date'],
-                 'title': r['title'],
-                 'title_clickable': r['title_clickable'],
-                 'score': r['score'],
-                 'rel_type': r['rel_type']}
+                {
+                    "url": r["url"],
+                    "date": r["date"],
+                    "title": r["title"],
+                    "title_clickable": r["title_clickable"],
+                    "score": r["score"],
+                    "rel_type": r["rel_type"],
+                }
             )
 
-        return render_template("query_person_person_annotate.html",
-                               entity_one=person_one_info,
-                               entity_two=person_two_info,
-                               items=items)
+        return render_template(
+            "query_person_person_annotate.html",
+            entity_one=person_one_info,
+            entity_two=person_two_info,
+            items=items,
+        )
 
     relationships_json = make_json([r for r in results if r["rel_type"] == rel])
-
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
         rel_freq_year[r["date"][0:4]] += 1
@@ -589,11 +599,13 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
 def graph():
 
     relation = "ACUSA|APOIA"
-    date_from = "2000"
-    date_to = "2019"
+    year_from = "2000"
+    year_to = "2019"
     freq_min = 10
     freq_max = 30
     k_clique = 3
+
+    print(request.args)
 
     if "freq_min" in request.args:
         freq_min = int(request.args.get("freq_min"))
@@ -610,16 +622,16 @@ def graph():
         else:
             relation = "ACUSA|APOIA"
 
-    if 'k_clique' in request.args:
+    if "k_clique" in request.args:
         k_clique = int(request.args.get("k_clique"))
 
-    if "date_from" in request.args and "date_to" in request.args:
-        date_from = request.args.get("date_from")
-        date_to = request.args.get("date_to")
+    if "year_from" in request.args and "year_to" in request.args:
+        year_from = request.args.get("year_from")
+        year_to = request.args.get("year_to")
 
     query = (
         f"MATCH (s)-[r:{relation}]->(t) "
-        f"WHERE r.data >= date('{date_from}-01-01') AND r.data <= date('{date_to}-12-31') "
+        f"WHERE r.data >= date('{year_from}-01-01') AND r.data <= date('{year_to}-12-31') "
         "RETURN s, t, r"
     )
 
@@ -770,13 +782,10 @@ def queries():
         return entity_vs_entity(entity_one, entity_two)
 
     if query_nr == "one":
-
         html = False
 
-        if "year" in request.args:
-            year = request.args.get("year")
-        else:
-            year = None
+        year_from = request.args.get("year_from")
+        year_to = request.args.get("year_to")
 
         if "html" in request.args:
             html = True
@@ -788,8 +797,16 @@ def queries():
         e2_info, e2_type = get_info(entity_two)
 
         if e1_type == "person" and e2_type == "person":
+            # ToDo: add start_year, end_year
             return person_vs_person(
-                entity_one, entity_two, rel_text, e1_info, e2_info, year, html=html
+                entity_one,
+                entity_two,
+                rel_text,
+                e1_info,
+                e2_info,
+                start_year=year_from,
+                end_year=year_to,
+                html=html,
             )
 
         elif e1_type == "party" and e2_type == "person":
