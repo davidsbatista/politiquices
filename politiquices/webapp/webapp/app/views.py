@@ -696,8 +696,9 @@ def graph():
                                 "color": color,
                                 "highlight": highlight,
                             },
-                            "title": freq,
+                            "title": f"{freq}",
                             "label": rel_text,
+                            "value": freq
                         }
                     )
                     nodes_in_graph.append(s)
@@ -716,6 +717,7 @@ def graph():
     for node, other in bidirectional_edges.items():
         for n in other:
             networkx_edges.append((node, n))
+
     for edge in networkx_edges:
         networkx_nodes.append(edge[0])
         networkx_nodes.append(edge[1])

@@ -10,7 +10,6 @@ Web App
 
     Grafo
     -----
-        - escala log na largura dos arcos
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
     Stats
@@ -24,6 +23,7 @@ Web App
 
         - Download de todos os stats em .csv
 
+
     Agregacoes + info na personalidade:
     ------------------------------------
      - Governo
@@ -33,12 +33,6 @@ Web App
      - listar todos os membros do Governo X
      - listar todos os que já foram Ministros <qq cena>
      - existem relações familiares no grafo? entre quem?
-
-    Personalidades:
-    -------------
-     - mais imagens por linha
-     - cache + cópia do resize das imagens para este display
-     - size original para a página principal da entidade only
 
 
     Final checks:
@@ -52,6 +46,9 @@ Web App
 
     Geral (low)
     ----------
+        - mais imagens por linha
+        - cache + cópia do resize das imagens para este display
+        - size original para a página principal da entidade only
         - clicar no branco fazer collapse ao menu (hamburger)
         - tirar todos os alerts -> subsituir por uma pagina de erro -> ir para index.html
         - limpar todos os console.log()
