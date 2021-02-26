@@ -4,13 +4,19 @@ Web App
     - Partidos should not show members with just one person or show only PT parties
     - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
-    - filtro de tempo ano_from -> ano_to para:
-        - per vs per;
-        - party vs. person;
+    - filtro ano_from -> ano_to no interface nos queries fora do grafo
 
     Grafo
     -----
+        - existem relações familiares no grafo? entre quem?
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+
+    casos de uso, exemplos na apresentação?
+        - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
+        - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
+        
+        - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
+
 
     Stats
     -----
@@ -32,8 +38,6 @@ Web App
      - Educacao
      - listar todos os membros do Governo X
      - listar todos os que já foram Ministros <qq cena>
-     - existem relações familiares no grafo? entre quem?
-
 
     Final checks:
     ------------
@@ -65,12 +69,6 @@ Backend-stuff
 
     - http://0.0.0.0:5000/entity?q=Q2857730 (Bagão Felix vs Carlos César)
         há muitos duplicados
-
-    SPARQL queries:
-        - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
-        - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
-        - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
-
 
 
 arquivo_pt:

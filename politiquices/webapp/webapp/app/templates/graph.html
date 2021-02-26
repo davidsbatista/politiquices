@@ -132,6 +132,7 @@
       }
 
 </style>
+
 <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
 <script>
     var nodes_lst = {{ nodes|tojson }};
@@ -253,18 +254,19 @@
       var network = new vis.Network(container, data, options);
 
       network.on("click", function (params) {
-        console.log("clicked!")
-        params.event.preventDefault();
         
+        params.event.preventDefault();
         pointer = params['pointer']['DOM']
         node = network.getNodeAt(pointer)
         edge = network.getEdgeAt(pointer)
         console.log("node: ", node)
         console.log("edge: ", edge)
-
-        console.log(pointer)
-        console.log(params['event']['center']['y'])
-        console.log(params['event']['center']['x'])
+        console.log('pointer')
+        console.log('y:', pointer['x'])
+        console.log('x:', pointer['y'])
+        console.log('event')
+        console.log('y:', params['event']['center']['y'])
+        console.log('x:', params['event']['center']['x'])
         
         // clicked nothing
         if (node == null && edge == null) {
@@ -273,22 +275,25 @@
         }
 
         // clicked a Node
-        else if (node != null && edge == null) {
-          //$(".custom-menu").finish().toggle(100);
-          $(".custom-menu").show();
+        else if (node != null && edge == null) {          
+          var node_id = node;
+          var node_name = network.body.nodes[node_id].options['label']
+          var hostname = window.location.origin
+          var url = `${hostname}/entity?q=${node_id}`
+          var entity_html = `<a href=${url} target="_blank">${node_name}</a>`
+          $(".custom-menu").find('#noticias').html(entity_html);
+          $(".custom-menu").find('#ent1').html('');
+          $(".custom-menu").find('#rel_type').html('');
+          $(".custom-menu").find('#ent2').html('');
           $(".custom-menu").css({
             top: params['event']['center']['y'] + "px",
             left: params['event']['center']['x'] + "px"
           });
-          /*
-          var node_id = obj['nodes'][0];
-          var node_name = network.body.nodes[node_id].options['label']
-          console.log(node_name)
-          */
+          $(".custom-menu").show()
         }
         
         // clicked an Edge
-        else if (node == null && edge != null) {
+        else if (node == null && edge != null) {          
           var edge_id = edge
           var rel_text = network.body.edges[edge_id].options.label;
           var freq = network.body.edges[edge_id].options.title
@@ -306,18 +311,16 @@
           var e2_url = `${hostname}/entity?q=${to}`
           var e2_html = `<a href=${e2_url} target="_blank">${to_name}</a>`
           rel_html = `<b>${rel_text}</b>`
-          
-          //$(".custom-menu").finish().toggle(100);
-          
           $(".custom-menu").find('#noticias').html(noticias_html);
           $(".custom-menu").find('#ent1').html(e1_html);
           $(".custom-menu").find('#rel_type').html(rel_html);
           $(".custom-menu").find('#ent2').html(e2_html);
-          $(".custom-menu").show();
           $(".custom-menu").css({
             top: params['event']['center']['y'] + "px",
             left: params['event']['center']['x'] + "px"
           });
+          $(".custom-menu").show()
+
         }
 
       console.log("---------")
@@ -390,7 +393,6 @@
 
     $('#ano_from option').eq((2000-1994)).prop('selected', true);
     $('#ano_to option').eq((2019-1994)).prop('selected', true);
-
     $("#reload").click(function() {
 
         var year_from = $("#ano_from").val();
@@ -423,7 +425,7 @@
               }
 
               else {
-                
+
                 $(".custom-menu").hide();
 
                 var data = {
