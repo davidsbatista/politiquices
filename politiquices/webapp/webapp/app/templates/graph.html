@@ -275,7 +275,8 @@
         }
 
         // clicked a Node
-        else if (node != null && edge == null) {          
+        else if ((node != null && edge != null) || (node != null && edge == null)) {       
+          console.log('entrei node')   
           var node_id = node;
           var node_name = network.body.nodes[node_id].options['label']
           var hostname = window.location.origin
@@ -290,6 +291,7 @@
             left: params['event']['center']['x'] + "px"
           });
           $(".custom-menu").show()
+          console.log($(".custom-menu"))
         }
         
         // clicked an Edge
