@@ -276,7 +276,6 @@
 
         // clicked a Node
         else if ((node != null && edge != null) || (node != null && edge == null)) {       
-          console.log('entrei node')   
           var node_id = node;
           var node_name = network.body.nodes[node_id].options['label']
           var hostname = window.location.origin
@@ -298,7 +297,7 @@
         else if (node == null && edge != null) {          
           var edge_id = edge
           var rel_text = network.body.edges[edge_id].options.label;
-          var freq = network.body.edges[edge_id].options.title
+          var freq = network.body.edges[edge_id].options.value
           var from = network.body.edges[edge_id]["fromId"]
           var to = network.body.edges[edge_id]["toId"]
           var from_name = network.body.nodes[from].options['label']

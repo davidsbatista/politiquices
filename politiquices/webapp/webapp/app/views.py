@@ -696,7 +696,7 @@ def graph():
                                 "color": color,
                                 "highlight": highlight,
                             },
-                            "title": f"{freq}",
+                            # "title": f"{freq} notícias",
                             "label": rel_text,
                             "value": freq
                         }
