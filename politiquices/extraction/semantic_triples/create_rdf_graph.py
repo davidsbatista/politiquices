@@ -1,7 +1,6 @@
-import argparse
-import csv
-import operator
 import re
+import argparse
+import operator
 from collections import defaultdict
 from datetime import datetime
 
@@ -11,24 +10,24 @@ from jsonlines import jsonlines
 from rdflib import BNode, Graph, Literal, Namespace, SKOS, URIRef, XSD
 from rdflib.namespace import DC, RDFS
 
-publico_pt_urls = ['http://economia.publico.pt/', 'https://economia.publico.pt/',
-                   'http://publico.pt/', 'https://publico.pt/', 'http://www.publico.pt/',
+publico_pt_urls = ['http://economia.publico.pt/',
+                   'http://publico.pt/',
+                   'http://www.publico.pt/',
+                   'https://economia.publico.pt/',
+                   'https://publico.pt/',
                    'https://www.publico.pt/']
 
 
-def remove_duplicates_same_url(f_name):
+def remove_duplicates_with_same_url(f_name):
+    """
+    discard duplicate URLs
+    """
     seen = set()
     unique = []
     duplicate = 0
     for entry in processed_titles(f_name):
         if any(entry['url'].startswith(x) for x in publico_pt_urls):
-            news_id = entry['url'].split("-")[-1].replace('?all=1', '')
-            if not re.match(r'^[0-9]+$', news_id):
-                news_id_ = news_id.split("_")[-1]
-                news_id = news_id_.replace(".1", '')
-            if not re.match(r'^[0-9]+$', news_id):
-                raise ValueError("invalid publico.pt id: ", news_id)
-            url = 'http://publico.pt/' + news_id
+            url = minimize_publico_urls(entry['url'])
         else:
             url = entry['url']
 
@@ -38,12 +37,15 @@ def remove_duplicates_same_url(f_name):
         else:
             duplicate += 1
 
-    print(f"found {duplicate} duplicates")
+    print(f"Removed {duplicate} URL duplicates")
     return unique
 
 
-def remove_duplicates_domain_title(unique_url):
-    # read the articles a sorted them by original domain and title
+def remove_url_crawled_diff_dates_duplicates(unique_url):
+    """
+    sort all arquivo.pt articles by original crawled URL and take the oldest version,
+    this is to avoid having duplicate titles in politiquices Sparql graph
+    """
     articles = []
     for entry in unique_url:
         original_url = "/".join(entry["url"].split("/")[5:])
@@ -60,30 +62,40 @@ def remove_duplicates_domain_title(unique_url):
             )
         )
 
-    # original_url, title, tstamp, link, entities, ent_1, ent_2, scores
-    sorted_articles = sorted(articles, key=operator.itemgetter(0, 1))
-
-    print(f'{len(sorted_articles)} articles with unique url but different crawled timestamps')
-
-    # group by original domain and title, from the group take the oldest one
+    found_duplicate = 0
     unique = []
-    for k, g in groupby(sorted_articles, operator.itemgetter(0, 1)):
-        arts = list(g)
-        earliest = sorted(arts, key=operator.itemgetter(2))[0]
-
-        result = {
-            'title': earliest[1],
-            'date': earliest[2],
-            'url': earliest[3],
-            'entities': earliest[4],
-            'ent_1': earliest[5],
-            'ent_2': earliest[6],
-            'scores': earliest[7]
-        }
-
+    # (original_url, title, tstamp, link, entities, ent_1, ent_2, rel_scores)
+    # sort the articles by original url and group by original url, from the group select
+    # oldest version
+    sorted_articles = sorted(articles, key=operator.itemgetter(0))
+    for k, g in groupby(sorted_articles, operator.itemgetter(0)):
+        articles = list(g)
+        if len(articles) > 1:
+            found_duplicate += 1
+            earliest = sorted(articles, key=operator.itemgetter(2))[0]
+            result = {
+                'title': earliest[1],
+                'date': earliest[2],
+                'url': earliest[3],
+                'entities': earliest[4],
+                'ent_1': earliest[5],
+                'ent_2': earliest[6],
+                'scores': earliest[7]
+            }
+        else:
+            article = articles[0]
+            result = {
+                'title': article[1],
+                'date': article[2],
+                'url': article[3],
+                'entities': article[4],
+                'ent_1': article[5],
+                'ent_2': article[6],
+                'scores': article[7]
+            }
         unique.append(result)
 
-    print(f'{len(unique)} unique articles')
+    print(f"Removed {found_duplicate} same URL crawled different dates duplicates")
 
     return unique
 
@@ -127,11 +139,6 @@ def remove_duplicates_same_domain(unique):
     print(f'{len(articles_unique)} unique articles')
 
     return articles_unique
-
-
-def remove_same_entity_rels(articles):
-    for entry in articles:
-        print(entry)
 
 
 def processed_titles(filename):
@@ -196,45 +203,34 @@ def process_classified_titles(titles):
     articles = []
 
     for title in titles:
-
         e1_wiki = title["ent_1"]["wiki"]
         e2_wiki = title["ent_2"]["wiki"]
-
         scores = [(k, v) for k, v in title["scores"].items()]
         rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
-
         person_1 = title["entities"][0]
         person_2 = title["entities"][1]
         news_title = title["title"].strip()
         url = title["url"]
 
+        # ignore empty URLs
         if url == 'None' or url == '\\N':
             continue
 
-        publico_pt = ['http://economia.publico.pt/', 'https://economia.publico.pt/',
-                      'http://publico.pt/', 'https://publico.pt/',
-                      'http://www.publico.pt/', 'https://www.publico.pt/']
-
+        # try to detect article origin
         url_type = 'arquivo'
-        if any(url.startswith(x) for x in publico_pt):
+        if any(url.startswith(x) for x in publico_pt_urls):
             url_type = 'publico'
         elif url.startswith('https://www.linguateca.pt/CHAVE?'):
             url_type = 'chave'
 
         # special case to transform publico.pt urls to: http://publico.pt/<news_id>
         if url_type == 'publico':
-            news_id = url.split("-")[-1].replace('?all=1', '')
-            if not re.match(r'^[0-9]+$', news_id):
-                news_id_ = news_id.split("_")[-1]
-                news_id = news_id_.replace(".1", '')
-            if not re.match(r'^[0-9]+$', news_id):
-                raise ValueError("invalid publico.pt id: ", news_id)
-            url = 'http://publico.pt/' + news_id
-
+            url = minimize_publico_urls(url)
         try:
             crawled_date = extract_date(title["date"], url_type)
+
         except ValueError as e:
-            print(url, '\t', e)
+            # print(url, '\t', e)
             continue
 
         p1_id = e1_wiki
@@ -262,6 +258,17 @@ def process_classified_titles(titles):
         )
 
     return articles, persons, relationships
+
+
+def minimize_publico_urls(url):
+    news_id = url.split("-")[-1].replace('?all=1', '')
+    if not re.match(r'^[0-9]+$', news_id):
+        news_id_ = news_id.split("_")[-1]
+        news_id = news_id_.replace(".1", '')
+    if not re.match(r'^[0-9]+$', news_id):
+        raise ValueError("invalid publico.pt id: ", news_id)
+    url = 'http://publico.pt/' + news_id
+    return url
 
 
 def populate_graph(articles, persons, relationships, args):
@@ -371,41 +378,45 @@ def parse_args():
 
 def main():
     args = parse_args()
-    #if not args.publico and not args.arquivo:
-    #    # ToDo: print help
-    #    exit(-1)
-
     arquivo_articles = []
     publico_articles = []
     chave_articles = []
 
-    if args.publico:
-        publico_articles = remove_duplicates_same_url(args.publico)
-
     if args.arquivo:
+        print("Processing arquivo.pt articles")
         # remove duplicates: keep only unique urls
-        arquivo_unique_url = remove_duplicates_same_url(args.arquivo)
+        arquivo_unique_url = remove_duplicates_with_same_url(args.arquivo)
 
-        # remove duplicates: (i.e., title + url, only crawl data is different)
-        unique = remove_duplicates_domain_title(arquivo_unique_url)
+        # remove duplicates on same crawled url but different crawl date, keep oldest version
+        unique = remove_url_crawled_diff_dates_duplicates(arquivo_unique_url)
 
         # remove duplicates: (i.e., title + crawl date same, one url is sub-domain of other)
+        # ToDo: check it this still happens
         arquivo_articles = remove_duplicates_same_domain(unique)
 
+    if args.publico:
+        print("\nProcessing publico.pt articles")
+        publico_articles = remove_duplicates_with_same_url(args.publico)
+
     if args.chave:
+        print("\nProcessing CHAVE articles")
         chave_articles = [entry for entry in processed_titles(args.chave)]
 
-    print("arquivo: ", len(arquivo_articles))
-    print("publico: ", len(publico_articles))
-    print("chave:   ", len(chave_articles))
+    print("\nArticles after duplicate cleaning")
+    print("arquivo.pt: ", len(arquivo_articles))
+    print("publico.pt: ", len(publico_articles))
+    print("CHAVE     :   ", len(chave_articles))
 
-    all_articles = remove_same_entity_rels(arquivo_articles+publico_articles+chave_articles)
+    all_articles = []
+    for article in arquivo_articles+publico_articles+chave_articles:
+        if article['ent_1']['wiki'] == article['ent_2']['wiki']:
+            continue
+        all_articles.append(article)
 
-    """
-    articles, persons, relationships = process_classified_titles(
-        publico_articles + arquivo_articles + chave_articles)
+    print()
+    articles, persons, relationships = process_classified_titles(all_articles)
     populate_graph(articles, persons, relationships, args)
-    """
+
 
 if __name__ == "__main__":
     main()

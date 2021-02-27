@@ -8,7 +8,6 @@ Web App
 
     Stats
     -----
-
         - Absolutos e relativos (personalidades)
             - Quem mais acusa? é acusado?
             - Quem mais defende? é defendido
@@ -63,21 +62,11 @@ Web App
         - party members: - load on scroll down
 
 
-
-Backend-stuff
--------------
-    - eliminate relationships between the same entity:
-        wd:Q610788  <-> wd:Q610788
-        António Costa - Costa recusa ter recuperado "fórmula" do Bloco Central - Política - DN
-
-
 arquivo_pt:
 ==========
     queries:
-       - tirar todos os nomes da pagina do governo:
-            - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
-            - nomes da Ontologia POWER
-    - review detection of similar titles
+        - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
+        - nomes da Ontologia POWER
 
 classifiers
 ===========
