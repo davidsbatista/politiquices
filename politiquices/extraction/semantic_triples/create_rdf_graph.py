@@ -11,11 +11,41 @@ from jsonlines import jsonlines
 from rdflib import BNode, Graph, Literal, Namespace, SKOS, URIRef, XSD
 from rdflib.namespace import DC, RDFS
 
+publico_pt_urls = ['http://economia.publico.pt/', 'https://economia.publico.pt/',
+                   'http://publico.pt/', 'https://publico.pt/', 'http://www.publico.pt/',
+                   'https://www.publico.pt/']
 
-def remove_duplicates(f_name):
+
+def remove_duplicates_same_url(f_name):
+    seen = set()
+    unique = []
+    duplicate = 0
+    for entry in processed_titles(f_name):
+        if any(entry['url'].startswith(x) for x in publico_pt_urls):
+            news_id = entry['url'].split("-")[-1].replace('?all=1', '')
+            if not re.match(r'^[0-9]+$', news_id):
+                news_id_ = news_id.split("_")[-1]
+                news_id = news_id_.replace(".1", '')
+            if not re.match(r'^[0-9]+$', news_id):
+                raise ValueError("invalid publico.pt id: ", news_id)
+            url = 'http://publico.pt/' + news_id
+        else:
+            url = entry['url']
+
+        if url not in seen:
+            unique.append(entry)
+            seen.add(url)
+        else:
+            duplicate += 1
+
+    print(f"found {duplicate} duplicates")
+    return unique
+
+
+def remove_duplicates_domain_title(unique_url):
     # read the articles a sorted them by original domain and title
     articles = []
-    for entry in processed_titles(f_name):
+    for entry in unique_url:
         original_url = "/".join(entry["url"].split("/")[5:])
         articles.append(
             (
@@ -33,7 +63,7 @@ def remove_duplicates(f_name):
     # original_url, title, tstamp, link, entities, ent_1, ent_2, scores
     sorted_articles = sorted(articles, key=operator.itemgetter(0, 1))
 
-    print(f'{len(sorted_articles)} articles')
+    print(f'{len(sorted_articles)} articles with unique url but different crawled timestamps')
 
     # group by original domain and title, from the group take the oldest one
     unique = []
@@ -99,11 +129,9 @@ def remove_duplicates_same_domain(unique):
     return articles_unique
 
 
-def read_csv_data(file_name):
-    with open(file_name, "rt") as f_in:
-        tsv_reader = csv.reader(f_in, delimiter="\t")
-        classified_titles = [row for row in tsv_reader]
-    return classified_titles
+def remove_same_entity_rels(articles):
+    for entry in articles:
+        print(entry)
 
 
 def processed_titles(filename):
@@ -343,7 +371,6 @@ def parse_args():
 
 def main():
     args = parse_args()
-
     #if not args.publico and not args.arquivo:
     #    # ToDo: print help
     #    exit(-1)
@@ -352,16 +379,18 @@ def main():
     publico_articles = []
     chave_articles = []
 
-    # remove duplicates from arquivo.pt crawled news
-    if args.arquivo:
-        # remove exact duplicates (i.e., title + url, only crawl data is different)
-        unique = remove_duplicates(args.arquivo)
-
-        # remove 'exact' duplicates (i.e., title + crawl date same, one url is sub-domain of other)
-        arquivo_articles = remove_duplicates_same_domain(unique)
-
     if args.publico:
-        publico_articles = [entry for entry in processed_titles(args.publico)]
+        publico_articles = remove_duplicates_same_url(args.publico)
+
+    if args.arquivo:
+        # remove duplicates: keep only unique urls
+        arquivo_unique_url = remove_duplicates_same_url(args.arquivo)
+
+        # remove duplicates: (i.e., title + url, only crawl data is different)
+        unique = remove_duplicates_domain_title(arquivo_unique_url)
+
+        # remove duplicates: (i.e., title + crawl date same, one url is sub-domain of other)
+        arquivo_articles = remove_duplicates_same_domain(unique)
 
     if args.chave:
         chave_articles = [entry for entry in processed_titles(args.chave)]
@@ -369,10 +398,14 @@ def main():
     print("arquivo: ", len(arquivo_articles))
     print("publico: ", len(publico_articles))
     print("chave:   ", len(chave_articles))
+
+    all_articles = remove_same_entity_rels(arquivo_articles+publico_articles+chave_articles)
+
+    """
     articles, persons, relationships = process_classified_titles(
         publico_articles + arquivo_articles + chave_articles)
     populate_graph(articles, persons, relationships, args)
-
+    """
 
 if __name__ == "__main__":
     main()

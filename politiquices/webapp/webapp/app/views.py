@@ -60,7 +60,6 @@ with open("webapp/app/static/json/wiki_id_info.json") as f_in:
 with open("webapp/app/static/json/CHAVE-Publico_94_95.jsonl") as f_in:
     chave_publico = [json.loads(line) for line in f_in]
 
-
 # number of entity cards to read when scrolling down
 entities_batch_size = 16
 
@@ -226,8 +225,9 @@ def status():
     nr_articles = get_total_nr_of_articles()
 
     # articles per relationship type per year chart
-    years, values = get_total_articles_by_year_by_relationship_type()
+    values = get_total_articles_by_year_by_relationship_type()
 
+    """
     # personality frequency chart
     per_freq_labels = []
     per_freq_values = []
@@ -244,6 +244,7 @@ def status():
     for x in top_co_occurrences:
         co_occurrences_labels.append(x["person_a"]["name"] + " / " + x["person_b"]["name"])
         co_occurrences_values.append(x["nr_occurrences"])
+    """
 
     items = {
         "nr_parties": nr_parties,
@@ -251,16 +252,18 @@ def status():
         "nr_articles": nr_articles,
         "nr_articles_year_labels": nr_articles_year_labels,
         "nr_articles_year_values": nr_articles_year_values,
-        "per_freq_labels": per_freq_labels,
-        "per_freq_values": per_freq_values,
-        "per_co_occurrence_labels": co_occurrences_labels,
-        "per_co_occurrence_values": co_occurrences_values,
-        "ent1_opposes_ent2": [freq_year for freq_year in values["ent1_opposes_ent2"]],
-        "ent2_opposes_ent1": [freq_year for freq_year in values["ent2_opposes_ent1"]],
-        "ent1_supports_ent2": [freq_year for freq_year in values["ent1_supports_ent2"]],
-        "ent2_supports_ent1": [freq_year for freq_year in values["ent2_supports_ent1"]],
-        "ent1_other_ent2": [freq_year for freq_year in values["ent1_other_ent2"]],
-        "ent2_other_ent1": [freq_year for freq_year in values["ent2_other_ent1"]],
+
+        "ent1_opposes_ent2": [values[year]['ent1_opposes_ent2'] for year in values],
+        "ent2_opposes_ent1": [values[year]['ent2_opposes_ent1'] for year in values],
+        "ent1_supports_ent2": [values[year]['ent1_supports_ent2'] for year in values],
+        "ent2_supports_ent1": [values[year]['ent2_supports_ent1'] for year in values],
+        "ent1_other_ent2": [values[year]['ent1_other_ent2'] for year in values],
+        "ent2_other_ent1": [values[year]['ent2_other_ent1'] for year in values],
+
+        "per_freq_labels": None,  # per_freq_labels,
+        "per_freq_values": None,  # per_freq_values,
+        "per_co_occurrence_labels": None,  # co_occurrences_labels,
+        "per_co_occurrence_values": None,  # co_occurrences_values,
     }
 
     return render_template("stats.html", items=items)
@@ -377,18 +380,19 @@ def entity_vs_entity(person_one, person_two):
 
 
 def person_vs_person(
-    person_one,
-    person_two,
-    rel_text,
-    person_one_info,
-    person_two_info,
-    start_year=None,
-    end_year=None,
-    html=False,
+        person_one,
+        person_two,
+        rel_text,
+        person_one_info,
+        person_two_info,
+        start_year=None,
+        end_year=None,
+        html=False,
 ):
     gradient, rel = get_relationship(rel_text)
-    results = list_of_spec_relations_between_two_persons(person_one, person_two, rel,
-                                                         start_year, end_year)
+    results = list_of_spec_relations_between_two_persons(
+        person_one, person_two, rel, start_year, end_year
+    )
 
     if len(results) == 0:
         return render_template("no_results.html")
@@ -446,13 +450,15 @@ def person_vs_person(
     )
 
 
-def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_info):
+def party_vs_person(
+        party_wiki_id, person_wiki_id, rel_text, party_info, person_info, start_year, end_year
+):
     """
     relationships between (members of) a party and an entity
     """
     gradient, rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_members_of_a_party_with_someone(
-        party_wiki_id, person_wiki_id, rel
+        party_wiki_id, person_wiki_id, rel, start_year, end_year
     )
     if len(results) == 0:
         return render_template("no_results.html")
@@ -503,13 +509,15 @@ def party_vs_person(party_wiki_id, person_wiki_id, rel_text, party_info, person_
     )
 
 
-def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_info):
+def person_vs_party(
+        person_wiki_id, party_wiki_id, rel_text, person_info, party_info, start_year, end_year
+):
     """
     relationships between an entity and (members of) a party
     """
     gradient, rel = get_relationship(rel_text)
     results = list_of_spec_relations_between_a_person_and_members_of_a_party(
-        person_wiki_id, party_wiki_id, rel
+        person_wiki_id, party_wiki_id, rel, start_year, end_year
     )
     if len(results) == 0:
         return render_template("no_results.html")
@@ -561,7 +569,7 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, person_info, party_
     )
 
 
-def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
+def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info, start_year, end_year):
     """
     relationships between (members of) a party and (members of) another party
     """
@@ -570,7 +578,9 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
 
     _, rel = get_relationship(rel_text)
 
-    results = list_of_spec_relations_between_two_parties(party_a_members, party_b_members, rel)
+    results = list_of_spec_relations_between_two_parties(
+        party_a_members, party_b_members, rel, start_year, end_year
+    )
     if len(results) == 0:
         return render_template("no_results.html")
 
@@ -597,7 +607,6 @@ def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info):
 
 @app.route("/graph")
 def graph():
-
     relation = "ACUSA|APOIA"
     year_from = "2000"
     year_to = "2019"
@@ -696,9 +705,9 @@ def graph():
                                 "color": color,
                                 "highlight": highlight,
                             },
-                            # "title": f"{freq} notícias",
+                            "scaling": {"max": 7},
                             "label": rel_text,
-                            "value": freq
+                            "value": freq,
                         }
                     )
                     nodes_in_graph.append(s)
@@ -784,10 +793,16 @@ def queries():
         return entity_vs_entity(entity_one, entity_two)
 
     if query_nr == "one":
+
         html = False
 
+        # NOTE: this is all very very hacky...scary!
         year_from = request.args.get("year_from")
         year_to = request.args.get("year_to")
+        year = request.args.get("year")
+        if year and (not year_from and not year_to):
+            year_from = year
+            year_to = year
 
         if "html" in request.args:
             html = True
@@ -799,7 +814,6 @@ def queries():
         e2_info, e2_type = get_info(entity_two)
 
         if e1_type == "person" and e2_type == "person":
-            # ToDo: add start_year, end_year
             return person_vs_person(
                 entity_one,
                 entity_two,
@@ -812,10 +826,34 @@ def queries():
             )
 
         elif e1_type == "party" and e2_type == "person":
-            return party_vs_person(entity_one, entity_two, rel_text, e1_info, e2_info)
+            return party_vs_person(
+                entity_one,
+                entity_two,
+                rel_text,
+                e1_info,
+                e2_info,
+                start_year=year_from,
+                end_year=year_to,
+            )
 
         elif e1_type == "person" and e2_type == "party":
-            return person_vs_party(entity_one, entity_two, rel_text, e1_info, e2_info)
+            return person_vs_party(
+                entity_one,
+                entity_two,
+                rel_text,
+                e1_info,
+                e2_info,
+                start_year=year_from,
+                end_year=year_to,
+            )
 
         elif e1_type == "party" and e2_type == "party":
-            return party_vs_party(entity_one, entity_two, rel_text, e1_info, e2_info)
+            return party_vs_party(
+                entity_one,
+                entity_two,
+                rel_text,
+                e1_info,
+                e2_info,
+                start_year=year_from,
+                end_year=year_to,
+            )

@@ -43,10 +43,12 @@ prefixes = politiquices_prefixes + wikidata_prefixes + others
 @lru_cache
 def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
     query = """    
-        SELECT ?year (COUNT(?x) as ?nr_articles) WHERE {
-          ?x dc:date ?date .
+        SELECT ?year (COUNT(?arquivo_doc) AS ?nr_articles)
+        WHERE {
+          ?x politiquices:url ?arquivo_doc .
+          ?arquivo_doc dc:date ?date .
         }
-        GROUP BY (YEAR(?date) AS ?year)
+        GROUP BY (YEAR(?date) AS ?year) 
         ORDER BY ?year
         """
     result = query_sparql(prefixes + "\n" + query, "politiquices")
@@ -88,40 +90,34 @@ def get_nr_of_persons() -> int:
     return results["results"]["bindings"][0]["nr_persons"]["value"]
 
 
-def get_total_articles_by_relationship_type():
-    query = """
-        SELECT ?rel_type (COUNT(?rel_type) AS ?nr_articles)
-        WHERE {
-            ?x politiquices:url ?url .	
-            ?x politiquices:type ?rel_type .
-        }
-        GROUP BY ?rel_type 
-        ORDER BY DESC((COUNT(?rel_type)))
-    """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
-
-
 def get_total_articles_by_year_by_relationship_type():
     query = """
         SELECT ?year ?rel_type (COUNT(?rel_type) AS ?nr_articles)
-        WHERE {
-            ?x politiquices:url ?url .	
-            ?x politiquices:type ?rel_type .
+        WHERE {	
             ?x politiquices:url ?arquivo_doc .
+            ?x politiquices:type ?rel_type .
             ?arquivo_doc dc:date ?date .      
         }
         GROUP BY (YEAR(?date) AS ?year) ?rel_type 
         ORDER BY ?year
         """
     results = query_sparql(prefixes + "\n" + query, "politiquices")
-    years = []
-    values = defaultdict(list)
 
+    def rels_values():
+        return {
+            'ent1_opposes_ent2': 0,
+            'ent2_opposes_ent1': 0,
+            'ent1_supports_ent2': 0,
+            'ent2_supports_ent1': 0,
+            'ent1_other_ent2': 0,
+            'ent2_other_ent1': 0
+        }
+
+    values = defaultdict(rels_values)
     for x in results["results"]["bindings"]:
-        years.append(x["year"]["value"])
-        values[x["rel_type"]["value"]].append(x["nr_articles"]["value"])
+        values[x["year"]["value"]][x["rel_type"]["value"]] = x["nr_articles"]["value"]
 
-    return years, values
+    return values
 
 
 # Run once on start-up for caching
@@ -904,7 +900,9 @@ def list_of_spec_relations_between_two_persons(
 
 
 @lru_cache
-def list_of_spec_relations_between_members_of_a_party_with_someone(party, person, relation):
+def list_of_spec_relations_between_members_of_a_party_with_someone(
+    party, person, relation, start_year, end_year
+):
     query = f"""        
         SELECT DISTINCT ?ent1 ?ent1_str ?ent2_str ?arquivo_doc ?date ?title ?score
         WHERE {{
@@ -931,25 +929,29 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(party, person
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
-        results.append(
-            {
-                "url": x["arquivo_doc"]["value"],
-                "date": x["date"]["value"],
-                "title": x["title"]["value"],
-                "rel_type": relation,
-                "score": x["score"]["value"][0:5],
-                "ent1_wiki": x["ent1"]["value"],
-                "ent1_str": x["ent1_str"]["value"],
-                "ent2_wiki": person,
-                "ent2_str": x["ent2_str"]["value"],
-            }
-        )
+        year = x["date"]["value"][0:4]
+        if year >= start_year and year <= end_year:
+            results.append(
+                {
+                    "url": x["arquivo_doc"]["value"],
+                    "date": x["date"]["value"],
+                    "title": x["title"]["value"],
+                    "rel_type": relation,
+                    "score": x["score"]["value"][0:5],
+                    "ent1_wiki": x["ent1"]["value"],
+                    "ent1_str": x["ent1_str"]["value"],
+                    "ent2_wiki": person,
+                    "ent2_str": x["ent2_str"]["value"],
+                }
+            )
 
     return results
 
 
 @lru_cache
-def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party, relation):
+def list_of_spec_relations_between_a_person_and_members_of_a_party(
+    person, party, relation, start_year, end_year
+):
     query = f"""        
         SELECT DISTINCT ?ent2 ?ent2_str ?ent1_str ?arquivo_doc ?date ?title ?score
         WHERE {{
@@ -977,25 +979,29 @@ def list_of_spec_relations_between_a_person_and_members_of_a_party(person, party
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
-        results.append(
-            {
-                "url": x["arquivo_doc"]["value"],
-                "date": x["date"]["value"],
-                "title": x["title"]["value"],
-                "rel_type": relation,
-                "score": x["score"]["value"][0:5],
-                "ent1_wiki": person,
-                "ent1_str": x["ent1_str"]["value"],
-                "ent2_wiki": x["ent2"]["value"],
-                "ent2_str": x["ent2_str"]["value"],
-            }
-        )
+        year = x["date"]["value"][0:4]
+        if year >= start_year and year <= end_year:
+            results.append(
+                {
+                    "url": x["arquivo_doc"]["value"],
+                    "date": x["date"]["value"],
+                    "title": x["title"]["value"],
+                    "rel_type": relation,
+                    "score": x["score"]["value"][0:5],
+                    "ent1_wiki": person,
+                    "ent1_str": x["ent1_str"]["value"],
+                    "ent2_wiki": x["ent2"]["value"],
+                    "ent2_str": x["ent2_str"]["value"],
+                }
+            )
 
     return results
 
 
 @lru_cache
-def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, relation):
+def list_of_spec_relations_between_two_parties(
+    values_party_a, values_party_b, relation, start_year, end_year
+):
     query = f"""
     SELECT DISTINCT ?person_party_a ?ent1_str ?person_party_b ?ent2_str 
                     ?arquivo_doc ?date ?title ?rel_type ?score
@@ -1025,19 +1031,21 @@ def list_of_spec_relations_between_two_parties(values_party_a, values_party_b, r
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     relationships = []
     for x in result["results"]["bindings"]:
-        relationships.append(
-            {
-                "url": x["arquivo_doc"]["value"],
-                "date": x["date"]["value"],
-                "title": x["title"]["value"],
-                "rel_type": relation,
-                "score": x["score"]["value"][0:5],
-                "ent1_wiki": x["person_party_a"]["value"],
-                "ent1_str": x["ent1_str"]["value"],
-                "ent2_wiki": x["person_party_b"]["value"],
-                "ent2_str": x["ent2_str"]["value"],
-            }
-        )
+        year = x["date"]["value"][0:4]
+        if year >= start_year and year <= end_year:
+            relationships.append(
+                {
+                    "url": x["arquivo_doc"]["value"],
+                    "date": x["date"]["value"],
+                    "title": x["title"]["value"],
+                    "rel_type": relation,
+                    "score": x["score"]["value"][0:5],
+                    "ent1_wiki": x["person_party_a"]["value"],
+                    "ent1_str": x["ent1_str"]["value"],
+                    "ent2_wiki": x["person_party_b"]["value"],
+                    "ent2_str": x["ent2_str"]["value"],
+                }
+            )
 
     return relationships
 

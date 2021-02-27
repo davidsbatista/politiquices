@@ -1,25 +1,14 @@
 Web App
 =======
     - https://stackoverflow.com/questions/12269537/is-the-server-bundled-with-flask-safe-to-use-in-production
-    - Partidos should not show members with just one person or show only PT parties
     - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
 
-    - filtro ano_from -> ano_to no interface nos queries fora do grafo
-
-    Grafo
-    -----
-        - existem relações familiares no grafo? entre quem?
-        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-
-    casos de uso, exemplos na apresentação?
-        - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
-        - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
-        
-        - empréstimo Berardo/CGD: quem acusou apoiou Vitor Constâncio, de onde vêm/são?
-
+    - Grafo: bug
+        - António Vitorino apoia Durão Barroso 2004-2004
 
     Stats
     -----
+
         - Absolutos e relativos (personalidades)
             - Quem mais acusa? é acusado?
             - Quem mais defende? é defendido
@@ -28,7 +17,6 @@ Web App
         - mesma coisa para os partidos: partidos que acusam mais? e que partidos alvo?
 
         - Download de todos os stats em .csv
-
 
     Agregacoes + info na personalidade:
     ------------------------------------
@@ -39,8 +27,21 @@ Web App
      - listar todos os membros do Governo X
      - listar todos os que já foram Ministros <qq cena>
 
+
+    queries ao Grafo
+    ---------------
+        - existem relações familiares no grafo? entre quem?
+        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+
+
+    casos de uso, exemplos na apresentação?
+        - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
+        - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
+
+
     Final checks:
     ------------
+        - other is only for myself, debugging :)
         - limpar wiki:
             - 'lula ladrao da silva'
         - todo o texto em Português, remover inglês
@@ -48,8 +49,10 @@ Web App
         - texto introdutório ao grafo
 
 
+
     Geral (low)
     ----------
+        - Partidos should not show members with just one person or show only PT parties
         - mais imagens por linha
         - cache + cópia do resize das imagens para este display
         - size original para a página principal da entidade only
@@ -66,9 +69,6 @@ Backend-stuff
     - eliminate relationships between the same entity:
         wd:Q610788  <-> wd:Q610788
         António Costa - Costa recusa ter recuperado "fórmula" do Bloco Central - Política - DN
-
-    - http://0.0.0.0:5000/entity?q=Q2857730 (Bagão Felix vs Carlos César)
-        há muitos duplicados
 
 
 arquivo_pt:
