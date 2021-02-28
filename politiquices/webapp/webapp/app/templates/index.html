@@ -8,6 +8,20 @@
 
     <script>
 
+      $(function() {
+        $( "#slider" ).slider({
+            range: true,
+            min: 1994,
+            max: 2019,
+            values: [ 2000, 2015 ],
+            slide: function( event, ui ) {
+              $("#from").html(ui.values[0]);
+              $("#to").html(ui.values[1]);
+            }
+        });
+
+      });
+
       all_entities_only = [];
       var entity2wiki_id = {};
       
@@ -31,8 +45,8 @@
         $(document).on ("click", "#button", function () {
             var wiki_id_one = $('#autocomplete_entity_one_value').val();
             var wiki_id_two = $('#autocomplete_entity_two_value').val();
-            var year_from = $("#ano_from").val();
-            var year_to = $("#ano_to").val();
+            var year_from = $("#slider" ).slider( "values", 0 );
+            var year_to = $("#slider" ).slider( "values", 1 );
             var e = document.getElementById("dropdownMenuButton");
             var data = {query_nr: 'one',
                         e1: wiki_id_one,
@@ -242,41 +256,50 @@
                             </div>
                   </div>
                 <input id="autocomplete_entity_two" class="span10" type="text" placeholder="Partido ou Personalidade"/>
-                <button type="button" id='button' class="btn btn-primary btn-sm">Procurar</button>
+                
+                <br><br><br>
+                
+                <div class="form-group col-md-5">
+                  <div class="input-group mx-auto mb-5">
+                    <div class="input-group-prepend">
+                      <div type="text" id="from" style="border:0; color:#002364; margin: 2px; font-weight:bold;">2000</div>
+                    </div>
+                    
+                    <div class="form-control" id="slider"></div>
+                    
+                    <div class="input-group-prepend">
+                      <div type="text" id="to" style="border:0; color:#002364; font-weight:bold;">2015</div>
+                    </div>
+
+                  </div>
+                </div>
+
+              <button type="button" id='button' class="btn btn-primary btn-sm">Procurar</button>
+
               </div>
-              <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                      entre <select style="width:75px;" class="form-control" id="ano_from"></select>
-                    </div>
-                </div>
-                <div class="col-sm-5">
-                    <div class="form-group">
-                      e <select style="width:75px;" class="form-control" id="ano_to" ></select>
-                    </div>
-                </div>
-            </div>
+
           </div>
-        </form>
-      </center>
-    </div>
-
-    <script>
-      var years = ["1994", "1995", "1996", "1997", "1998", "1999", "2000", "2001", "2002", "2003",
-                   "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013",
-                   "2014", "2015", "2016", "2017", "2018", "2019"];
-
-      for (var i=0; i< years.length;i++) {
-          jQuery('<option/>', {
-              value: years[i],
-              html: years[i]
-          }).appendTo('#ano_from, #ano_to');
+      </form>
+    </center>
+    
+    <style type="text/css">
+      #slider {
+        margin: 0px;
       }
-      $('#ano_from option').eq((2000-1994)).prop('selected', true);
-      $('#ano_to option').eq((2019-1994)).prop('selected', true);
 
-    </script>
+      .ui-slider-horizontal {
+          height: 20px;
+          width: 350px;
+      }
 
+      .ui-slider .ui-slider-handle {
+          height: 25px;
+          width: 15px;
+          padding-left: 5px;
+          
+      }
+      </style>
+    
     <br><br>
 
     <div class="container d-flex align-items-center justify-content-center">
@@ -287,9 +310,11 @@
           </p>
        </div>
     </div>
+  </div>
 
     <br><br><br><br>
     
 </div>
 
 {% endblock %}
+

@@ -2,14 +2,16 @@
 import json
 from collections import defaultdict
 
-from politiquices.webapp.webapp.utils.sparql_queries import prefixes
-from politiquices.webapp.webapp.utils.sparql_queries import top_co_occurrences
-from politiquices.webapp.webapp.utils.sparql_queries import all_entities
-from politiquices.webapp.webapp.utils.sparql_queries import query_sparql
-from politiquices.webapp.webapp.utils.sparql_queries import get_wiki_id_affiliated_with_party
-from politiquices.webapp.webapp.utils.sparql_queries import get_total_nr_articles_for_each_person
-from politiquices.webapp.webapp.utils.sparql_queries import get_nr_relationships_as_subject
-from politiquices.webapp.webapp.utils.sparql_queries import get_nr_relationships_as_target
+from politiquices.webapp.webapp.utils.sparql_queries import (
+    all_entities,
+    get_nr_relationships_as_subject,
+    get_nr_relationships_as_target,
+    get_total_nr_articles_for_each_person,
+    get_wiki_id_affiliated_with_party,
+    prefixes,
+    query_sparql,
+    top_co_occurrences
+)
 
 ps_logo = "/static/images/Logo_do_Partido_Socialista(Portugal).png"
 no_image = "/static/images/no_picture.jpg"
@@ -218,7 +220,7 @@ def persons_relationships_counts_by_type():
 
 def main():
 
-    print("\nCaching static stuff from SPARQL engine :-)")
+    print("\nCaching and pre-computing static stuff from SPARQL engine :-)")
 
     # personalities cache
     all_politiquices_persons, wiki_id = personalities_json_cache()
@@ -234,6 +236,7 @@ def main():
 
     from app import app
     app.run(debug=True, host="0.0.0.0")
+
 
 if __name__ == "__main__":
     main()

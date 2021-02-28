@@ -127,8 +127,6 @@ classifiers
     -> 'Cavaco Silva'
     -> 'Maria Cavaco Silva'
 
-
-
     entity_linking
     --------------
         - 'Costa':
@@ -149,8 +147,3 @@ classifiers
             https://www.wikidata.org/wiki/Q23904994
             https://www.wikidata.org/wiki/Q52112309
             https://www.wikidata.org/wiki/Q72310730
-
-
-    create_graph
-    ------------
-        - exactly same input, pre-processing should be in another file

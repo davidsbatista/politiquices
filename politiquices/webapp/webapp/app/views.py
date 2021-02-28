@@ -63,6 +63,11 @@ with open("webapp/app/static/json/CHAVE-Publico_94_95.jsonl") as f_in:
 # number of entity cards to read when scrolling down
 entities_batch_size = 16
 
+# Entry Page
+@app.route("/slider")
+def slider():
+    return render_template("slider.html")
+
 
 # Entry Page
 @app.route("/")
