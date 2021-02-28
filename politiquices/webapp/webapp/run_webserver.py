@@ -220,7 +220,6 @@ def persons_relationships_counts_by_type():
 
 def main():
 
-    """
     print("\nCaching static stuff from SPARQL engine :-)")
 
     # personalities cache
@@ -234,7 +233,6 @@ def main():
 
     # unique number of relationships for each person
     persons_relationships_counts_by_type()
-    """
 
     app.run(debug=True, host="0.0.0.0")
 
