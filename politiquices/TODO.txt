@@ -32,7 +32,6 @@ Web App
         - existem relações familiares no grafo? entre quem?
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
-
     casos de uso, exemplos na apresentação?
         - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
         - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador

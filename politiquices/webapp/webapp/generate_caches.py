@@ -234,9 +234,6 @@ def main():
     # unique number of relationships for each person
     persons_relationships_counts_by_type()
 
-    from app import app
-    app.run(debug=True, host="0.0.0.0")
-
 
 if __name__ == "__main__":
     main()

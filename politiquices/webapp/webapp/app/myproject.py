@@ -1,15 +1,17 @@
+import os
 import json
 import logging
 from collections import defaultdict
 
-import networkx as nx
-from app import app
+from flask import Flask
 from flask import request, jsonify
 from flask import render_template
+
+import networkx as nx
 from networkx.algorithms.community import k_clique_communities
 
 from politiquices.webapp.webapp.utils.data_models import Person
-from politiquices.webapp.webapp.app.neo4j import Neo4jConnection
+from politiquices.webapp.webapp.app.neo4j_connect import Neo4jConnection
 from politiquices.webapp.webapp.utils.sparql_queries import (
     build_relationships_by_year,
     get_entities_without_image,
@@ -43,25 +45,34 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 person_no_image = "/static/images/no_picture.jpg"
+script_dir = os.path.dirname(__file__)
+print(script_dir)
+rel_path = "/app/static/json/all_entities_info.json"
+abs_file_path = os.path.join(script_dir, rel_path)
+
+print(abs_file_path)
 
 # load all static generated caching stuff
-with open("webapp/app/static/json/all_entities_info.json") as f_in:
+with open("static/json/all_entities_info.json") as f_in:
     all_entities_info = json.load(f_in)
 
-with open("webapp/app/static/json/all_parties_info.json") as f_in:
+with open("static/json/all_parties_info.json") as f_in:
     all_parties_info = json.load(f_in)
 
-with open("webapp/app/static/json/party_members.json") as f_in:
+with open("static/json/party_members.json") as f_in:
     all_parties_members = json.load(f_in)
 
-with open("webapp/app/static/json/wiki_id_info.json") as f_in:
+with open("static/json/wiki_id_info.json") as f_in:
     wiki_id_info = json.load(f_in)
 
-with open("webapp/app/static/json/CHAVE-Publico_94_95.jsonl") as f_in:
+with open("static/json/CHAVE-Publico_94_95.jsonl") as f_in:
     chave_publico = [json.loads(line) for line in f_in]
 
 # number of entity cards to read when scrolling down
 entities_batch_size = 16
+
+app = Flask(__name__)
+
 
 # Entry Page
 @app.route("/slider")
@@ -862,3 +873,7 @@ def queries():
                 start_year=year_from,
                 end_year=year_to,
             )
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')

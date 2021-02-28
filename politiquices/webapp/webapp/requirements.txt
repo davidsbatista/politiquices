@@ -12,3 +12,5 @@ pyparsing==2.4.7
 rdflib==5.0.0
 six==1.15.0
 uvicorn==0.12.2
+uwsgi
+uwsgitop
