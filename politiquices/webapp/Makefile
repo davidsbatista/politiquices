@@ -26,7 +26,7 @@ cache:
 web:
 	. $${HOME}/politiquices_webapp_venv/bin/activate; \
 	cd $${HOME}/politiquices/politiquices/webapp/webapp/app; \
-	sudo PYTHONPATH=/Users/dsbatista/politiquices uwsgi --socket 0.0.0.0:80 --protocol=http -w wsgi:app --master --processes 4 --threads 2 --stats 127.0.0.1:9191
+	sudo PYTHONPATH=$${HOME}/politiquices uwsgi --socket 0.0.0.0:80 --protocol=http -w wsgi:app --master --processes 4 --threads 2 --stats 127.0.0.1:9191
 
 
 neo4j:

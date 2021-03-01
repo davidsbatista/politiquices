@@ -1,7 +1,17 @@
 Web App
 =======
-    - https://stackoverflow.com/questions/12269537/is-the-server-bundled-with-flask-safe-to-use-in-production
+
+    - read jsons from filesystem instead of HTTP?
+        - uwsgi_response_write_headers_do(): Broken pipe [core/writer.c line 248] during GET /static/json/persons.json (95.91.214.138)
+
+    - /etc/systemd/system/myproject.service
+        - por uwsgi a correr como serviço, talvez implica instalar o uwsgi como binario em fez de pip install
+
     - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
+
+    - Stats: pode ser tudo estátido, compute once, a show many
+
+    - CORS nas annotations ?
 
     - Grafo: bug
         - António Vitorino apoia Durão Barroso 2004-2004
@@ -66,6 +76,7 @@ arquivo_pt:
     queries:
         - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
         - nomes da Ontologia POWER
+
 
 classifiers
 ===========

@@ -14,3 +14,4 @@ six==1.15.0
 uvicorn==0.12.2
 uwsgi
 uwsgitop
+wheel
