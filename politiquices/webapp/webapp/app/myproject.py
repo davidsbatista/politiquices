@@ -45,12 +45,10 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 person_no_image = "/static/images/no_picture.jpg"
-script_dir = os.path.dirname(__file__)
-print(script_dir)
-rel_path = "/app/static/json/all_entities_info.json"
-abs_file_path = os.path.join(script_dir, rel_path)
 
-print(abs_file_path)
+# script_dir = os.path.dirname(__file__)
+# rel_path = "/app/static/json/all_entities_info.json"
+# abs_file_path = os.path.join(script_dir, rel_path)
 
 # load all static generated caching stuff
 with open("static/json/all_entities_info.json") as f_in:
@@ -72,12 +70,6 @@ with open("static/json/CHAVE-Publico_94_95.jsonl") as f_in:
 entities_batch_size = 16
 
 app = Flask(__name__)
-
-
-# Entry Page
-@app.route("/slider")
-def slider():
-    return render_template("slider.html")
 
 
 # Entry Page

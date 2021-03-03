@@ -171,6 +171,15 @@
             <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                     class="form-control" style="width:50px;" maxlength="2"
                    id="k_clique" value="3" placeholder="3">
+            <hr>
+            Personalidade:
+            <input type="text" class="form-control" style="width:85px;" maxlength="15" id="graph_entity">
+            <input type="hidden" id="graph_entity-value" type="text" name="wiki">
+            Max Hops:
+            <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
+                   class="form-control" style="width:50px;" maxlength="2"
+                   id="hops" value="3" placeholder="3">
+            <hr>
             <br>
             <input type="submit" value="Actualizar" id="reload"/>
         </div>
@@ -402,13 +411,15 @@
         var freq_max = $("#freq_max").val();
         var rel_type = $("#rel_type").val();
         var k_clique = $("#k_clique").val();
+        var entity = $("#graph_entity-value").val();
 
         data = {freq_min: freq_min,
                 freq_max: freq_max,
                 rel_type: rel_type,
                 year_from: year_from,
                 year_to: year_to,
-                k_clique: k_clique}
+                k_clique: k_clique,
+                entity: entity}
 
         //query neo4j
         $.ajax({
@@ -537,5 +548,94 @@
       });
 
 </script>
+
+<script>
+  persons_only = [];
+  var persons2wiki_id = {};
+  $.getJSON("static/json/persons.json", function(json_data){
+        for (var i = 0, len = json_data.length; i < len; i++) {
+          persons_only.push(json_data[i].name);
+          persons2wiki_id[json_data[i].name] = json_data[i].wiki_id
+        };
+    });
+
+  
+  // taken from: https://stackoverflow.com/questions/9710922/jquery-accent-insensitive-with-multiple-values-autocomplete
+  var normalize = function(term) {
+    var ret = "";
+    for (var i = 0; i < term.length; i++) {
+      ret += accentMap[term.charAt(i)] || term.charAt(i);
+    }
+      return ret;
+  };
+
+  function split(val) {
+    return val.split(/,\s*/);
+  }
+
+  function extractLast(term) {
+    return split(term).pop();
+  }
+
+  var accentMap = {
+      "à": "a", "â": "a", "ã": "a",
+      "é": "e", "è": "e", "ê": "e", "ë": "e",
+      "ï": "i", "î": "i", 
+      "ô": "o", "ö": "o", "ó": "o",
+      "û": "u", "ù": "u"
+  };
+
+  $(function() {
+    $('#graph_entity').keydown(function(e) {          
+      if (e.keyCode === $.ui.keyCode.TAB &&
+        $(this).data("autocomplete").menu.active) {
+        e.preventDefault();
+      }
+      
+      if (e.which == 13) {
+        e.preventDefault();
+      }
+
+      $('#graph_entity').autocomplete({
+
+        minLength: 1,
+        autoFocus: true,
+        
+        //with accent check        
+        source: function(request, response) {
+          var matcher = new RegExp($.ui.autocomplete.escapeRegex(extractLast(request.term)), "i");
+          response($.grep(persons_only, function(value) {
+            value = value.truc || value.value || value;
+            return matcher.test(value) || matcher.test(normalize(value));
+          }));
+        },
+        
+        focus: function() {
+          // prevent value inserted on focus
+          return false;
+        },
+
+        select: function(event, ui) {   
+          var terms = split(this.value);
+          
+          // remove the current input
+          terms.pop();
+          
+          // add the selected item
+          terms.push(ui.item.value);
+          
+          this.value = ui.item.value;
+          $("#graph_entity-value").val(persons2wiki_id[ui.item.value]);
+
+          return false;
+        }
+      })        
+    })
+  });
+
+
+
+</script>
+
 
 {% endblock %}
