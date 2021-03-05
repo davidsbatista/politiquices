@@ -1,12 +1,12 @@
 import json
 from collections import defaultdict
-from politiquices.webapp.webapp.lib.sparql_queries import get_graph_links
+from politiquices.webapp.webapp.lib.sparql_queries import get_graph_edges
 
 node_info = dict()
 
 
 def get_graph_from_sparql():
-    links = get_graph_links()
+    links = get_graph_edges()
     nodes = defaultdict(dict)
     edge_counts = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
 

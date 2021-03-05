@@ -1,18 +1,27 @@
 import json
-import logging
 from collections import defaultdict
 
 from flask import Flask
 from flask import request, jsonify
 from flask import render_template
 
+from politiquices.webapp.webapp.config import entities_batch_size
+from politiquices.webapp.webapp.lib.cache import (
+    all_entities_info,
+    all_parties_info,
+    all_parties_members,
+    wiki_id_info,
+    chave_publico
+)
+
 import networkx as nx
 from networkx.algorithms.community import k_clique_communities
 
 from politiquices.webapp.webapp.lib.data_models import Person
-from politiquices.webapp.webapp.app.neo4j_connect import Neo4jConnection
+from politiquices.webapp.webapp.lib.neo4j_connect import Neo4jConnection
+from politiquices.webapp.webapp.lib.render_queries import build_relationships_by_year, \
+    party_vs_party
 from politiquices.webapp.webapp.lib.sparql_queries import (
-    build_relationships_by_year,
     get_entities_without_image,
     get_nr_articles_per_year,
     get_nr_of_persons,
@@ -21,14 +30,12 @@ from politiquices.webapp.webapp.lib.sparql_queries import (
     get_relationships_between_two_entities,
     get_top_relationships,
     get_total_nr_of_articles,
-    get_wiki_id_affiliated_with_party,
-    list_of_spec_relations_between_two_persons,
-    list_of_spec_relations_between_a_person_and_members_of_a_party,
-    list_of_spec_relations_between_members_of_a_party_with_someone,
-    list_of_spec_relations_between_two_parties,
-    all_persons_freq,
+    get_relationship_between_two_persons,
+    get_relationship_between_person_and_party,
+    get_relationship_between_party_and_person,
+    get_persons_articles_freq,
     get_total_articles_by_year_by_relationship_type,
-    get_all_other_to_annotate,
+    get_relationships_to_annotate,
 )
 
 from politiquices.webapp.webapp.lib.utils import (
@@ -40,35 +47,10 @@ from politiquices.webapp.webapp.lib.utils import (
     determine_heatmap_height,
 )
 
-# ToDo: review have proper logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.WARNING)
-
-person_no_image = "/static/images/no_picture.jpg"
-
-# load all static generated caching stuff
-with open("static/json/all_entities_info.json") as f_in:
-    all_entities_info = json.load(f_in)
-
-with open("static/json/all_parties_info.json") as f_in:
-    all_parties_info = json.load(f_in)
-
-with open("static/json/party_members.json") as f_in:
-    all_parties_members = json.load(f_in)
-
-with open("static/json/wiki_id_info.json") as f_in:
-    wiki_id_info = json.load(f_in)
-
-with open("static/json/CHAVE-Publico_94_95.jsonl") as f_in:
-    chave_publico = [json.loads(line) for line in f_in]
-
-# number of entity cards to read when scrolling down
-entities_batch_size = 16
 
 app = Flask(__name__)
 
 
-# Entry Page
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -222,6 +204,9 @@ def party_members():
 
 @app.route("/stats")
 def status():
+    from datetime import datetime
+    print(datetime.now())
+
     # number of persons, parties
     nr_persons = get_nr_of_persons()
     nr_parties = len(all_parties_info)
@@ -236,7 +221,7 @@ def status():
     # personality frequency chart
     per_freq_labels = []
     per_freq_values = []
-    per_freq = all_persons_freq()
+    per_freq = get_persons_articles_freq()
     for x in per_freq:
         per_freq_labels.append(wiki_id_info[x["person"].split("/")[-1]]["name"])
         per_freq_values.append(x["freq"])
@@ -264,10 +249,11 @@ def status():
         "ent1_other_ent2": [values[year]['ent1_other_ent2'] for year in values],
         "ent2_other_ent1": [values[year]['ent2_other_ent1'] for year in values],
 
-        "per_freq_labels": per_freq_labels,
-        "per_freq_values": per_freq_values,
-        "per_co_occurrence_labels": co_occurrences_labels,
-        "per_co_occurrence_values": co_occurrences_values,
+        "per_freq_labels": per_freq_labels[0:500],
+        "per_freq_values": per_freq_values[0:500],
+
+        "per_co_occurrence_labels": co_occurrences_labels[0:75],
+        "per_co_occurrence_values": co_occurrences_values[0:75],
     }
 
     return render_template("stats.html", items=items)
@@ -296,7 +282,7 @@ def chave():
 
 @app.route("/annotate")
 def annotate():
-    to_annotate = get_all_other_to_annotate()
+    to_annotate = get_relationships_to_annotate()
 
     for idx, r in enumerate(to_annotate):
         link_one = r["title"].replace(
@@ -396,7 +382,7 @@ def person_vs_person(
         html=False,
 ):
     gradient, rel = get_relationship(rel_text)
-    results = list_of_spec_relations_between_two_persons(
+    results = get_relationship_between_two_persons(
         person_one, person_two, rel, start_year, end_year
     )
 
@@ -457,14 +443,14 @@ def person_vs_person(
 
 
 def party_vs_person(
-        party_wiki_id, person_wiki_id, rel_text, party_info, person_info, start_year, end_year
+        party_wiki_id, per_wiki_id, rel_text, party_info, per_info, start_year, end_year
 ):
     """
     relationships between (members of) a party and an entity
     """
     gradient, rel = get_relationship(rel_text)
-    results = list_of_spec_relations_between_members_of_a_party_with_someone(
-        party_wiki_id, person_wiki_id, rel, start_year, end_year
+    results = get_relationship_between_party_and_person(
+        party_wiki_id, per_wiki_id, rel, start_year, end_year
     )
     if len(results) == 0:
         return render_template("no_results.html")
@@ -505,7 +491,7 @@ def party_vs_person(
         relationship_text=rel_text,
         relationships=relationships_json,
         party=party_info,
-        person=person_info,
+        person=per_info,
         labels=get_chart_labels_min_max(),
         rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
         rel_text=rel_text,
@@ -522,7 +508,7 @@ def person_vs_party(
     relationships between an entity and (members of) a party
     """
     gradient, rel = get_relationship(rel_text)
-    results = list_of_spec_relations_between_a_person_and_members_of_a_party(
+    results = get_relationship_between_person_and_party(
         person_wiki_id, party_wiki_id, rel, start_year, end_year
     )
     if len(results) == 0:
@@ -572,42 +558,6 @@ def person_vs_party(
         heatmap=sorted_heatmap,
         heatmap_gradient=gradient,
         heatmap_height=heatmap_height,
-    )
-
-
-def party_vs_party(party_a, party_b, rel_text, party_a_info, party_b_info, start_year, end_year):
-    """
-    relationships between (members of) a party and (members of) another party
-    """
-    party_a_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
-    party_b_members = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
-
-    _, rel = get_relationship(rel_text)
-
-    results = list_of_spec_relations_between_two_parties(
-        party_a_members, party_b_members, rel, start_year, end_year
-    )
-    if len(results) == 0:
-        return render_template("no_results.html")
-
-    for r in results:
-        per_vs_person_linkable(r)
-
-    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
-
-    rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
-    for r in results:
-        rel_freq_year[r["date"][0:4]] += 1
-
-    return render_template(
-        "query_party_party.html",
-        relationship_text=rel_text,
-        relationships=relationships_json,
-        party_one=party_a_info,
-        party_two=party_b_info,
-        labels=get_chart_labels_min_max(),
-        rel_freq_year=[rel_freq_year[year] for year in rel_freq_year.keys()],
-        rel_text=rel_text,
     )
 
 
@@ -932,14 +882,17 @@ def queries():
             )
 
         elif e1_type == "party" and e2_type == "party":
-            return party_vs_party(
-                entity_one,
-                entity_two,
-                rel_text,
-                e1_info,
-                e2_info,
-                start_year=year_from,
-                end_year=year_to,
+            data = party_vs_party(entity_one, entity_two, rel_text, year_from, year_to)
+            if data is None:
+                return render_template("no_results.html")
+            return render_template(
+                "query_party_party.html",
+                relationship_text=rel_text,
+                relationships=data['relationships_json'],
+                party_one=e1_info,
+                party_two=e2_info,
+                labels=data['labels'],
+                rel_freq_year=data['rel_freq_year']
             )
 
 

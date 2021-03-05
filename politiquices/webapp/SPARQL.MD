@@ -440,3 +440,30 @@
     }
     GROUP BY ?person_a
     ORDER BY DESC(?nr_articles)
+
+
+### Relações familiares no grafo
+
+    SELECT DISTINCT ?person ?personLabel ?human_relationship ?other_person ?other_personLabel
+    WHERE {
+      values ?human_relationship { wdt:P22 wdt:P25 wdt:P3373 }
+      ?person ?human_relationship ?other_person .
+      {SELECT DISTINCT ?person
+        WHERE {
+          SERVICE <http://0.0.0.0:3030/politiquices/query> {
+            ?person wdt:P31 wd:Q5 .
+            {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
+            ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other")) .
+          }
+        }
+      }
+      {SELECT DISTINCT ?other_person
+        WHERE {
+          SERVICE <http://0.0.0.0:3030/politiquices/query> {
+            ?other_person wdt:P31 wd:Q5 .
+            {?rel politiquices:ent1 ?other_person} UNION {?rel politiquices:ent2 ?other_person} .
+            ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other")) .
+          }
+        }
+      }
+    }

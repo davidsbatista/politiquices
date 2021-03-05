@@ -1,27 +1,25 @@
-#!/usr/bin/env python
 import json
 from collections import defaultdict
 
 from politiquices.webapp.webapp.lib.sparql_queries import (
-    all_entities,
+    get_persons_wiki_id_name_image_url,
     get_nr_relationships_as_subject,
     get_nr_relationships_as_target,
     get_total_nr_articles_for_each_person,
     get_wiki_id_affiliated_with_party,
     prefixes,
     query_sparql,
-    top_co_occurrences
+    get_persons_co_occurrences_counts
 )
 
-ps_logo = "/static/images/Logo_do_Partido_Socialista(Portugal).png"
-no_image = "/static/images/no_picture.jpg"
+from politiquices.webapp.webapp.config import wikidata_endpoint, ps_logo, no_image
+
 static_data = "webapp/app/static/json/"
-wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
 
 
 def get_entities():
     # get all persons: name +  image url + wikidata url + wikidata id + nr articles
-    entities = query_sparql(all_entities(), "politiquices")
+    entities = query_sparql(get_persons_wiki_id_name_image_url(), "politiquices")
     persons = set()
     items_as_dict = dict()
     for e in entities["results"]["bindings"]:
@@ -96,7 +94,7 @@ def get_all_parties_with_affiliated_count():
 
 
 def entities_top_co_occurrences(wiki_id):
-    raw_counts = top_co_occurrences()
+    raw_counts = get_persons_co_occurrences_counts()
     co_occurrences = []
     for x in raw_counts:
         co_occurrences.append(
@@ -222,7 +220,7 @@ def main():
 
     print("\nCaching and pre-computing static stuff from SPARQL engine :-)")
 
-    # personalities cache
+    # get all personalities cache
     all_politiquices_persons, wiki_id = personalities_json_cache()
 
     # parties cache

@@ -1,44 +1,20 @@
 Web App
 =======
 
-    - fechar firewall para tudo, apenas 80 e 22 aberto
-    - politiquices/webapp/neo4j_import/README.MD: Permission denied
-    - read jsons from filesystem instead of HTTP?
-        - uwsgi_response_write_headers_do(): Broken pipe [core/writer.c line 248] during GET /static/json/persons.json (95.91.214.138)
-
-    - /etc/systemd/system/myproject.service
-        - por uwsgi a correr como serviço, talvez implica instalar o uwsgi como binario em fez de pip install
-
-    - Stats: pode ser tudo estático, compute once, a show many, rápido!
-    - CORS nas annotations ?
+    DevOps:
+    -------
+        - fechar firewall para tudo, apenas 80 e 22 aberto
+        - read jsons from filesystem instead of HTTP?
+            - uwsgi_response_write_headers_do(): Broken pipe [core/writer.c line 248]
+            during GET /static/json/persons.json (95.91.214.138)
+        - /etc/systemd/system/myproject.service
+            - por uwsgi a correr como serviço, talvez implica instalar o uwsgi como binario em fez de pip install
 
     - Grafo: bug
-        - António Vitorino apoia Durão Barroso 2004-2004
-
-    Stats
-    -----
-        - Absolutos e relativos (personalidades)
-            - Quem mais acusa? é acusado?
-            - Quem mais defende? é defendido
-            - Persons more supported than accused ?
-            - Persons more accused than supported ?
-        - mesma coisa para os partidos: partidos que acusam mais? e que partidos alvo?
-
-        - Download de todos os stats em .csv
-
-    Agregacoes + info na personalidade:
-    ------------------------------------
-     - Governo
-     - Assembleias
-     - Profissao
-     - Educacao
-     - listar todos os membros do Governo X
-     - listar todos os que já foram Ministros <qq cena>
-
+        - António Vitorino apoia Durão Barroso 2004-2004: mostra 2 no arco, só há 1
 
     queries ao Grafo
     ---------------
-        - existem relações familiares no grafo? entre quem?
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
     casos de uso, exemplos na apresentação?
@@ -68,6 +44,29 @@ Web App
         - limpar todos os console.log()
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
         - party members: - load on scroll down
+
+        Stats
+        -----
+            - Absolutos e relativos (personalidades)
+                - Quem mais acusa? é acusado?
+                - Quem mais defende? é defendido
+                - Persons more supported than accused ?
+                - Persons more accused than supported ?
+            - mesma coisa para os partidos: partidos que acusam mais? e que partidos alvo?
+
+            - Download de todos os stats em .csv
+
+
+        Agregacoes + info na personalidade:
+        ------------------------------------
+             - Governo
+             - Assembleias
+             - Profissao
+             - Educacao
+             - listar todos os membros do Governo X
+             - listar todos os que já foram Ministros <qq cena>
+             - listar relações familiares
+
 
 
 arquivo_pt:
