@@ -54,7 +54,7 @@ def get_graph_from_sparql():
 
 
 def main():
-    print("Querying SPARQL..")
+    print("Querying SPARQL...")
     get_graph_from_sparql()
 
 

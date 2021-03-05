@@ -30,6 +30,7 @@ from politiquices.webapp.webapp.lib.sparql_queries import (
     get_total_articles_by_year_by_relationship_type,
     get_all_other_to_annotate,
 )
+
 from politiquices.webapp.webapp.lib.utils import (
     clickable_title,
     make_json,
