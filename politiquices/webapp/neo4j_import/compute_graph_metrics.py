@@ -1,6 +1,6 @@
 import json
 from collections import defaultdict
-from politiquices.webapp.webapp.utils.sparql_queries import get_graph_links
+from politiquices.webapp.webapp.lib.sparql_queries import get_graph_links
 
 node_info = dict()
 

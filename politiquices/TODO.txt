@@ -1,19 +1,16 @@
 Web App
 =======
 
+    - fechar firewall para tudo, apenas 80 e 22 aberto
+    - politiquices/webapp/neo4j_import/README.MD: Permission denied
     - read jsons from filesystem instead of HTTP?
         - uwsgi_response_write_headers_do(): Broken pipe [core/writer.c line 248] during GET /static/json/persons.json (95.91.214.138)
 
     - /etc/systemd/system/myproject.service
         - por uwsgi a correr como serviço, talvez implica instalar o uwsgi como binario em fez de pip install
 
-    - Speed up queries: https://www.stardog.com/blog/7-steps-to-fast-sparql-queries/
-
     - Stats: pode ser tudo estático, compute once, a show many, rápido!
-
     - CORS nas annotations ?
-
-    - politiquices/webapp/neo4j_import/README.MD: Permission denied
 
     - Grafo: bug
         - António Vitorino apoia Durão Barroso 2004-2004

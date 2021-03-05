@@ -2,7 +2,7 @@
 import json
 from collections import defaultdict
 
-from politiquices.webapp.webapp.utils.sparql_queries import (
+from politiquices.webapp.webapp.lib.sparql_queries import (
     all_entities,
     get_nr_relationships_as_subject,
     get_nr_relationships_as_target,

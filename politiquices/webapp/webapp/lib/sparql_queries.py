@@ -4,8 +4,8 @@ from collections import Counter, defaultdict
 
 from functools import lru_cache
 from SPARQLWrapper import SPARQLWrapper, JSON
-from politiquices.webapp.webapp.utils.data_models import OfficePosition, Person, PoliticalParty
-from politiquices.webapp.webapp.utils.utils import get_chart_labels_min_max, fill_zero_values
+from politiquices.webapp.webapp.lib.data_models import OfficePosition, Person, PoliticalParty
+from politiquices.webapp.webapp.lib.utils import get_chart_labels_min_max, fill_zero_values
 
 wikidata_endpoint = "http://0.0.0.0:3030/wikidata/query"
 live_wikidata = "https://query.wikidata.org/sparql"

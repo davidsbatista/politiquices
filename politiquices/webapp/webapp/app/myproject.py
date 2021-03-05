@@ -9,9 +9,9 @@ from flask import render_template
 import networkx as nx
 from networkx.algorithms.community import k_clique_communities
 
-from politiquices.webapp.webapp.utils.data_models import Person
+from politiquices.webapp.webapp.lib.data_models import Person
 from politiquices.webapp.webapp.app.neo4j_connect import Neo4jConnection
-from politiquices.webapp.webapp.utils.sparql_queries import (
+from politiquices.webapp.webapp.lib.sparql_queries import (
     build_relationships_by_year,
     get_entities_without_image,
     get_nr_articles_per_year,
@@ -30,7 +30,7 @@ from politiquices.webapp.webapp.utils.sparql_queries import (
     get_total_articles_by_year_by_relationship_type,
     get_all_other_to_annotate,
 )
-from politiquices.webapp.webapp.utils.utils import (
+from politiquices.webapp.webapp.lib.utils import (
     clickable_title,
     make_json,
     get_relationship,
@@ -119,6 +119,7 @@ def detail_entity():
     all_relationships_json = opposed_json + supported_by_json + opposed_by_json + supported_by_json
 
     items = {
+
         # person information
         "wiki_id": person.wiki_id,
         "name": person.name,
@@ -127,12 +128,14 @@ def detail_entity():
         "positions": person.positions,
         "occupations": person.occupations,
         "education": person.education,
+
         # titles/articles frequency by relationships by year, for ChartJS
         "year_month_labels": chart_js_data["labels"],
         "opposed_freq": chart_js_data["opposed_freq"],
         "supported_freq": chart_js_data["supported_freq"],
         "opposed_by_freq": chart_js_data["opposed_by_freq"],
         "supported_by_freq": chart_js_data["supported_by_freq"],
+
         # top-persons in each relationship
         "top_relations": top_entities_in_rel_type,
     }
@@ -216,10 +219,9 @@ def party_members():
     )
 
 
-# Estatísticas
 @app.route("/stats")
 def status():
-    # single values
+    # number of persons, parties
     nr_persons = get_nr_of_persons()
     nr_parties = len(all_parties_info)
 
@@ -230,7 +232,6 @@ def status():
     # articles per relationship type per year chart
     values = get_total_articles_by_year_by_relationship_type()
 
-    """
     # personality frequency chart
     per_freq_labels = []
     per_freq_values = []
@@ -242,12 +243,11 @@ def status():
     # person co-occurrence chart
     co_occurrences_labels = []
     co_occurrences_values = []
-    with open("webapp/app/static/json/top_co_occurrences.json") as f_in:
+    with open("static/json/top_co_occurrences.json") as f_in:
         top_co_occurrences = json.load(f_in)
     for x in top_co_occurrences:
         co_occurrences_labels.append(x["person_a"]["name"] + " / " + x["person_b"]["name"])
         co_occurrences_values.append(x["nr_occurrences"])
-    """
 
     items = {
         "nr_parties": nr_parties,
@@ -263,16 +263,15 @@ def status():
         "ent1_other_ent2": [values[year]['ent1_other_ent2'] for year in values],
         "ent2_other_ent1": [values[year]['ent2_other_ent1'] for year in values],
 
-        "per_freq_labels": None,  # per_freq_labels,
-        "per_freq_values": None,  # per_freq_values,
-        "per_co_occurrence_labels": None,  # co_occurrences_labels,
-        "per_co_occurrence_values": None,  # co_occurrences_values,
+        "per_freq_labels": per_freq_labels,
+        "per_freq_values": per_freq_values,
+        "per_co_occurrence_labels": co_occurrences_labels,
+        "per_co_occurrence_values": co_occurrences_values,
     }
 
     return render_template("stats.html", items=items)
 
 
-# Sobre
 @app.route("/about")
 def about():
     return render_template("about.html")
@@ -324,6 +323,9 @@ def annotate():
 
 
 def get_info(wiki_id):
+    """
+    Based on a wiki_id returns the entity info or party info, based on the cached JSON files
+    """
     if info := [entry for entry in all_parties_info if entry["wiki_id"] == wiki_id]:
         return info[0], "party"
 
