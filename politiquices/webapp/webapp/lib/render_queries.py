@@ -1,24 +1,101 @@
-from collections import Counter
-from functools import lru_cache
+from collections import Counter, defaultdict
 
+from politiquices.webapp.webapp.lib.cache import all_entities_info
 from politiquices.webapp.webapp.lib.sparql_queries import (
     get_person_rels_by_year,
     get_wiki_id_affiliated_with_party,
-    get_relationship_between_parties
+    get_relationship_between_parties,
+    get_relationship_between_person_and_party,
+    get_relationship_between_party_and_person,
+    get_person_info,
+
+    # ToDo: merge this two ?
+    get_relationship_between_two_persons,
+    get_relationships_between_two_entities, get_top_relationships, get_person_relationships
 )
 
 from politiquices.webapp.webapp.lib.utils import (
-    get_chart_labels_min_max,
+    determine_heatmap_height,
     fill_zero_values,
+    get_chart_labels_min_max,
     get_relationship,
-    per_vs_person_linkable,
-    make_json
+    make_json,
+    per_vs_person_linkable, clickable_title
 )
 
 
-@lru_cache
-def build_relationships_by_year(wiki_id: str):
+# entity detail
 
+def entity_full_story(wiki_id, annotate):
+
+    # get all the relationships
+    relationships = get_person_relationships(wiki_id)
+
+    # create a clickable title
+    opposes = [clickable_title(r, wiki_id) for r in relationships["opposes"]]
+    supports = [clickable_title(r, wiki_id) for r in relationships["supports"]]
+    opposed_by = [clickable_title(r, wiki_id) for r in relationships["opposed_by"]]
+    supported_by = [clickable_title(r, wiki_id) for r in relationships["supported_by"]]
+
+    if annotate:
+        other = [clickable_title(r, wiki_id) for r in relationships["other"]]
+        other_by = [clickable_title(r, wiki_id) for r in relationships["other_by"]]
+        data = {"opposes": opposes,
+                "supports": supports,
+                "opposed_by": opposed_by,
+                "supported_by": supported_by,
+                "other": other,
+                "other_by": other_by}
+        return data
+
+    # make json objects
+    opposed_json = make_json(opposes)
+    supported_json = make_json(supports)
+    opposed_by_json = make_json(opposed_by)
+    supported_by_json = make_json(supported_by)
+    all_relationships_json = opposed_json + supported_json + opposed_by_json + supported_by_json
+
+    # get the person info: name, image, education, office positions, etc.
+    person = get_person_info(wiki_id)
+
+    # get the top-related entities
+    top_entities_in_rel_type = get_top_relationships(wiki_id)
+
+    # get the data to create the graph
+    chart_js_data = build_relationships_by_year(wiki_id)
+
+    data = {
+        # person information
+        "wiki_id": person.wiki_id,
+        "name": person.name,
+        "image": person.image_url,
+        "parties": person.parties,
+        "positions": person.positions,
+        "occupations": person.occupations,
+        "education": person.education,
+
+        # titles/articles frequency by relationships by year, for ChartJS
+        "year_month_labels": chart_js_data["labels"],
+        "opposed_freq": chart_js_data["opposed_freq"],
+        "supported_freq": chart_js_data["supported_freq"],
+        "opposed_by_freq": chart_js_data["opposed_by_freq"],
+        "supported_by_freq": chart_js_data["supported_by_freq"],
+
+        # top-persons in each relationship
+        "top_relations": top_entities_in_rel_type,
+
+        # relationships in json for bootstrap-table
+        'opposed': opposed_json,
+        'supported': supported_json,
+        'opposed_by': opposed_by_json,
+        'supported_by': supported_by_json,
+        'all_relationships': all_relationships_json
+    }
+
+    return data
+
+
+def build_relationships_by_year(wiki_id: str):
     # some personality can support another personality in two different relationship directions
     supported_freq_one = get_person_rels_by_year(wiki_id, "ent1_supports_ent2", ent="ent1")
     supported_freq_two = get_person_rels_by_year(wiki_id, "ent2_supports_ent1", ent="ent2")
@@ -59,6 +136,7 @@ def build_relationships_by_year(wiki_id: str):
     }
 
 
+# queries
 def party_vs_party(party_a, party_b, rel_text, start_year, end_year):
     """
     Given two parties, looks for relationships between members of both parties, performing
@@ -85,8 +163,195 @@ def party_vs_party(party_a, party_b, rel_text, start_year, end_year):
     for r in results:
         rel_freq_year[r["date"][0:4]] += 1
 
-    data = {'relationships_json': relationships_json,
+    return {'relationships_json': relationships_json,
             'rel_freq_year': [rel_freq_year[year] for year in rel_freq_year.keys()],
             'labels': get_chart_labels_min_max()}
 
+
+def person_vs_party(person_wiki_id, party_wiki_id, rel_text, start_year, end_year):
+    """
+    relationships between an entity and (members of) a party
+    """
+    gradient, rel = get_relationship(rel_text)
+    results = get_relationship_between_person_and_party(
+        person_wiki_id, party_wiki_id, rel, start_year, end_year
+    )
+    if len(results) == 0:
+        return None
+
+    for r in results:
+        per_vs_person_linkable(r)
+
+    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
+
+    # heatmap # ToDo: make this in a single loop
+    heatmap = []
+    entities_freq_year = defaultdict(lambda: defaultdict(int))
+    labels = get_chart_labels_min_max()
+    for r in results:
+        # ToDo: make map of the cache to avoid this linear search
+        wiki_id = r["ent2_wiki"].split("/")[-1]
+        name = [p["name"] for p in all_entities_info if p["wiki_id"] == wiki_id][0]
+        year = r["date"][0:4]
+        entities_freq_year[name][year] += 1
+
+    for name in entities_freq_year.keys():
+        per_freq_year = []
+        for year in labels:
+            if year in entities_freq_year[name]:
+                per_freq_year.append({"x": year, "y": entities_freq_year[name][year]})
+            else:
+                per_freq_year.append({"x": year, "y": 0})
+        heatmap.append({"name": name, "data": per_freq_year})
+    sorted_heatmap = sorted(heatmap, key=lambda x: x["name"], reverse=True)
+    heatmap_height = determine_heatmap_height(len(sorted_heatmap))
+
+    # chart: news articles/relationships per year
+    rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
+    for r in results:
+        rel_freq_year[r["date"][0:4]] += 1
+
+    return {
+        'relationships_json': relationships_json,
+        'rel_freq_year': [rel_freq_year[year] for year in rel_freq_year.keys()],
+        'labels': get_chart_labels_min_max(),
+        'heatmap': sorted_heatmap,
+        'heatmap_gradient': gradient,
+        'heatmap_height': heatmap_height}
+
+
+def party_vs_person(party_wiki_id, per_wiki_id, rel_text, start_year, end_year):
+    """
+    relationships between (members of) a party and an entity
+    """
+    gradient, rel = get_relationship(rel_text)
+    results = get_relationship_between_party_and_person(
+        party_wiki_id, per_wiki_id, rel, start_year, end_year
+    )
+    if len(results) == 0:
+        return None
+
+    for r in results:
+        per_vs_person_linkable(r)
+    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
+
+    # heatmap # ToDo: make this in a single loop
+    heatmap = []
+    entities_freq_year = defaultdict(lambda: defaultdict(int))
+    labels = get_chart_labels_min_max()
+    for r in results:
+        # ToDo: make map of the cache to avoid this linear search
+        wiki_id = r["ent1_wiki"].split("/")[-1]
+        name = [p["name"] for p in all_entities_info if p["wiki_id"] == wiki_id][0]
+        year = r["date"][0:4]
+        entities_freq_year[name][year] += 1
+
+    for name in entities_freq_year.keys():
+        per_freq_year = []
+        for year in labels:
+            if year in entities_freq_year[name]:
+                per_freq_year.append({"x": year, "y": entities_freq_year[name][year]})
+            else:
+                per_freq_year.append({"x": year, "y": 0})
+        heatmap.append({"name": name, "data": per_freq_year})
+    sorted_heatmap = sorted(heatmap, key=lambda x: x["name"], reverse=True)
+    heatmap_height = determine_heatmap_height(len(sorted_heatmap))
+
+    # chart: news articles/relationships per year
+    rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
+    for r in results:
+        rel_freq_year[r["date"][0:4]] += 1
+
+    return {
+        'relationships_json': relationships_json,
+        'rel_freq_year': [rel_freq_year[year] for year in rel_freq_year.keys()],
+        'labels': get_chart_labels_min_max(),
+        'heatmap': sorted_heatmap,
+        'heatmap_gradient': gradient,
+        'heatmap_height': heatmap_height}
+
+
+def person_vs_person(per_one, per_two, rel_text, start_year, end_year, annotate):
+    _, rel = get_relationship(rel_text)
+    results = get_relationship_between_two_persons(per_one, per_two, rel, start_year, end_year)
+
+    if len(results) == 0:
+        return None
+
+    for r in results:
+        per_vs_person_linkable(r)
+
+    if annotate:
+        items = [{"url": r["url"], "date": r["date"], "title": r["title"],
+                  "title_clickable": r["title_clickable"], "score": r["score"],
+                  "rel_type": r["rel_type"]} for r in results]
+        return {'items': items}
+
+    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
+    rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
+    for r in results:
+        rel_freq_year[r["date"][0:4]] += 1
+
+    data = {
+        'relationships': relationships_json,
+        'relationship_text': rel_text,
+        'labels': get_chart_labels_min_max(),
+        'rel_freq_year': [rel_freq_year[year] for year in rel_freq_year.keys()],
+        'rel_text': rel_text
+    }
+
     return data
+
+
+# full-story between 2 entities
+def entity_vs_entity(person_one, person_two):
+    """
+    get all the relationships between two persons
+    """
+    person_one_info = get_person_info(person_one)
+    person_two_info = get_person_info(person_two)
+    results, rels_freq_by_year = get_relationships_between_two_entities(person_one, person_two)
+
+    if len(results) == 0:
+        return None
+
+    for r in results:
+        per_vs_person_linkable(r)
+
+    opposed = make_json([r for r in results if r["rel_type_new"] == "ent1_opposes_ent2"])
+    supported = make_json([r for r in results if r["rel_type_new"] == "ent1_supports_ent2"])
+    opposed_by = make_json([r for r in results if r["rel_type_new"] == "ent1_opposed_by_ent2"])
+    supported_by = make_json([r for r in results if r["rel_type_new"] == "ent1_supported_by_ent2"])
+    all_json = opposed + supported + opposed_by + supported_by
+
+    # build chart information
+    labels = list(rels_freq_by_year.keys())
+    ent1_opposes_ent2 = []
+    ent1_supports_ent2 = []
+    ent1_opposed_by_ent2 = []
+    ent1_supported_by_ent2 = []
+    for year in rels_freq_by_year:
+        ent1_opposes_ent2.append(rels_freq_by_year[year]["ent1_opposes_ent2"])
+        ent1_supports_ent2.append(rels_freq_by_year[year]["ent1_supports_ent2"])
+        ent1_opposed_by_ent2.append(rels_freq_by_year[year]["ent1_opposed_by_ent2"])
+        ent1_supported_by_ent2.append(rels_freq_by_year[year]["ent1_supported_by_ent2"])
+
+    return {
+        # relationships
+        'opposed': opposed,
+        'supported': supported,
+        'opposed_by': opposed_by,
+        'supported_by': supported_by,
+        'all_relationships': all_json,
+
+        # persons information
+        'person_one_info': person_one_info,
+        'person_two_info': person_two_info,
+
+        # chart information
+        'labels': labels,
+        'ent1_opposes_ent2': ent1_opposes_ent2,
+        'ent1_supports_ent2': ent1_supports_ent2,
+        'ent1_opposed_by_ent2': ent1_opposed_by_ent2,
+        'ent1_supported_by_ent2': ent1_supported_by_ent2
+    }

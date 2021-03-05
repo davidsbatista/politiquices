@@ -1,3 +1,5 @@
+from politiquices.webapp.webapp.lib.cache import all_entities_info, all_parties_info
+
 
 class Switch(dict):
     def __getitem__(self, item):
@@ -151,3 +153,14 @@ def determine_heatmap_height(nr_persons):
     print("---\n")
 
     return switch[nr_persons]
+
+
+def get_info(wiki_id):
+    """
+    Based on a wiki_id returns the entity info or party info, based on the cached JSON files
+    """
+    if info := [entry for entry in all_parties_info if entry["wiki_id"] == wiki_id]:
+        return info[0], "party"
+
+    if info := [entry for entry in all_entities_info if entry["wiki_id"] == wiki_id]:
+        return info[0], "person"

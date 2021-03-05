@@ -14,7 +14,7 @@ from politiquices.webapp.webapp.config import (
     politiquices_endpoint,
 )
 
-politiquices_prefixes = """
+POLITIQUICES_PREFIXES = """
     PREFIX politiquices: <http://www.politiquices.pt/>
     PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX        dc: <http://purl.org/dc/elements/1.1/>
@@ -22,7 +22,7 @@ politiquices_prefixes = """
     PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
     """
 
-wikidata_prefixes = """
+WIKIDATA_PREFIXES = """
     PREFIX        wd: <http://www.wikidata.org/entity/>
     PREFIX       wds: <http://www.wikidata.org/entity/statement/>
     PREFIX       wdv: <http://www.wikidata.org/value/>
@@ -32,12 +32,12 @@ wikidata_prefixes = """
     PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
     """
 
-others = """
+OTHERS = """
     PREFIX        bd: <http://www.bigdata.com/rdf#>
     PREFIX  wikibase: <http://wikiba.se/ontology#>
     """
 
-prefixes = politiquices_prefixes + wikidata_prefixes + others
+PREFIXES = POLITIQUICES_PREFIXES + WIKIDATA_PREFIXES + OTHERS
 
 
 # Statistics
@@ -51,7 +51,7 @@ def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
         GROUP BY (YEAR(?date) AS ?year)
         ORDER BY ?year
         """
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     year = []
     nr_articles = []
     for x in result["results"]["bindings"]:
@@ -66,7 +66,7 @@ def get_total_nr_of_articles() -> int:
             ?x politiquices:url ?y .
         }
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     return results["results"]["bindings"][0]["nr_articles"]["value"]
 
 
@@ -82,7 +82,7 @@ def get_nr_of_persons() -> int:
             ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other") ) .
         }
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     return results["results"]["bindings"][0]["nr_persons"]["value"]
 
 
@@ -97,7 +97,7 @@ def get_total_articles_by_year_by_relationship_type():
         GROUP BY (YEAR(?date) AS ?year) ?rel_type
         ORDER BY ?year
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
 
     def rels_values():
         return {
@@ -131,7 +131,7 @@ def get_graph_edges():
         ?url dc:date ?date .
         }
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     edges = [
         {
             "person_a": x["person_a"]["value"],
@@ -166,7 +166,7 @@ def get_persons_co_occurrences_counts():
         GROUP BY ?person_a ?person_b
         ORDER BY DESC(?n_artigos)
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     co_occurrences = []
     seen = set()
     for x in results["results"]["bindings"]:
@@ -184,19 +184,21 @@ def get_persons_co_occurrences_counts():
 
 def get_persons_articles_freq():
     query = """
-        SELECT DISTINCT ?person (COUNT (?url) as ?n_artigos) {  
-        VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
-                            'ent1_supports_ent2' 'ent2_supports_ent1'} .
-        ?rel politiquices:type ?rel_values .
-        { ?rel politiquices:ent1 ?person .} UNION { ?rel politiquices:ent2 ?person . }              
-        ?rel politiquices:url ?url .
-        ?rel politiquices:type ?rel_type .
+        SELECT DISTINCT ?person (COUNT (?url) as ?n_artigos) 
+        WHERE {  
+            VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
+                                'ent1_supports_ent2' 'ent2_supports_ent1'} .
+                                
+            ?rel politiquices:type ?rel_values .
+            { ?rel politiquices:ent1 ?person .} UNION { ?rel politiquices:ent2 ?person . }              
+            ?rel politiquices:url ?url .
+            ?rel politiquices:type ?rel_type .
         }
         GROUP BY ?person
         HAVING (?n_artigos > 0)
         ORDER BY DESC(?n_artigos)
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     top_freq = [
         {"person": x["person"]["value"], "freq": x["n_artigos"]["value"]}
         for x in results["results"]["bindings"]
@@ -216,7 +218,7 @@ def get_persons_wiki_id_name_image_url():
             }}
         ORDER BY ?label
         """
-    return prefixes + "\n" + query
+    return PREFIXES + "\n" + query
 
 
 def get_total_nr_articles_for_each_person():
@@ -231,7 +233,7 @@ def get_total_nr_articles_for_each_person():
         GROUP BY ?person_name ?person
         ORDER BY DESC (?count) ASC (?person_name)
         """
-    return prefixes + "\n" + query
+    return PREFIXES + "\n" + query
 
 
 def get_nr_relationships_as_subject(relationship: str):
@@ -251,7 +253,7 @@ def get_nr_relationships_as_subject(relationship: str):
         ORDER BY DESC(?nr_articles)
         """
 
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     return [
         (x["person_a"]["value"].split("/")[-1], int(x["nr_articles"]["value"]))
         for x in results["results"]["bindings"]
@@ -275,7 +277,7 @@ def get_nr_relationships_as_target(relationship: str):
         ORDER BY DESC(?nr_articles)
         """
 
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     return [
         (x["person_a"]["value"].split("/")[-1], int(x["nr_articles"]["value"]))
         for x in results["results"]["bindings"]
@@ -300,7 +302,7 @@ def get_persons_affiliated_with_party(political_party: str):
         ORDER BY ?personLabel
         """
 
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     persons = []
     party_name = None
     party_logo = None
@@ -344,7 +346,7 @@ def get_wiki_id_affiliated_with_party(political_party: str):
             ?wiki_id wdt:P102 wd:{political_party}; .  
         }}
     """
-    results = query_sparql(prefixes + "\n" + query, "wikidata")
+    results = query_sparql(PREFIXES + "\n" + query, "wikidata")
     return [x["wiki_id"]["value"].split("/")[-1] for x in results["results"]["bindings"]]
 
 
@@ -373,7 +375,7 @@ def get_person_info(wiki_id):
             }}
         }}
     """
-    results = query_sparql(prefixes + "\n" + query, "wikidata")
+    results = query_sparql(PREFIXES + "\n" + query, "wikidata")
 
     name = None
     image_url = None
@@ -451,13 +453,13 @@ def get_person_detailed_info(wiki_id):
         }}
         """
 
-    results = query_sparql(prefixes + "\n" + occupation_query, "wikidata")
+    results = query_sparql(PREFIXES + "\n" + occupation_query, "wikidata")
     occupations = [x["occupation_label"]["value"] for x in results["results"]["bindings"]]
 
-    results = query_sparql(prefixes + "\n" + education_query, "wikidata")
+    results = query_sparql(PREFIXES + "\n" + education_query, "wikidata")
     education = [x["educatedAt_label"]["value"] for x in results["results"]["bindings"]]
 
-    results = query_sparql(prefixes + "\n" + positions_query, "wikidata")
+    results = query_sparql(PREFIXES + "\n" + positions_query, "wikidata")
     positions = [x["position_label"]["value"] for x in results["results"]["bindings"]]
 
     return {"education": education, "occupation": occupations, "position": positions}
@@ -485,7 +487,7 @@ def get_person_relationships(wiki_id):
         ORDER BY ASC(?date)
         """
 
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     relations = defaultdict(list)
 
     # ToDo: refactor to a function
@@ -611,7 +613,7 @@ def get_top_relationships(wiki_id: str):
         }} GROUP BY ?rel_type ?ent2 ?ent2_name
         ORDER BY ?rel_type DESC(?nr_articles)
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     for x in results["results"]["bindings"]:
         persons_ent1[x["rel_type"]["value"]].append(
             {
@@ -635,7 +637,7 @@ def get_top_relationships(wiki_id: str):
         GROUP BY ?rel_type ?ent1 ?ent1_name
         ORDER BY ?rel_type DESC(?nr_articles)
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     for x in results["results"]["bindings"]:
         persons_ent2[x["rel_type"]["value"]].append(
             {
@@ -645,16 +647,11 @@ def get_top_relationships(wiki_id: str):
             }
         )
 
-    who_person_opposes = [x for x in persons_ent1["ent1_opposes_ent2"]]
-    who_person_supports = [x for x in persons_ent1["ent1_supports_ent2"]]
-    who_opposes_person = [x for x in persons_ent2["ent1_opposes_ent2"]]
-    who_supports_person = [x for x in persons_ent2["ent1_supports_ent2"]]
-
     return {
-        "who_person_opposes": who_person_opposes,
-        "who_person_supports": who_person_supports,
-        "who_opposes_person": who_opposes_person,
-        "who_supports_person": who_supports_person,
+        "who_person_opposes": persons_ent1["ent1_opposes_ent2"],
+        "who_person_supports": persons_ent1["ent1_supports_ent2"],
+        "who_opposes_person": persons_ent2["ent1_opposes_ent2"],
+        "who_supports_person": persons_ent2["ent1_supports_ent2"],
     }
 
 
@@ -682,7 +679,7 @@ def get_person_rels_by_year(wiki_id, rel_type, ent="ent1"):
     GROUP BY (YEAR(?date) AS ?year)
     ORDER BY ?year
     """
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     # dicts are insertion ordered
     year_articles = dict()
     for x in result["results"]["bindings"]:
@@ -725,7 +722,7 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
         }}
         ORDER BY ASC(?date)
         """
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
 
     def relationships_counter():
         return {
@@ -799,7 +796,6 @@ def get_relationships_between_two_entities(wiki_id_one, wiki_id_two):
 
 
 # Relationship Queries
-@lru_cache
 def get_relationship_between_two_persons(wiki_id_one, wiki_id_two, rel_type, start_year, end_year):
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
@@ -820,7 +816,7 @@ def get_relationship_between_two_persons(wiki_id_one, wiki_id_two, rel_type, sta
         ORDER BY ASC(?date)
         """
 
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
         results.append(
@@ -853,8 +849,7 @@ def get_relationship_between_party_and_person(party, person, relation, start_yea
                  politiquices:url ?arquivo_doc .            
 
             ?arquivo_doc dc:title ?title;
-                         dc:date ?date.
-                         dc:date ?date; FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
+                         dc:date ?date. FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
 
             SERVICE <{wikidata_endpoint}> {{
                 ?ent1 wdt:P102 wd:{party};
@@ -865,8 +860,9 @@ def get_relationship_between_party_and_person(party, person, relation, start_yea
         ORDER BY DESC(?date) ASC(?score)
         """
 
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     results = []
+
     for x in result["results"]["bindings"]:
         results.append(
             {
@@ -908,8 +904,7 @@ def get_relationship_between_person_and_party(person, party, relation, start_yea
         }}
         ORDER BY DESC(?date) ASC(?score)
         """
-
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
         results.append(
@@ -929,7 +924,6 @@ def get_relationship_between_person_and_party(person, party, relation, start_yea
     return results
 
 
-@lru_cache
 def get_relationship_between_parties(per_party_a, per_party_b, relation, start_year, end_year):
     query = f"""
     SELECT DISTINCT ?person_party_a ?ent1_str ?person_party_b ?ent2_str ?arquivo_doc ?date ?title 
@@ -956,7 +950,7 @@ def get_relationship_between_parties(per_party_a, per_party_b, relation, start_y
         }}
     }}
     """
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     relationships = []
     for x in result["results"]["bindings"]:
         relationships.append(
@@ -989,7 +983,7 @@ def get_entities_without_image():
           }}
         ORDER BY ?label
         """
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     entities = []
     for x in result["results"]["bindings"]:
         entities.append(
@@ -1020,7 +1014,7 @@ def get_relationships_to_annotate():
         ORDER BY ?date ?score
         LIMIT 1000
     """
-    result = query_sparql(prefixes + "\n" + query, "politiquices")
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     to_annotate = []
     for x in result["results"]["bindings"]:
         to_annotate.append(
