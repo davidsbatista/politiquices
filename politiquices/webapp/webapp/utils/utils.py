@@ -1,5 +1,3 @@
-import socket
-
 
 class Switch(dict):
     def __getitem__(self, item):
@@ -10,7 +8,7 @@ class Switch(dict):
 
 
 def add_icon(r):
-    """adds either a arquivo.pt icon oder publico.pt icon"""
+    """adds either a arquivo.pt, publico.pt or LINGUATECA"""
 
     if r["url"].startswith("http://publico.pt"):
         r["link_image"] = "/static/images/114px-Logo_publico.png"
@@ -18,7 +16,6 @@ def add_icon(r):
         r["image_height"] = "20"
 
     elif r["url"].startswith("https://www.linguateca.pt/CHAVE"):
-        # https://www.linguateca.pt/CHAVE/?PUBLICO-19940130-087
         r["url"] = r['url'].replace('?', '')
         r["url"] = r['url'].replace('https://www.linguateca.pt/CHAVE', 'chave?q=')
         r["link_image"] = "/static/images/linguateca_logo.png"
@@ -133,19 +130,6 @@ def get_chart_labels_min_max(min_date="1994", max_date="2019"):
         all_years.append(current_date)
         current_date += 1
     return [str(year) for year in all_years]
-
-
-def get_ip():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    try:
-        # doesn't even have to be reachable
-        s.connect(('10.255.255.255', 1))
-        ip = s.getsockname()[0]
-    except Exception:
-        ip = '127.0.0.1'
-    finally:
-        s.close()
-    return ip
 
 
 def determine_heatmap_height(nr_persons):

@@ -1,4 +1,3 @@
-import os
 import json
 import logging
 from collections import defaultdict
@@ -45,10 +44,6 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.WARNING)
 
 person_no_image = "/static/images/no_picture.jpg"
-
-# script_dir = os.path.dirname(__file__)
-# rel_path = "/app/static/json/all_entities_info.json"
-# abs_file_path = os.path.join(script_dir, rel_path)
 
 # load all static generated caching stuff
 with open("static/json/all_entities_info.json") as f_in:
@@ -653,7 +648,7 @@ def graph():
         query = f"MATCH (s)-[r:{relation}]->(p:Person {{id:'{entity}'}}) "\
                 f"WHERE r.data >= date('{year_from}-01-01') "\
                 f"AND r.data <= date('{year_to}-12-31') "\
-                f"RETURN s, r"
+                f"RETURN s, r, p"
 
     # get the whole network
     else:
@@ -665,26 +660,70 @@ def graph():
     results = conn.query(query)
     conn.close()
 
-    print("\n\n")
-    print(query)
-    print("\n\n")
-
     if entity:
-        nodes = []
         edges = []
+        nodes_in_graph = []
+        edges_agg = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
         nodes_info = {}
+
+        # get all nodes and count freq. relationships
         for x in results:
-            print(x['r'])
-            print(dir(x['r']))
-            print()
-            print(x['r'].start_node)
-            print()
-            print(x['r']['data'])
-            print(x['r'].type)
-            print(x['r']['url'])
-            print()
-            print()
-            print("\n-------------------------------")
+            if x['r'].start_node['id'] not in nodes_info:
+                nodes_info[x['r'].start_node['id']] = {
+                    "id": x['r'].start_node['id'],
+                    "label": x['r'].start_node['name'],
+                    "color": {
+                        "border": "#2B7CE9",
+                        "background": "#97C2FC",
+                        "highlight": {"border": "#2B7CE9", "background": "#D2E5FF"},
+                    }
+                }
+
+            edges_agg[x["r"].type][x["r"].start_node["id"]][x["r"].end_node["id"]] += 1
+
+        # add main/central node
+        nodes_info[entity] = {
+            "id": entity,
+            "label": wiki_id_info[entity]['name'],
+            "color": {
+                "border": "#2B7CE9",
+                "background": "#97C2FC",
+                "highlight": {"border": "#2B7CE9", "background": "#D2E5FF"}
+            }}
+
+        # filter nodes, include only those that are connected within the freq filter
+        for rel_type, rels in edges_agg.items():
+            for s, targets in rels.items():
+                for t, freq in targets.items():
+                    if freq_min <= freq <= freq_max:
+                        if rel_type == "ACUSA":
+                            rel_text = "opõe-se"
+                            color = "#FF0000"
+                            highlight = "#780000"
+                        else:
+                            rel_text = "apoia"
+                            color = "#44861E"
+                            highlight = "#1d4a03"
+
+                        edges.append(
+                            {
+                                "from": s,
+                                "to": t,
+                                "id": len(edges) + 1,
+                                "color": {
+                                    "color": color,
+                                    "highlight": highlight,
+                                },
+                                "scaling": {"max": 7},
+                                "label": rel_text,
+                                "value": freq,
+                            }
+                        )
+                        nodes_in_graph.append(s)
+                        nodes_in_graph.append(t)
+
+        nodes = [node_info for node_id, node_info in nodes_info.items()
+                 if node_id in nodes_in_graph]
 
         return jsonify({"nodes": nodes, "edges": edges})
 

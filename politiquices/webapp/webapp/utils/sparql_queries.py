@@ -1003,49 +1003,43 @@ def list_of_spec_relations_between_two_parties(
     values_party_a, values_party_b, relation, start_year, end_year
 ):
     query = f"""
-    SELECT DISTINCT ?person_party_a ?ent1_str ?person_party_b ?ent2_str 
-                    ?arquivo_doc ?date ?title ?rel_type ?score
+    SELECT DISTINCT ?person_party_a ?ent1_str ?person_party_b ?ent2_str ?arquivo_doc ?date ?title ?score
     WHERE {{
-      {{
-        
+      {{ 
         VALUES ?person_party_a {{ {values_party_a} }}
         VALUES ?person_party_b {{ {values_party_b} }}
-        VALUES ?rel_values {{ '{relation}' }}
-        
-        ?rel politiquices:type ?rel_values;
-             politiquices:ent1 ?person_party_a;
-             politiquices:ent1_str ?ent1_str;
+        ?rel politiquices:ent1 ?person_party_a;
              politiquices:ent2 ?person_party_b;
+             politiquices:ent1_str ?ent1_str;
              politiquices:ent2_str ?ent2_str;
-             
-             politiquices:score ?score;
-             politiquices:url ?arquivo_doc.
-        
-        ?arquivo_doc dc:title ?title;
-                     dc:date ?date.             
+             {{ 
+                SELECT ?rel ?arquivo_doc ?title ?date ?score
+                WHERE {{
+                      ?rel politiquices:type ?ent1_opposes_ent2;
+                           politiquices:score ?score;
+                           politiquices:url ?arquivo_doc.
+                      ?arquivo_doc dc:title ?title;
+                                   dc:date ?date; FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
+                }}
+             }}
         }}
-      }}
-    ORDER BY ASC(?date)
+    }}
     """
-
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     relationships = []
     for x in result["results"]["bindings"]:
-        year = x["date"]["value"][0:4]
-        if year >= start_year and year <= end_year:
-            relationships.append(
-                {
-                    "url": x["arquivo_doc"]["value"],
-                    "date": x["date"]["value"],
-                    "title": x["title"]["value"],
-                    "rel_type": relation,
-                    "score": x["score"]["value"][0:5],
-                    "ent1_wiki": x["person_party_a"]["value"],
-                    "ent1_str": x["ent1_str"]["value"],
-                    "ent2_wiki": x["person_party_b"]["value"],
-                    "ent2_str": x["ent2_str"]["value"],
-                }
-            )
+        relationships.append(
+            {"url": x["arquivo_doc"]["value"],
+             "date": x["date"]["value"],
+             "title": x["title"]["value"],
+             "rel_type": relation,
+             "score": x["score"]["value"][0:5],
+             "ent1_wiki": x["person_party_a"]["value"],
+             "ent1_str": x["ent1_str"]["value"],
+             "ent2_wiki": x["person_party_b"]["value"],
+             "ent2_str": x["ent2_str"]["value"]
+             }
+        )
 
     return relationships
 
