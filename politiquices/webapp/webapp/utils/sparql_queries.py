@@ -899,7 +899,6 @@ def list_of_spec_relations_between_two_persons(
     return results
 
 
-@lru_cache
 def list_of_spec_relations_between_members_of_a_party_with_someone(
     party, person, relation, start_year, end_year
 ):
@@ -916,6 +915,7 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(
             
             ?arquivo_doc dc:title ?title;
                          dc:date ?date.
+                         dc:date ?date; FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
         
             SERVICE <{wikidata_endpoint}> {{
                 ?ent1 wdt:P102 wd:{party};
@@ -929,26 +929,23 @@ def list_of_spec_relations_between_members_of_a_party_with_someone(
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
-        year = x["date"]["value"][0:4]
-        if year >= start_year and year <= end_year:
-            results.append(
-                {
-                    "url": x["arquivo_doc"]["value"],
-                    "date": x["date"]["value"],
-                    "title": x["title"]["value"],
-                    "rel_type": relation,
-                    "score": x["score"]["value"][0:5],
-                    "ent1_wiki": x["ent1"]["value"],
-                    "ent1_str": x["ent1_str"]["value"],
-                    "ent2_wiki": person,
-                    "ent2_str": x["ent2_str"]["value"],
-                }
-            )
+        results.append(
+            {
+                "url": x["arquivo_doc"]["value"],
+                "date": x["date"]["value"],
+                "title": x["title"]["value"],
+                "rel_type": relation,
+                "score": x["score"]["value"][0:5],
+                "ent1_wiki": x["ent1"]["value"],
+                "ent1_str": x["ent1_str"]["value"],
+                "ent2_wiki": person,
+                "ent2_str": x["ent2_str"]["value"],
+            }
+        )
 
     return results
 
 
-@lru_cache
 def list_of_spec_relations_between_a_person_and_members_of_a_party(
     person, party, relation, start_year, end_year
 ):
@@ -965,12 +962,11 @@ def list_of_spec_relations_between_a_person_and_members_of_a_party(
                  politiquices:url ?arquivo_doc .
             
             ?arquivo_doc dc:title ?title;
-                         dc:date ?date.
+                         dc:date ?date; FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
             
             SERVICE <{wikidata_endpoint}> {{
                 ?ent2 wdt:P102 wd:{party};
-                      rdfs:label ?personLabel.
-                FILTER(LANG(?personLabel) = "pt")                
+                      rdfs:label ?personLabel. FILTER(LANG(?personLabel) = "pt")                
             }}
         }}
         ORDER BY DESC(?date) ASC(?score)
@@ -979,21 +975,19 @@ def list_of_spec_relations_between_a_person_and_members_of_a_party(
     result = query_sparql(prefixes + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
-        year = x["date"]["value"][0:4]
-        if year >= start_year and year <= end_year:
-            results.append(
-                {
-                    "url": x["arquivo_doc"]["value"],
-                    "date": x["date"]["value"],
-                    "title": x["title"]["value"],
-                    "rel_type": relation,
-                    "score": x["score"]["value"][0:5],
-                    "ent1_wiki": person,
-                    "ent1_str": x["ent1_str"]["value"],
-                    "ent2_wiki": x["ent2"]["value"],
-                    "ent2_str": x["ent2_str"]["value"],
-                }
-            )
+        results.append(
+            {
+                "url": x["arquivo_doc"]["value"],
+                "date": x["date"]["value"],
+                "title": x["title"]["value"],
+                "rel_type": relation,
+                "score": x["score"]["value"][0:5],
+                "ent1_wiki": person,
+                "ent1_str": x["ent1_str"]["value"],
+                "ent2_wiki": x["ent2"]["value"],
+                "ent2_str": x["ent2_str"]["value"],
+            }
+        )
 
     return results
 
