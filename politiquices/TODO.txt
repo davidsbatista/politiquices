@@ -1,16 +1,14 @@
 Web App
 =======
 
-    - Remove from sparql_queries.py
-        from politiquices.webapp.webapp.lib.data_models import OfficePosition, Person, PoliticalParty
-
     - Limpar o Javascript, re-utilizar
     - Analytics de accessos
     - HTTPS
 
     DevOps:
     -------
-        - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instread pip install
+        - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
+        - website also in a docker?
 
     - BUGS:
         - António Vitorino apoia Durão Barroso 2004-2004: mostra 2 no arco, só há 1

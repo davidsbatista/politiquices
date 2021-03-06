@@ -9,7 +9,7 @@ from politiquices.webapp.webapp.lib.cache import (
 )
 from politiquices.webapp.webapp.lib.data_models import Person
 from politiquices.webapp.webapp.lib.sparql_queries import (
-    get_person_rels_by_year,
+    get_person_relationships_by_year,
     get_wiki_id_affiliated_with_party,
     get_relationship_between_parties,
     get_relationship_between_person_and_party,
@@ -115,26 +115,26 @@ def entity_full_story(wiki_id, annotate):
 
 def build_relationships_by_year(wiki_id: str):
     # some personality can support another personality in two different relationship directions
-    supported_freq_one = get_person_rels_by_year(wiki_id, "ent1_supports_ent2", ent="ent1")
-    supported_freq_two = get_person_rels_by_year(wiki_id, "ent2_supports_ent1", ent="ent2")
+    supported_freq_one = get_person_relationships_by_year(wiki_id, "ent1_supports_ent2", ent="ent1")
+    supported_freq_two = get_person_relationships_by_year(wiki_id, "ent2_supports_ent1", ent="ent2")
     supported_freq_sum = Counter(supported_freq_one) + Counter(supported_freq_two)
     supported_freq = {k: supported_freq_sum[k] for k in sorted(supported_freq_sum)}
 
     # opposes
-    opposed_freq_one = get_person_rels_by_year(wiki_id, "ent1_opposes_ent2", ent="ent1")
-    opposed_freq_two = get_person_rels_by_year(wiki_id, "ent2_opposes_ent1", ent="ent2")
+    opposed_freq_one = get_person_relationships_by_year(wiki_id, "ent1_opposes_ent2", ent="ent1")
+    opposed_freq_two = get_person_relationships_by_year(wiki_id, "ent2_opposes_ent1", ent="ent2")
     opposed_freq_sum = Counter(opposed_freq_one) + Counter(opposed_freq_two)
     opposed_freq = {k: opposed_freq_sum[k] for k in sorted(opposed_freq_sum)}
 
     # supported_by
-    supported_by_freq_one = get_person_rels_by_year(wiki_id, "ent2_supports_ent1", ent="ent1")
-    supported_by_freq_two = get_person_rels_by_year(wiki_id, "ent1_supports_ent2", ent="ent2")
+    supported_by_freq_one = get_person_relationships_by_year(wiki_id, "ent2_supports_ent1", ent="ent1")
+    supported_by_freq_two = get_person_relationships_by_year(wiki_id, "ent1_supports_ent2", ent="ent2")
     supported_by_freq_sum = Counter(supported_by_freq_one) + Counter(supported_by_freq_two)
     supported_by_freq = {k: supported_by_freq_sum[k] for k in sorted(supported_by_freq_sum)}
 
     # opposed_by
-    opposed_by_freq_one = get_person_rels_by_year(wiki_id, "ent2_opposes_ent1", ent="ent1")
-    opposed_by_freq_two = get_person_rels_by_year(wiki_id, "ent1_opposes_ent2", ent="ent2")
+    opposed_by_freq_one = get_person_relationships_by_year(wiki_id, "ent2_opposes_ent1", ent="ent1")
+    opposed_by_freq_two = get_person_relationships_by_year(wiki_id, "ent1_opposes_ent2", ent="ent2")
     opposed_by_freq_sum = Counter(opposed_by_freq_one) + Counter(opposed_by_freq_two)
     opposed_by_freq = {k: opposed_by_freq_sum[k] for k in sorted(opposed_by_freq_sum)}
 

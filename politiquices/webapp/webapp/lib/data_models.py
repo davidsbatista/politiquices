@@ -16,6 +16,7 @@ class PoliticalParty:
 
 @dataclass
 class Person:
+    # pylint: disable=R0902
     wiki_id: str
     name: Optional[str] = None
     nr_articles: Optional[int] = None

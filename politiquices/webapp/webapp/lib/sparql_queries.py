@@ -9,7 +9,7 @@ from politiquices.webapp.webapp.config import (
     no_image,
     ps_logo,
     live_wikidata,
-    politiquices_endpoint
+    politiquices_endpoint,
 )
 
 POLITIQUICES_PREFIXES = """
@@ -144,7 +144,7 @@ def get_graph_edges():
 
 
 def get_persons_co_occurrences_counts():
-    query = """        
+    query = """
         SELECT DISTINCT ?person_a ?person_b (COUNT (?url) as ?n_artigos) {
             VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
                                 'ent1_supports_ent2' 'ent2_supports_ent1'} .
@@ -235,8 +235,7 @@ def get_total_nr_articles_for_each_person():
 
 
 def get_nr_relationships_as_subject(relationship: str):
-
-    query = f"""    
+    query = f"""
         SELECT DISTINCT ?person_a (COUNT(?url) as ?nr_articles) {{
           {{ ?rel politiquices:ent1 ?person_a .
             ?rel politiquices:type 'ent1_{relationship}_ent2'.
@@ -250,7 +249,6 @@ def get_nr_relationships_as_subject(relationship: str):
         GROUP BY ?person_a
         ORDER BY DESC(?nr_articles)
         """
-
     results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     return [
         (x["person_a"]["value"].split("/")[-1], int(x["nr_articles"]["value"]))
@@ -259,8 +257,7 @@ def get_nr_relationships_as_subject(relationship: str):
 
 
 def get_nr_relationships_as_target(relationship: str):
-
-    query = f"""    
+    query = f"""
         SELECT DISTINCT ?person_a (COUNT(?url) as ?nr_articles) {{
           {{ ?rel politiquices:ent2 ?person_a .
             ?rel politiquices:type 'ent1_{relationship}_ent2'.
@@ -274,7 +271,6 @@ def get_nr_relationships_as_target(relationship: str):
         GROUP BY ?person_a
         ORDER BY DESC(?nr_articles)
         """
-
     results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     return [
         (x["person_a"]["value"].split("/")[-1], int(x["nr_articles"]["value"]))
@@ -298,16 +294,13 @@ def get_persons_affiliated_with_party(political_party: str):
         }} 
         ORDER BY ?personLabel
         """
-
     results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     persons = []
     party_name = None
     party_logo = None
-
     # add 'PS' logo since it's not on wikidata
     if political_party == "Q847263":
         party_logo = ps_logo
-
     seen = set()
     for x in results["results"]["bindings"]:
         wiki_id = x["personLabel"]["value"]
@@ -647,7 +640,7 @@ def get_top_relationships(wiki_id: str):
     }
 
 
-def get_person_rels_by_year(wiki_id, rel_type, ent="ent1"):
+def get_person_relationships_by_year(wiki_id, rel_type, ent="ent1"):
     query = f"""
         SELECT DISTINCT ?year (COUNT(?arquivo_doc) as ?nr_articles)
         WHERE {{
@@ -722,7 +715,7 @@ def get_relationship_between_two_persons(wiki_id_one, wiki_id_two, rel_type, sta
 
 
 def get_relationship_between_party_and_person(party, person, relation, start_year, end_year):
-    query = f"""        
+    query = f"""
         SELECT DISTINCT ?ent1 ?ent1_str ?ent2_str ?arquivo_doc ?date ?title ?score
         WHERE {{
             ?rel politiquices:type '{relation}';
@@ -767,7 +760,7 @@ def get_relationship_between_party_and_person(party, person, relation, start_yea
 
 
 def get_relationship_between_person_and_party(person, party, relation, start_year, end_year):
-    query = f"""        
+    query = f"""
         SELECT DISTINCT ?ent2 ?ent2_str ?ent1_str ?arquivo_doc ?date ?title ?score
         WHERE {{
 
