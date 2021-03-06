@@ -3,7 +3,7 @@ Web App
 
     - Limpar o Javascript, re-utilizar
     - Analytics de accessos
-    - HTTPS
+    - HTTPS: https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-20-04#step-7-%E2%80%94-securing-the-application
 
     DevOps:
     -------
