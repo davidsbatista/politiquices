@@ -193,8 +193,8 @@ def queries():
         entity_one = request.args.get("e1")
         entity_two = request.args.get("e2")
         rel_text = request.args.get("relationship")
-        e1_info, e1_type = get_info(entity_one)
-        e2_info, e2_type = get_info(entity_two)
+        e1_info, e1_type = get_info(entity_one, all_entities_info, all_parties_info)
+        e2_info, e2_type = get_info(entity_two, all_entities_info, all_parties_info)
 
         if e1_type == "person" and e2_type == "person":
 
