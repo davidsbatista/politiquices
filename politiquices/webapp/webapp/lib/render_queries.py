@@ -153,7 +153,7 @@ def get_party_members(wiki_id):
         if x["wiki_id"] == wiki_id:
             party_name = x["party_label"]
             party_logo = x["party_logo"]
-        break
+            break
 
     # get all members
     persons = []

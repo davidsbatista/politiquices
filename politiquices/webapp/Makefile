@@ -27,7 +27,7 @@ cache:
 dev:
 	. $${HOME}/politiquices_webapp_venv/bin/activate; \
 	cd $${HOME}/politiquices/politiquices/webapp/webapp/app; \
-	PYTHONPATH=$${HOME}/politiquices FLASK_ENV=development python myproject.py
+	PYTHONPATH=$${HOME}/politiquices FLASK_ENV=development python politiquices_app.py
 
 web:
 	. $${HOME}/politiquices_webapp_venv/bin/activate; \

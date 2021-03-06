@@ -3,14 +3,9 @@ from flask import request, jsonify
 from flask import render_template
 
 from politiquices.webapp.webapp.config import entities_batch_size
-from politiquices.webapp.webapp.lib.graph import get_entity_network, get_network
 from politiquices.webapp.webapp.lib.utils import get_info
-from politiquices.webapp.webapp.lib.cache import (
-    all_entities_info,
-    all_parties_info,
-    chave_publico,
-)
-
+from politiquices.webapp.webapp.lib.graph import get_entity_network, get_network
+from politiquices.webapp.webapp.lib.cache import all_entities_info, all_parties_info, chave_publico
 from politiquices.webapp.webapp.lib.render_queries import (
     party_vs_party,
     person_vs_party,
@@ -79,7 +74,6 @@ def detail_entity():
     )
 
 
-# Partidos
 @app.route("/parties")
 def all_parties():
     return render_template("all_parties.html", items=all_parties_info)
@@ -102,56 +96,6 @@ def party_members():
 def status():
     data = get_stats()
     return render_template("stats.html", items=data)
-
-
-@app.route("/about")
-def about():
-    return render_template("about.html")
-
-
-# other: personalities without image
-@app.route("/complete")
-def complete():
-    result = get_entities_without_image()
-    return render_template("incomplete_entities.html", items=result)
-
-
-# to render documents from the CHAVE collection
-@app.route("/chave")
-def chave():
-    chave_id = request.args.get("q")
-    article = [article for article in chave_publico if article["id"] == chave_id][0]
-    article["text"] = article["text"].replace("\n", "<br><br>")
-    return render_template("chave_template.html", article=article)
-
-
-@app.route("/annotate")
-def annotations():
-    to_annotate = get_relationships_to_annotate()
-
-    for idx, r in enumerate(to_annotate):
-        link_one = r["title"].replace(
-            r["ent1_str"],
-            '<a id="ent_1" href="entity?q='
-            + r["ent1"].split("/")[-1]
-            + '">'
-            + r["ent1_str"]
-            + "</a>",
-        )
-
-        title_link = link_one.replace(
-            r["ent2_str"],
-            '<a id="ent_2" href="entity?q='
-            + r["ent2"].split("/")[-1]
-            + '">'
-            + r["ent2_str"]
-            + "</a>",
-        )
-
-        r["title_clickable"] = title_link
-        r["id"] = idx
-
-    return render_template("annotate_other.html", items=to_annotate)
 
 
 @app.route("/graph")
@@ -189,6 +133,11 @@ def graph():
 
     nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min, k_clique)
     return jsonify({"nodes": nodes, "edges": edges})
+
+
+@app.route("/about")
+def about():
+    return render_template("about.html")
 
 
 @app.route("/queries")
@@ -332,6 +281,52 @@ def queries():
                 party_two=e2_info,
                 labels=data['labels'],
                 rel_freq_year=data['rel_freq_year'])
+
+
+# render documents from the CHAVE collection
+@app.route("/chave")
+def chave():
+    chave_id = request.args.get("q")
+    article = [article for article in chave_publico if article["id"] == chave_id][0]
+    article["text"] = article["text"].replace("\n", "<br><br>")
+    return render_template("chave_template.html", article=article)
+
+
+# get all 'other' relationships and shows then in annotation template
+@app.route("/annotate")
+def annotations():
+    to_annotate = get_relationships_to_annotate()
+
+    for idx, r in enumerate(to_annotate):
+        link_one = r["title"].replace(
+            r["ent1_str"],
+            '<a id="ent_1" href="entity?q='
+            + r["ent1"].split("/")[-1]
+            + '">'
+            + r["ent1_str"]
+            + "</a>",
+        )
+
+        title_link = link_one.replace(
+            r["ent2_str"],
+            '<a id="ent_2" href="entity?q='
+            + r["ent2"].split("/")[-1]
+            + '">'
+            + r["ent2_str"]
+            + "</a>",
+        )
+
+        r["title_clickable"] = title_link
+        r["id"] = idx
+
+    return render_template("annotate_other.html", items=to_annotate)
+
+
+# other: personalities without image
+@app.route("/complete")
+def complete():
+    result = get_entities_without_image()
+    return render_template("incomplete_entities.html", items=result)
 
 
 if __name__ == "__main__":
