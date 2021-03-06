@@ -48,24 +48,13 @@
             }
        });
 
-
-      console.log("ent1: " + entities.ent1)
-      console.log("ent2: " + entities.ent2)
-      console.log("original_rel: " + original_rel)
-      console.log("selected_rel: " + selected_rel)
-
-      console.log(title_data.title.indexOf(entities.ent1))
-      console.log(title_data.title.indexOf(entities.ent2))
-
        if ( title_data.title.indexOf(entities.ent1) > title_data.title.indexOf(entities.ent2)) {
-            console.log('case1');
             title_data.ent_1 = entities.ent2;
             title_data.ent1_wiki = entities.ent2_wiki_url;
             title_data.ent_2 = entities.ent1;
             title_data.ent2_wiki = entities.ent1_wiki_url;
           }
           else {
-            console.log('case2');
             title_data.ent_1 = entities.ent1;
             title_data.ent1_wiki = entities.ent1_wiki_url;
             title_data.ent_2 = entities.ent2;
@@ -73,10 +62,6 @@
           }
 
        var myJsonString = JSON.stringify(title_data);
-       console.log('ent1 : ', title_data.ent_1)
-       console.log('ent2 : ', title_data.ent_2)
-       console.log('title: ', title_data.title)
-       console.log('rel  : ', title_data.rel_type)
 
        $.ajax({
          type: "POST",

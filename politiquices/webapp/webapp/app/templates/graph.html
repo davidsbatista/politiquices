@@ -268,18 +268,9 @@
         pointer = params['pointer']['DOM']
         node = network.getNodeAt(pointer)
         edge = network.getEdgeAt(pointer)
-        console.log("node: ", node)
-        console.log("edge: ", edge)
-        console.log('pointer')
-        console.log('y:', pointer['x'])
-        console.log('x:', pointer['y'])
-        console.log('event')
-        console.log('y:', params['event']['center']['y'])
-        console.log('x:', params['event']['center']['x'])
-        
+
         // clicked nothing
         if (node == null && edge == null) {
-          console.log('nothing selected')
           $(".custom-menu").hide();
         }
 
@@ -299,7 +290,6 @@
             left: params['event']['center']['x'] + "px"
           });
           $(".custom-menu").show()
-          console.log($(".custom-menu"))
         }
         
         // clicked an Edge
@@ -333,8 +323,6 @@
 
         }
 
-      console.log("---------")
-      
       });
 
       network.on("stabilizationProgress", function (params) {
