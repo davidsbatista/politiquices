@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 
 from politiquices.extraction.utils import read_ground_truth
 from politiquices.extraction.utils.utils import clean_title_re
-from politiquices.classifiers.ml_utils import print_cm
+from politiquices.classifiers.utils.ml_utils import print_cm
 
 url = "http://127.0.0.1:8000/relationship"
 

@@ -5,6 +5,21 @@
 - text index in SPARQL:
     https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
 
+-import into wikidata.org directly from parlamento.pt
+    Afonso Candal           https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=1488
+    André Figueiredo        https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=2259
+    Isabele Meyrelles       https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=6935
+    João Galamba            https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=4166
+    João Proença            https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=174
+    Marcos Sá               https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=2268
+    Raúl Almeida            https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=1801
+    Victor Baptista         https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=1592
+    Carlos Pereira          https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=6187
+    João César das Neves    https://www.wikiwand.com/pt/Jo%C3%A3o_C%C3%A9sar_das_Neves
+    Mário Nogueira (Fenprof)
+    Tomás Correia (Montepio)
+
+
 
 - more (types of) entities
     - Partidos Politicos e suas secções

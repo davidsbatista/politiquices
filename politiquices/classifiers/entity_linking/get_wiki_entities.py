@@ -1,8 +1,8 @@
 import os
-import json
 import sys
-
+import json
 import requests
+
 from SPARQLWrapper import SPARQLWrapper, JSON
 
 from politiquices.extraction.utils.utils import just_sleep
@@ -94,7 +94,6 @@ portuguese_banks = """
       FILTER((LANG(?bankLabel)) = "pt")
     }
     ORDER BY (?bankLabel)
-
     """
 
 # all_portuguese_municipalities
@@ -170,7 +169,6 @@ def get_relevant_persons_based_on_public_office_positions():
 
 def get_results(endpoint_url, sarpql_query):
     user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
-    # TODO adjust user agent; see https://w.wiki/CX6
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
     sparql.setQuery(sarpql_query)
     sparql.setReturnFormat(JSON)
@@ -188,6 +186,7 @@ def download(ids_to_retrieve, default_dir="wiki_jsons", file_format='json'):
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
     for idx, wiki_id in enumerate(set(ids_to_retrieve)):
         print(str(idx) + "/" + str(len(set(ids_to_retrieve))))
+        # ToDo: check if default_dir exists, if not create it
         f_name = os.path.join(default_dir, wiki_id + "." + file_format)
         if os.path.exists(f_name):
             continue
@@ -243,6 +242,8 @@ def main():
     entities_ids_per = gather_wiki_ids(queries, e_type='per', to_add=to_load, to_remove=to_remove)
 
     # get organisations
+    entities_ids_org = []
+    """
     print("\nOrganisations")
     queries = [
         portuguese_political_parties,
@@ -250,6 +251,7 @@ def main():
         portuguese_public_enterprises,
     ]
     entities_ids_org = gather_wiki_ids(queries)
+    """
     entities_ids = set(entities_ids_per + entities_ids_org)
     print(f"\nDownloading {len(entities_ids)} unique ids")
     download(entities_ids, default_dir='wiki_ttl', file_format='ttl')

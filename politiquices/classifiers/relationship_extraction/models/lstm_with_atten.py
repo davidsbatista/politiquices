@@ -17,7 +17,7 @@ from tensorflow.keras import backend as K
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 
-from politiquices.classifiers.ml_utils import print_cm
+from politiquices.classifiers.utils.ml_utils import print_cm
 from politiquices.classifiers.relationship_extraction.models.embeddings_utils import (
     create_embeddings_matrix,
     get_embeddings_layer,
