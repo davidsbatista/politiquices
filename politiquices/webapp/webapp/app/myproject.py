@@ -1,38 +1,30 @@
-import json
-
 from flask import Flask
 from flask import request, jsonify
 from flask import render_template
 
-from politiquices.webapp.webapp.lib.utils import get_info
 from politiquices.webapp.webapp.config import entities_batch_size
+from politiquices.webapp.webapp.lib.graph import get_entity_network, get_network
+from politiquices.webapp.webapp.lib.utils import get_info
 from politiquices.webapp.webapp.lib.cache import (
     all_entities_info,
     all_parties_info,
-    all_parties_members,
     chave_publico,
-    wiki_id_info,
 )
 
-from politiquices.webapp.webapp.lib.data_models import Person
-from politiquices.webapp.webapp.lib.graph import get_entity_network, get_network
 from politiquices.webapp.webapp.lib.render_queries import (
     party_vs_party,
     person_vs_party,
     party_vs_person,
     person_vs_person,
     entity_vs_entity,
-    entity_full_story
+    entity_full_story,
+    get_party_members,
+    get_stats
 )
 
 from politiquices.webapp.webapp.lib.sparql_queries import (
     get_entities_without_image,
-    get_nr_articles_per_year,
-    get_nr_of_persons,
-    get_persons_articles_freq,
     get_relationships_to_annotate,
-    get_total_articles_by_year_by_relationship_type,
-    get_total_nr_of_articles,
 )
 
 
@@ -96,93 +88,20 @@ def all_parties():
 @app.route("/party_members")
 def party_members():
     wiki_id = request.args.get("q")
-
-    # get party info
-    for x in all_parties_info:
-        if x["wiki_id"] == wiki_id:
-            party_name = x["party_label"]
-            party_logo = x["party_logo"]
-
-    # get all members
-    persons = []
-    members_id = all_parties_members[wiki_id]
-    for member_id in members_id:
-        for entity in all_entities_info:
-            if member_id == entity["wiki_id"]:
-                persons.append(
-                    Person(
-                        name=entity["name"],
-                        nr_articles=int(entity["nr_articles"]),
-                        wiki_id=entity["wiki_id"],
-                        image_url=entity["image_url"],
-                    )
-                )
-
-    sorted_persons = sorted(persons, key=lambda x: x.nr_articles, reverse=True)
+    data = get_party_members(wiki_id)
     return render_template(
         "party_members.html",
-        items=sorted_persons,
-        name=party_name,
-        logo=party_logo,
+        items=data['members'],
+        name=data['party_name'],
+        logo=data['party_logo'],
         party_wiki_id=wiki_id,
     )
 
 
 @app.route("/stats")
 def status():
-    from datetime import datetime
-    print(datetime.now())
-
-    # number of persons, parties
-    nr_persons = get_nr_of_persons()
-    nr_parties = len(all_parties_info)
-
-    # articles per year chart
-    nr_articles_year_labels, nr_articles_year_values = get_nr_articles_per_year()
-    nr_articles = get_total_nr_of_articles()
-
-    # articles per relationship type per year chart
-    values = get_total_articles_by_year_by_relationship_type()
-
-    # personality frequency chart
-    per_freq_labels = []
-    per_freq_values = []
-    per_freq = get_persons_articles_freq()
-    for x in per_freq:
-        per_freq_labels.append(wiki_id_info[x["person"].split("/")[-1]]["name"])
-        per_freq_values.append(x["freq"])
-
-    # person co-occurrence chart
-    co_occurrences_labels = []
-    co_occurrences_values = []
-    with open("static/json/top_co_occurrences.json") as f_in:
-        top_co_occurrences = json.load(f_in)
-    for x in top_co_occurrences:
-        co_occurrences_labels.append(x["person_a"]["name"] + " / " + x["person_b"]["name"])
-        co_occurrences_values.append(x["nr_occurrences"])
-
-    items = {
-        "nr_parties": nr_parties,
-        "nr_persons": nr_persons,
-        "nr_articles": nr_articles,
-        "nr_articles_year_labels": nr_articles_year_labels,
-        "nr_articles_year_values": nr_articles_year_values,
-
-        "ent1_opposes_ent2": [values[year]['ent1_opposes_ent2'] for year in values],
-        "ent2_opposes_ent1": [values[year]['ent2_opposes_ent1'] for year in values],
-        "ent1_supports_ent2": [values[year]['ent1_supports_ent2'] for year in values],
-        "ent2_supports_ent1": [values[year]['ent2_supports_ent1'] for year in values],
-        "ent1_other_ent2": [values[year]['ent1_other_ent2'] for year in values],
-        "ent2_other_ent1": [values[year]['ent2_other_ent1'] for year in values],
-
-        "per_freq_labels": per_freq_labels[0:500],
-        "per_freq_values": per_freq_values[0:500],
-
-        "per_co_occurrence_labels": co_occurrences_labels[0:75],
-        "per_co_occurrence_values": co_occurrences_values[0:75],
-    }
-
-    return render_template("stats.html", items=items)
+    data = get_stats()
+    return render_template("stats.html", items=data)
 
 
 @app.route("/about")
@@ -243,7 +162,6 @@ def graph():
     freq_min = 10
     freq_max = 30
     k_clique = 3
-    entity = None
 
     # if not arguments were given, render graph with default arguments
     if not list(request.args.items()):
@@ -308,10 +226,12 @@ def queries():
         )
 
     if query_nr == "one":
-        html = False
-        annotate = False
 
-        # NOTE: this is all very very hacky...scary!
+        # time of rendering args
+        html = True if "html" in request.args else False
+        annotate = True if "annotate" in request.args else False
+
+        # time range args
         year_from = request.args.get("year_from")
         year_to = request.args.get("year_to")
         year = request.args.get("year")
@@ -319,12 +239,7 @@ def queries():
             year_from = year
             year_to = year
 
-        if "html" in request.args:
-            html = True
-
-        if "annotate" in request.args:
-            annotate = True
-
+        # entity and relationship args
         entity_one = request.args.get("e1")
         entity_two = request.args.get("e2")
         rel_text = request.args.get("relationship")

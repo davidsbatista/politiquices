@@ -15,3 +15,6 @@ with open("static/json/wiki_id_info.json") as f_in:
 
 with open("static/json/CHAVE-Publico_94_95.jsonl") as f_in:
     chave_publico = [json.loads(line) for line in f_in]
+
+with open("static/json/top_co_occurrences.json") as f_in:
+    top_co_occurrences = json.load(f_in)

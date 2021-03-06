@@ -1,6 +1,13 @@
 from collections import Counter, defaultdict
 
-from politiquices.webapp.webapp.lib.cache import all_entities_info
+from politiquices.webapp.webapp.lib.cache import (
+    all_entities_info,
+    all_parties_info,
+    all_parties_members,
+    top_co_occurrences,
+    wiki_id_info,
+)
+from politiquices.webapp.webapp.lib.data_models import Person
 from politiquices.webapp.webapp.lib.sparql_queries import (
     get_person_rels_by_year,
     get_wiki_id_affiliated_with_party,
@@ -8,10 +15,15 @@ from politiquices.webapp.webapp.lib.sparql_queries import (
     get_relationship_between_person_and_party,
     get_relationship_between_party_and_person,
     get_person_info,
-
-    # ToDo: merge this two ?
     get_relationship_between_two_persons,
-    get_relationships_between_two_entities, get_top_relationships, get_person_relationships
+    get_relationships_between_two_entities,
+    get_top_relationships,
+    get_person_relationships,
+    get_nr_of_persons,
+    get_total_nr_of_articles,
+    get_nr_articles_per_year,
+    get_total_articles_by_year_by_relationship_type,
+    get_persons_articles_freq
 )
 
 from politiquices.webapp.webapp.lib.utils import (
@@ -25,7 +37,6 @@ from politiquices.webapp.webapp.lib.utils import (
 
 
 # entity detail
-
 def entity_full_story(wiki_id, annotate):
 
     # get all the relationships
@@ -136,7 +147,40 @@ def build_relationships_by_year(wiki_id: str):
     }
 
 
-# queries
+# party members
+def get_party_members(wiki_id):
+    for x in all_parties_info:
+        if x["wiki_id"] == wiki_id:
+            party_name = x["party_label"]
+            party_logo = x["party_logo"]
+        break
+
+    # get all members
+    persons = []
+    members_id = all_parties_members[wiki_id]
+    for member_id in members_id:
+        for entity in all_entities_info:
+            if member_id == entity["wiki_id"]:
+                persons.append(
+                    Person(
+                        name=entity["name"],
+                        nr_articles=int(entity["nr_articles"]),
+                        wiki_id=entity["wiki_id"],
+                        image_url=entity["image_url"],
+                    )
+                )
+
+    sorted_persons = sorted(persons, key=lambda x: x.nr_articles, reverse=True)
+
+    return {
+        'members': sorted_persons,
+        'party_name': party_name,
+        'party_logo': party_logo,
+        'party_wiki_id': wiki_id
+    }
+
+
+# SPARQL database queries
 def party_vs_party(party_a, party_b, rel_text, start_year, end_year):
     """
     Given two parties, looks for relationships between members of both parties, performing
@@ -354,4 +398,54 @@ def entity_vs_entity(person_one, person_two):
         'ent1_supports_ent2': ent1_supports_ent2,
         'ent1_opposed_by_ent2': ent1_opposed_by_ent2,
         'ent1_supported_by_ent2': ent1_supported_by_ent2
+    }
+
+
+# data statistics
+def get_stats():
+    # number of persons, parties
+    nr_persons = get_nr_of_persons()
+    nr_parties = len(all_parties_info)
+
+    # articles per year chart
+    nr_articles_year_labels, nr_articles_year_values = get_nr_articles_per_year()
+    nr_articles = get_total_nr_of_articles()
+
+    # articles per relationship type per year chart
+    values = get_total_articles_by_year_by_relationship_type()
+
+    # personality frequency chart
+    per_freq_labels = []
+    per_freq_values = []
+    per_freq = get_persons_articles_freq()
+    for x in per_freq:
+        per_freq_labels.append(wiki_id_info[x["person"].split("/")[-1]]["name"])
+        per_freq_values.append(x["freq"])
+
+    # person co-occurrence chart
+    co_occurrences_labels = []
+    co_occurrences_values = []
+    for x in top_co_occurrences:
+        co_occurrences_labels.append(x["person_a"]["name"] + " / " + x["person_b"]["name"])
+        co_occurrences_values.append(x["nr_occurrences"])
+
+    return {
+        "nr_parties": nr_parties,
+        "nr_persons": nr_persons,
+        "nr_articles": nr_articles,
+        "nr_articles_year_labels": nr_articles_year_labels,
+        "nr_articles_year_values": nr_articles_year_values,
+
+        "ent1_opposes_ent2": [values[year]['ent1_opposes_ent2'] for year in values],
+        "ent2_opposes_ent1": [values[year]['ent2_opposes_ent1'] for year in values],
+        "ent1_supports_ent2": [values[year]['ent1_supports_ent2'] for year in values],
+        "ent2_supports_ent1": [values[year]['ent2_supports_ent1'] for year in values],
+        "ent1_other_ent2": [values[year]['ent1_other_ent2'] for year in values],
+        "ent2_other_ent1": [values[year]['ent2_other_ent1'] for year in values],
+
+        "per_freq_labels": per_freq_labels[0:500],
+        "per_freq_values": per_freq_values[0:500],
+
+        "per_co_occurrence_labels": co_occurrences_labels[0:75],
+        "per_co_occurrence_values": co_occurrences_values[0:75],
     }
