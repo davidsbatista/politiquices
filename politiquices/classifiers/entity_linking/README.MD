@@ -1,6 +1,6 @@
 ## Build Entity Knowledge Base
 
-    make build
+    make build  
     python get_wiki_entities.py              
     python index_wikidata.py wiki_jsons/
 

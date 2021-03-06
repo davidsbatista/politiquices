@@ -1,9 +1,8 @@
 ## politiquices.pt
 
-This is the code for the project [www.politiquices.pt](http://www.politiquices.pt]), which extracts
-support and oppositions relationships between politicians expressed in news titles from archived 
-newspapers.
-
+[www.politiquices.pt](http://www.politiquices.pt]) extracts
+support and oppositions relationships between politicians expressed 
+in news titles from on-line sources.
 
 __classifiers__
    - ML and rule-based classifiers

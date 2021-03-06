@@ -253,7 +253,7 @@ def main():
     entities_ids = set(entities_ids_per + entities_ids_org)
     print(f"\nDownloading {len(entities_ids)} unique ids")
     download(entities_ids, default_dir='wiki_ttl', file_format='ttl')
-    download(entities_ids, default_dir='wiki_jsons', file_format='json')
+    # download(entities_ids, default_dir='wiki_jsons', file_format='json')
 
 
 if __name__ == "__main__":
