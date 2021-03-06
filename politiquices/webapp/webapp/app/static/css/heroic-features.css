@@ -84,6 +84,7 @@ body.loading .modal {
 }
 
 
+/* Links for from top-related entities, on full entity view */ 
 [data-href] { cursor: pointer; }
 
 .underline-on-hover:hover {
@@ -106,6 +107,11 @@ body.loading .modal {
 }
 
 #ui-id-1 {z-index: 9999;}
+
+#autocomplete_nav_bar{
+  position: relative;
+  top: 3px;
+}
 
 
 /* Entity Cards */
