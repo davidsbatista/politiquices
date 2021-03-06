@@ -7,7 +7,7 @@ from politiquices.webapp.webapp.lib.sparql_queries import (
     get_nr_relationships_as_target,
     get_total_nr_articles_for_each_person,
     get_wiki_id_affiliated_with_party,
-    prefixes,
+    PREFIXES,
     query_sparql,
     get_persons_co_occurrences_counts
 )
@@ -70,7 +70,7 @@ def get_all_parties_with_affiliated_count():
         GROUP BY ?political_party ?party_label ?party_logo ?country_label
         ORDER BY DESC(?nr_personalities)
         """
-    results = query_sparql(prefixes + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     political_parties = []
     for x in results["results"]["bindings"]:
         if "party_logo" in x:
