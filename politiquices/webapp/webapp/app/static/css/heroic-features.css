@@ -8,6 +8,24 @@ body {
   padding-top: 56px;
 }
 
+/* Slider for selection of a temporal interval (in years) */
+#slider {
+  margin: 0px;
+}
+
+.ui-slider-horizontal {
+    height: 20px;
+    width: 350px;
+}
+
+.ui-slider .ui-slider-handle {
+    height: 25px;
+    width: 15px;
+    padding-left: 5px;
+    
+}
+
+
 #loading {
   width: 100%;
   height: 100%;
@@ -37,11 +55,8 @@ body {
 }
 
 
-/* Start by setting display:none to make this hidden.
-   Then we position it in relation to the viewport window
-   with position:fixed. Width, height, top and left speak
-   for themselves. Background we set to 80% white with
-   our animation centered, and no-repeating */
+/* Start by setting display:none to make this hidden. Then we position it in relation to the viewport window with position:fixed. 
+Width, height, top and left speak for themselves. Background we set to 80% white with our animation centered, and no-repeating */
    .modal {
     display:    none;
     position:   fixed;
@@ -56,23 +71,17 @@ body {
                 no-repeat;
 }
 
-/* When the body has the loading class, we turn
-   the scrollbar off with overflow:hidden */
+
+/* When the body has the loading class, we turn the scrollbar off with overflow:hidden */
 body.loading .modal {
     overflow: hidden;
 }
 
-/* Anytime the body has the loading class, our
-   modal element will be visible */
+
+/* Anytime the body has the loading class, our modal element will be visible */
 body.loading .modal {
     display: block;
 }
-
-/*
-.table-hover tbody tr:hover > td {
-    cursor: pointer;
-}
-*/
 
 
 [data-href] { cursor: pointer; }
@@ -84,11 +93,13 @@ body.loading .modal {
 
 /* Input Search box on the nav-bar drop-down show over the page*/
 #search-wrapper {
+    top: 10x;
     padding: 10px;
     z-index: 1;
 }
 
 #search-field{
+    top: 10x;
     min-width: 100px;
     padding: 5px;
     z-index: 2147483647;

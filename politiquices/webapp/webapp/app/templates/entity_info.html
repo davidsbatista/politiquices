@@ -89,10 +89,10 @@
         <canvas id="myChart" width="900" height="250"></canvas>
       </div>
     </div>
+    
     <script>
     var ctx = document.getElementById('myChart');
     var color = Chart.helpers.color;
-
     var year_labels = {{ items['year_month_labels']|tojson }};
     var opposed_freq = {{ items['opposed_freq']|tojson }};
     var supported_freq = {{ items['supported_freq']|tojson }};
@@ -137,9 +137,8 @@
         });
 
     });
-
-
     </script>
+    
     <br><br>
 
     <!-- Top personalities for each relationship type -->

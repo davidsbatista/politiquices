@@ -212,32 +212,33 @@
 
     </script>
   
-    <br><br>
+    <br>
 
     <div class="container" id="inner">
 
-        <!-- intro -->
-        <div class="container d-flex align-items-center justify-content-center">
-          <div class="w-100">
-              <p>O politiquices.pt permite pesquisar e analisar relações de <b>apoio</b> ou <b>oposição</b>
-                  entre personalidades e partidos políticos expressas em títulos de notícias. Por exemplo:</p>
-           </div>
-        </div>
-        
-        <div class="container d-flex align-items-center justify-content-center">
-          <div class="w-100">
-              <ul>
-                <li>Quais as relações de apoio/oposição entre António Costa e José Sócrates?</li>
-                <li>Que personalidades do BE se oposeram a Jerónimo de Sousa?</li>
-                <li>Quem de dentro do PS se opôs a José Sócrates?</li>
-                <li>Que personalidades afiliados ao BE se oposeram a personalidades do PCP?</li>
-                <li>Que personalidades do PS apoiaram personalidades do PSD?</li>
-              </ul>
-        </div>
+      <!-- Introdução -->
+      <div class="container d-flex align-items-center justify-content-center">
+        <div class="w-100">
+            <p>O politiquices.pt permite pesquisar relações de <b>apoio</b> ou <b>oposição</b>
+                entre personalidades e partidos políticos expressas em títulos de notícias.</p>
+          </div>
       </div>
 
+      <!-- Queries -->
+      <div class="container">
+        <div class="w-100">
+            <ul>
+              <li>Que acusações fez Passos Coelho a José Sócrates?</li>
+              <li>Quem do PS se opôs/apoiou a José Sócrates?</li>
+              <li>Que personalidades do BE se oposeram a Jerónimo de Sousa?</li>
+              <li>Que personalidades afiliadas ao BE se oposeram a personalidades do PCP?</li>
+              <li>Que personalidades do PS apoiaram/se oposeram a outras personalidades do PS?</li>
+            </ul>
+        </div>
+      </div>
+      
       <br>
-
+      
       <center>
         <form class="container-fluid justify-content-center align-items-center">
           <input id="autocomplete_entity_one_value" type="hidden" name="wiki">
@@ -256,68 +257,50 @@
                   </div>
                 <input id="autocomplete_entity_two" class="span10" type="text" placeholder="Partido ou Personalidade"/>
                 
-                <br><br><br>
-                
+                <br><br>
+                                
                 <div class="form-group col-md-5">
                   <div class="input-group mx-auto mb-5">
-                    
                     <div class="input-group-prepend">
                       <div type="text" id="from" style="color:#002364; margin: 12px; font-weight:bold;">2000</div>
                     </div>
-                    
-                    <div class="form-control" id="slider"></div>
-                    
+                    <div class="form-control" id="slider"></div>                    
                     <div class="input-group-prepend">
                       <div type="text" id="to" style="color:#002364; margin: 12px; font-weight:bold;">2015</div>
                     </div>
-                    
                   </div>
-
-                  <div>
-                    <button type="button" id='button' class="btn btn-primary btn-sm">Procurar</button>
-                  </div>
-
                 </div>
-
-
-
               </div>
-
           </div>
-      </form>
-    </center>
+        </form>
+      </center>
+
+      <center>
+        <div class="container-fluid justify-content-center align-items-center">
+          <button type="button" id='button' class="btn btn-primary btn-large">Procurar</button>
+        </div>
+      </center>
     
-    <style type="text/css">
-      #slider {
-        margin: 0px;
-      }
+     <hr>
 
-      .ui-slider-horizontal {
-          height: 20px;
-          width: 350px;
-      }
+      <!-- Grafo -->
+      <div class="container d-flex align-items-center justify-content-center">
+        <div class="row">
+          <div class="col-md-5">
+            <img class="d-block m-auto" src="static/images/graph_sample.png" width="250px" alt="Exemplo grafo">
+          </div>
+          <div class="col-md-5">
+            <br>
+            <p> É também possível explorar as relações através de um grafo interactivo que permite selecionar o tipo relações, 
+                o período temporal, indicando um número máximo e mínimo de notícias onde as relações se verificam entre 
+                duas quaisqueres personalidades.</p>
+          </div>
+        </div>
+      </div>
 
-      .ui-slider .ui-slider-handle {
-          height: 25px;
-          width: 15px;
-          padding-left: 5px;
-          
-      }
-      </style>
-    
-    <br><br>
-
-    <div class="container d-flex align-items-center justify-content-center">
-      <div class="w-100">
-          <p>É possível também explorar as relações através de um <a href="/graph"><b>grafo interactivo</b></a> que permite selecionar o tipo 
-            relações, o período temporal, indicando um número máximo e mínimo de notícias onde a(s) relação(ões) se verificam entre
-            duas quaisqueres personalidades. 
-          </p>
-       </div>
     </div>
-  </div>
-
-    <br><br><br><br>
+  
+    <br><br>
     
 </div>
 
