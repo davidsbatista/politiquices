@@ -16,7 +16,7 @@ from politiquices.webapp.webapp.lib.sparql_queries import (
     get_relationship_between_party_and_person,
     get_person_info,
     get_relationship_between_two_persons,
-    get_relationships_between_two_entities,
+    get_all_relationships_between_two_entities,
     get_top_relationships,
     get_person_relationships,
     get_nr_of_persons,
@@ -355,16 +355,64 @@ def person_vs_person(per_one, per_two, rel_text, start_year, end_year, annotate)
 
 
 # full-story between 2 entities
-def entity_vs_entity(person_one, person_two):
+def entity_vs_entity(wiki_id_one, wiki_id_two):
     """
-    get all the relationships between two persons
+    Get all the relationships between two persons, centered in one entity, meaning that
+    the relationships are updated to reflect this
     """
-    person_one_info = get_person_info(person_one)
-    person_two_info = get_person_info(person_two)
-    results, rels_freq_by_year = get_relationships_between_two_entities(person_one, person_two)
-
+    person_one_info = get_person_info(wiki_id_one)
+    person_two_info = get_person_info(wiki_id_two)
+    results = get_all_relationships_between_two_entities(wiki_id_one, wiki_id_two)
     if len(results) == 0:
         return None
+
+    # ToDo: refactor all this
+    def relationships_counter():
+        return {
+            "ent1_opposes_ent2": 0,
+            "ent1_supports_ent2": 0,
+            "ent1_opposed_by_ent2": 0,
+            "ent1_supported_by_ent2": 0,
+        }
+
+    # an entry for each year between the min and max years in the dataset
+    rels_freq_by_year = defaultdict(relationships_counter)
+    labels = get_chart_labels_min_max()
+    for label in labels:
+        rels_freq_by_year[label]["ent1_opposes_ent2"] = 0
+
+    for relationship in results:
+        ent1_wiki_id = relationship["ent1_wiki"]
+        year = relationship["date"][0:4]
+        rel_type = relationship["rel_type"]
+
+        if rel_type.startswith("ent1"):
+            if ent1_wiki_id != wiki_id_one:
+                if "supports" in rel_type:
+                    rels_freq_by_year[year]["ent1_supported_by_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_supported_by_ent2"
+                if "opposes" in rel_type:
+                    rels_freq_by_year[year]["ent1_opposed_by_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_opposed_by_ent2"
+            else:
+                rels_freq_by_year[year][rel_type] += 1
+                relationship["rel_type_new"] = rel_type
+
+        if rel_type.startswith("ent2"):
+            if ent1_wiki_id != wiki_id_one:
+                if "supports" in rel_type:
+                    rels_freq_by_year[year]["ent1_supports_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_supports_ent2"
+                if "opposes" in rel_type:
+                    rels_freq_by_year[year]["ent1_opposes_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_opposes_ent2"
+            else:
+                if "supports" in rel_type:
+                    rels_freq_by_year[year]["ent1_supported_by_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_supported_by_ent2"
+                if "opposes" in rel_type:
+                    rels_freq_by_year[year]["ent1_opposed_by_ent2"] += 1
+                    relationship["rel_type_new"] = "ent1_opposed_by_ent2"
 
     for r in results:
         per_vs_person_linkable(r)

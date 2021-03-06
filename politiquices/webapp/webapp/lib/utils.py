@@ -1,10 +1,3 @@
-class Switch(dict):
-    def __getitem__(self, item):
-        for key in self.keys():
-            if item in key:
-                return super().__getitem__(key)
-        raise KeyError(item)
-
 
 def add_icon(r):
     """adds either a arquivo.pt, publico.pt or LINGUATECA"""
@@ -129,6 +122,14 @@ def get_chart_labels_min_max(min_date="1994", max_date="2019"):
         all_years.append(current_date)
         current_date += 1
     return [str(year) for year in all_years]
+
+
+class Switch(dict):
+    def __getitem__(self, item):
+        for key in self.keys():
+            if item in key:
+                return super().__getitem__(key)
+        raise KeyError(item)
 
 
 def determine_heatmap_height(nr_persons):

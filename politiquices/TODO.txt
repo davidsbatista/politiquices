@@ -1,8 +1,10 @@
 Web App
 =======
 
+    - Remove from sparql_queries.py
+        from politiquices.webapp.webapp.lib.data_models import OfficePosition, Person, PoliticalParty
+
     - Limpar o Javascript, re-utilizar
-    - Remove: from politiquices.webapp.webapp.lib.utils import get_chart_labels_min_max
     - Analytics de accessos
     - HTTPS
 
