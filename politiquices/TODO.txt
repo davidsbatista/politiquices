@@ -2,12 +2,13 @@ Web App
 =======
 
     - Limpar o Javascript, re-utilizar
+    - Remove: from politiquices.webapp.webapp.lib.utils import get_chart_labels_min_max
+    - Analytics de accessos
+    - HTTPS
 
     DevOps:
     -------
-        - fechar firewall para tudo, apenas 80, 22, 8000 aberto
-        - /etc/systemd/system/myproject.service
-            - por uwsgi a correr como serviço, talvez implica instalar o uwsgi como binario em fez de pip install
+        - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instread pip install
 
     - BUGS:
         - António Vitorino apoia Durão Barroso 2004-2004: mostra 2 no arco, só há 1
@@ -17,12 +18,6 @@ Web App
          - arrastar um nó e parar, desligar a física
          - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
          - max_hops numa rede
-
-
-    casos de uso, exemplos na apresentação?
-        - pessoas que acusaram/apoiaram governador do Banco de Portugal antes de ser governador
-        - pessoas que acusaram/apoiaram governador do Banco de Portugal agora que é governador
-
 
     Final checks:
     ------------

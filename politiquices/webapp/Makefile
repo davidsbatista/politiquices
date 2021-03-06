@@ -9,7 +9,7 @@ sparql:
 	# 		docker exec -it <container name> </jena-fuseki/fuseki-server -v --config=/fuseki/config.ttl
 	#
 	docker build -t fuseki-docker fuseki-docker
-	docker run -dit -p 3030:3030 fuseki-docker /init.sh  # --tdb2 # --config=/fuseki/config.ttl
+	docker run -dit -p 127.0.0.1:3030:3030 fuseki-docker /init.sh  # --tdb2 # --config=/fuseki/config.ttl
 
 env:
 	# create the python venv
