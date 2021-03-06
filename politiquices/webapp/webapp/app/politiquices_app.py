@@ -49,8 +49,9 @@ def load_entities():
 @app.route("/entity")
 def detail_entity():
     # get args
-    from_search = True if request.args.get("search") else False
-    annotate = True if request.args.get("annotate") else False
+    print(request.args)
+    from_search = True if 'search' in request.args else False
+    annotate = True if 'annotate' in request.args else False
     wiki_id = request.args.get("q")
 
     # get data

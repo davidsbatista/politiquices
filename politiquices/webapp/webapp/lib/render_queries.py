@@ -39,6 +39,9 @@ from politiquices.webapp.webapp.lib.utils import (
 # entity detail
 def entity_full_story(wiki_id, annotate):
 
+    # get the person info: name, image, education, office positions, etc.
+    person = get_person_info(wiki_id)
+
     # get all the relationships
     relationships = get_person_relationships(wiki_id)
 
@@ -56,7 +59,14 @@ def entity_full_story(wiki_id, annotate):
                 "opposed_by": opposed_by,
                 "supported_by": supported_by,
                 "other": other,
-                "other_by": other_by}
+                "other_by": other_by,
+                "wiki_id": person.wiki_id,
+                "name": person.name,
+                "image": person.image_url,
+                "parties": person.parties,
+                "positions": person.positions,
+                "occupations": person.occupations,
+                "education": person.education}
         return data
 
     # make json objects
@@ -65,9 +75,6 @@ def entity_full_story(wiki_id, annotate):
     opposed_by_json = make_json(opposed_by)
     supported_by_json = make_json(supported_by)
     all_relationships_json = opposed_json + supported_json + opposed_by_json + supported_by_json
-
-    # get the person info: name, image, education, office positions, etc.
-    person = get_person_info(wiki_id)
 
     # get the top-related entities
     top_entities_in_rel_type = get_top_relationships(wiki_id)
