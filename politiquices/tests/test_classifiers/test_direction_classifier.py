@@ -1,5 +1,3 @@
-
-
 'Cavaco Silva diz que acusações de Francisco Lopes “não merecem” qualquer resposta'
 'Costa recusa a responder às acusações de Passos'
 'Ana Gomes rejeita acusações de Luís Amado de "má-fé" e "abuso"'
@@ -8,7 +6,6 @@
 'Menezes diz que ataques de Sócrates "são sinal de fim de ciclo"'
 'Joana Amaral Dias confirma convite de Paulo Campos para integrar as listas do PS'
 'Passos Coelho promete melhorar programa para educação criticado por Santana Castilho'
-
 
 
 'Joana Marques Vidal condecorada por Marcelo Rebelo de Sousa'

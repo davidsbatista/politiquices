@@ -1,27 +1,22 @@
 Web App
 =======
 
+    - Analytics de acessos
+
     - HTML:
         - Limpar o Javascript: re-utilizar
         - libs todas locais
         - CSS todo fora do HTML
-
-    - Analytics de accessos
-    - HTTPS: https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-20-04#step-7-%E2%80%94-securing-the-application
 
     - Grafo:
         - arrastar um nó e parar, desligar a física
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - max_hops numa rede
 
-    DevOps:
-    -------
-        - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
-        - website also in a docker?
-
     - BUGS:
         - António Vitorino apoia Durão Barroso 2004-2004: mostra 2 no arco, só há 1
         - Ricardo Baptista Leite está nas "personalidades' mas não tem relações
+
 
     Final checks:
     ------------
@@ -52,7 +47,6 @@ Web App
 
             - Download de todos os stats em .csv
 
-
         Agregacoes + info na personalidade:
         ------------------------------------
              - Governo
@@ -62,6 +56,11 @@ Web App
              - listar todos os membros do Governo X
              - listar todos os que já foram Ministros <qq cena>
              - listar relações familiares
+
+        DevOps:
+        -------
+            - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
+            - website also in a docker?
 
 
 
