@@ -7,8 +7,6 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 
 from politiquices.extraction.utils.utils import just_sleep
 
-# PERSONS
-
 # persons that are/were affiliated with a recent/relevant portuguese political party
 affiliated_with_relevant_political_party = """
     SELECT DISTINCT ?person ?personLabel
@@ -27,23 +25,15 @@ affiliated_with_relevant_political_party = """
     } ORDER BY ?personLabel
     """
 
-# portuguese persons based on their occupation(s) AND born after 1935
-# wd:Q1930187  jornalista
-# wd:Q16533    juiz,
-# wd:Q188094   economista
-# wd:Q40348    advogado
-# wd:Q212238   civil servant
-# wd:Q82955    politician
-# wd:Q43845    businessperson
-# wd:Q131524   entrepreneur
-
+# famous portuguese persons, such as: judges, economists, lawyers, civil servants, politicians,
+# businessperson, bankers, etc.; born after 1935
 portuguese_persons_occupations = """
     SELECT DISTINCT ?person ?personLabel ?date_of_birth
     WHERE {
       ?person wdt:P27 wd:Q45.
-      { VALUES ?ocupations { wd:Q16533 wd:Q188094 wd:Q40348 
-                             wd:Q212238  wd:Q82955 wd:Q43845 wd:Q806798 }} .
-      ?person wdt:P106 ?ocupations .
+      { VALUES ?occupations { wd:Q16533 wd:Q188094 wd:Q40348 wd:Q212238  
+                              wd:Q82955 wd:Q43845 wd:Q806798 }} .
+      ?person wdt:P106 ?occupations .
       ?person wdt:P569 ?date_of_birth .
       ?person rdfs:label ?personLabel.
       FILTER(?date_of_birth >= "1935-01-01T00:00:00"^^xsd:dateTime )
@@ -51,8 +41,6 @@ portuguese_persons_occupations = """
     } 
     ORDER BY ?personLabel
     """
-
-# ORGANISATIONS
 
 # all portuguese political parties
 portuguese_political_parties = """
@@ -141,8 +129,6 @@ def get_relevant_persons_based_on_public_office_positions():
         subject currently or formerly holds the object position or public office
 
         filter to return only those born after 1935
-
-    :return:
     """
 
     wiki_ids = []
@@ -167,22 +153,53 @@ def get_relevant_persons_based_on_public_office_positions():
     return query
 
 
-def get_results(endpoint_url, sarpql_query):
+def query_wikidata(sparql_query):
+    endpoint_url = "https://query.wikidata.org/sparql"
     user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
-    sparql.setQuery(sarpql_query)
+    sparql.setQuery(sparql_query)
     sparql.setReturnFormat(JSON)
     return sparql.query().convert()
 
 
-def load_from_list(fname):
-    with open(fname, 'rt') as f_in:
-        wiki_ids_urls = [line.split(',')[0].split("/")[-1].strip()
-                         for line in f_in if not line.startswith('#')]
-    return wiki_ids_urls
+def read_extra_entities(f_name):
+    with open(f_name) as f_in:
+        data = json.load(f_in)
+        remove = [url.split("/")[-1] for url in data['remove']]
+        add = [url.split("/")[-1] for url in data['add']]
+    return add, remove
 
 
-def download(ids_to_retrieve, default_dir="wiki_jsons", file_format='json'):
+def gather_wiki_ids(queries, to_add=None, to_remove=None):
+
+    relevant_ids = []
+
+    for query in queries:
+        results = query_wikidata(query)
+        just_sleep(3)
+        wiki_ids = [r["person"]["value"].split("/")[-1] for r in results["results"]["bindings"]]
+        relevant_ids.extend(wiki_ids)
+
+    print(f"{len(relevant_ids)} entities gathered from SPARQL queries")
+
+    if to_add:
+        print(f"{len(to_add)} manually selected entities to be added")
+        relevant_ids.extend(to_add)
+
+    if to_remove:
+        print(f"{len(to_remove)} manually selected entities to be removed")
+        for el in to_remove:
+            if el in relevant_ids:
+                relevant_ids.remove(el)
+
+    # eliminate duplicates
+    unique_relevant_ids = list(set(relevant_ids))
+    print(f"{len(unique_relevant_ids)} unique entities to be loaded")
+
+    return unique_relevant_ids
+
+
+def download(ids_to_retrieve, default_dir="wiki_ttl", file_format="ttl"):
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
     for idx, wiki_id in enumerate(set(ids_to_retrieve)):
         print(str(idx) + "/" + str(len(set(ids_to_retrieve))))
@@ -195,67 +212,16 @@ def download(ids_to_retrieve, default_dir="wiki_jsons", file_format='json'):
         open(f_name, "wt").write(r.text)
 
 
-def gather_wiki_ids(queries, e_type='org', to_add=None, to_remove=None):
-    """
-    Get the wiki ids for all relevant entities
-    """
-    endpoint_url = "https://query.wikidata.org/sparql"
-    relevant_ids = []
-
-    value = 'person' if e_type == 'per' else 'wiki_id'
-
-    for query in queries:
-        results = get_results(endpoint_url, query)
-        just_sleep(3)
-        wiki_ids = [r[value]["value"].split("/")[-1] for r in results["results"]["bindings"]]
-        relevant_ids.extend(wiki_ids)
-
-    print(f'{len(relevant_ids)} entities gathered from SPARQL queries')
-
-    if to_add:
-        print(f'{len(to_add)} manually selected entities to be added')
-        relevant_ids.extend(to_add)
-
-    if to_remove:
-        print(f'{len(to_remove)} manually selected entities to be removed')
-        for el in to_remove:
-            if el in relevant_ids:
-                relevant_ids.remove(el)
-
-    # eliminate duplicates
-    unique_relevant_ids = list(set(relevant_ids))
-    print(f'{len(unique_relevant_ids)} unique entities to be loaded')
-
-    return unique_relevant_ids
-
-
 def main():
-    # get persons
-    print("Persons")
     queries = [
         affiliated_with_relevant_political_party,
         get_relevant_persons_based_on_public_office_positions(),
         portuguese_persons_occupations,
     ]
-    to_load = load_from_list('entities_to_add.txt')
-    to_remove = load_from_list('entities_to_remove.txt')
-    entities_ids_per = gather_wiki_ids(queries, e_type='per', to_add=to_load, to_remove=to_remove)
-
-    # get organisations
-    entities_ids_org = []
-    """
-    print("\nOrganisations")
-    queries = [
-        portuguese_political_parties,
-        portuguese_banks,
-        portuguese_public_enterprises,
-    ]
-    entities_ids_org = gather_wiki_ids(queries)
-    """
-    entities_ids = set(entities_ids_per + entities_ids_org)
+    add, remove = read_extra_entities
+    entities_ids = gather_wiki_ids(queries, to_add=add, to_remove=remove)
     print(f"\nDownloading {len(entities_ids)} unique ids")
-    download(entities_ids, default_dir='wiki_ttl', file_format='ttl')
-    # download(entities_ids, default_dir='wiki_jsons', file_format='json')
+    download(entities_ids, default_dir="wiki_ttl", file_format="ttl")
 
 
 if __name__ == "__main__":

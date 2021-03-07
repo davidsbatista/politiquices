@@ -1,9 +1,3 @@
-# using tips and tricks from:
-#	https://stackoverflow.com/questions/48643466/docker-create-network-should-ignore-existing-network/48643576
-# 	https://stackoverflow.com/questions/21183088/how-can-i-wait-for-a-docker-container-to-be-up-and-running
-
-.SILENT: build
-
 build:
 
 	echo "Creating 'elastic' network"
@@ -23,7 +17,7 @@ build:
 	echo "ElasticSearch is up and running!"
 
 	echo "Loading data"
-	python index_wikidata.py wiki_jsons/
+	python index_wikidata.py wiki_ttl/
 
 	echo -e "\nhttp://localhost:5601/app/kibana"
 

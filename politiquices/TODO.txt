@@ -9,6 +9,11 @@ Web App
     - Analytics de accessos
     - HTTPS: https://www.digitalocean.com/community/tutorials/how-to-serve-flask-applications-with-uwsgi-and-nginx-on-ubuntu-20-04#step-7-%E2%80%94-securing-the-application
 
+    - Grafo:
+        - arrastar um nó e parar, desligar a física
+        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+        - max_hops numa rede
+
     DevOps:
     -------
         - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
@@ -17,12 +22,6 @@ Web App
     - BUGS:
         - António Vitorino apoia Durão Barroso 2004-2004: mostra 2 no arco, só há 1
         - Ricardo Baptista Leite está nas "personalidades' mas não tem relações
-
-    - Grafo:
-         - arrastar um nó e parar, desligar a física
-         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-         - max_hops numa rede
-
 
     Final checks:
     ------------
@@ -144,9 +143,6 @@ classifiers
             'Rui Pedro Soares' always being tagged as 'Pedro Soares'
 
         - 'Fernando Gomes'
-
-        - construir o index ElasticSearch a partir das .ttl files, em vez de sacar os JSONs
-            tip: usar python RDFLib para ter label + aliases a partir das ttl files
 
         - https://github.com/TheScienceMuseum/elastic-wikidata
 
