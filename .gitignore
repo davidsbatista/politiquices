@@ -35,9 +35,9 @@ old_ttls/
 open_ie/
 
 politiquices/classifiers/entity_linking/wiki_jsons/
-politiquices/classifiers/relationship_extraction/experiments/
-politiquices/classifiers/relationship_extraction/resources/
-politiquices/classifiers/relationship_extraction/trained_models/
+politiquices/classifiers/relationship/experiments/
+politiquices/classifiers/relationship/resources/
+politiquices/classifiers/relationship/trained_models/
 
 politiquices/extraction/scripts/2020-12-28_arquivo/
 politiquices/extraction/scripts/2020-12-28_publico/

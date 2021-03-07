@@ -16,18 +16,16 @@ from politiquices.classifiers.entity_linking.entitly_linking_clf import (
     fuzzy_match
 )
 
-from politiquices.classifiers.relationship_extraction.relationship_direction_clf import detect_direction
+from politiquices.classifiers.relationship.relationship_direction_clf import detect_direction
 from politiquices.extraction.utils.utils import clean_title_quotes, clean_title_re
 from politiquices.extraction.scripts.utils import get_text_newspaper
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-MODELS = os.path.join(APP_ROOT, "../classifiers/relationship_extraction/trained_models/")
+MODELS = os.path.join(APP_ROOT, "../classifiers/relationship/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
-
 
 # set up the custom NER system
 rule_ner = RuleBasedNer()
-
 
 publico_full_text = dict()
 chave_full_text = dict()
@@ -50,7 +48,7 @@ def parse_args():
 
 def entity_linking(entity, url):
 
-    publico_pt = ('http://www.publico.pt','http://economia.publico.pt', 'https://www.publico.pt',
+    publico_pt = ('http://www.publico.pt', 'http://economia.publico.pt', 'https://www.publico.pt',
                   'http://publico.pt', 'http://ecosfera.publico.pt', 'http://desporto.publico.pt')
 
     candidates = query_kb(entity, all_results=True)
@@ -164,19 +162,22 @@ def main():
 
     args = parse_args()
 
+    if not args.chave and not args.publico and not args.arquivo:
+        print(args)
+        exit(-1)
+
     if args.publico:
         f_name = args.publico
         print("Loading publico.pt texts")
         load_publico_texts()
-    elif args.arquivo:
+
+    if args.arquivo:
         f_name = args.arquivo
-    elif args.chave:
+
+    if args.chave:
         f_name = args.chave
         print("Loading CHAVE texts")
         load_chave_texts()
-    else:
-        print(args)
-        exit(-1)
 
     # load named-entities that should be ignored
     with open('ner_ignore.txt', 'rt') as f_in:
@@ -185,7 +186,7 @@ def main():
     # load the relationships classification model
     relationship_clf = read_lstm_models()
 
-    # use spaCy models to extract title morphological information, direction classifier
+    # use spaCy to extract title morphological information, used by the relationship direction clf
     print("Loading spaCy NLP model")
     nlp = pt_core_news_lg.load()
     nlp.disable = ["tagger", "parser", "ner"]
@@ -212,7 +213,7 @@ def main():
             elif args.arquivo or args.chave:
                 entry = json.loads(line)
                 title = entry["title"]
-                url = entry["linkToArchive"]
+                url = entry["link"]
                 date = entry["tstamp"]
 
             count += 1

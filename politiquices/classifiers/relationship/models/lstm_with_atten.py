@@ -18,7 +18,7 @@ from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 
 from politiquices.classifiers.utils.ml_utils import print_cm
-from politiquices.classifiers.relationship_extraction.models.embeddings_utils import (
+from politiquices.classifiers.relationship.models.embeddings_utils import (
     create_embeddings_matrix,
     get_embeddings_layer,
     vectorize_titles,
@@ -142,7 +142,7 @@ class LSTMAtt:
 
         callbacks = []
         if x_val and y_val:
-            from politiquices.classifiers.relationship_extraction.models.callbacks import Metrics
+            from politiquices.classifiers.relationship.models.callbacks import Metrics
             metrics = Metrics(**{"le": self.label_encoder})
             callbacks = [metrics]
             val_data = (x_val_vec_padded, val_y_vec)

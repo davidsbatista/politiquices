@@ -4,13 +4,8 @@ from functools import lru_cache
 
 from elasticsearch import Elasticsearch
 
-from politiquices.classifiers.ner.rule_based_ner import RuleBasedNer
-
 print("Setting up connection with ElasticSearch")
 es = Elasticsearch([{"host": "localhost", "port": 9200}])
-
-# set up the custom NER system
-rule_ner = RuleBasedNer()
 
 
 @lru_cache(maxsize=2000)
@@ -126,7 +121,7 @@ def deburr_entity():
     # without dashes and ANSI version of a string
 
 
-def expand_entities(entity, text):
+def expand_entities(entity, text, rule_ner):
     all_entities, persons = rule_ner.tag(text)
     expanded = [p for p in persons if entity in p and entity != p]
     expanded_clean = [clean_entity(x) for x in expanded]

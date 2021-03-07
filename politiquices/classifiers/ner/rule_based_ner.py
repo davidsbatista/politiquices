@@ -2,8 +2,6 @@ import os
 import re
 
 from elasticsearch import Elasticsearch
-from spacy.pipeline import EntityRuler
-
 import pt_core_news_lg
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -52,6 +50,7 @@ class RuleBasedNer:
         patterns = []
 
         for name in self.kb_names:
+            print(name)
             name_clean = re.sub(r'\(.*\)', '', name)  # remove text inside parenthesis
             name_clean = re.sub(r'(,.*)', ' ', name_clean)  # remove comma and all text after
             name_parts = name_clean.split()

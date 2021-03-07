@@ -1,7 +1,7 @@
 import pt_core_news_lg
 from sklearn.metrics import classification_report
 
-from politiquices.classifiers.relationship_extraction.relationship_direction_clf import detect_direction
+from politiquices.classifiers.relationship.relationship_direction_clf import detect_direction
 from politiquices.extraction.utils.utils import (
     clean_title_quotes,
     clean_title_re,
