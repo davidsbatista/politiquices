@@ -79,7 +79,7 @@ def main():
         print(f"{counter}/{len(os.listdir(path))}")
 
     # save to file
-    with open('wiki_names_alternative_names_old.jsonl', 'wt') as f_out:
+    with open('wiki_names_alternative_names.jsonl', 'wt') as f_out:
         for d in bulk_data:
             f_out.write(json.dumps(d, ensure_ascii=False)+'\n')
 
