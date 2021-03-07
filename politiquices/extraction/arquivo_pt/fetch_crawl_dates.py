@@ -1,8 +1,17 @@
 import json
 import requests
-from politiquices.extraction.utils.utils import load_domains
+
 
 URL_REQUEST = "http://arquivo.pt/wayback/cdx"
+
+
+def load_domains():
+    domains = []
+    with open("config_data/domains.txt", "rt") as f_in:
+        for line in f_in:
+            if not line.startswith("#") and len(line) > 1:
+                domains.append(line.strip("\n"))
+    return domains
 
 
 def get_domain_crawl_timeline(domain):
@@ -26,7 +35,7 @@ def main():
         print(d)
         crawled_timelines[d] = get_domain_crawl_timeline(d)
 
-    with open('data/domains_crawled_dates.json', 'wt') as f_out:
+    with open('config_data/domains_crawled_dates.json', 'wt') as f_out:
         json.dump(crawled_timelines, f_out, indent=4)
 
 

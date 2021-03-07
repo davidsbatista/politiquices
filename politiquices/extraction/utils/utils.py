@@ -20,14 +20,11 @@ def write_iterator_to_file(iter_struct, filename):
 
 
 def clean_title_quotes(title):
-    if title[0] == '"' and title[-1] == '"':
-        title = title[1:-1]
     cleaned_title = re.sub(r"[“”″\']", '"', title)
     return re.sub(r'"{2}', '"', cleaned_title)
 
 
 def clean_title_re(title):
-
     title = title.replace("DN Online:", "").strip()
     parts = re.split(r"\s[|–>-]\s", title)
 
@@ -52,22 +49,8 @@ def clean_title_re(title):
     return title
 
 
-def convert_dates(date: str):
-    date_obj = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
-    return date_obj.strftime("%Y %b")
-
-
 def get_time_str():
     return datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
-
-
-def load_domains():
-    domains = []
-    with open("data/domains.txt", "rt") as f_in:
-        for line in f_in:
-            if not line.startswith("#") and len(line) > 1:
-                domains.append(line.strip("\n"))
-    return domains
 
 
 def read_ground_truth(filename, delimiter="\t"):

@@ -1,4 +1,3 @@
-
 from elasticsearch import Elasticsearch
 from politiquices.extraction.utils.utils import write_iterator_to_file
 
@@ -13,4 +12,4 @@ def get_names():
 
 if __name__ == '__main__':
     names = get_names()
-    write_iterator_to_file(names, 'data/entities_names.txt')
+    write_iterator_to_file(names, 'config_data/entities_names.txt')

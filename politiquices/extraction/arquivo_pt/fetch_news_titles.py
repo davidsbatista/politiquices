@@ -19,7 +19,7 @@ domains_crawled_dates = None
 
 def load_entities():
     names = []
-    with open('data/entities_names.txt', 'rt') as f_in:
+    with open('config_data/entities_names.txt', 'rt') as f_in:
         for line in f_in:
             if not line.startswith('#') and len(line) > 1:
                 names.append(line.strip('\n'))
@@ -87,7 +87,7 @@ def main():
     print()
 
     # read domains crawled span times
-    with open('data/domains_crawled_dates.json') as f_in:
+    with open('config_data/domains_crawled_dates.json') as f_in:
         global domains_crawled_dates
         domains_crawled_dates = json.load(f_in)
 
