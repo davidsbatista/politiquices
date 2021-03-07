@@ -13,7 +13,7 @@ from politiquices.classifiers.entity_linking.entitly_linking_clf import (
     expand_entities,
     find_perfect_match,
     disambiguate,
-    fuzzy_match
+    fuzzy_match, setup_es
 )
 
 from politiquices.classifiers.relationship.relationship_direction_clf import detect_direction
@@ -21,20 +21,11 @@ from politiquices.extraction.utils.utils import clean_title_quotes, clean_title_
 from politiquices.extraction.scripts.utils import get_text_newspaper
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-MODELS = os.path.join(APP_ROOT, "../classifiers/relationship/trained_models/")
+MODELS = os.path.join(APP_ROOT, "../../classifiers/relationship/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
-
-# set up the custom NER system
-rule_ner = RuleBasedNer()
 
 publico_full_text = dict()
 chave_full_text = dict()
-
-
-def read_lstm_models():
-    print("Loading relationship classifier...")
-    relationship_clf = joblib.load(MODELS + "relationship_clf_2020-12-23_140325.pkl")
-    return relationship_clf
 
 
 def parse_args():
@@ -159,11 +150,9 @@ def load_chave_texts():
 
 
 def main():
-
     args = parse_args()
-
-    if not args.chave and not args.publico and not args.arquivo:
-        print(args)
+    if not any((args.chave, args.publico, args.arquivo)):
+        print("Need to give at least one input")
         exit(-1)
 
     if args.publico:
@@ -171,20 +160,21 @@ def main():
         print("Loading publico.pt texts")
         load_publico_texts()
 
-    if args.arquivo:
-        f_name = args.arquivo
-
     if args.chave:
         f_name = args.chave
         print("Loading CHAVE texts")
         load_chave_texts()
+
+    if args.arquivo:
+        f_name = args.arquivo
 
     # load named-entities that should be ignored
     with open('ner_ignore.txt', 'rt') as f_in:
         ner_ignore = [line.strip() for line in f_in.readlines()]
 
     # load the relationships classification model
-    relationship_clf = read_lstm_models()
+    print("Loading relationship classifier...")
+    relationship_clf = joblib.load(MODELS + "relationship_clf_2020-12-23_140325.pkl")
 
     # use spaCy to extract title morphological information, used by the relationship direction clf
     print("Loading spaCy NLP model")
@@ -201,6 +191,10 @@ def main():
     failed_to_clean = jsonlines.open("failed_to_clean.jsonl", mode="w")
 
     count = 0
+
+    # set up the custom NER system
+    rule_ner = RuleBasedNer()
+    es = setup_es()
 
     with open(f_name, 'rt') as f_in:
         for line in f_in:

@@ -4,12 +4,15 @@ from functools import lru_cache
 
 from elasticsearch import Elasticsearch
 
-print("Setting up connection with ElasticSearch")
-es = Elasticsearch([{"host": "localhost", "port": 9200}])
+
+def setup_es():
+    print("Setting up connection with ElasticSearch")
+    es = Elasticsearch([{"host": "localhost", "port": 9200}])
+    return es
 
 
 @lru_cache(maxsize=2000)
-def query_kb(entity, all_results=False):
+def query_kb(es, entity, all_results=False):
 
     def needs_escaping(char):
         escape_chars = {

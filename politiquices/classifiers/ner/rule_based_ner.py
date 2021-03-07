@@ -13,10 +13,11 @@ class RuleBasedNer:
         self.entities_file = os.path.join(APP_ROOT, "PER_entities.txt")
         self.connectors = ['do', 'da', 'de', 'dos']
         self.file_names = self._get_names_file(self.entities_file)
-        self.kb_names = self._get_names_kb()
+        # self.kb_names = self._get_names_kb()
         self.patterns = self.build_token_patterns()
         self.ner = self.build_ner()
 
+    """
     @staticmethod
     def _get_names_kb():
         es = Elasticsearch([{"host": "localhost", "port": 9200}])
@@ -33,6 +34,7 @@ class RuleBasedNer:
                            reverse=True)
 
         return all_names
+    """
 
     @staticmethod
     def _get_names_file(fname):

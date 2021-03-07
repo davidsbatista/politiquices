@@ -1,4 +1,3 @@
-import pt_core_news_lg
 
 from politiquices.classifiers.ner.rule_based_ner import RuleBasedNer
 
