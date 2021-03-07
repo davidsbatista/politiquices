@@ -17,7 +17,7 @@ build:
 	echo "ElasticSearch is up and running!"
 
 	echo "Loading data"
-	python index_wikidata.py wiki_ttl/
+	python index_wikidata_entities.py wiki_ttl/
 
 	echo -e "\nhttp://localhost:5601/app/kibana"
 

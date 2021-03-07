@@ -23,14 +23,3 @@
 
 <#tdb_ds_wikidata> rdf:type tdb:DatasetTDB ;
                tdb:location "/fuseki/wikidata/" .
-
-# ToDo: name the graphs and used NAMED and or GRAPH
-# https://stackoverflow.com/questions/26121947/query-multiple-tdb-datasets
-# query for names: https://jena.apache.org/documentation/fuseki2/soh.html#soh-sparql-query
-# https://github.com/SemanticComputing/fuseki-docker/blob/master/assembler.ttl
-#:g1 a tdb:GraphTDB ;
-#  tdb:dataset :ds1 ;
-#  tdb:graphName foo:the-dataset .
-
-#<#tdbGraph> a tdb:GraphTDB ;
-#tdb:dataset <#tdb_dataset_politiquices> .

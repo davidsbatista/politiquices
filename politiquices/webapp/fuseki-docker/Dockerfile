@@ -46,8 +46,3 @@ WORKDIR $FUSEKI_HOME
 EXPOSE 3030
 
 ENTRYPOINT ["/bin/bash"]
-
-# this has to be run manually inside docker, check init.sh
-# /jena/bin/tdbloader2 -d -l /fuseki/wikidata /usr/share/data/wikidata_org.ttl.bz2
-# /jena/bin/tdbloader2 -d -l /fuseki/politiquices /usr/share/data/politiquices.ttl
-# /jena-fuseki/fuseki-server -v --config=/fuseki/config.ttl

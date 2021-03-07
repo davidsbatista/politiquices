@@ -26,8 +26,6 @@ Web App
     Final checks:
     ------------
         - other is only for myself, debugging :)
-        - limpar wiki:
-            - 'lula ladrao da silva'
         - todo o texto em Português, remover inglês
         - normalizar tudo para: opõe-se/apoia
         - download das tabelas explicito
