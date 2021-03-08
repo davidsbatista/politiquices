@@ -48,12 +48,9 @@ def pre_process_train_data(data):
 
 
 def main():
-    data_publico = read_ground_truth("../../../data/annotated/publico_politica.tsv")
-    data_webapp = read_ground_truth("../../../data/annotated/annotations_from_webapp.csv",
-                                    delimiter=",")
-
-    data_arquivo = read_ground_truth("../../../data/annotated/arquivo.tsv")
-    titles, labels = pre_process_train_data(data_publico + data_arquivo + data_webapp)
+    publico = read_ground_truth("../../../data/annotated/publico.csv")
+    arquivo = read_ground_truth("../../../data/annotated/arquivo.csv")
+    titles, labels = pre_process_train_data(publico + arquivo)
 
     print("Loading embeddings...")
     word2embedding, word2index = get_embeddings()

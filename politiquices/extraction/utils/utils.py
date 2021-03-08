@@ -1,5 +1,5 @@
-import csv
 import re
+import csv
 
 from datetime import datetime
 from random import randint
@@ -50,40 +50,28 @@ def clean_title_re(title):
 
 
 def get_time_str():
-    return datetime.strftime(datetime.now(), "%Y%m%d%H%M%S")
+    return datetime.strftime(datetime.now(), "%Y_%m_%d%_%H_%M_%S")
 
 
-def read_ground_truth(filename, delimiter="\t"):
+def read_ground_truth(filename, delimiter=","):
     data = []
     with open(filename, newline="") as csv_file:
         titles = csv.reader(csv_file, delimiter=delimiter)
         for row in titles:
-            if not row[1]:  # only get labeled data
-                continue
-            # distinguish between samples with and without wiki id
+            sample = {
+                "title": row[0],
+                "label": row[1],
+                "idiomatic": row[2],
+                "date": row[3],
+                "url": row[4],
+                "ent1": row[5],
+                "ent2": row[6],
+            }
+            # if wiki_id annotations are present
             if len(row) == 9:
-                sample = {
-                    "title": row[0],
-                    "label": row[1],
-                    "idiomatic": row[2],
-                    "date": row[3],
-                    "url": row[4],
-                    "ent1": row[5],
-                    "ent2": row[6],
-                    "ent1_id": row[7],
-                    "ent2_id": row[8],
-                }
-            else:
-                sample = {
-                    "title": row[0],
-                    "label": row[1],
-                    "idiomatic": row[2],
-                    "date": row[3],
-                    "url": row[4],
-                    "ent1": row[5],
-                    "ent2": row[6],
-                }
+                sample.update({"ent1_id": row[7], "ent2_id": row[8]})
             data.append(sample)
+
     return data
 
 

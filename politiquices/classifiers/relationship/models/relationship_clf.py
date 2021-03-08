@@ -1,6 +1,7 @@
 import joblib
 import numpy as np
-from datetime import datetime
+
+import spacy
 
 from keras import Input, Model
 from keras.utils import to_categorical
@@ -17,6 +18,7 @@ from politiquices.classifiers.relationship.models.embeddings_utils import (
     get_embeddings_layer,
     vectorize_titles,
 )
+from politiquices.extraction.utils.utils import get_time_str
 
 
 class RelationshipClassifier:
@@ -29,6 +31,10 @@ class RelationshipClassifier:
         self.label_encoder = None
         self.num_classes = None
         self.history = None  # ToDo: make function to plot loss graphs on train and test
+        self.spacy_tokenizer = spacy.load("pt_core_news_lg", disable=['parser', 'tagger', 'ner'])
+
+    def tokenize(self, sentences):
+        return [[str(t).lower() for t in self.spacy_tokenizer(sent)] for sent in sentences]
 
     def get_model(self, embedding_layer):
         i = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
@@ -43,9 +49,8 @@ class RelationshipClassifier:
         return model
 
     def train(self, x_train, y_train, word2index, word2embedding, x_val=None, y_val=None):
-        x_train_vec = vectorize_titles(word2index, x_train, save_tokenized=False, save_missed=False)
-        if x_val:
-            x_val_vec = vectorize_titles(word2index, x_val, save_tokenized=False, save_missed=False)
+        x_train_vec = vectorize_titles(word2index, self.tokenize(x_train))
+        x_val_vec = vectorize_titles(word2index, self.tokenize(x_val)) if x_val else None
 
         # get the max sentence length, needed for padding
         self.max_input_length = max([len(x) for x in x_train_vec])
@@ -53,12 +58,10 @@ class RelationshipClassifier:
 
         # pad all the sequences of indexes to the 'max_input_length'
         x_train_vec_padded = pad_sequences(
-            x_train_vec, maxlen=self.max_input_length, padding="post", truncating="post"
-        )
+            x_train_vec, maxlen=self.max_input_length, padding="post", truncating="post")
         if x_val:
             x_val_vec_padded = pad_sequences(
-                x_val_vec, maxlen=self.max_input_length, padding="post", truncating="post"
-            )
+                x_val_vec, maxlen=self.max_input_length, padding="post", truncating="post")
 
         # Encode the labels, each must be a vector with dim = num. of possible labels
         le = LabelEncoder()
@@ -91,24 +94,19 @@ class RelationshipClassifier:
         # ToDo: add callbacks
         if val_data:
             self.history = model.fit(
-                x_train_vec_padded, y_train_vec, validation_data=val_data, epochs=self.epochs
-            )
+                x_train_vec_padded, y_train_vec, validation_data=val_data, epochs=self.epochs)
         else:
             self.history = model.fit(
-                x_train_vec_padded, y_train_vec, validation_split=0.1, epochs=self.epochs
-            )
+                x_train_vec_padded, y_train_vec, validation_split=0.1, epochs=self.epochs)
 
         self.model = model
         self.word2index = word2index
         self.label_encoder = le
 
     def tag(self, x_test):
-        x_test_vec = vectorize_titles(
-            self.word2index, x_test, save_tokenized=False, save_missed=False
-        )
+        x_test_vec = vectorize_titles(self.word2index, self.tokenize(x_test))
         x_test_vec_padded = pad_sequences(
-            x_test_vec, maxlen=self.max_input_length, padding="post", truncating="post"
-        )
+            x_test_vec, maxlen=self.max_input_length, padding="post", truncating="post")
         return self.model.predict(x_test_vec_padded)
 
     def evaluate(self, x_test, y_test):
@@ -144,5 +142,4 @@ class RelationshipClassifier:
         return report_str, misclassifications, correct
 
     def save(self):
-        date_time = datetime.now().strftime("%Y-%m-%d_%H%M%S")
-        joblib.dump(self, f"trained_models/relationship_clf_{date_time}.joblib")
+        joblib.dump(self, f"trained_models/relationship_clf_{get_time_str()}.joblib")

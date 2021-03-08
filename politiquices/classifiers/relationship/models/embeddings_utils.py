@@ -1,13 +1,8 @@
 import numpy as np
-import pt_core_news_lg
 from keras.layers import Embedding
 
-from politiquices.extraction.utils.utils import get_time_str
 
-nlp = pt_core_news_lg.load()
-
-
-def load_fasttext_embeddings(file):
+def load_embeddings(file):
     word2embedding = {}
     index2word = {}
     idx = 2
@@ -64,9 +59,9 @@ def get_embeddings_layer(embeddings_matrix, max_len, name="embedding_layer", tra
 
 def get_embeddings(filename=None):
     if filename:
-        word2embedding, index2word = load_fasttext_embeddings(filename)
+        word2embedding, index2word = load_embeddings(filename)
     else:
-        word2embedding, index2word = load_fasttext_embeddings("skip_s100.txt")
+        word2embedding, index2word = load_embeddings("skip_s100.txt")
     word2index = {v: k for k, v in index2word.items()}
     word2index["PAD"] = 0
     word2index["UNKNOWN"] = 1
@@ -75,24 +70,10 @@ def get_embeddings(filename=None):
     return word2embedding, word2index
 
 
-def vectorize_titles(word2index, x_train, log=False, save_tokenized=False, save_missed=False):
-    # tokenize the sentences and convert into vector indexes
-    all_sent_tokens = []
+def vectorize_titles(word2index, sent_tokens):
     word_no_vectors = set()
-    for doc in nlp.pipe(x_train, disable=["tagger", "parser", "ner"]):
-        all_sent_tokens.append([str(t).lower() for t in doc])
-        if log:
-            print(x_train)
-            print([str(t).lower() for t in doc])
-
-    # save tokenized sentences to file, for later analysis
-    if save_tokenized:
-        with open(f'tokens_{get_time_str()}', 'wt') as f_out:
-            for sent_tokens in all_sent_tokens:
-                f_out.write(' | '.join(sent_tokens)+'\n')
-
     x_train_vec = []
-    for sent in all_sent_tokens:
+    for sent in sent_tokens:
         tokens_idx = []
         for tok in sent:
             if tok in word2index:
@@ -101,12 +82,5 @@ def vectorize_titles(word2index, x_train, log=False, save_tokenized=False, save_
                 tokens_idx.append(word2index["UNKNOWN"])
                 word_no_vectors.add(tok)
         x_train_vec.append(tokens_idx)
-
-    if save_missed and word_no_vectors:
-        with open(f'missed_embedding_{get_time_str()}', 'wt') as f_out:
-            for token in word_no_vectors:
-                f_out.write(token+'\n')
-        if log:
-            print(word_no_vectors)
 
     return x_train_vec
