@@ -21,6 +21,9 @@
 
 
 
+- https://github.com/TheScienceMuseum/elastic-wikidata
+
+
 - more (types of) entities
     - Partidos Politicos e suas secções
        - JSD

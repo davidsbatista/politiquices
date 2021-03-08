@@ -15,7 +15,7 @@ def main():
 
     data_publico = read_ground_truth("../../../../data/annotated/publico_politica.tsv", only_label=True)
     data_arquivo = read_ground_truth("../../../../data/annotated/arquivo.tsv", only_label=True)
-    data_webapp = read_ground_truth("../annotations_from_webapp.csv", delimiter=",", only_label=True)
+    data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.csv", delimiter=",", only_label=True)
 
     true_direction = []
     pred_direction = []

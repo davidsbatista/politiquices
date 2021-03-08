@@ -13,7 +13,8 @@ from politiquices.classifiers.entity_linking.entitly_linking_clf import (
     expand_entities,
     find_perfect_match,
     disambiguate,
-    fuzzy_match, setup_es
+    fuzzy_match,
+    setup_es
 )
 
 from politiquices.classifiers.relationship.relationship_direction_clf import detect_direction

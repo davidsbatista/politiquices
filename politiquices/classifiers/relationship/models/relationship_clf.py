@@ -3,8 +3,8 @@ import numpy as np
 from datetime import datetime
 
 from keras import Input, Model
-from keras.layers import Bidirectional, Dense, LSTM
 from keras.utils import to_categorical
+from keras.layers import Bidirectional, Dense, LSTM
 from keras_preprocessing.sequence import pad_sequences
 from keras.backend import categorical_crossentropy
 

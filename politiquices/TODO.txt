@@ -77,57 +77,54 @@ arquivo_pt:
         - nomes da Ontologia POWER
 
 
-classifiers
-===========
+relationship classifier
+======================
     - run script with PYTHONHASHSEED=0
     - create classifier abstraction/interface
 
-    relationship:
-    -------------
-        - explorar os padroes encontrados
-        - controlar overfitting?
+    - explorar os padroes encontrados
+    - controlar overfitting?
 
-        - Transformer models: https://huggingface.co/transformers/quicktour.html
+    - Transformer models: https://huggingface.co/transformers/quicktour.html
 
-        - Training Neural Networks:
-            - ModelCheckpoint: maximize for precision in lowest class
-            - Optimizer and Learning Rate
-            - batch size, Early Stop
-            - https://parameterfree.com/2020/12/06/neural-network-maybe-evolved-to-make-adam-the-best-optimizer/
-            - https://spacy.io/usage/training#tips
-            - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
-            - https://towardsdatascience.com/checklist-for-debugging-neural-networks-d8b2a9434f21
+    - Training Neural Networks:
+        - ModelCheckpoint: maximize for precision in lowest class
+        - Optimizer and Learning Rate
+        - batch size, Early Stop
+        - https://parameterfree.com/2020/12/06/neural-network-maybe-evolved-to-make-adam-the-best-optimizer/
+        - https://spacy.io/usage/training#tips
+        - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
+        - https://towardsdatascience.com/checklist-for-debugging-neural-networks-d8b2a9434f21
 
-        - https://towardsdatascience.com/handling-class-imbalanced-data-using-a-loss-specifically-made-for-it-6e58fd65ffab
-        - https://www.tensorflow.org/tutorials/structured_data/imbalanced_data
-        - https://github.com/vandit15/Class-balanced-loss-pytorch
+    - https://towardsdatascience.com/handling-class-imbalanced-data-using-a-loss-specifically-made-for-it-6e58fd65ffab
+    - https://www.tensorflow.org/tutorials/structured_data/imbalanced_data
+    - https://github.com/vandit15/Class-balanced-loss-pytorch
 
-        - embeddings
-            - Uppercase and lower case, improvement?
-            - better/cleaner higher dimensions? train on own corpus
-            - catch negations, how?
-                - defende != não + defende
-            - tool to visualize embeddings
+    - embeddings
+        - Uppercase and lower case, improvement?
+        - better/cleaner higher dimensions? train on own corpus
+        - catch negations, how?
+            - defende != não + defende
+        - tool to visualize embeddings
 
-        If you are starting with machine learning / deep learning and get a new dataset to work on, there are a few things you must always take care of:
-        🔹 Look at the data carefully. Do EDA
-        🔹 Look at the targets. See how they are distributed & what kind of problem this is
-        🔹 Choose the right metric to evaluate your models
-        🔹 Split the data into folds. You can use this for cross-validation or for hold out based validation
-        🔹 Build a first basic model. This is going to be your baseline.
-        🔹 Now try to improve on the baseline by adding new features
-        🔹 To add new features, go back to data. Look at the EDA. That's why its quite important
-        🔹 When you think you have reached a limit with feature engineering, try different models
-        🔹 Keep log of all the scores, features and models
-        🔹 When you think you have reached a limit with different models, try feature selection
-        🔹 Done with feature engineering and feature selection? You will realize that by following above steps, you have also chosen a few best models that work well with your data
-        🔹 Now its time to do hyperparameter optimization and squeeze the last few drops from your best models
-        🔹 Wrap everything in docker, it's reproducible.
-        🔹 Build a simple api endpoint or a fully-fledged web application to serve your model and brag about it ;)
+    🔹 Look at the data carefully. Do EDA
+    🔹 Look at the targets. See how they are distributed & what kind of problem this is
+    🔹 Choose the right metric to evaluate your models
+    🔹 Split the data into folds. You can use this for cross-validation or for hold out based validation
+    🔹 Build a first basic model. This is going to be your baseline.
+    🔹 Now try to improve on the baseline by adding new features
+    🔹 To add new features, go back to data. Look at the EDA. That's why its quite important
+    🔹 When you think you have reached a limit with feature engineering, try different models
+    🔹 Keep log of all the scores, features and models
+    🔹 When you think you have reached a limit with different models, try feature selection
+    🔹 Done with feature engineering and feature selection? You will realize that by following above steps, you have also chosen a few best models that work well with your data
+    🔹 Now its time to do hyperparameter optimization and squeeze the last few drops from your best models
+    🔹 Wrap everything in docker, it's reproducible.
+    🔹 Build a simple api endpoint or a fully-fledged web application to serve your model and brag about it ;)
 
 
-    named entity recognition
-    ------------------------
+named entity recognition
+------------------------
     - Jorge 'Jardim Gonçalves'
     - 'Edgar Correia' e 'Carlos Luís' Figueira expulsos do PCP
     - 'Ana Gomes' propõe condecoração de 'Sérgio Vieira' de Mello
@@ -136,20 +133,19 @@ classifiers
     -> 'Cavaco Silva'
     -> 'Maria Cavaco Silva'
 
-    entity_linking
-    --------------
-        - 'Costa':
-            - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
-            - apply entity linking algorithm
 
-        - http://0.0.0.0:5000/entity?q=Q17496480
-            'Rui Pedro Soares' always being tagged as 'Pedro Soares'
+entity_linking
+--------------
+    - 'Costa':
+        - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
+        - apply entity linking algorithm
 
-        - 'Fernando Gomes'
+    - http://0.0.0.0:5000/entity?q=Q17496480
+        'Rui Pedro Soares' always being tagged as 'Pedro Soares'
 
-        - https://github.com/TheScienceMuseum/elastic-wikidata
+    - 'Fernando Gomes'
 
-        - news article with this personalities
-            https://www.wikidata.org/wiki/Q23904994
-            https://www.wikidata.org/wiki/Q52112309
-            https://www.wikidata.org/wiki/Q72310730
+    - news article with this personalities
+        https://www.wikidata.org/wiki/Q23904994
+        https://www.wikidata.org/wiki/Q52112309
+        https://www.wikidata.org/wiki/Q72310730
