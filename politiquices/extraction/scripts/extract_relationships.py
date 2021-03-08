@@ -4,20 +4,19 @@ import argparse
 
 import joblib
 import jsonlines
-import pt_core_news_lg
 
 from politiquices.classifiers.ner.rule_based_ner import RuleBasedNer
+from politiquices.classifiers.rel_direction.relationship_direction_clf import DirectionClassifier
 
 from politiquices.classifiers.entity_linking.entitly_linking_clf import (
     query_kb,
     expand_entities,
     find_perfect_match,
     disambiguate,
-    fuzzy_match,
-    setup_es
+    fuzzy_match
 )
 
-from politiquices.classifiers.relationship.relationship_direction_clf import detect_direction
+
 from politiquices.extraction.utils.utils import clean_title_quotes, clean_title_re
 from politiquices.extraction.scripts.utils import get_text_newspaper
 
@@ -35,7 +34,40 @@ def parse_args():
     parser.add_argument("--arquivo", help="input is from arquivo.pt API")
     parser.add_argument("--chave", help="input is from Linguateca CHAVE collection")
     args = parser.parse_args()
+    if not any((args.chave, args.publico, args.arquivo)):
+        print("Need to give at least one input")
+        exit(-1)
     return args
+
+
+def load_publico_texts():
+    with open('full_text_cache/publico_full_text.txt') as f_in:
+        for line in f_in:
+            parts = line.split('\t')
+            try:
+                date = parts[0]
+                url = parts[1]
+                title = parts[2]
+                text = ' '.join(parts[3:])
+                publico_full_text[url] = text
+            except IndexError:
+                continue
+
+
+def load_chave_texts():
+    with open('full_text_cache/CHAVE-Publico_94_95.jsonl') as f_in:
+        for line in f_in:
+            entry = json.loads(line)
+            chave_full_text['https://www.linguateca.pt/CHAVE?'+entry['id']] = entry['text']
+
+
+def get_ner():
+    # set up the custom NER system
+    with open('names_phrase_patterns.txt', 'rt') as f_in:
+        names_phrase_patterns = [line.strip() for line in f_in]
+    with open('names_token_patterns.txt', 'rt') as f_in:
+        names_token_patterns = [line.strip() for line in f_in]
+    return RuleBasedNer(names_token_patterns, names_phrase_patterns)
 
 
 def entity_linking(entity, url):
@@ -129,32 +161,8 @@ def entity_linking(entity, url):
         return None
 
 
-def load_publico_texts():
-    with open('full_text_cache/publico_full_text.txt') as f_in:
-        for line in f_in:
-            parts = line.split('\t')
-            try:
-                date = parts[0]
-                url = parts[1]
-                title = parts[2]
-                text = ' '.join(parts[3:])
-                publico_full_text[url] = text
-            except IndexError:
-                continue
-
-
-def load_chave_texts():
-    with open('full_text_cache/CHAVE-Publico_94_95.jsonl') as f_in:
-        for line in f_in:
-            entry = json.loads(line)
-            chave_full_text['https://www.linguateca.pt/CHAVE?'+entry['id']] = entry['text']
-
-
 def main():
     args = parse_args()
-    if not any((args.chave, args.publico, args.arquivo)):
-        print("Need to give at least one input")
-        exit(-1)
 
     if args.publico:
         f_name = args.publico
@@ -169,20 +177,19 @@ def main():
     if args.arquivo:
         f_name = args.arquivo
 
-    # load named-entities that should be ignored
-    with open('ner_ignore.txt', 'rt') as f_in:
-        ner_ignore = [line.strip() for line in f_in.readlines()]
-
     # load the relationships classification model
     print("Loading relationship classifier...")
     relationship_clf = joblib.load(MODELS + "latest")
 
-    # use spaCy to extract title morphological information, used by the relationship direction clf
-    print("Loading spaCy NLP model")
-    nlp = pt_core_news_lg.load()
-    nlp.disable = ["tagger", "parser", "ner"]
+    print("Loading NER classifier")
+    ner = get_ner()
 
-    # open files for logging and later diagnostic
+    # ToDo: where to put the ignore? in the NER?
+    # load named-entities that should be ignored
+    with open('ner_ignore.txt', 'rt') as f_in:
+        ner_ignore = [line.strip() for line in f_in.readlines()]
+
+    # log everything for error analysis
     ner_ignored = jsonlines.open("ner_ignored.jsonl", mode="w")
     no_entities = jsonlines.open("titles_processed_no_entities.jsonl", mode="w")
     more_entities = jsonlines.open("titles_processed_more_entities.jsonl", mode="w")
@@ -192,10 +199,6 @@ def main():
     failed_to_clean = jsonlines.open("failed_to_clean.jsonl", mode="w")
 
     count = 0
-
-    # set up the custom NER system
-    rule_ner = RuleBasedNer()
-    es = setup_es()
 
     with open(f_name, 'rt') as f_in:
         for line in f_in:
@@ -222,7 +225,7 @@ def main():
                 continue
 
             # named-entity recognition
-            all_entities, persons = rule_ner.tag(cleaned_title)
+            all_entities, persons = ner.tag(cleaned_title)
 
             # ignore certain 'person' entities
             if any(person in persons for person in ner_ignore):
