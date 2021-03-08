@@ -80,8 +80,6 @@ arquivo_pt:
 relationship classifier
 ======================
     - run script with PYTHONHASHSEED=0
-    - create classifier abstraction/interface
-
     - explorar os padroes encontrados
     - controlar overfitting?
 

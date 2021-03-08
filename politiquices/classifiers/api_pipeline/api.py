@@ -17,7 +17,7 @@ from politiquices.classifiers.relationship.models.relationship_clf import Attent
 app = FastAPI()
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
-MODELS = os.path.join(APP_ROOT, "relationship/trained_models/")
+MODELS = os.path.join(APP_ROOT, "../relationship/trained_models/")
 RESOURCES = os.path.join(APP_ROOT, "resources/")
 
 print("Loading spaCy model...")
