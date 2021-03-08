@@ -1,4 +1,3 @@
-
 from politiquices.classifiers.ner.rule_based_ner import RuleBasedNer
 
 samples = [
@@ -80,36 +79,45 @@ samples = [
                  "construir consensos\"",
      'entities': ["Pedro Soares dos Santos", "Costa"]},
 
-    {'sentence': "Maria da Graça Carvalho e a urgência em combater o fosso de género na era digital",
-     'entities': ["Maria da Graça Carvalho"]}
+    {'sentence': "Maria da Graça Carvalho e a urgência em combater o fosso de género na era "
+                 "digital",
+     'entities': ["Maria da Graça Carvalho"]},
+
+    {'sentence': "Entrevista de vida a Jorge Jardim Gonçalves. Líder histórico do BCP revela o "
+                 "que nunca antes ousara",
+     'entities': ["Jorge Jardim Gonçalves"]},
+
+    {'sentence': "Cavaco Silva nomeou cunhada para assessorar antiga primeira-dama Maria Cavaco "
+                 "Silva",
+     'entities': ["Cavaco Silva", "Maria Cavaco Silva"]},
+
+    {'sentence': "Edgar Correia e Carlos Luís Figueira expulsos do PCP",
+     'entities': ["Edgar Correia", "Carlos Luís Figueira"]},
+
+    {'sentence': "Ana Gomes propõe condecoração de Sérgio Vieira de Mello",
+     'entities': ["Ana Gomes", "Sérgio Vieira de Mello"]}
 ]
 
 
 def main():
+    with open('names_phrase_patterns.txt', 'rt') as f_in:
+        phrase_patterns = [line.strip() for line in f_in]
 
-    # parameters to play around:
-    #   - EntityRuler(nlp, overwrite_ents=False) or EntityRuler(nlp, overwrite_ents=True)
-    #   - EntityRuler: before="ner", after="ner
-    #   - tag(all_entites=False|True)
+    with open('names_token_patterns.txt', 'rt') as f_in:
+        token_patterns = [line.strip() for line in f_in]
 
-    rule_ner = RuleBasedNer()
+    rule_ner = RuleBasedNer(token_patterns, phrase_patterns, overwrite_ner=True)
     errors = 0
     for s in samples:
         expected_entities = s['entities']
-        entities, persons = rule_ner.tag(s['sentence'], all_entities=False)
+        persons = rule_ner.tag(s['sentence'])
         if persons != expected_entities:
             errors += 1
             print(s['sentence'])
             print()
-            print("all entities:    ", entities)
-            print("expected:        ", expected_entities)
-            print("rule persons :   ", persons)
-            print(persons == expected_entities)
+            print("expected:  ", expected_entities)
+            print("result  :  ", persons)
             print("\n--------------")
-    print("\n")
-    print(rule_ner.ner.pipeline)
-    ner_model = rule_ner.ner.pipeline[0][0]
-    ner_rules = rule_ner.ner.pipeline[0][1]
     print("total analysed: ", len(samples))
     print("errors: ", errors)
 

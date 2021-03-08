@@ -1,8 +1,6 @@
 import joblib
 import numpy as np
 
-import spacy
-
 from keras import Input, Model
 from keras.utils import to_categorical
 from keras.layers import Bidirectional, Dense, LSTM
@@ -31,10 +29,6 @@ class RelationshipClassifier:
         self.label_encoder = None
         self.num_classes = None
         self.history = None  # ToDo: make function to plot loss graphs on train and test
-        self.spacy_tokenizer = spacy.load("pt_core_news_lg", disable=['parser', 'tagger', 'ner'])
-
-    def tokenize(self, sentences):
-        return [[str(t).lower() for t in self.spacy_tokenizer(sent)] for sent in sentences]
 
     def get_model(self, embedding_layer):
         i = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
@@ -48,9 +42,9 @@ class RelationshipClassifier:
 
         return model
 
-    def train(self, x_train, y_train, word2index, word2embedding, x_val=None, y_val=None):
-        x_train_vec = vectorize_titles(word2index, self.tokenize(x_train))
-        x_val_vec = vectorize_titles(word2index, self.tokenize(x_val)) if x_val else None
+    def train(self, x_train_tks, y_train, word2index, word2embedding, x_val_tks=None, y_val=None):
+        x_train_vec = vectorize_titles(word2index, x_train_tks)
+        x_val_vec = vectorize_titles(word2index, x_val_tks) if x_val_tks else None
 
         # get the max sentence length, needed for padding
         self.max_input_length = max([len(x) for x in x_train_vec])
@@ -59,7 +53,7 @@ class RelationshipClassifier:
         # pad all the sequences of indexes to the 'max_input_length'
         x_train_vec_padded = pad_sequences(
             x_train_vec, maxlen=self.max_input_length, padding="post", truncating="post")
-        if x_val:
+        if x_val_tks:
             x_val_vec_padded = pad_sequences(
                 x_val_vec, maxlen=self.max_input_length, padding="post", truncating="post")
 
@@ -74,7 +68,7 @@ class RelationshipClassifier:
         print("Shape of train data tensor:", x_train_vec_padded.shape)
         print("Shape of train label tensor:", y_train_vec.shape)
         self.num_classes = y_train_vec.shape[1]
-        if x_val and y_val:
+        if x_val_tks and y_val:
             print("Shape of val data tensor:", x_val_vec_padded.shape)
             print("Shape of val label tensor:", y_val_vec.shape)
 
@@ -87,7 +81,7 @@ class RelationshipClassifier:
 
         model = self.get_model(embedding_layer)
         val_data = None
-        if x_val and y_val:
+        if x_val_tks and y_val:
             val_data = (x_val_vec_padded, y_val_vec)
 
         # ToDo: plot loss graphs on train and test
@@ -103,18 +97,18 @@ class RelationshipClassifier:
         self.word2index = word2index
         self.label_encoder = le
 
-    def tag(self, x_test):
-        x_test_vec = vectorize_titles(self.word2index, self.tokenize(x_test))
+    def tag(self, x_test_tks):
+        x_test_vec = vectorize_titles(self.word2index, x_test_tks)
         x_test_vec_padded = pad_sequences(
             x_test_vec, maxlen=self.max_input_length, padding="post", truncating="post")
         return self.model.predict(x_test_vec_padded)
 
-    def evaluate(self, x_test, y_test):
+    def evaluate(self, x_test_tks, y_test):
 
         if not self.model:
             raise Exception("model not trained or not present")
 
-        x_predicted_probs = self.tag(x_test)
+        x_predicted_probs = self.tag(x_test_tks)
 
         scores = []
         for preds in x_predicted_probs:

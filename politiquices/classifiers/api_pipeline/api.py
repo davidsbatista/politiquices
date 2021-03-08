@@ -186,7 +186,7 @@ async def wikidata_linking(entity: str):
         }
         return escape_chars.get(char, False)
 
-    # ToDo: add more from PER_entities.txt
+    # ToDo: add more from names_phrase_patterns.txt
     mappings = {
         "Carrilho": "Manuela Maria Carrilho",
         "Costa": "António Costa",

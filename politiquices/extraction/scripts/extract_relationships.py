@@ -175,7 +175,7 @@ def main():
 
     # load the relationships classification model
     print("Loading relationship classifier...")
-    relationship_clf = joblib.load(MODELS + "relationship_clf_2020-12-23_140325.pkl")
+    relationship_clf = joblib.load(MODELS + "latest")
 
     # use spaCy to extract title morphological information, used by the relationship direction clf
     print("Loading spaCy NLP model")

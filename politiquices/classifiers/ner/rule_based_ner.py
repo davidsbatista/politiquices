@@ -1,130 +1,89 @@
-import os
 import re
-
-from elasticsearch import Elasticsearch
 import pt_core_news_lg
-
-APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 class RuleBasedNer:
+    """
+    A NER system with a mix of rules and statistical component based on
+    spaCy EntityRuler, see: https://spacy.io/usage/rule-based-matching#entityruler
 
-    def __init__(self):
-        self.entities_file = os.path.join(APP_ROOT, "PER_entities.txt")
-        self.connectors = ['do', 'da', 'de', 'dos']
-        self.file_names = self._get_names_file(self.entities_file)
-        # self.kb_names = self._get_names_kb()
+    The initialization takes two lists, from which patterns are derived
+
+    There are 3 possible configurations
+
+        after_ner overwrite_ner
+            0          -
+            1         0|1
+
+    """
+
+    def __init__(
+        self,
+        token_patterns,
+        phrase_patterns,
+        rule_based_ner=True,
+        rule_based_before_ner=True,
+        overwrite_ner=True,
+    ):
+        self.token_patterns = token_patterns
+        self.phrase_patterns = phrase_patterns
+        self.rule_based_ner = rule_based_ner
+        self.rule_before_ner = rule_based_before_ner
+        self.overwrite_ner = overwrite_ner
         self.patterns = self.build_token_patterns()
         self.ner = self.build_ner()
 
-    """
     @staticmethod
-    def _get_names_kb():
-        es = Elasticsearch([{"host": "localhost", "port": 9200}])
-        res = es.search(index="politicians",
-                        body={"query": {"match_all": {}},
-                              "size": 2000})
-
-        for r in res['hits']['hits']:
-            if r['_source']['label'] is None:
-                print(r)
-
-        all_names = sorted([r['_source']['label'] for r in res['hits']['hits']],
-                           key=lambda x: len(x),
-                           reverse=True)
-
-        return all_names
-    """
-
-    @staticmethod
-    def _get_names_file(fname):
-        with open(fname, 'rt') as f_in:
-            names = {line.strip() for line in f_in if len(line) > 1}
-        return list(names)
-
-    @staticmethod
-    def dict_entry(name):
+    def token_pattern(name):
         for token in name.split():
             yield {"TEXT": token}
 
     def build_token_patterns(self):
-        names = set()
-        patterns = []
 
-        for name in self.kb_names:
-            print(name)
-            name_clean = re.sub(r'\(.*\)', '', name)  # remove text inside parenthesis
-            name_clean = re.sub(r'(,.*)', ' ', name_clean)  # remove comma and all text after
-            name_parts = name_clean.split()
-            names.add(name_clean)
+        # add phrase patterns
+        patterns = [{"label": "PER", "pattern": name} for name in self.phrase_patterns if name]
 
-            # exactly as it is
-            p = {"label": "PER", "pattern": list(self.dict_entry(name))}
-            patterns.append(p)
+        # add token patterns
+        for name in self.token_patterns:
+            if name:
+                name_clean = re.sub(r"\(.*\)", "", name)  # remove text inside parenthesis
+                name_clean = re.sub(r"(,.*)", " ", name_clean)  # remove comma and all text after
+                name_parts = name_clean.split()
 
-            # first and last name
-            if len(name_parts) > 2:
-                name = name_parts[0] + ' ' + name_parts[-1]
-                names.add(name)
-                p = {"label": "PER", "pattern": list(self.dict_entry(name))}
+                # exactly as it is
+                p = {"label": "PER", "pattern": list(self.token_pattern(name))}
                 patterns.append(p)
 
-        # add some hand picked examples
-        for name in self.file_names:
-            names.add(name)
-            p = {"label": "PER", "pattern": list(self.dict_entry(name))}
-            patterns.append(p)
-
-        with open('kb_names_patterns.txt', 'wt') as f_out:
-            for p in patterns:
-                f_out.write(str(p['pattern']) + '\n')
+                # first and last name
+                if len(name_parts) > 2:
+                    name = name_parts[0] + " " + name_parts[-1]
+                    p = {"label": "PER", "pattern": list(self.token_pattern(name))}
+                    patterns.append(p)
 
         return patterns
 
     def build_ner(self):
-        # load spaCy PT (large) model and disable part-of-speech tagging and syntactic parsing
-        nlp = pt_core_news_lg.load(disable=["tagger", "parser"])
-        config = {
-            "phrase_matcher_attr": None,
-            "validate": True,
-            "overwrite_ents": False,
-            "ent_id_sep": "||",
-        }
-        entity_ruler = nlp.add_pipe("entity_ruler", config=config)
+        # load spaCy PT (large) model disabling all components except the 'NER'
+        nlp = pt_core_news_lg.load(
+            disable=[
+                "tagger",
+                "parser",
+                "lemmatizer",
+                "tok2vec",
+                "morphologizer",
+                "attribute_ruler",
+            ]
+        )
 
-        # hard code some entities, note this are phrase patterns
-        self.patterns.append({'label': 'PER', 'pattern': 'Marinho e Pinto'})
-        self.patterns.append({'label': 'PER', 'pattern': 'Ribeiro e Castro'})
-
-        # entity_ruler.initalize()
-        entity_ruler.initialize(lambda: [], nlp=nlp, patterns=self.patterns)
-
-        # add rule-based Entity Recognizer which don't overwrites entities recognized by the model
-        # ruler_person_entities = EntityRuler(nlp, overwrite_ents=False)
-        # ruler_person_entities.add_patterns(self.patterns)
-        # ruler_person_entities.name = 'person_entities'
-
-        # runs before the ner
-        # nlp.add_pipe(ruler_person_entities, before="ner", name='person_entities')
-        # nlp.add_pipe('person_entities', before="ner")
+        if self.rule_based_ner:
+            config = {"overwrite_ents": self.overwrite_ner}
+            entity_ruler = nlp.add_pipe("entity_ruler", first=self.rule_before_ner, config=config)
+            entity_ruler.initialize(lambda: [], nlp=nlp, patterns=self.patterns)
 
         return nlp
 
-    def tag(self, title, all_entities=False):
-
+    def tag(self, title):
         if self.ner is None:
-            print("NER not initialized")
-            return None
-
+            raise Exception("NER not initialized")
         doc = self.ner(title)
-        entities = {ent.text: ent.label_ for ent in doc.ents}
-        persons = []
-
-        for k, v in entities.items():
-            if v == "PER":
-                persons.append(k)
-
-        if all_entities:
-            return entities, persons
-
-        return None, persons
+        return [ent.text for ent in doc.ents if ent.label_ == "PER"]

@@ -20,6 +20,12 @@
     Tomás Correia (Montepio)
 
 
+queries ao arquivo
+    - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
+    - nomes da Ontologia POWER
+
+
+
 
 - https://github.com/TheScienceMuseum/elastic-wikidata
 
