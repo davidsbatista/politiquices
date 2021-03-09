@@ -8,7 +8,7 @@ def make_https(url):
 def add_icon(r):
     """adds either a arquivo.pt, publico.pt or LINGUATECA"""
 
-    if r["url"].startswith("http://publico.pt"):
+    if r["url"].startswith("https://publico.pt"):
         r["link_image"] = "/static/images/114px-Logo_publico.png"
         r["image_width"] = "20"
         r["image_height"] = "20"
@@ -62,8 +62,8 @@ def clickable_title(r, wiki_id):
     r["title_clickable"] = title_link
     add_icon(r)
 
-    r['ent1_wiki'] = 'http://www.wikidata.org/entity/'+wiki_id
-    r['ent2_wiki'] = 'http://www.wikidata.org/entity/'+r['other_ent_url'].split('q=')[1]
+    r['ent1_wiki'] = 'https://www.wikidata.org/entity/'+wiki_id
+    r['ent2_wiki'] = 'https://www.wikidata.org/entity/'+r['other_ent_url'].split('q=')[1]
     r['ent1_str'] = r['focus_ent']
     r['ent2_str'] = r['other_ent_name']
 
@@ -94,8 +94,8 @@ def make_json(relationships):
                           "url": r["url"],
                           'ent1': r['ent1_str'],
                           'ent2': r['ent2_str'],
-                          'ent1_wiki': r['ent1_wiki'],
-                          'ent2_wiki': r['ent2_wiki']
+                          'ent1_wiki': make_https(r['ent1_wiki']),
+                          'ent2_wiki': make_https(r['ent2_wiki'])
                           })
 
     return json_data

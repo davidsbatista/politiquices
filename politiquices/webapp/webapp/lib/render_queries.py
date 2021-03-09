@@ -32,7 +32,7 @@ from politiquices.webapp.webapp.lib.utils import (
     get_chart_labels_min_max,
     get_relationship,
     make_json,
-    per_vs_person_linkable, clickable_title
+    per_vs_person_linkable, clickable_title, make_https
 )
 
 
@@ -62,7 +62,7 @@ def entity_full_story(wiki_id, annotate):
                 "other_by": other_by,
                 "wiki_id": person.wiki_id,
                 "name": person.name,
-                "image": person.image_url,
+                "image": make_https(person.image_url),
                 "parties": person.parties,
                 "positions": person.positions,
                 "occupations": person.occupations,
@@ -86,7 +86,7 @@ def entity_full_story(wiki_id, annotate):
         # person information
         "wiki_id": person.wiki_id,
         "name": person.name,
-        "image": person.image_url,
+        "image": make_https(person.image_url),
         "parties": person.parties,
         "positions": person.positions,
         "occupations": person.occupations,

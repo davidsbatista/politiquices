@@ -11,6 +11,7 @@ from politiquices.webapp.webapp.config import (
     live_wikidata,
     politiquices_endpoint,
 )
+from politiquices.webapp.webapp.lib.utils import make_https
 
 POLITIQUICES_PREFIXES = """
     PREFIX politiquices: <http://www.politiquices.pt/>
@@ -385,8 +386,8 @@ def get_person_info(wiki_id):
 
             party = PoliticalParty(
                 wiki_id=e["political_party"]["value"].split("/")[-1],
-                name=e["political_party_label"]["value"] if "political_party_label" in e else None,
-                image_url=e["political_party_logo"]["value"]
+                name=e["political_party_label"]["value"],
+                image_url=make_https(e["political_party_logo"]["value"])
                 if "political_party_logo" in e
                 else party_image_url,
             )
