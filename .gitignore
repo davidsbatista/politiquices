@@ -34,16 +34,16 @@ data/
 old_ttls/
 open_ie/
 
-politiquices/classifiers/entity_linking/wiki_jsons/
-politiquices/classifiers/relationship/experiments/
-politiquices/classifiers/relationship/resources/
-politiquices/classifiers/relationship/trained_models/
+politiquices/nlp/classifiers/entity_linking/wiki_jsons/
+politiquices/nlp/classifiers/relationship/experiments/
+politiquices/nlp/classifiers/relationship/resources/
+politiquices/nlp/classifiers/relationship/trained_models/
 
-politiquices/extraction/scripts/2020-12-28_arquivo/
-politiquices/extraction/scripts/2020-12-28_publico/
-politiquices/extraction/scripts/2021-02-12_CHAVE/
-politiquices/extraction/scripts/full_text_cache/
-politiquices/extraction/scripts/input_for_extraction/
+politiquices/extraction/processed_data/2020-12-28_arquivo/
+politiquices/extraction/processed_data/2020-12-28_publico/
+politiquices/extraction/processed_data/2021-02-12_CHAVE/
+politiquices/data_sources/full_text_cache/
+politiquices/extraction/input_for_extraction/
 politiquices/extraction/scripts/kb_names_patterns.txt
 
 politiquices/webapp/webapp/app/static/json/

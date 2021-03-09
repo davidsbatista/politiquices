@@ -6,7 +6,8 @@ Web App
            - 2 relações na tabela, mas apenas 1 no grafo
         - António Vitorino apoia Durão Barroso 2004-2004: mostra 2 no arco, só há 1
         - Ricardo Baptista Leite está nas "personalidades' mas não tem relações
-
+        - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
+            https://www.politiquices.pt/entity?q=Q10294458&annotate
 
     - Grafo:
         - limpar, ficar na versão final
@@ -124,9 +125,6 @@ entity_linking
     - 'Costa':
         - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
         - apply entity linking algorithm
-
-    - http://0.0.0.0:5000/entity?q=Q17496480
-        'Rui Pedro Soares' always being tagged as 'Pedro Soares'
 
     - 'Fernando Gomes'
 
