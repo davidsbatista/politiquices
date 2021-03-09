@@ -1,3 +1,9 @@
+import re
+
+
+def make_https(url):
+    return re.sub(r'http://', "https://", url)
+
 
 def add_icon(r):
     """adds either a arquivo.pt, publico.pt or LINGUATECA"""
