@@ -8,7 +8,8 @@ Web App
         - Ricardo Baptista Leite está nas "personalidades' mas não tem relações
         - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
             https://www.politiquices.pt/entity?q=Q10294458&annotate
-        - Add annotated data/statments to RDF Graph
+        - Add annotated/ground-truth to RDF Graph with score 1.0
+        - HTTPS para tudo, links para imagens
 
     - Grafo:
         - limpar, ficar na versão final
