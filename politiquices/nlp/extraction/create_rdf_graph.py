@@ -1,21 +1,61 @@
-import re
 import argparse
 import operator
-from collections import defaultdict
+from enum import Enum
 from datetime import datetime
-
-from classes import Article, Person, Relationship
 from itertools import groupby
+from typing import Set, Optional
+from collections import defaultdict
+from dataclasses import dataclass
+
 from jsonlines import jsonlines
 from rdflib import BNode, Graph, Literal, Namespace, SKOS, URIRef, XSD
 from rdflib.namespace import DC, RDFS
 
-publico_pt_urls = ['http://economia.publico.pt/',
-                   'http://publico.pt/',
-                   'http://www.publico.pt/',
-                   'https://economia.publico.pt/',
-                   'https://publico.pt/',
-                   'https://www.publico.pt/']
+from politiquices.nlp.utils.utils import (
+    minimize_publico_urls,
+    publico_urls,
+    read_ground_truth,
+    str2bool
+)
+
+
+@dataclass
+class Person:
+    name: str
+    also_known_as: Set[str]
+    power_id: Optional[str]
+    wikidata_id: str
+
+
+@dataclass
+class Article:
+    url: str
+    title: str
+    source: Optional[str]
+    date: Optional[datetime]
+    crawled_date: Optional[str]
+
+
+@dataclass
+class RelationshipType(Enum):
+    ent1_opposes_ent2 = 1
+    ent2_opposes_ent1 = 2
+    ent1_supports_ent2 = 3
+    ent2_supports_ent1 = 4
+    both_agree = 5
+    both_disagree = 6
+    other = 7
+
+
+@dataclass
+class Relationship:
+    url: str
+    rel_type: str
+    rel_score: float
+    ent1: Person
+    ent2: Person
+    ent1_str: str
+    ent2_str: str
 
 
 def remove_duplicates_with_same_url(f_name):
@@ -26,10 +66,10 @@ def remove_duplicates_with_same_url(f_name):
     unique = []
     duplicate = 0
     for entry in processed_titles(f_name):
-        if any(entry['url'].startswith(x) for x in publico_pt_urls):
-            url = minimize_publico_urls(entry['url'])
+        if entry["url"].startswith(publico_urls):
+            url = minimize_publico_urls(entry["url"])
         else:
-            url = entry['url']
+            url = entry["url"]
 
         if url not in seen:
             unique.append(entry)
@@ -74,24 +114,24 @@ def remove_url_crawled_diff_dates_duplicates(unique_url):
             found_duplicate += 1
             earliest = sorted(articles, key=operator.itemgetter(2))[0]
             result = {
-                'title': earliest[1],
-                'date': earliest[2],
-                'url': earliest[3],
-                'entities': earliest[4],
-                'ent_1': earliest[5],
-                'ent_2': earliest[6],
-                'scores': earliest[7]
+                "title": earliest[1],
+                "date": earliest[2],
+                "url": earliest[3],
+                "entities": earliest[4],
+                "ent_1": earliest[5],
+                "ent_2": earliest[6],
+                "scores": earliest[7],
             }
         else:
             article = articles[0]
             result = {
-                'title': article[1],
-                'date': article[2],
-                'url': article[3],
-                'entities': article[4],
-                'ent_1': article[5],
-                'ent_2': article[6],
-                'scores': article[7]
+                "title": article[1],
+                "date": article[2],
+                "url": article[3],
+                "entities": article[4],
+                "ent_1": article[5],
+                "ent_2": article[6],
+                "scores": article[7],
             }
         unique.append(result)
 
@@ -126,17 +166,17 @@ def remove_duplicates_same_domain(unique):
         arts = list(g)
         earliest = sorted(arts, key=operator.itemgetter(2))[0]
         result = {
-            'title': earliest[1],
-            'date': earliest[2],
-            'url': earliest[3],
-            'entities': earliest[4],
-            'ent_1': earliest[5],
-            'ent_2': earliest[6],
-            'scores': earliest[7]
+            "title": earliest[1],
+            "date": earliest[2],
+            "url": earliest[3],
+            "entities": earliest[4],
+            "ent_1": earliest[5],
+            "ent_2": earliest[6],
+            "scores": earliest[7],
         }
         articles_unique.append(result)
 
-    print(f'{len(articles_unique)} unique articles')
+    print(f"{len(articles_unique)} unique articles")
 
     return articles_unique
 
@@ -148,17 +188,16 @@ def processed_titles(filename):
 
 
 def extract_date(crawled_date: str, url_type):
-
-    if url_type == 'publico':
+    if url_type == "publico":
         try:
             date_obj = datetime.strptime(crawled_date, "%Y-%m-%d %H:%M:%S")
-            return datetime.strftime(date_obj, '%Y-%m-%d')
+            return datetime.strftime(date_obj, "%Y-%m-%d")
         except ValueError as e:
             raise e
 
-    elif url_type == 'chave':
+    elif url_type == "chave":
         date_obj = datetime.strptime(crawled_date, "%Y-%m-%d")
-        return datetime.strftime(date_obj, '%Y-%m-%d')
+        return datetime.strftime(date_obj, "%Y-%m-%d")
         pass
 
     else:
@@ -170,11 +209,12 @@ def extract_date(crawled_date: str, url_type):
         second = crawled_date[12:14]
         date_str = f"{year}-{month}-{day}T{hour}:{minute}:{second}"
 
+        # ToDo: remove this check
         if int(year) > 2020:
             raise ValueError(date_str)
         try:
             date_obj = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%S")
-            return datetime.strftime(date_obj, '%Y-%m-%d')
+            return datetime.strftime(date_obj, "%Y-%m-%d")
         except ValueError as e:
             raise e
 
@@ -197,38 +237,44 @@ def build_person(wikidata_id, name, persons):
         )
 
 
-def process_classified_titles(titles):
+def process_classified_titles(titles, gold_urls=None):
     persons = defaultdict(Person)
     relationships = []
     articles = []
 
     for title in titles:
+
+        # ignore empty URLs or URLs part of the gold-data
+        url = title["url"]
+        if url == "None" or url == "\\N":
+            continue
+        if url in gold_urls:
+            continue
+
+        # ignore titles where both entities are the same
         e1_wiki = title["ent_1"]["wiki"]
         e2_wiki = title["ent_2"]["wiki"]
+        if e1_wiki == e2_wiki:
+            continue
+
         scores = [(k, v) for k, v in title["scores"].items()]
         rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
         person_1 = title["entities"][0]
         person_2 = title["entities"][1]
         news_title = title["title"].strip()
-        url = title["url"]
 
-        # ignore empty URLs
-        if url == 'None' or url == '\\N':
-            continue
-
-        # try to detect article origin
-        url_type = 'arquivo'
-        if any(url.startswith(x) for x in publico_pt_urls):
-            url_type = 'publico'
-        elif url.startswith('https://www.linguateca.pt/CHAVE?'):
-            url_type = 'chave'
+        # detect article origin
+        url_type = "arquivo"
+        if url.startswith(publico_urls):
+            url_type = "publico"
+        elif url.startswith("https://www.linguateca.pt/CHAVE?"):
+            url_type = "chave"
 
         # special case to transform publico.pt urls to: http://publico.pt/<news_id>
-        if url_type == 'publico':
-            url = minimize_publico_urls(url)
+        url = minimize_publico_urls(url) if url_type == "publico" else url
+
         try:
             crawled_date = extract_date(title["date"], url_type)
-
         except ValueError as e:
             # print(url, '\t', e)
             continue
@@ -260,18 +306,47 @@ def process_classified_titles(titles):
     return articles, persons, relationships
 
 
-def minimize_publico_urls(url):
-    news_id = url.split("-")[-1].replace('?all=1', '')
-    if not re.match(r'^[0-9]+$', news_id):
-        news_id_ = news_id.split("_")[-1]
-        news_id = news_id_.replace(".1", '')
-    if not re.match(r'^[0-9]+$', news_id):
-        raise ValueError("invalid publico.pt id: ", news_id)
-    url = 'http://publico.pt/' + news_id
-    return url
+def process_gold(titles):
+
+    persons = defaultdict(Person)
+    relationships = []
+    articles = []
+
+    for entry in titles:
+        p1_id = entry["ent1_id"]
+        p1_name = entry["ent1"]
+        build_person(p1_id, p1_name, persons)
+
+        p2_id = entry["ent2_id"]
+        p2_name = entry["ent2"]
+        build_person(p2_id, p2_name, persons)
+
+        relationships.append(
+            Relationship(
+                url=entry["url"],
+                rel_type=entry["label"],
+                rel_score=1.0,
+                ent1=entry["ent1_id"],
+                ent2=entry["ent2_id"],
+                ent1_str=entry["ent1"],
+                ent2_str=entry["ent2"],
+            )
+        )
+
+        articles.append(
+            Article(
+                url=entry["url"],
+                title=entry["title"],
+                source=None,
+                date=None,
+                crawled_date=entry["date"],
+            )
+        )
+
+    return articles, persons, relationships
 
 
-def populate_graph(articles, persons, relationships, args):
+def populate_graph(articles, persons, relationships):
     g = Graph()
 
     ns1 = Namespace("http://www.politiquices.pt/")
@@ -356,34 +431,39 @@ def populate_graph(articles, persons, relationships, args):
     print("relationships: ", len(relationships))
 
 
-def str2bool(v):
-    if isinstance(v, bool):
-        return v
-    if v.lower() in ('yes', 'true', 't', 'y', '1'):
-        return True
-    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
-        return False
-    else:
-        raise argparse.ArgumentTypeError('Boolean value expected.')
-
-
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--publico", help="input JSONL file with publico.pt results")
     parser.add_argument("--arquivo", help="input JSONL file with arquivo.pt results")
     parser.add_argument("--chave", help="input JSONL file with CHAVE results")
+    parser.add_argument(
+        "--annotated",
+        type=str2bool,
+        nargs="?",
+        const=True,
+        default=False,
+        help="loads ground-truth data into the graph",
+    )
     args = parser.parse_args()
     return args
 
 
 def main():
     args = parse_args()
-    arquivo_articles = []
-    publico_articles = []
-    chave_articles = []
+    arquivo = []
+    publico = []
+    chave = []
+    gold_urls = None
+
+    if args.annotated:
+        publico = read_ground_truth("../../../data/annotated/publico.csv")
+        arquivo = read_ground_truth("../../../data/annotated/arquivo.csv")
+        articles_gold, per_gold, rels_gold = process_gold(publico + arquivo)
+        print("articles from annotations: ", len(articles_gold))
+        gold_urls = [article.url for article in articles_gold]
 
     if args.arquivo:
-        print("Processing arquivo.pt articles")
+        print("\nprocessing arquivo.pt articles")
         # remove duplicates: keep only unique urls
         arquivo_unique_url = remove_duplicates_with_same_url(args.arquivo)
 
@@ -391,31 +471,25 @@ def main():
         unique = remove_url_crawled_diff_dates_duplicates(arquivo_unique_url)
 
         # remove duplicates: (i.e., title + crawl date same, one url is sub-domain of other)
-        # ToDo: check it this still happens
-        arquivo_articles = remove_duplicates_same_domain(unique)
+        # ToDo: check if this still happens
+        arquivo = remove_duplicates_same_domain(unique)
 
     if args.publico:
-        print("\nProcessing publico.pt articles")
-        publico_articles = remove_duplicates_with_same_url(args.publico)
+        print("\nprocessing publico.pt articles")
+        publico = remove_duplicates_with_same_url(args.publico)
 
     if args.chave:
-        print("\nProcessing CHAVE articles")
-        chave_articles = [entry for entry in processed_titles(args.chave)]
+        print("\nprocessing CHAVE articles")
+        chave = [entry for entry in processed_titles(args.chave)]
 
-    print("\nArticles after duplicate cleaning")
-    print("arquivo.pt: ", len(arquivo_articles))
-    print("publico.pt: ", len(publico_articles))
-    print("CHAVE     :   ", len(chave_articles))
+    print("\narticles from predictions")
+    print("arquivo.pt: ", len(arquivo))
+    print("publico.pt: ", len(publico))
+    print("CHAVE     : ", len(chave))
 
-    all_articles = []
-    for article in arquivo_articles+publico_articles+chave_articles:
-        if article['ent_1']['wiki'] == article['ent_2']['wiki']:
-            continue
-        all_articles.append(article)
-
-    print()
-    articles, persons, relationships = process_classified_titles(all_articles)
-    populate_graph(articles, persons, relationships, args)
+    all_articles = arquivo + publico + chave
+    articles, persons, relationships = process_classified_titles(all_articles, gold_urls=gold_urls)
+    populate_graph(articles, persons, relationships)
 
 
 if __name__ == "__main__":

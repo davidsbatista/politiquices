@@ -1,5 +1,6 @@
 import json
 from newspaper import Article, ArticleException
+from politiquices.nlp.utils.utils import publico_urls
 
 
 class ArticlesDB:
@@ -69,18 +70,8 @@ class ArticlesDB:
         return article.text
 
     def get_article_full_text(self, url):
-        publico_urls = (
-            "http://www.publico.pt",
-            "http://economia.publico.pt",
-            "https://www.publico.pt",
-            "http://publico.pt",
-            "http://ecosfera.publico.pt",
-            "http://desporto.publico.pt",
-        )
-
         if url.startswith("https://www.linguateca.pt/CHAVE?"):
             return self.chave_texts[url]
-
         if url.startswith(publico_urls):
             try:
                 return self.publico_texts[url]

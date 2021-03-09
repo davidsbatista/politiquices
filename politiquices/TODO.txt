@@ -9,7 +9,14 @@ Web App
         - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
             https://www.politiquices.pt/entity?q=Q10294458&annotate
         - Add annotated/ground-truth to RDF Graph with score 1.0
+
         - HTTPS para tudo, links para imagens
+
+        - XHR POSThttp://politiquices.pt:8000/annotation/ CORS Missing Allow Origin
+          Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote
+          resource at http://politiquices.pt:8000/annotation/.
+          (Reason: CORS header 'Access-Control-Allow-Origin' missing).
+
 
     - Grafo:
         - limpar, ficar na versão final
@@ -72,10 +79,7 @@ Web App
         -------
             - backup dos certificados HTTPS
             - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
-            - website also in a docker?
-
-
-
+            - Wrap everything in docker, it's reproducible ?
 
 
 relationship classifier
@@ -118,8 +122,6 @@ relationship classifier
     🔹 When you think you have reached a limit with different models, try feature selection
     🔹 Done with feature engineering and feature selection? You will realize that by following above steps, you have also chosen a few best models that work well with your data
     🔹 Now its time to do hyperparameter optimization and squeeze the last few drops from your best models
-    🔹 Wrap everything in docker, it's reproducible.
-    🔹 Build a simple api endpoint or a fully-fledged web application to serve your model and brag about it ;)
 
 
 entity_linking

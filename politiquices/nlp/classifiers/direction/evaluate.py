@@ -1,6 +1,6 @@
 from sklearn.metrics import classification_report
 
-from politiquices.nlp.classifiers.rel_direction.relationship_direction_clf import DirectionClassifier
+from politiquices.nlp.classifiers.direction.relationship_direction_clf import DirectionClassifier
 from politiquices.nlp.utils.utils import (
     clean_title_quotes,
     clean_title_re,

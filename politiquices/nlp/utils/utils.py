@@ -1,9 +1,44 @@
 import re
 import csv
+import argparse
 
 from datetime import datetime
 from random import randint
 from time import sleep
+
+publico_urls = (
+    "http://www.publico.pt",
+    "http://economia.publico.pt",
+    "https://www.publico.pt",
+    "http://publico.pt",
+    "http://ecosfera.publico.pt",
+    "http://desporto.publico.pt",
+)
+
+
+def minimize_publico_urls(url):
+    """
+    Transforms a publico.pt URL from the long form into a short form, e.g http://publico.pt/<id>
+    """
+    news_id = url.split("-")[-1].replace("?all=1", "")
+    if not re.match(r"^[0-9]+$", news_id):
+        news_id_ = news_id.split("_")[-1]
+        news_id = news_id_.replace(".1", "")
+    if not re.match(r"^[0-9]+$", news_id):
+        raise ValueError("invalid publico.pt id: ", news_id)
+    url = "http://publico.pt/" + news_id
+    return url
+
+
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
 def just_sleep(upper_bound=3, verbose=False):

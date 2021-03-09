@@ -29,7 +29,9 @@ ignore_url = [
     "/cinema/",
     "/artes/",
     "/multimedia/",
-    "/foto/"
+    "/foto/",
+    "/benfica/",
+    "/lifestyle/"
 ]
 
 already_seen = set()

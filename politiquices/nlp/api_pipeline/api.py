@@ -9,7 +9,7 @@ from fastapi import FastAPI, Query
 
 from keras.models import load_model
 
-from politiquices.nlp.classifiers.rel_direction.relationship_direction_clf import detect_direction
+from politiquices.nlp.classifiers.direction.relationship_direction_clf import detect_direction
 from politiquices.nlp.utils.utils import clean_title_re
 from politiquices.nlp.utils.utils import clean_title_quotes
 from politiquices.nlp.classifiers.relationship.models.relationship_clf import Attention

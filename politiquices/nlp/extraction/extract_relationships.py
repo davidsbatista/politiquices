@@ -7,7 +7,7 @@ import jsonlines
 
 from politiquices.nlp.data_sources.articles_db import ArticlesDB
 from politiquices.nlp.classifiers.ner.rule_based_ner import RuleBasedNer
-from politiquices.nlp.classifiers.rel_direction.relationship_direction_clf import DirectionClassifier
+from politiquices.nlp.classifiers.direction.relationship_direction_clf import DirectionClassifier
 from politiquices.nlp.classifiers.entity_linking.entitly_linking_clf import EntityLinking
 from politiquices.nlp.utils.utils import clean_title_quotes, clean_title_re
 
