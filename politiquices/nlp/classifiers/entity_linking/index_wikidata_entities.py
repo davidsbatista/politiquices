@@ -78,7 +78,8 @@ def main():
         counter += 1
         print(f"{counter}/{len(os.listdir(path))}")
 
-    # save to file
+    # save the processed results into file, useful if the next step fails, don't need
+    # to repeat the whole process again
     with open('wiki_names_alternative_names.jsonl', 'wt') as f_out:
         for d in bulk_data:
             f_out.write(json.dumps(d, ensure_ascii=False)+'\n')

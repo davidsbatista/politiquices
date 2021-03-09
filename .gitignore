@@ -37,6 +37,7 @@ open_ie/
 paper/acl-ijcnlp2021-templates.zip
 
 politiquices/nlp/classifiers/entity_linking/wiki_ttl/
+politiquices/nlp/classifiers/entity_linking/wiki_names_alternative_names.jsonl
 politiquices/nlp/classifiers/relationship/resources/
 politiquices/nlp/classifiers/relationship/trained_models/
 
