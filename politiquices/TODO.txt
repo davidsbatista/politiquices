@@ -12,7 +12,8 @@ Web App
 
         - HTTPS para tudo, links para imagens
 
-        - XHR POSThttp://politiquices.pt:8000/annotation/ CORS Missing Allow Origin
+        - XHR POST http://politiquices.pt:8000/annotation/
+        CORS Missing Allow Origin
           Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote
           resource at http://politiquices.pt:8000/annotation/.
           (Reason: CORS header 'Access-Control-Allow-Origin' missing).

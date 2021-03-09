@@ -65,7 +65,7 @@ class ArticlesDB:
         except ArticleException as e:
             print(e)
             with open("download_error.txt", "a+") as f_out:
-                f_out.write(url + "\t" + url_no_frame + "\n")
+                f_out.write(url_no_frame+"\n")
 
         return article.text
 
