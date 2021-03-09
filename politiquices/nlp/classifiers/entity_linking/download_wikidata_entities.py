@@ -218,7 +218,7 @@ def main():
         get_relevant_persons_based_on_public_office_positions(),
         portuguese_persons_occupations,
     ]
-    add, remove = read_extra_entities
+    add, remove = read_extra_entities('extra_entities.json')
     entities_ids = gather_wiki_ids(queries, to_add=add, to_remove=remove)
     print(f"\nDownloading {len(entities_ids)} unique ids")
     download(entities_ids, default_dir="wiki_ttl", file_format="ttl")
