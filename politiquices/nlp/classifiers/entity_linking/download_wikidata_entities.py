@@ -5,7 +5,7 @@ import requests
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-from politiquices.nlp.utils.utils import just_sleep
+from politiquices.nlp.utils.utils import just_sleep, read_ground_truth
 
 # persons that are/were affiliated with a recent/relevant portuguese political party
 affiliated_with_relevant_political_party = """
@@ -170,6 +170,21 @@ def read_extra_entities(f_name):
     return add, remove
 
 
+def get_wiki_ids_from_annotations():
+    publico_truth = read_ground_truth("../../../../data/annotated/publico.csv")
+    arquivo_truth = read_ground_truth("../../../../data/annotated/arquivo.csv")
+    annotated_wiki_ids = set()
+    for entry in publico_truth+arquivo_truth:
+        p1_id = entry["ent1_id"]
+        p2_id = entry["ent2_id"]
+        if p1_id == 'None' or p2_id == 'None':
+            continue
+        annotated_wiki_ids.add(p1_id.split("/")[-1])
+        annotated_wiki_ids.add(p2_id.split("/")[-1])
+
+    return list(annotated_wiki_ids)
+
+
 def gather_wiki_ids(queries, to_add=None, to_remove=None):
 
     relevant_ids = []
@@ -180,7 +195,7 @@ def gather_wiki_ids(queries, to_add=None, to_remove=None):
         wiki_ids = [r["person"]["value"].split("/")[-1] for r in results["results"]["bindings"]]
         relevant_ids.extend(wiki_ids)
 
-    print(f"{len(relevant_ids)} entities gathered from SPARQL queries")
+    print(f"{len(set(relevant_ids))} entities gathered from SPARQL queries")
 
     if to_add:
         print(f"{len(to_add)} manually selected entities to be added")
@@ -192,21 +207,21 @@ def gather_wiki_ids(queries, to_add=None, to_remove=None):
             if el in relevant_ids:
                 relevant_ids.remove(el)
 
-    # eliminate duplicates
-    unique_relevant_ids = list(set(relevant_ids))
-    print(f"{len(unique_relevant_ids)} unique entities to be loaded")
-
-    return unique_relevant_ids
+    return list(set(relevant_ids))
 
 
 def download(ids_to_retrieve, default_dir="wiki_ttl", file_format="ttl"):
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
+
+    if not os.path.exists(default_dir):
+        os.makedirs(default_dir)
+
     for idx, wiki_id in enumerate(set(ids_to_retrieve)):
-        print(str(idx) + "/" + str(len(set(ids_to_retrieve))))
-        # ToDo: check if default_dir exists, if not create it
         f_name = os.path.join(default_dir, wiki_id + "." + file_format)
         if os.path.exists(f_name):
+            print(f"skipped {f_name}")
             continue
+        print(str(idx) + "/" + str(len(set(ids_to_retrieve))))
         just_sleep(3)
         r = requests.get(base_url, params={"format": file_format, "id": wiki_id})
         open(f_name, "wt").write(r.text)
@@ -219,9 +234,12 @@ def main():
         portuguese_persons_occupations,
     ]
     add, remove = read_extra_entities('extra_entities.json')
+    annotated_ids = get_wiki_ids_from_annotations()
+    print(f"{len(annotated_ids)} entities from annotations")
     entities_ids = gather_wiki_ids(queries, to_add=add, to_remove=remove)
-    print(f"\nDownloading {len(entities_ids)} unique ids")
-    download(entities_ids, default_dir="wiki_ttl", file_format="ttl")
+    entities_ids.extend(annotated_ids)  # add entities id from annotated data
+    print(f"\nDownloading {len(entities_ids)} unique entities")
+    download(set(entities_ids), default_dir="wiki_ttl", file_format="ttl")
 
 
 if __name__ == "__main__":
