@@ -13,8 +13,6 @@ Web App
         - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
             https://www.politiquices.pt/entity?q=Q10294458&annotate
 
-        - HTTPS para tudo, links para imagens
-        - criar a KB, usar as wiki_ids da ground-truth
         - XHR POST http://politiquices.pt:8000/annotation/
             CORS Missing Allow Origin
               Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote

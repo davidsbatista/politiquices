@@ -318,9 +318,13 @@ def process_gold(titles):
         build_person(ent1_id, entry["ent1"], persons)
         build_person(ent2_id, entry["ent2"], persons)
 
+        new_url = entry['url']
+        if entry["url"].startswith(('http://www.publico.pt', 'http://publico.pt')):
+            new_url = make_https(entry["url"])
+
         relationships.append(
             Relationship(
-                url=entry["url"],
+                url=new_url,
                 rel_type=entry["label"],
                 rel_score=1.0,
                 ent1=ent1_id,
@@ -332,7 +336,7 @@ def process_gold(titles):
 
         articles.append(
             Article(
-                url=make_https(entry["url"]),
+                url=new_url,
                 title=entry["title"],
                 source=None,
                 date=None,
@@ -344,41 +348,56 @@ def process_gold(titles):
 
 
 def populate_graph(articles, persons, relationships):
-    g = Graph()
+    """
+    Adds triples to an RDF graph with the following structure:
 
+        Person triples:
+            <wiki_URI, SKOS.prefLabel, name>
+
+        Article triples:
+            <url, DC.title, title>
+            <url, DC.data, date)
+
+        Relationships as Blank Node:
+            - <_rel, ns1.type, rel_type>
+            - <_rel, ns1.score, rel_score>
+            - <_rel, ns1.url, url>
+            - g.add((_rel, ns1.ent1, URIRef(f"http://www.wikidata.org/entity/{rel.ent1}")))
+            - g.add((_rel, ns1.ent2, URIRef(f"http://www.wikidata.org/entity/{rel.ent2}")))
+            - g.add((_rel, ns1.ent1_str, Literal(rel.ent1_str)))
+            - g.add((_rel, ns1.ent2_str, Literal(rel.ent2_str)))
+
+    NOTE: linked-data vocabularies can be seen here: https://lov.linkeddata.es/dataset/lov/
+    """
+    g = Graph()
     ns1 = Namespace("http://www.politiquices.pt/")
     g.bind("politiquices", ns1)
-
     wiki_prop = Namespace("http://www.wikidata.org/prop/direct/")
     wiki_item = Namespace("http://www.wikidata.org/entity/")
     g.bind("wd", wiki_item)
     g.bind("wdt", wiki_prop)
-    # see linked-data vocabularies: https://lov.linkeddata.es/dataset/lov/
 
     print("adding Persons")
-    # add Person triples: <wiki_URI, SKOS.prefLabel, name>
     for wikidata_id, person in persons.items():
 
         # ToDo: make sure pref name is at least two names: first + surname
         g.add(
             (
-                URIRef(f"https://www.wikidata.org/entity/{wikidata_id}"),
+                URIRef(f"http://www.wikidata.org/entity/{wikidata_id}"),
                 SKOS.prefLabel,
                 Literal(person.name, lang="pt"),
             )
         )
-
-        # is this needed? probably to match with wikidata graph?
+        # state that in politiquices this is a human, following the same as wikidata.org
         # http://www.wikidata.org/wiki/Property:P31     # instance of:
         # https://www.wikidata.org/wiki/Q5              # human
-        # to filter in the queries to get only persons and not articles or relationships
         g.add(
-            (URIRef(f"https://www.wikidata.org/entity/{wikidata_id}"), wiki_prop.P31, wiki_item.Q5)
+            (URIRef(f"http://www.wikidata.org/entity/{wikidata_id}"), wiki_prop.P31, wiki_item.Q5)
         )
 
         g.add(
             (
-                URIRef(f"https://www.wikidata.org/entity/{wikidata_id}"),
+                URIRef(f"http://www.wikidata.org/entity/{wikidata_id}"),
                 RDFS.label,
                 Literal(person.name, lang="pt"),
             )
@@ -387,29 +406,25 @@ def populate_graph(articles, persons, relationships):
         for alt_name in person.also_known_as:
             g.add(
                 (
-                    URIRef(f"https://www.wikidata.org/entity/{wikidata_id}"),
+                    URIRef(f"http://www.wikidata.org/entity/{wikidata_id}"),
                     SKOS.altLabel,
                     Literal(alt_name, lang="pt"),
                 )
             )
 
     print("adding Articles")
-    # add triple Article:
-    #   <url, DC.title, title>
-    #   <url, DC.data, date)
     for article in articles:
         g.add((URIRef(article.url), DC.title, Literal(article.title, lang="pt")))
         g.add((URIRef(article.url), DC.date, Literal(article.crawled_date, datatype=XSD.date)))
 
     print("adding Relationships")
-    # add relationships as Blank Node:
     for rel in relationships:
         _rel = BNode()
         g.add((_rel, ns1.type, Literal(rel.rel_type)))
         g.add((_rel, ns1.score, Literal(rel.rel_score, datatype=XSD.float)))
         g.add((_rel, ns1.url, URIRef(rel.url)))
-        g.add((_rel, ns1.ent1, URIRef(f"https://www.wikidata.org/entity/{rel.ent1}")))
-        g.add((_rel, ns1.ent2, URIRef(f"https://www.wikidata.org/entity/{rel.ent2}")))
+        g.add((_rel, ns1.ent1, URIRef(f"http://www.wikidata.org/entity/{rel.ent1}")))
+        g.add((_rel, ns1.ent2, URIRef(f"http://www.wikidata.org/entity/{rel.ent2}")))
         g.add((_rel, ns1.ent1_str, Literal(rel.ent1_str)))
         g.add((_rel, ns1.ent2_str, Literal(rel.ent2_str)))
 

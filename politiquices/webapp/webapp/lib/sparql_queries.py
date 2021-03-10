@@ -977,15 +977,12 @@ def get_relationships_to_annotate():
 def query_sparql(query, endpoint):
     if endpoint == "wikidata":
         endpoint_url = wikidata_endpoint
-
     elif endpoint == "politiquices":
         endpoint_url = politiquices_endpoint
-
     user_agent = "Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
-
     sparql.setQuery(query)
     sparql.setReturnFormat(JSON)
     results = sparql.query().convert()
-
     return results
+
