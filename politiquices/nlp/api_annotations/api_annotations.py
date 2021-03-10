@@ -14,6 +14,13 @@ origins = [
     "http://localhost:8080",
 ]
 
+"""
+unless this API also runs on HTTPS you need to permanently disable mixed content blocking for the 
+current Firefox active profile:
+- type "about:config" in the address bar
+- find 'security.mixed_content.block_active_content' and set its value to false
+"""
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
