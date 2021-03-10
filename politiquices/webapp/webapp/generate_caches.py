@@ -7,97 +7,29 @@ from politiquices.webapp.webapp.lib.sparql_queries import (
     get_nr_relationships_as_target,
     get_total_nr_articles_for_each_person,
     get_wiki_id_affiliated_with_party,
-    PREFIXES,
-    query_sparql,
     get_persons_co_occurrences_counts,
+    get_all_parties_with_members_count,
 )
-
-from politiquices.webapp.webapp.config import wikidata_endpoint, ps_logo, no_image
-from politiquices.webapp.webapp.lib.utils import make_https
 
 static_data = "webapp/app/static/json/"
 
 
 def get_entities():
+    """
+    Get for each personality:
+    - name
+    - image url
+    - wikidata url
+    - wikidata id
+    - nr articles (not counting other)
+    """
+    personalities = get_persons_wiki_id_name_image_url()
 
-    # get all persons: name +  image url + wikidata url + wikidata id + nr articles
-    entities = query_sparql(get_persons_wiki_id_name_image_url(), "politiquices")
-    persons = set()
-    items_as_dict = dict()
-
-    for e in entities["results"]["bindings"]:
-
-        # this is just avoid duplicate entities, same entity with two labels
-        if e["item"]["value"] in persons:
-            continue
-
-        # make a dict
-        items_as_dict[e["item"]["value"].split("/")[-1]] = {
-            "wikidata_url": make_https(e["item"]["value"]),
-            "wiki_id": e["item"]["value"].split("/")[-1],
-            "name": e["label"]["value"],
-            "nr_articles": 0,
-            "image_url": make_https(e["image_url"]["value"]) if "image_url" in e else no_image
-        }
-
-        # add to already processed persons
-        persons.add(e["item"]["value"])
-
-    article_counts = query_sparql(get_total_nr_articles_for_each_person(), "politiquices")
-
-    for e in article_counts["results"]["bindings"]:
-        wiki_id = e["person"]["value"].split("/")[-1]
-        if wiki_id in items_as_dict:
-            nr_articles = int(e["count"]["value"])
-            items_as_dict[wiki_id]["nr_articles"] = nr_articles
-
-    items = sorted(list(items_as_dict.values()), key=lambda x: x["nr_articles"], reverse=True)
-
-    return items
-
-
-def get_all_parties_with_affiliated_count():
-    query = f"""
-        SELECT DISTINCT ?political_party ?party_label ?party_logo ?country_label
-                (COUNT(?person) as ?nr_personalities){{
-            ?person wdt:P31 wd:Q5 .
-            SERVICE <{wikidata_endpoint}> {{
-                ?person wdt:P102 ?political_party .
-                ?political_party rdfs:label ?party_label .
-                OPTIONAL {{
-                    ?political_party p:P17 ?country_stmt .
-                    ?country_stmt ps:P17 ?country .
-                    ?country rdfs:label ?country_label .
-                }}
-                FILTER(LANG(?country_label) = "pt")
-                OPTIONAL {{?political_party wdt:P154 ?party_logo. }} 
-                FILTER(LANG(?party_label) = "pt")
-          }}
-        }} 
-        GROUP BY ?political_party ?party_label ?party_logo ?country_label
-        ORDER BY DESC(?nr_personalities)
-        """
-    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
-    political_parties = []
-    for x in results["results"]["bindings"]:
-        if "party_logo" in x:
-            party_logo = x["party_logo"]["value"]
-        else:
-            if x["political_party"]["value"].split("/")[-1] == "Q847263":
-                party_logo = ps_logo
-            else:
-                party_logo = no_image
-        political_parties.append(
-            {
-                "wiki_id": x["political_party"]["value"].split("/")[-1],
-                "party_label": x["party_label"]["value"],
-                "party_logo": make_https(party_logo),
-                "party_country": x["country_label"]["value"],
-                "nr_personalities": x["nr_personalities"]["value"],
-            }
-        )
-
-    return political_parties
+    wiki_id_nr_articles = get_total_nr_articles_for_each_person()
+    for wiki_id, nr_articles in wiki_id_nr_articles.items():
+        if wiki_id in personalities:
+            personalities[wiki_id]["nr_articles"] = nr_articles
+    return sorted(list(personalities.values()), key=lambda x: x["nr_articles"], reverse=True)
 
 
 def entities_top_co_occurrences(wiki_id):
@@ -137,7 +69,7 @@ def parties_json_cache(all_politiquices_persons):
     }
 
     # parties cache
-    parties_data = get_all_parties_with_affiliated_count()
+    parties_data = get_all_parties_with_members_count()
     print(f"{len(parties_data)} parties info (image + nr affiliated personalities)")
     with open(static_data + "all_parties_info.json", "w") as f_out:
         json.dump(parties_data, f_out, indent=4)

@@ -217,7 +217,73 @@ def get_persons_wiki_id_name_image_url():
             }}
         ORDER BY ?label
         """
-    return PREFIXES + "\n" + query
+    persons = set()
+    items_as_dict = dict()
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
+
+    for e in result["results"]["bindings"]:
+
+        # this is just avoid duplicate entities, same entity with two labels
+        if e["item"]["value"] in persons:
+            continue
+
+        # make a dict
+        items_as_dict[e["item"]["value"].split("/")[-1]] = {
+            "wikidata_url": make_https(e["item"]["value"]),
+            "wiki_id": e["item"]["value"].split("/")[-1],
+            "name": e["label"]["value"],
+            "nr_articles": 0,
+            "image_url": make_https(e["image_url"]["value"]) if "image_url" in e else no_image
+        }
+
+        # add to already processed persons
+        persons.add(e["item"]["value"])
+
+    return items_as_dict
+
+
+def get_all_parties_with_members_count():
+    query = f"""
+        SELECT DISTINCT ?political_party ?party_label ?party_logo ?country_label
+                (COUNT(?person) as ?nr_personalities){{
+            ?person wdt:P31 wd:Q5 .
+            SERVICE <{wikidata_endpoint}> {{
+                ?person wdt:P102 ?political_party .
+                ?political_party rdfs:label ?party_label .
+                OPTIONAL {{
+                    ?political_party p:P17 ?country_stmt .
+                    ?country_stmt ps:P17 ?country .
+                    ?country rdfs:label ?country_label .
+                }}
+                FILTER(LANG(?country_label) = "pt")
+                OPTIONAL {{?political_party wdt:P154 ?party_logo. }} 
+                FILTER(LANG(?party_label) = "pt")
+          }}
+        }} 
+        GROUP BY ?political_party ?party_label ?party_logo ?country_label
+        ORDER BY DESC(?nr_personalities)
+        """
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    political_parties = []
+    for x in results["results"]["bindings"]:
+        if "party_logo" in x:
+            party_logo = x["party_logo"]["value"]
+        else:
+            if x["political_party"]["value"].split("/")[-1] == "Q847263":
+                party_logo = ps_logo
+            else:
+                party_logo = no_image
+        political_parties.append(
+            {
+                "wiki_id": x["political_party"]["value"].split("/")[-1],
+                "party_label": x["party_label"]["value"],
+                "party_logo": make_https(party_logo),
+                "party_country": x["country_label"]["value"],
+                "nr_personalities": x["nr_personalities"]["value"],
+            }
+        )
+
+    return political_parties
 
 
 def get_total_nr_articles_for_each_person():
@@ -232,7 +298,11 @@ def get_total_nr_articles_for_each_person():
         GROUP BY ?person_name ?person
         ORDER BY DESC (?count) ASC (?person_name)
         """
-    return PREFIXES + "\n" + query
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    return {
+        e["person"]["value"].split("/")[-1]: int(e["count"]["value"])
+        for e in results["results"]["bindings"]
+    }
 
 
 def get_nr_relationships_as_subject(relationship: str):

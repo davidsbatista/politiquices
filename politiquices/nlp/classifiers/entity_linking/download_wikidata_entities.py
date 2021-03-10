@@ -180,9 +180,7 @@ def get_wiki_ids_from_annotations():
             continue
         annotated_wiki_ids.add(p1_id.split("/")[-1])
         annotated_wiki_ids.add(p2_id.split("/")[-1])
-
     print(f"{len(list(annotated_wiki_ids))} entities from annotations")
-
     return list(annotated_wiki_ids)
 
 
@@ -212,13 +210,18 @@ def gather_wiki_ids(queries, to_add=None, to_remove=None):
 
 
 def download(ids_to_retrieve):
+    """
+    Downloads the TTL from wikidata.org for each entity in a given list entities using a
+    special endpoint, e.g.:
+
+    https://www.wikidata.org/wiki/Special:EntityData?id=Q7251&format=ttl
+
+    """
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
     default_dir = "wiki_ttl"
     print(f"\nDownloading {len(ids_to_retrieve)} unique entities")
-
     if not os.path.exists(default_dir):
         os.makedirs(default_dir)
-
     for idx, wiki_id in enumerate(sorted(ids_to_retrieve)):
         f_name = os.path.join(default_dir, wiki_id + ".ttl")
         if os.path.exists(f_name):

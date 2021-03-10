@@ -3,6 +3,8 @@ Web App
 
     - BUGS:
 
+        - add timeout to SPARQL
+
         - https://www.politiquices.pt/entity?q=Q3060511 -> Eurico de Melo
            - 2 relações na tabela, mas apenas 1 no grafo
 
@@ -50,14 +52,13 @@ Web App
     entity_linking
     --------------
         - remover os hard mappings do query_kb? e.g., Costa -> António Costa
-        - 'Costa':
-            - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
-            - apply entity linking algorithm
+            - 'Costa':
+                - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
+                - apply entity linking algorithm
 
         - 'Fernando Gomes'
 
         - news article with this personalities ?
-            https://www.wikidata.org/wiki/Q23904994
             https://www.wikidata.org/wiki/Q52112309
             https://www.wikidata.org/wiki/Q72310730
 
@@ -67,7 +68,8 @@ Web App
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
         - Partidos should not show members with just one person or show only PT parties
         - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
-        - party members: - load on scroll down
+
+        - party members: - load on scroll down ?
         - clicar no branco fazer collapse ao menu (hamburger)
         - cache + cópia do resize das imagens para este display
 
