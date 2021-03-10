@@ -8,15 +8,16 @@ Web App
         - Ricardo Baptista Leite está nas "personalidades' mas não tem relações
         - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
             https://www.politiquices.pt/entity?q=Q10294458&annotate
-        - Add annotated/ground-truth to RDF Graph with score 1.0
+
+        - criar a KB, usar as wiki_ids da ground-truth
 
         - HTTPS para tudo, links para imagens
 
         - XHR POST http://politiquices.pt:8000/annotation/
-        CORS Missing Allow Origin
-          Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote
-          resource at http://politiquices.pt:8000/annotation/.
-          (Reason: CORS header 'Access-Control-Allow-Origin' missing).
+            CORS Missing Allow Origin
+              Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote
+              resource at http://politiquices.pt:8000/annotation/.
+              (Reason: CORS header 'Access-Control-Allow-Origin' missing).
 
 
     - Grafo:

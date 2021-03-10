@@ -17,6 +17,7 @@ from politiquices.nlp.utils.utils import (
     read_ground_truth,
     str2bool
 )
+from politiquices.webapp.webapp.lib.utils import make_https
 
 
 @dataclass
@@ -237,8 +238,7 @@ def build_person(wikidata_id, name, persons):
         )
 
 
-def process_classified_titles(titles, gold_urls=None):
-    persons = defaultdict(Person)
+def process_classified_titles(titles, persons, gold_urls=None):
     relationships = []
     articles = []
 
@@ -246,9 +246,7 @@ def process_classified_titles(titles, gold_urls=None):
 
         # ignore empty URLs or URLs part of the gold-data
         url = title["url"]
-        if url == "None" or url == "\\N":
-            continue
-        if url in gold_urls:
+        if url == "None" or url == "\\N" or url in gold_urls:
             continue
 
         # ignore titles where both entities are the same
@@ -270,7 +268,7 @@ def process_classified_titles(titles, gold_urls=None):
         elif url.startswith("https://www.linguateca.pt/CHAVE?"):
             url_type = "chave"
 
-        # special case to transform publico.pt urls to: http://publico.pt/<news_id>
+        # special case to transform publico.pt urls to: https://publico.pt/<news_id>
         url = minimize_publico_urls(url) if url_type == "publico" else url
 
         try:
@@ -307,7 +305,6 @@ def process_classified_titles(titles, gold_urls=None):
 
 
 def process_gold(titles):
-
     persons = defaultdict(Person)
     relationships = []
     articles = []
@@ -315,10 +312,13 @@ def process_gold(titles):
     for entry in titles:
         p1_id = entry["ent1_id"]
         p1_name = entry["ent1"]
-        build_person(p1_id, p1_name, persons)
-
         p2_id = entry["ent2_id"]
         p2_name = entry["ent2"]
+
+        if p1_id == 'None' or p2_id == 'None':
+            continue
+
+        build_person(p1_id, p1_name, persons)
         build_person(p2_id, p2_name, persons)
 
         relationships.append(
@@ -335,7 +335,7 @@ def process_gold(titles):
 
         articles.append(
             Article(
-                url=entry["url"],
+                url=make_https(entry["url"]),
                 title=entry["title"],
                 source=None,
                 date=None,
@@ -453,17 +453,19 @@ def main():
     arquivo = []
     publico = []
     chave = []
+    articles_gold = []
+    rels_gold = []
     gold_urls = None
+    gold_persons = None
 
     if args.annotated:
-        publico = read_ground_truth("../../../data/annotated/publico.csv")
-        arquivo = read_ground_truth("../../../data/annotated/arquivo.csv")
-        articles_gold, per_gold, rels_gold = process_gold(publico + arquivo)
-        print("articles from annotations: ", len(articles_gold))
+        publico_truth = read_ground_truth("../../../data/annotated/publico.csv")
+        arquivo_truth = read_ground_truth("../../../data/annotated/arquivo.csv")
+        articles_gold, gold_persons, rels_gold = process_gold(publico_truth + arquivo_truth)
+        print("ground truth: ", len(articles_gold), end="\n\n")
         gold_urls = [article.url for article in articles_gold]
 
     if args.arquivo:
-        print("\nprocessing arquivo.pt articles")
         # remove duplicates: keep only unique urls
         arquivo_unique_url = remove_duplicates_with_same_url(args.arquivo)
 
@@ -473,23 +475,24 @@ def main():
         # remove duplicates: (i.e., title + crawl date same, one url is sub-domain of other)
         # ToDo: check if this still happens
         arquivo = remove_duplicates_same_domain(unique)
+        print("arquivo.pt: ", len(arquivo), end="\n\n")
 
     if args.publico:
-        print("\nprocessing publico.pt articles")
         publico = remove_duplicates_with_same_url(args.publico)
+        print("publico.pt: ", len(publico), end="\n\n")
 
     if args.chave:
-        print("\nprocessing CHAVE articles")
         chave = [entry for entry in processed_titles(args.chave)]
+        print("CHAVE     : ", len(chave), end="\n\n")
 
-    print("\narticles from predictions")
-    print("arquivo.pt: ", len(arquivo))
-    print("publico.pt: ", len(publico))
-    print("CHAVE     : ", len(chave))
+    # pass all articles, persons which can be the already built persons from annotated or empty
+    articles, persons, relationships = process_classified_titles(
+        arquivo + publico + chave,
+        gold_urls=gold_urls,
+        persons=gold_persons
+    )
 
-    all_articles = arquivo + publico + chave
-    articles, persons, relationships = process_classified_titles(all_articles, gold_urls=gold_urls)
-    populate_graph(articles, persons, relationships)
+    populate_graph(articles + articles_gold, persons, relationships + rels_gold)
 
 
 if __name__ == "__main__":
