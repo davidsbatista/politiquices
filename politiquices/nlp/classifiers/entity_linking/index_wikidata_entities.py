@@ -64,9 +64,10 @@ def main():
     bulk_data = []
     path = sys.argv[1]
     counter = 0
-    for file in os.listdir(path):
+    for file in sorted(os.listdir(path)):
         if not file.endswith("ttl"):
             continue
+        print(f"Processing {file}: {counter}/{len(os.listdir(path))}")
         wiki_id = file.split("/")[-1][:-4]
         name, alternative = get_name_alternative_names(path + "/" + file, wiki_id)
         if name:
@@ -76,7 +77,6 @@ def main():
                 'aliases': alternative}
             bulk_data.append(doc)
         counter += 1
-        print(f"{counter}/{len(os.listdir(path))}")
 
     # save the processed results into file, useful if the next step fails, don't need
     # to repeat the whole process again
