@@ -458,17 +458,18 @@ def entity_vs_entity(wiki_id_one, wiki_id_two):
 
 # data statistics
 def get_stats():
-    # number of persons, parties
+
+    # number of persons, parties, articles
     nr_persons = get_nr_of_persons()
     nr_parties = len(all_parties_info)
+    nr_all_articles, nr_all_no_other_articles = get_total_nr_of_articles()
 
     # articles per year chart
     nr_articles_year_labels, nr_articles_year_values = get_nr_articles_per_year()
-    nr_articles = get_total_nr_of_articles()
 
     # articles per relationship type per year chart
     values = get_total_articles_by_year_by_relationship_type()
-
+    
     # personality frequency chart
     per_freq_labels = []
     per_freq_values = []
@@ -487,7 +488,8 @@ def get_stats():
     return {
         "nr_parties": nr_parties,
         "nr_persons": nr_persons,
-        "nr_articles": nr_articles,
+        "nr_all_articles": nr_all_articles,
+        "nr_all_no_other_articles": nr_all_no_other_articles,
         "nr_articles_year_labels": nr_articles_year_labels,
         "nr_articles_year_values": nr_articles_year_values,
 
@@ -500,7 +502,6 @@ def get_stats():
 
         "per_freq_labels": per_freq_labels[0:500],
         "per_freq_values": per_freq_values[0:500],
-
         "per_co_occurrence_labels": co_occurrences_labels[0:75],
         "per_co_occurrence_values": co_occurrences_values[0:75],
     }

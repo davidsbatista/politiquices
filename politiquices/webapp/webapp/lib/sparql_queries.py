@@ -59,14 +59,28 @@ def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
     return year, nr_articles
 
 
-def get_total_nr_of_articles() -> int:
+def get_total_nr_of_articles():
     query = """
         SELECT (COUNT(?x) as ?nr_articles) WHERE {
             ?x politiquices:url ?y .
         }
         """
     results = query_sparql(PREFIXES + "\n" + query, "politiquices")
-    return results["results"]["bindings"][0]["nr_articles"]["value"]
+    all_articles = results["results"]["bindings"][0]["nr_articles"]["value"]
+
+    query = """
+        SELECT (COUNT(?rel) as ?nr_articles) WHERE {
+            VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
+                                'ent1_supports_ent2' 'ent2_supports_ent1'} .
+            ?rel politiquices:type ?rel_values .
+            ?rel politiquices:url ?url .
+        }
+    """
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    no_other_articles = results["results"]["bindings"][0]["nr_articles"]["value"]
+
+    return all_articles, no_other_articles
+
 
 
 def get_nr_of_persons() -> int:

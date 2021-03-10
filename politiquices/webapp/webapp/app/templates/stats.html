@@ -10,10 +10,6 @@
 
     <br>
 
-    <center><h3><b>Análises Estátisticas</b></h3></center>
-
-    <br>
-
     <center>
     <h4>
         <a href="/entities">{{items.nr_persons}} personalidades</a>
@@ -23,28 +19,41 @@
     </center>
 
     <br>
+    <h4><b><center>{{items.nr_all_no_other_articles}} notícias analisadas </center></b></h4>
 
+    <!--
     <div class="container h-100">
-        <h4><b><center>{{items.nr_articles}} títulos de notícias</center></b></h4>
         <div class="row h-100 justify-content-center align-items-center">            
             <br><br>
             <canvas id="myChart" width="1000" height="250"></canvas>
         </div>
     </div>
+    -->
 
     <br><br>
 
     <div class="container h-100">
-        <h4><b><center>Artigos por Ano por Tipo de Relação</center></b></h4>
         <div class="row h-100 justify-content-center align-items-center">
             <br><br>
             <canvas id="myChart2" width="1000" height="250"></canvas>
         </div>
     </div>
 
+    <br><br><br><br>
+
+    <!--
+    <div class="container h-100">
+        <h4><b><center>Artigos por Ano por Tipo de Relação (tudo)</center></b></h4>
+        <div class="row h-100 justify-content-center align-items-center">
+            <br><br>
+            <canvas id="myChart3" width="1000" height="250"></canvas>
+        </div>
+    </div>
+
     <br><br>
+    -->
 
-
+    <!--
     <h4><b><center>Nº Relações/Artigos por Personalidade</center></b></h4>
     <center>
         <button class="btn btn-primary" type="button" data-toggle="collapse"
@@ -70,21 +79,11 @@
             <canvas id="barChart_co_occurr" width="700" height="1900"></canvas>
         </div>
     </div>
-
-    <!--
-    // https://codepen.io/jamiecalder/pen/NrROeB
-    // https://apexcharts.com/javascript-chart-demos/bar-charts/stacked/
-    <div class="container h-100">
-        <h4><b><center>Tipos de relações por cada personalidade</center></b></h4>
-        <div class="row h-100 justify-content-center align-items-center">
-            <br><br>
-            <canvas id="Chart1" width="100" height="25"></canvas>
-        </div>
-    </div>
     -->
 
     <script>
         // Articles per year
+        /*
         var ctx = document.getElementById('myChart');
         var color = Chart.helpers.color;
         var year_labels = {{ items['nr_articles_year_labels']|tojson }};
@@ -100,9 +99,77 @@
                         }]
                 }
         });
+        */
 
         // Articles rel-type, year
         var ctx = document.getElementById('myChart2');
+        var color = Chart.helpers.color;
+        var year_labels = {{ items['nr_articles_year_labels']|tojson }};
+        var ent1_opposes_ent2 = {{ items['ent1_opposes_ent2']|tojson }};
+        var ent2_opposes_ent1 = {{ items['ent2_opposes_ent1']|tojson }};
+        var ent1_supports_ent2 = {{ items['ent1_supports_ent2']|tojson }};
+        var ent2_supports_ent1 = {{ items['ent2_supports_ent1']|tojson }};
+        var ent1_other_ent2 = {{ items['ent1_other_ent2']|tojson }};
+        var ent2_other_ent1 = {{ items['ent2_other_ent1']|tojson }};
+
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: year_labels,
+                datasets: [
+                {
+                    label: 'ent1_opposes_ent2',
+                    backgroundColor: "#FF0000",
+                    data: ent1_opposes_ent2
+                }, 
+                {
+                    label: 'ent2_opposes_ent1',
+                    backgroundColor: "#980000",
+                    data: ent2_opposes_ent1,
+                }, 
+                {
+                    label: 'ent1_supports_ent2',
+                    backgroundColor: "#44861E",
+                    data: ent1_supports_ent2,
+                }, 
+                {
+                    label: 'ent2_supports_ent1',
+                    backgroundColor: "#70DA33",
+                    data: ent2_supports_ent1,
+                }
+                ],
+            },
+            options: {
+                tooltips: {
+                    displayColors: true,
+                    callbacks:{
+                        mode: 'x',
+                    },
+                },
+                scales: {
+                    xAxes: [{
+                        stacked: true,
+                        gridLines: {
+                            display: false,
+                        }
+                    }],
+                    yAxes: [{
+                        stacked: true,
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                        type: 'linear',
+                    }]
+                },
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: { position: 'bottom' },
+            }
+        });
+
+
+        // Articles rel-type, year - tudo
+        var ctx = document.getElementById('myChart3');
         var color = Chart.helpers.color;
         var year_labels = {{ items['nr_articles_year_labels']|tojson }};
         var ent1_opposes_ent2 = {{ items['ent1_opposes_ent2']|tojson }};
@@ -178,8 +245,7 @@
         });
 
 
-
-        // Person Freq.
+        /* Person Freq.
         var ctx = document.getElementById('barChart_per_freq');
         var per_freq_labels = {{ items['per_freq_labels']|tojson }};
         var per_freq_values = {{ items['per_freq_values']|tojson }};
@@ -195,7 +261,7 @@
                 }
         });
 
-        // Person Co-Occur. Freq.
+        Person Co-Occur. Freq.
         var ctx = document.getElementById('barChart_co_occurr');
         var per_co_occ_labels = {{ items['per_co_occurrence_labels']|tojson }};
         var per_co_occ_values = {{ items['per_co_occurrence_values']|tojson }};
@@ -215,6 +281,7 @@
                     }
                 }
         });
+        */
     
     </script>
 
