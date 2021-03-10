@@ -459,9 +459,8 @@ def main():
     gold_persons = None
 
     if args.annotated:
-        publico_truth = read_ground_truth("../../../annotations/publico.csv")
-        arquivo_truth = read_ground_truth("../../../annotations/arquivo.csv")
-        articles_gold, gold_persons, rels_gold = process_gold(publico_truth + arquivo_truth)
+        training_data = read_ground_truth("../../../politiquices_training_data.tsv")
+        articles_gold, gold_persons, rels_gold = process_gold(training_data)
         print("ground truth: ", len(articles_gold), end="\n\n")
         gold_urls = [article.url for article in articles_gold]
 

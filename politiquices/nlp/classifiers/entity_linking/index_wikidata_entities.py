@@ -67,7 +67,7 @@ def main():
     for file in sorted(os.listdir(path)):
         if not file.endswith("ttl"):
             continue
-        print(f"Processing {file}: {counter}/{len(os.listdir(path))}")
+        print(f"Processing {file} - {counter}/{len(os.listdir(path))}")
         wiki_id = file.split("/")[-1][:-4]
         name, alternative = get_name_alternative_names(path + "/" + file, wiki_id)
         if name:

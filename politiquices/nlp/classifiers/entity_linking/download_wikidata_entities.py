@@ -171,10 +171,9 @@ def read_extra_entities(f_name):
 
 
 def get_wiki_ids_from_annotations():
-    publico_truth = read_ground_truth("../../../../annotations/publico.tsv")
-    arquivo_truth = read_ground_truth("../../../../annotations/arquivo.tsv")
+    training_data = read_ground_truth("../../../politiquices_training_data.tsv")
     annotated_wiki_ids = set()
-    for entry in publico_truth+arquivo_truth:
+    for entry in training_data:
         p1_id = entry["ent1_id"]
         p2_id = entry["ent2_id"]
         if p1_id == 'None' or p2_id == 'None':
@@ -212,37 +211,39 @@ def gather_wiki_ids(queries, to_add=None, to_remove=None):
     return list(set(relevant_ids))
 
 
-def download(ids_to_retrieve, default_dir="wiki_ttl", file_format="ttl"):
+def download(ids_to_retrieve):
     base_url = "https://www.wikidata.org/wiki/Special:EntityData?"
+    default_dir = "wiki_ttl"
+    print(f"\nDownloading {len(ids_to_retrieve)} unique entities")
 
     if not os.path.exists(default_dir):
         os.makedirs(default_dir)
 
-    for idx, wiki_id in enumerate(set(ids_to_retrieve)):
-        f_name = os.path.join(default_dir, wiki_id + "." + file_format)
+    for idx, wiki_id in enumerate(sorted(ids_to_retrieve)):
+        f_name = os.path.join(default_dir, wiki_id + ".ttl")
         if os.path.exists(f_name):
             print(f"skipped {f_name}")
             continue
-        print(str(idx) + "/" + str(len(set(ids_to_retrieve))))
-        just_sleep(3)
-        r = requests.get(base_url, params={"format": file_format, "id": wiki_id})
+        print(f"Downloading {f_name} - {str(idx)}/ {str(len(set(ids_to_retrieve)))}")
+        just_sleep(2)
+        r = requests.get(base_url, params={"format": 'ttl', "id": wiki_id})
         open(f_name, "wt").write(r.text)
 
 
 def main():
-    # get wiki from wikidata.org through SPARQL queries
+    # get entities from wikidata.org through SPARQL queries
     queries = [
         affiliated_with_relevant_political_party,
         get_relevant_persons_based_on_public_office_positions(),
         portuguese_persons_occupations,
     ]
-    # get wiki from wikidata.org through SPARQL queries
+    # get wiki entities ids from a manual curated list
     add, remove = read_extra_entities('extra_entities.json')
+    # get all the unique entities wiki ids: queries + manual list
     entities_ids = gather_wiki_ids(queries, to_add=add, to_remove=remove)
-    # add entities id from annotations data
+    # add also the entities wiki id from annotations data
     entities_ids.extend(get_wiki_ids_from_annotations())
-    print(f"\nDownloading {len(set(entities_ids))} unique entities")
-    download(list(set(entities_ids)), default_dir="wiki_ttl", file_format="ttl")
+    download(list(set(entities_ids)))
 
 
 if __name__ == "__main__":
