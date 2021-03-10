@@ -2,15 +2,19 @@ Web App
 =======
 
     - BUGS:
+
         - https://www.politiquices.pt/entity?q=Q3060511 -> Eurico de Melo
            - 2 relações na tabela, mas apenas 1 no grafo
+
         - António Vitorino apoia Durão Barroso 2004-2004: mostra 2 no arco, só há 1
+
         - Ricardo Baptista Leite está nas "personalidades' mas não tem relações
+
         - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
             https://www.politiquices.pt/entity?q=Q10294458&annotate
 
-        - criar a KB, usar as wiki_ids da ground-truth
 
+        - criar a KB, usar as wiki_ids da ground-truth
         - HTTPS para tudo, links para imagens
 
         - XHR POST http://politiquices.pt:8000/annotation/
@@ -46,6 +50,21 @@ Web App
         - Limpar o Javascript: re-utilizar
         - libs todas locais
         - CSS todo fora do HTML
+
+    entity_linking
+    --------------
+        - remover os hard mappings do query_kb? e.g., Costa -> António Costa
+        - 'Costa':
+            - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
+            - apply entity linking algorithm
+
+        - 'Fernando Gomes'
+
+        - news article with this personalities ?
+            https://www.wikidata.org/wiki/Q23904994
+            https://www.wikidata.org/wiki/Q52112309
+            https://www.wikidata.org/wiki/Q72310730
+
 
     Geral (low)
     ----------
@@ -124,17 +143,3 @@ relationship classifier
     🔹 When you think you have reached a limit with different models, try feature selection
     🔹 Done with feature engineering and feature selection? You will realize that by following above steps, you have also chosen a few best models that work well with your data
     🔹 Now its time to do hyperparameter optimization and squeeze the last few drops from your best models
-
-
-entity_linking
---------------
-    - 'Costa':
-        - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
-        - apply entity linking algorithm
-
-    - 'Fernando Gomes'
-
-    - news article with this personalities ?
-        https://www.wikidata.org/wiki/Q23904994
-        https://www.wikidata.org/wiki/Q52112309
-        https://www.wikidata.org/wiki/Q72310730

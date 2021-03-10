@@ -8,13 +8,15 @@ from pydantic import BaseModel
 app = FastAPI()
 
 origins = [
+    "http://politiquices.pt",
+    "http://www.politiquices.pt",
     "http://localhost",
     "http://localhost:8080",
 ]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],    # allow crossDomain connections from everywhere
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

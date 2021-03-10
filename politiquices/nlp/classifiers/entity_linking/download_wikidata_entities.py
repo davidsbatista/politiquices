@@ -182,6 +182,8 @@ def get_wiki_ids_from_annotations():
         annotated_wiki_ids.add(p1_id.split("/")[-1])
         annotated_wiki_ids.add(p2_id.split("/")[-1])
 
+    print(f"{len(list(annotated_wiki_ids))} entities from annotations")
+
     return list(annotated_wiki_ids)
 
 
@@ -228,16 +230,17 @@ def download(ids_to_retrieve, default_dir="wiki_ttl", file_format="ttl"):
 
 
 def main():
+    # get wiki from wikidata.org through SPARQL queries
     queries = [
         affiliated_with_relevant_political_party,
         get_relevant_persons_based_on_public_office_positions(),
         portuguese_persons_occupations,
     ]
+    # get wiki from wikidata.org through SPARQL queries
     add, remove = read_extra_entities('extra_entities.json')
-    annotated_ids = get_wiki_ids_from_annotations()
-    print(f"{len(annotated_ids)} entities from annotations")
     entities_ids = gather_wiki_ids(queries, to_add=add, to_remove=remove)
-    entities_ids.extend(annotated_ids)  # add entities id from annotations data
+    # add entities id from annotations data
+    entities_ids.extend(get_wiki_ids_from_annotations())
     print(f"\nDownloading {len(set(entities_ids))} unique entities")
     download(list(set(entities_ids)), default_dir="wiki_ttl", file_format="ttl")
 
