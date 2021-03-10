@@ -8,8 +8,8 @@ from pydantic import BaseModel
 app = FastAPI()
 
 origins = [
-    "http://politiquices.pt",
-    "http://www.politiquices.pt",
+    "https://politiquices.pt",
+    "https://www.politiquices.pt",
     "http://localhost",
     "http://localhost:8080",
 ]
