@@ -238,8 +238,8 @@ def main():
     print(f"{len(annotated_ids)} entities from annotations")
     entities_ids = gather_wiki_ids(queries, to_add=add, to_remove=remove)
     entities_ids.extend(annotated_ids)  # add entities id from annotations data
-    print(f"\nDownloading {len(entities_ids)} unique entities")
-    download(set(entities_ids), default_dir="wiki_ttl", file_format="ttl")
+    print(f"\nDownloading {len(set(entities_ids))} unique entities")
+    download(list(set(entities_ids)), default_dir="wiki_ttl", file_format="ttl")
 
 
 if __name__ == "__main__":
