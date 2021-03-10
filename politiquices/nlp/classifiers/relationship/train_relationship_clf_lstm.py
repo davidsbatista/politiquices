@@ -54,8 +54,8 @@ def tokenize(sentences):
 
 
 def main():
-    publico = read_ground_truth("../../../../data/annotated/publico.csv")
-    arquivo = read_ground_truth("../../../../data/annotated/arquivo.csv")
+    publico = read_ground_truth("../../../../annotations/publico.csv")
+    arquivo = read_ground_truth("../../../../annotations/arquivo.csv")
     titles, labels = pre_process_train_data(publico + arquivo)
 
     print("Loading embeddings...")

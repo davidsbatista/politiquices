@@ -128,7 +128,7 @@ def main():
     model_name = 'unicamp-dl/ptt5-base-portuguese-vocab'
     tokenizer = T5Tokenizer.from_pretrained(model_name)
 
-    f_name = "../../../../data/annotated/publico_politica.tsv"
+    f_name = "../../../../data/annotations/publico_politica.tsv"
     data = read_ground_truth(f_name, only_label=True)
     docs, labels = pre_process_train_data(data)
     y_test = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in labels]

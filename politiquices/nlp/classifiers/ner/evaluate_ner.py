@@ -6,8 +6,8 @@ nlp = pt_core_news_lg.load(disable=["tagger", "parser"])
 
 
 def main():
-    arquivo = read_ground_truth("../../../../data/annotated/arquivo.tsv")
-    publico = read_ground_truth("../../../../data/annotated/publico_politica.tsv")
+    arquivo = read_ground_truth("../../../../annotations/arquivo.tsv")
+    publico = read_ground_truth("../../../../annotations/publico_politica.tsv")
     tp_total = 0
     fp_total = 0
     fn_total = 0

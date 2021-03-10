@@ -9,8 +9,8 @@ from politiquices.nlp.utils.utils import (
 
 
 def main():
-    publico = read_ground_truth("../../../../data/annotated/publico.csv")
-    arquivo = read_ground_truth("../../../../data/annotated/arquivo.csv")
+    publico = read_ground_truth("../../../../annotations/publico.csv")
+    arquivo = read_ground_truth("../../../../annotations/arquivo.csv")
     direction_clf = DirectionClassifier()
     true_direction = []
     pred_direction = []

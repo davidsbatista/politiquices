@@ -171,8 +171,8 @@ def read_extra_entities(f_name):
 
 
 def get_wiki_ids_from_annotations():
-    publico_truth = read_ground_truth("../../../../data/annotated/publico.csv")
-    arquivo_truth = read_ground_truth("../../../../data/annotated/arquivo.csv")
+    publico_truth = read_ground_truth("../../../../annotations/publico.tsv")
+    arquivo_truth = read_ground_truth("../../../../annotations/arquivo.tsv")
     annotated_wiki_ids = set()
     for entry in publico_truth+arquivo_truth:
         p1_id = entry["ent1_id"]
@@ -237,7 +237,7 @@ def main():
     annotated_ids = get_wiki_ids_from_annotations()
     print(f"{len(annotated_ids)} entities from annotations")
     entities_ids = gather_wiki_ids(queries, to_add=add, to_remove=remove)
-    entities_ids.extend(annotated_ids)  # add entities id from annotated data
+    entities_ids.extend(annotated_ids)  # add entities id from annotations data
     print(f"\nDownloading {len(entities_ids)} unique entities")
     download(set(entities_ids), default_dir="wiki_ttl", file_format="ttl")
 

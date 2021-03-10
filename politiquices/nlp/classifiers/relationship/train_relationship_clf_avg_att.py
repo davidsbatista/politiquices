@@ -54,8 +54,8 @@ def pre_process_train_data(data):
 
 
 def main():
-    data_publico = read_ground_truth("../../../../data/annotated/publico_politica.tsv")
-    data_arquivo = read_ground_truth("../../../../data/annotated/arquivo.tsv")
+    data_publico = read_ground_truth("../../../../annotations/publico_politica.tsv")
+    data_arquivo = read_ground_truth("../../../../annotations/arquivo.tsv")
     docs, labels = pre_process_train_data(data_arquivo + data_publico)
 
     skf = StratifiedKFold(n_splits=2, random_state=42, shuffle=True)

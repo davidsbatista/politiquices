@@ -412,7 +412,7 @@ def populate_graph(articles, persons, relationships):
         g.add((_rel, ns1.type, Literal(rel.rel_type)))
         g.add((_rel, ns1.score, Literal(rel.rel_score, datatype=XSD.float)))
 
-        # ToDo: set score to 1.0 when indexing annotated data
+        # ToDo: set score to 1.0 when indexing annotations data
         # g.add((_rel, ns1.score, Literal(1.0, datatype=XSD.float)))
 
         g.add((_rel, ns1.url, URIRef(rel.url)))
@@ -437,7 +437,7 @@ def parse_args():
     parser.add_argument("--arquivo", help="input JSONL file with arquivo.pt results")
     parser.add_argument("--chave", help="input JSONL file with CHAVE results")
     parser.add_argument(
-        "--annotated",
+        "--annotations",
         type=str2bool,
         nargs="?",
         const=True,
@@ -459,8 +459,8 @@ def main():
     gold_persons = None
 
     if args.annotated:
-        publico_truth = read_ground_truth("../../../data/annotated/publico.csv")
-        arquivo_truth = read_ground_truth("../../../data/annotated/arquivo.csv")
+        publico_truth = read_ground_truth("../../../annotations/publico.csv")
+        arquivo_truth = read_ground_truth("../../../annotations/arquivo.csv")
         articles_gold, gold_persons, rels_gold = process_gold(publico_truth + arquivo_truth)
         print("ground truth: ", len(articles_gold), end="\n\n")
         gold_urls = [article.url for article in articles_gold]
@@ -485,7 +485,7 @@ def main():
         chave = [entry for entry in processed_titles(args.chave)]
         print("CHAVE     : ", len(chave), end="\n\n")
 
-    # pass all articles, persons which can be the already built persons from annotated or empty
+    # pass all articles, persons which can be the already built persons from annotations or empty
     articles, persons, relationships = process_classified_titles(
         arquivo + publico + chave,
         gold_urls=gold_urls,

@@ -88,7 +88,7 @@ def get_time_str():
     return datetime.strftime(datetime.now(), "%Y_%m_%d_%H_%M_%S")
 
 
-def read_ground_truth(filename, delimiter=","):
+def read_ground_truth(filename, delimiter="\t"):
     data = []
     with open(filename, newline="") as csv_file:
         titles = csv.reader(csv_file, delimiter=delimiter)
