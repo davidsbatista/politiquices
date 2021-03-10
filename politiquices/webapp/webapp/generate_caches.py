@@ -1,5 +1,4 @@
 import json
-import re
 from collections import defaultdict
 
 from politiquices.webapp.webapp.lib.sparql_queries import (
