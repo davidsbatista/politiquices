@@ -310,24 +310,21 @@ def process_gold(titles):
     articles = []
 
     for entry in titles:
-        p1_id = entry["ent1_id"]
-        p1_name = entry["ent1"]
-        p2_id = entry["ent2_id"]
-        p2_name = entry["ent2"]
-
-        if p1_id == 'None' or p2_id == 'None':
+        if entry["ent1_id"] == 'None' or entry["ent2_id"] == 'None':
             continue
 
-        build_person(p1_id, p1_name, persons)
-        build_person(p2_id, p2_name, persons)
+        ent1_id = entry["ent1_id"].split("/")[-1]
+        ent2_id = entry["ent2_id"].split("/")[-1]
+        build_person(ent1_id, entry["ent1"], persons)
+        build_person(ent2_id, entry["ent2"], persons)
 
         relationships.append(
             Relationship(
                 url=entry["url"],
                 rel_type=entry["label"],
                 rel_score=1.0,
-                ent1=entry["ent1_id"],
-                ent2=entry["ent2_id"],
+                ent1=ent1_id,
+                ent2=ent2_id,
                 ent1_str=entry["ent1"],
                 ent2_str=entry["ent2"],
             )
@@ -356,9 +353,7 @@ def populate_graph(articles, persons, relationships):
     wiki_item = Namespace("http://www.wikidata.org/entity/")
     g.bind("wd", wiki_item)
     g.bind("wdt", wiki_prop)
-
-    # linked-data vocabularies
-    # https://lov.linkeddata.es/dataset/lov/
+    # see linked-data vocabularies: https://lov.linkeddata.es/dataset/lov/
 
     print("adding Persons")
     # add Person triples: <wiki_URI, SKOS.prefLabel, name>
@@ -367,7 +362,7 @@ def populate_graph(articles, persons, relationships):
         # ToDo: make sure pref name is at least two names: first + surname
         g.add(
             (
-                URIRef(f"http://www.wikidata.org/entity/{wikidata_id}"),
+                URIRef(f"https://www.wikidata.org/entity/{wikidata_id}"),
                 SKOS.prefLabel,
                 Literal(person.name, lang="pt"),
             )
@@ -378,12 +373,12 @@ def populate_graph(articles, persons, relationships):
         # https://www.wikidata.org/wiki/Q5              # human
         # to filter in the queries to get only persons and not articles or relationships
         g.add(
-            (URIRef(f"http://www.wikidata.org/entity/{wikidata_id}"), wiki_prop.P31, wiki_item.Q5)
+            (URIRef(f"https://www.wikidata.org/entity/{wikidata_id}"), wiki_prop.P31, wiki_item.Q5)
         )
 
         g.add(
             (
-                URIRef(f"http://www.wikidata.org/entity/{wikidata_id}"),
+                URIRef(f"https://www.wikidata.org/entity/{wikidata_id}"),
                 RDFS.label,
                 Literal(person.name, lang="pt"),
             )
@@ -392,11 +387,12 @@ def populate_graph(articles, persons, relationships):
         for alt_name in person.also_known_as:
             g.add(
                 (
-                    URIRef(f"http://www.wikidata.org/entity/{wikidata_id}"),
+                    URIRef(f"https://www.wikidata.org/entity/{wikidata_id}"),
                     SKOS.altLabel,
                     Literal(alt_name, lang="pt"),
                 )
             )
+
     print("adding Articles")
     # add triple Article:
     #   <url, DC.title, title>
@@ -411,13 +407,9 @@ def populate_graph(articles, persons, relationships):
         _rel = BNode()
         g.add((_rel, ns1.type, Literal(rel.rel_type)))
         g.add((_rel, ns1.score, Literal(rel.rel_score, datatype=XSD.float)))
-
-        # ToDo: set score to 1.0 when indexing annotations data
-        # g.add((_rel, ns1.score, Literal(1.0, datatype=XSD.float)))
-
         g.add((_rel, ns1.url, URIRef(rel.url)))
-        g.add((_rel, ns1.ent1, URIRef(f"http://www.wikidata.org/entity/{rel.ent1}")))
-        g.add((_rel, ns1.ent2, URIRef(f"http://www.wikidata.org/entity/{rel.ent2}")))
+        g.add((_rel, ns1.ent1, URIRef(f"https://www.wikidata.org/entity/{rel.ent1}")))
+        g.add((_rel, ns1.ent2, URIRef(f"https://www.wikidata.org/entity/{rel.ent2}")))
         g.add((_rel, ns1.ent1_str, Literal(rel.ent1_str)))
         g.add((_rel, ns1.ent2_str, Literal(rel.ent2_str)))
 

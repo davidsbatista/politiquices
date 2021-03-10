@@ -981,7 +981,6 @@ def query_sparql(query, endpoint):
     elif endpoint == "politiquices":
         endpoint_url = politiquices_endpoint
 
-    # ToDo: see user agent policy: https://w.wiki/CX6
     user_agent = "Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
     sparql = SPARQLWrapper(endpoint_url, agent=user_agent)
 

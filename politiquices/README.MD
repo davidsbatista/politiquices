@@ -20,3 +20,11 @@ __webapp__
 
 __tests__
    - all related tests
+
+
+
+
+1  build KB (Elastic Search) > wikidata.org.ttl.bz2
+2  make sparql
+3  make cache
+4  make neo4j
