@@ -15,6 +15,11 @@ Web App
         - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
             https://www.politiquices.pt/entity?q=Q10294458&annotate
 
+        - Limpar mesma notícia do arquivo.pt e o publico.pt, escolher o arquivo.pt
+            "2001-08-31 	Santana Lopes lança ultimato a Paulo Portas sobre coligação em Lisboa 	opposes 	0.882"
+            "2001-08-31 	Santana Lopes lança ultimato a Paulo Portas sobre coligação em Lisboa 	opposes 	1.0"
+
+
     - Grafo:
         - normalizar tudo para: opõe-se/apoia
         - limpar, ficar na versão final
