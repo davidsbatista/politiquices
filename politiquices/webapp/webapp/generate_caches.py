@@ -114,7 +114,7 @@ def entities_top_co_occurrences(wiki_id):
         )
     with open(static_data + "top_co_occurrences.json", "w") as f_out:
         json.dump(co_occurrences, f_out, indent=4)
-    print(f"{len(co_occurrences)} entity co-ocorruences")
+    print(f"{len(co_occurrences)} entity co-occurrences")
 
 
 def parties_json_cache(all_politiquices_persons):
