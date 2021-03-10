@@ -6,4 +6,5 @@
 
 ### Concatenate all the TTL into one file to be indexed on a local SPARQL instance
 
-    cat wiki_ttl/* | bzip2 -c > ../../webapp/fuseki-docker/fuseki-data/wikidata_org_$(date +"%Y-%m-%d").ttl.bz2
+    cat wiki_ttl/* | bzip2 -c > ../../../webapp/fuseki-docker/fuseki-data/wikidata_org_$(date +"%Y-%m-%d").ttl.bz2
+
