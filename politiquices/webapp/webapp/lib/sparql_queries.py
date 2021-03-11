@@ -246,7 +246,6 @@ def get_persons_wiki_id_name_image_url():
             "wikidata_url": make_https(e["item"]["value"]),
             "wiki_id": e["item"]["value"].split("/")[-1],
             "name": e["label"]["value"],
-            "nr_articles": 0,
             "image_url": make_https(e["image_url"]["value"]) if "image_url" in e else no_image
         }
 
@@ -303,12 +302,15 @@ def get_all_parties_with_members_count():
 def get_total_nr_articles_for_each_person():
     # NOTE: 'ent1_other_ent2' and 'ent2_other_ent1' relationships are being discarded
     query = """
-        SELECT ?person_name ?person (COUNT(*) as ?count){
-          ?person wdt:P31 wd:Q5 ;
-                  rdfs:label ?person_name .                    
-          {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
-          ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other") ) .
-        }
+        SELECT ?person_name ?person (COUNT(*) as ?count)
+        WHERE {
+          VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
+                              'ent1_supports_ent2' 'ent2_supports_ent1'}
+            ?person wdt:P31 wd:Q5 ;
+            rdfs:label ?person_name .
+            {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
+            ?rel politiquices:type ?rel_values .
+          }
         GROUP BY ?person_name ?person
         ORDER BY DESC (?count) ASC (?person_name)
         """

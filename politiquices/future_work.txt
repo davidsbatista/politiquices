@@ -42,6 +42,8 @@ queries ao arquivo
 
     - Organismos públicos:
         - https://www.wikidata.org/wiki/Q10265177 DIAP
+        - https://www.wikidata.org/wiki/Q6706787
+        - https://www.wikidata.org/wiki/Q9634405
 
     - Empresas públicas:
         - Banco de Portugal

@@ -15,19 +15,27 @@ from politiquices.webapp.webapp.lib.sparql_queries import (
 
 def get_entities():
     """
-    Get for each personality:
-    - name
-    - image url
-    - wikidata url
-    - wikidata id
-    - nr articles (not counting other)
+    Get for each personality in wikidata graph, get:
+      - name
+      - image url
+      - wikidata url
+      - wikidata id
+
+    Get all persons in politiquices graph with articles/relationships, return all the info
+    only for those with articles
     """
-    personalities = get_persons_wiki_id_name_image_url()
-    wiki_id_nr_articles = get_total_nr_articles_for_each_person()
-    for wiki_id, nr_articles in wiki_id_nr_articles.items():
-        if wiki_id in personalities:
-            personalities[wiki_id]["nr_articles"] = nr_articles
-    return sorted(list(personalities.values()), key=lambda x: x["nr_articles"], reverse=True)
+    all_per = get_persons_wiki_id_name_image_url()
+    per_with_articles = get_total_nr_articles_for_each_person()
+    per_info = defaultdict(dict)
+
+    for wiki_id, nr_articles in per_with_articles.items():
+        per_info[wiki_id]["nr_articles"] = nr_articles
+        per_info[wiki_id]["wikidata_url"] = all_per[wiki_id]["wikidata_url"]
+        per_info[wiki_id]["wiki_id"] = all_per[wiki_id]["wiki_id"]
+        per_info[wiki_id]["name"] = all_per[wiki_id]["name"]
+        per_info[wiki_id]["image_url"] = all_per[wiki_id]["image_url"]
+
+    return sorted(list(per_info.values()), key=lambda x: x["nr_articles"], reverse=True)
 
 
 def personalities_json_cache():
