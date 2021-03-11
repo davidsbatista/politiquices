@@ -1,17 +1,16 @@
 import json
 from collections import defaultdict
 
+from politiquices.webapp.webapp.config import static_data
 from politiquices.webapp.webapp.lib.sparql_queries import (
-    get_persons_wiki_id_name_image_url,
+    get_all_parties_with_members_count,
     get_nr_relationships_as_subject,
     get_nr_relationships_as_target,
-    get_total_nr_articles_for_each_person,
-    get_wiki_id_affiliated_with_party,
     get_persons_co_occurrences_counts,
-    get_all_parties_with_members_count,
+    get_persons_wiki_id_name_image_url,
+    get_total_nr_articles_for_each_person,
+    get_wiki_id_affiliated_with_party
 )
-
-static_data = "webapp/app/static/json/"
 
 
 def get_entities():
@@ -24,7 +23,6 @@ def get_entities():
     - nr articles (not counting other)
     """
     personalities = get_persons_wiki_id_name_image_url()
-
     wiki_id_nr_articles = get_total_nr_articles_for_each_person()
     for wiki_id, nr_articles in wiki_id_nr_articles.items():
         if wiki_id in personalities:
@@ -32,20 +30,39 @@ def get_entities():
     return sorted(list(personalities.values()), key=lambda x: x["nr_articles"], reverse=True)
 
 
-def entities_top_co_occurrences(wiki_id):
-    raw_counts = get_persons_co_occurrences_counts()
-    co_occurrences = []
-    for x in raw_counts:
-        co_occurrences.append(
-            {
-                "person_a": wiki_id[x["person_a"].split("/")[-1]],
-                "person_b": wiki_id[x["person_b"].split("/")[-1]],
-                "nr_occurrences": x["n_artigos"],
-            }
-        )
-    with open(static_data + "top_co_occurrences.json", "w") as f_out:
-        json.dump(co_occurrences, f_out, indent=4)
-    print(f"{len(co_occurrences)} entity co-occurrences")
+def personalities_json_cache():
+    """
+    Generates JSONs from SPARQL queries:
+        - 'all_entities_info.json': a list of of dicts: name, image_url, nr_articles
+        - 'wiki_id_info.json': a mapping from wiki_id -> person_info
+        - 'persons.json': a sorted list by name of tuples (person_name, wiki_id)
+    """
+
+    # persons cache
+    per_data = get_entities()
+    print(f"{len(per_data)} entities card info (positions + wikidata_link + image + nr articles)")
+
+    with open(static_data + "all_entities_info.json", "w") as f_out:
+        json.dump(per_data, f_out, indent=4)
+
+    wiki_id = {
+        x["wiki_id"]: {
+            "name": x["name"],
+            "image_url": x["image_url"],
+            "nr_articles": x['nr_articles']}
+        for x in per_data
+    }
+    with open(static_data + "wiki_id_info.json", "w") as f_out:
+        json.dump(wiki_id, f_out, indent=4)
+
+    # persons cache for search box
+    persons = [{"name": x["name"], "wiki_id": x["wiki_id"]}
+               for x in sorted(per_data, key=lambda x: x["name"])]
+    all_politiquices_persons = set([x["wiki_id"] for x in persons])
+    with open(static_data + "persons.json", "wt") as f_out:
+        json.dump(persons, f_out, indent=True)
+
+    return all_politiquices_persons, wiki_id
 
 
 def parties_json_cache(all_politiquices_persons):
@@ -101,41 +118,20 @@ def parties_json_cache(all_politiquices_persons):
         json.dump(party_members, f_out, indent=4)
 
 
-def personalities_json_cache():
-    """
-    Generates JSONs from SPARQL queries:
-        - 'all_entities_info.json': a list of of dicts: name, image_url, nr_articles
-        - 'wiki_id_info.json': a mapping from wiki_id -> person_info
-        - 'persons.json': a sorted list by name of tuples (person_name, wiki_id)
-    """
-
-    # persons cache
-    per_data = get_entities()
-    print(f"{len(per_data)} entities card info (positions + wikidata_link + image + nr articles)")
-    wiki_id = {
-        x["wiki_id"]: {
-            "name": x["name"],
-            "image_url": x["image_url"],
-            "nr_articles": x['nr_articles']}
-        for x in per_data
-    }
-
-    with open(static_data + "wiki_id_info.json", "w") as f_out:
-        json.dump(wiki_id, f_out, indent=4)
-
-    with open(static_data + "all_entities_info.json", "w") as f_out:
-        json.dump(per_data, f_out, indent=4)
-
-    # persons cache for search box
-    persons = [
-        {"name": x["name"], "wiki_id": x["wiki_id"]}
-        for x in sorted(per_data, key=lambda x: x["name"])
-    ]
-    all_politiquices_persons = set([x["wiki_id"] for x in persons])
-    with open(static_data + "persons.json", "wt") as f_out:
-        json.dump(persons, f_out, indent=True)
-
-    return all_politiquices_persons, wiki_id
+def entities_top_co_occurrences(wiki_id):
+    raw_counts = get_persons_co_occurrences_counts()
+    co_occurrences = []
+    for x in raw_counts:
+        co_occurrences.append(
+            {
+                "person_a": wiki_id[x["person_a"].split("/")[-1]],
+                "person_b": wiki_id[x["person_b"].split("/")[-1]],
+                "nr_occurrences": x["n_artigos"],
+            }
+        )
+    with open(static_data + "top_co_occurrences.json", "w") as f_out:
+        json.dump(co_occurrences, f_out, indent=4)
+    print(f"{len(co_occurrences)} entity co-occurrences")
 
 
 def persons_relationships_counts_by_type():
