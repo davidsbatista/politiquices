@@ -490,6 +490,7 @@ def get_stats():
         "nr_persons": nr_persons,
         "nr_all_articles": nr_all_articles,
         "nr_all_no_other_articles": nr_all_no_other_articles,
+
         "nr_articles_year_labels": nr_articles_year_labels,
         "nr_articles_year_values": nr_articles_year_values,
 
@@ -502,6 +503,6 @@ def get_stats():
 
         "per_freq_labels": per_freq_labels[0:500],
         "per_freq_values": per_freq_values[0:500],
-        "per_co_occurrence_labels": co_occurrences_labels[0:75],
-        "per_co_occurrence_values": co_occurrences_values[0:75],
+        "per_co_occurrence_labels": co_occurrences_labels[0:500],
+        "per_co_occurrence_values": co_occurrences_values[0:500],
     }

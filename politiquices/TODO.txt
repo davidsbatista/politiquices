@@ -19,6 +19,9 @@ Web App
             "2001-08-31 	Santana Lopes lança ultimato a Paulo Portas sobre coligação em Lisboa 	opposes 	0.882"
             "2001-08-31 	Santana Lopes lança ultimato a Paulo Portas sobre coligação em Lisboa 	opposes 	1.0"
 
+        - Nos partidos apenas mostrar as personalidades com artigos
+        - Mostrar apenas partidos PT ou todos?
+
 
     - Grafo:
         - normalizar tudo para: opõe-se/apoia
@@ -33,18 +36,15 @@ Web App
         - Relações: "opõe-se" / "apoia"
         - Remover texto em inglês
 
-
     - Analytics de acessos
         - https://matomo.org/
         - https://computingforgeeks.com/install-matomo-piwik-web-analytics-tool-on-ubuntu/
         - https://www.howtoforge.com/how-to-install-matomo-web-analytics-on-ubuntu-2004/
 
-
     - HTML:
         - Limpar o Javascript: re-utilizar
         - libs todas locais
         - CSS todo fora do HTML
-
 
     entity_linking
     --------------
@@ -52,8 +52,6 @@ Web App
             - 'Costa':
                 - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
                 - apply entity linking algorithm
-
-        - 'Fernando Gomes'
 
         - news article with this personalities ?
             https://www.wikidata.org/wiki/Q52112309
@@ -63,23 +61,12 @@ Web App
     Geral (low)
     ----------
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
-        - Partidos should not show members with just one person or show only PT parties
+
         - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
 
         - party members: - load on scroll down ?
         - clicar no branco fazer collapse ao menu (hamburger)
         - cache + cópia do resize das imagens para este display
-
-        Stats
-        -----
-            - Absolutos e relativos (personalidades)
-                - Quem mais acusa? é acusado?
-                - Quem mais defende? é defendido
-                - Persons more supported than accused ?
-                - Persons more accused than supported ?
-            - mesma coisa para os partidos: partidos que acusam mais? e que partidos alvo?
-
-            - Download de todos os stats em .csv
 
         Agregacoes + info na personalidade:
         ------------------------------------
