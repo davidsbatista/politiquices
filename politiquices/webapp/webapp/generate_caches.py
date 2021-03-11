@@ -109,14 +109,10 @@ def parties_json_cache(all_politiquices_persons):
     # 'party_members.json' - shows members of each party, only those with at least 1 relationship
     party_members = defaultdict(list)
     for party in parties_data:
-
-        # get all wiki_id associated with a party
+        # intersection between all wiki_id associated with a party and only those mention int rels
         wiki_ids = get_wiki_id_affiliated_with_party(party["wiki_id"])
-
-        # then filter only those with mention in new articles
         wiki_ids_in_politiquices = list(set(wiki_ids).intersection(all_politiquices_persons))
         party_members[party["wiki_id"]] = wiki_ids_in_politiquices
-
     with open(static_data + "party_members.json", "w") as f_out:
         json.dump(party_members, f_out, indent=4)
 

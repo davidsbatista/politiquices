@@ -3,18 +3,20 @@ Web App
 
     - fazer o script para o video
         - roadmap da apresentação
-        - intro, explicar o que é, e o que tem
+        - intro, explicar o que é, e o que tem;
+
+    - acabar o relatório
+
+    - arranjar notícias com estes gajos!
+        https://www.wikidata.org/wiki/Q52112309
+        https://www.wikidata.org/wiki/Q72310730
+
+    - mesma noticia no publico.pt e no arquivo.pt ?
 
     - BUGS:
         - Mostrar apenas partidos PT ou todos?
-
-        - Limpar mesma notícia do arquivo.pt e o publico.pt, escolher o arquivo.pt
-            "2001-08-31 	Santana Lopes lança ultimato a Paulo Portas sobre coligação em Lisboa 	opposes 	0.882"
-            "2001-08-31 	Santana Lopes lança ultimato a Paulo Portas sobre coligação em Lisboa 	opposes 	1.0"
-
         - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
             https://www.politiquices.pt/entity?q=Q10294458&annotate
-
 
     - Grafo:
         - https://www.politiquices.pt/entity?q=Q3060511 -> Eurico de Melo
@@ -29,11 +31,17 @@ Web App
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - max_hops numa rede
 
-    - Checklist:
-        - Não há 'other' relationships em lado nenhum
-        - Apenas mostra pessoas que têm relações
-        - Relações são todas "opõe-se" / "apoia"
-        - Não há texto nenhum em inglês
+    - Checklist
+        - Site:
+            - Não há 'other' relationships em lado nenhum
+            - Apenas mostra pessoas que têm relações
+            - Relações são todas "opõe-se" / "apoia"
+            - Não há texto nenhum em inglês
+
+        - GitHub:
+            - no training data
+            - no hard-coded passwords
+
 
     - Analytics de acessos
         - https://matomo.org/
@@ -51,10 +59,6 @@ Web App
             - 'Costa':
                 - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
                 - apply entity linking algorithm
-
-        - news article with this personalities ?
-            https://www.wikidata.org/wiki/Q52112309
-            https://www.wikidata.org/wiki/Q72310730
 
 
     Geral (low)

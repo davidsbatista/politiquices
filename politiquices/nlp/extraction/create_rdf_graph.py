@@ -244,9 +244,9 @@ def process_classified_titles(titles, persons, gold_urls=None):
 
     for title in titles:
 
-        # ignore empty URLs or URLs part of the gold-data
+        # ignore empty URLs
         url = title["url"]
-        if url == "None" or url == "\\N" or url in gold_urls:
+        if url == "None" or url == "\\N":
             continue
 
         # ignore titles where both entities are the same
@@ -268,8 +268,12 @@ def process_classified_titles(titles, persons, gold_urls=None):
         elif url.startswith("https://www.linguateca.pt/CHAVE?"):
             url_type = "chave"
 
-        # special case to transform publico.pt urls to: https://publico.pt/<news_id>
+        # transform all publico.pt urls to: https://publico.pt/<news_id>
         url = minimize_publico_urls(url) if url_type == "publico" else url
+
+        # discard URLs part of the gold-data
+        if url in gold_urls:
+            continue
 
         try:
             crawled_date = extract_date(title["date"], url_type)
@@ -318,8 +322,11 @@ def process_gold(titles):
         build_person(ent1_id, entry["ent1"], persons)
         build_person(ent2_id, entry["ent2"], persons)
 
+        # normalize all publico.pt URLs, to avoid duplicates
         new_url = entry['url']
-        if entry["url"].startswith(('http://www.publico.pt', 'http://publico.pt')):
+        if 'www.publico.pt' in entry['url'] and 'arquivo.pt' not in entry['url']:
+            entry['url'] = entry['url'].replace('www.publico.pt', 'publico.pt')
+        if entry["url"].startswith('http://publico.pt'):
             new_url = make_https(entry["url"])
 
         relationships.append(
