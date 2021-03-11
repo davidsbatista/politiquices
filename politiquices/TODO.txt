@@ -1,33 +1,33 @@
 Web App
 =======
 
+    - fazer o script para o video
+        - roadmap da apresentação
+        - intro, explicar o que é, e o que tem
+
     - BUGS:
-
-        - add timeout to SPARQL
-
-        - https://www.politiquices.pt/entity?q=Q3060511 -> Eurico de Melo
-           - 2 relações na tabela, mas apenas 1 no grafo
-
-        - António Vitorino apoia Durão Barroso 2004-2004: mostra 2 no arco, só há 1
-
-        - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
-            https://www.politiquices.pt/entity?q=Q10294458&annotate
+        - Mostrar apenas partidos PT ou todos?
 
         - Limpar mesma notícia do arquivo.pt e o publico.pt, escolher o arquivo.pt
             "2001-08-31 	Santana Lopes lança ultimato a Paulo Portas sobre coligação em Lisboa 	opposes 	0.882"
             "2001-08-31 	Santana Lopes lança ultimato a Paulo Portas sobre coligação em Lisboa 	opposes 	1.0"
 
-        - Nos partidos apenas mostrar as personalidades com artigos
-        - Mostrar apenas partidos PT ou todos?
+        - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
+            https://www.politiquices.pt/entity?q=Q10294458&annotate
 
 
     - Grafo:
+        - https://www.politiquices.pt/entity?q=Q3060511 -> Eurico de Melo
+            - 2 relações na tabela, mas apenas 1 no grafo
+
+        - António Vitorino apoia Durão Barroso 2004-2004:
+            - mostra 2 no arco, só há 1
+
         - normalizar tudo para: opõe-se/apoia
         - limpar, ficar na versão final
         - arrastar um nó e parar, desligar a física
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - max_hops numa rede
-
 
     - Checklist:
         - Não há 'other' relationships em lado nenhum
@@ -108,8 +108,7 @@ relationship classifier
     - embeddings
         - Uppercase and lower case, improvement?
         - better/cleaner higher dimensions? train on own corpus
-        - catch negations, how?
-            - defende != não + defende
+        - catch negations, how? e.g.: defende != não + defende
         - tool to visualize embeddings
 
     🔹 Look at the data carefully. Do EDA

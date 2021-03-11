@@ -5,11 +5,11 @@ from collections import defaultdict
 from SPARQLWrapper import SPARQLWrapper, JSON
 from politiquices.webapp.webapp.lib.data_models import OfficePosition, Person, PoliticalParty
 from politiquices.webapp.webapp.config import (
-    wikidata_endpoint,
-    no_image,
-    ps_logo,
     live_wikidata,
+    no_image,
     politiquices_endpoint,
+    ps_logo,
+    wikidata_endpoint
 )
 from politiquices.webapp.webapp.lib.utils import make_https
 
@@ -82,12 +82,10 @@ def get_total_nr_of_articles():
     return all_articles, no_other_articles
 
 
-
 def get_nr_of_persons() -> int:
-
-    # NOTE: persons with only 'ent1_other_ent2' and 'ent2_other_ent1' relationships
-    #       are not considered
-
+    """
+    persons only with 'ent1_other_ent2' and 'ent2_other_ent1' relationships are not considered
+    """
     query = """
         SELECT (COUNT(DISTINCT ?person) as ?nr_persons) {
             ?person wdt:P31 wd:Q5;
@@ -255,44 +253,48 @@ def get_persons_wiki_id_name_image_url():
     return items_as_dict
 
 
-def get_all_parties_with_members_count():
+def get_all_parties_and_members_with_relationships():
+    """
+    Get a list of all the parties and the count of members with at least 1 relationship that is
+    not 'other'
+    """
     query = f"""
-        SELECT DISTINCT ?political_party ?party_label ?party_logo ?country_label
+        SELECT DISTINCT ?political_party ?party_label ?party_logo ?party_country 
                         (COUNT(?person) as ?nr_personalities)
         WHERE {{
-            ?person wdt:P31 wd:Q5 .
-            SERVICE <{wikidata_endpoint}> {{
-                ?person wdt:P102 ?political_party .
-                ?political_party rdfs:label ?party_label .
-                OPTIONAL {{
-                    ?political_party p:P17 ?country_stmt .
-                    ?country_stmt ps:P17 ?country .
-                    ?country rdfs:label ?country_label .
+            ?person wdt:P102 ?political_party .    
+            ?political_party rdfs:label ?party_label . FILTER(LANG(?party_label) = "pt")
+            OPTIONAL {{ ?political_party wdt:P154 ?party_logo. }}
+            OPTIONAL {{ ?political_party wdt:P17 ?party_country. }}
+            SERVICE <{politiquices_endpoint}> {{
+                SELECT DISTINCT ?person 
+                WHERE {{
+                    VALUES ?rel_values {{
+                            'ent1_opposes_ent2' 'ent2_opposes_ent1' 
+                            'ent1_supports_ent2' 'ent2_supports_ent1'
+                    }}
+                    ?person wdt:P31 wd:Q5 .
+                    {{ ?rel politiquices:ent1 ?person }} UNION {{?rel politiquices:ent2 ?person}} .
+                    ?rel politiquices:type ?rel_values .
                 }}
-                FILTER(LANG(?country_label) = "pt")
-                OPTIONAL {{?political_party wdt:P154 ?party_logo. }} 
-                FILTER(LANG(?party_label) = "pt")
-          }}
-        }} 
-        GROUP BY ?political_party ?party_label ?party_logo ?country_label
+            }}
+         }}
+        GROUP BY ?political_party ?party_label ?party_logo ?party_country
         ORDER BY DESC(?nr_personalities)
         """
-    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    results = query_sparql(PREFIXES + "\n" + query, "wikidata")
     political_parties = []
     for x in results["results"]["bindings"]:
-        if "party_logo" in x:
-            party_logo = x["party_logo"]["value"]
-        else:
-            if x["political_party"]["value"].split("/")[-1] == "Q847263":
-                party_logo = ps_logo
-            else:
-                party_logo = no_image
+        party_logo = x["party_logo"]["value"] if "party_logo" in x else no_image
+        if x["political_party"]["value"].split("/")[-1] == "Q847263":
+            party_logo = ps_logo
+        country = x["party_country"]["value"].split("/")[-1] if x.get('party_country') else None
         political_parties.append(
             {
                 "wiki_id": x["political_party"]["value"].split("/")[-1],
                 "party_label": x["party_label"]["value"],
                 "party_logo": make_https(party_logo),
-                "party_country": x["country_label"]["value"],
+                "party_country": country,
                 "nr_personalities": x["nr_personalities"]["value"],
             }
         )

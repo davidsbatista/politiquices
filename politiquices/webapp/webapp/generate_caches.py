@@ -3,26 +3,26 @@ from collections import defaultdict
 
 from politiquices.webapp.webapp.config import static_data
 from politiquices.webapp.webapp.lib.sparql_queries import (
-    get_all_parties_with_members_count,
+    get_all_parties_and_members_with_relationships,
     get_nr_relationships_as_subject,
     get_nr_relationships_as_target,
     get_persons_co_occurrences_counts,
     get_persons_wiki_id_name_image_url,
     get_total_nr_articles_for_each_person,
-    get_wiki_id_affiliated_with_party
+    get_wiki_id_affiliated_with_party,
 )
 
 
 def get_entities():
     """
-    Get for each personality in wikidata graph, get:
+    First get for each personality in the wikidata graph:
       - name
       - image url
       - wikidata url
       - wikidata id
 
-    Get all persons in politiquices graph with articles/relationships, return all the info
-    only for those with articles
+    Second, get all persons in politiquices graph with non 'other' articles/relationships,
+    return all the info only for those with articles
     """
     all_per = get_persons_wiki_id_name_image_url()
     per_with_articles = get_total_nr_articles_for_each_person()
@@ -41,45 +41,44 @@ def get_entities():
 def personalities_json_cache():
     """
     Generates JSONs from SPARQL queries:
-      - 'all_entities_info.json': a list of of dicts: name, image_url, nr_articles
-      - 'wiki_id_info.json': a mapping from wiki_id -> person_info
+      - 'all_entities_info.json': list of {name, image_url, nr_articles} sorted by nr_articles
       - 'persons.json': a sorted list by name of tuples (person_name, wiki_id)
+      - 'wiki_id_info.json': mapping from wiki_id -> person_info
     """
 
-    # persons cache
+    # 'all_entities_info.json' - display in 'Personalidades'
     per_data = get_entities()
     print(f"{len(per_data)} entities card info (name + image + nr articles)")
-
     with open(static_data + "all_entities_info.json", "w") as f_out:
         json.dump(per_data, f_out, indent=4)
 
+    # persons.json - cache for search box
+    persons = [{"name": x["name"], "wiki_id": x["wiki_id"]}
+               for x in sorted(per_data, key=lambda x: x["name"])]
+    with open(static_data + "persons.json", "wt") as f_out:
+        json.dump(persons, f_out, indent=True)
+
+    # 'wiki_id_info.json'
     wiki_id = {
         x["wiki_id"]: {
             "name": x["name"],
             "image_url": x["image_url"],
-            "nr_articles": x['nr_articles']}
+            "nr_articles": x["nr_articles"],
+        }
         for x in per_data
     }
     with open(static_data + "wiki_id_info.json", "w") as f_out:
         json.dump(wiki_id, f_out, indent=4)
 
-    # persons cache for search box
-    persons = [{"name": x["name"], "wiki_id": x["wiki_id"]}
-               for x in sorted(per_data, key=lambda x: x["name"])]
-    all_politiquices_persons = set([x["wiki_id"] for x in persons])
-    with open(static_data + "persons.json", "wt") as f_out:
-        json.dump(persons, f_out, indent=True)
-
-    return all_politiquices_persons, wiki_id
+    return set([x["wiki_id"] for x in persons]), wiki_id
 
 
 def parties_json_cache(all_politiquices_persons):
 
-    # rename parties names to include short-forms
+    # rename parties names to include short-forms, nice to have in autocomplete
     parties_mapping = {
         "Bloco de Esquerda": "BE - Bloco de Esquerda",
-        "Coliga\u00e7\u00e3o Democr\u00e1tica Unit\u00e1ria":
-            "CDU - Coliga\u00e7\u00e3o Democr\u00e1tica Unit\u00e1ria (PCP-PEV)",
+        "Coliga\u00e7\u00e3o Democr\u00e1tica Unit\u00e1ria": "CDU - Coliga\u00e7\u00e3o Democr\u00e1tica Unit\u00e1ria (PCP-PEV)",
         "Juntos pelo Povo": "JPP - Juntos pelo Povo",
         "Partido Comunista Portugu\u00eas": "PCP - Partido Comunista Portugu\u00eas",
         "Partido Social Democrata": "PSD - Partido Social Democrata",
@@ -87,28 +86,27 @@ def parties_json_cache(all_politiquices_persons):
         "Partido Socialista Revolucion\u00e1rio": "PSR - Partido Socialista Revolucion\u00e1rio",
         "Partido Democr\u00e1tico Republicano": "PDR - Partido Democr\u00e1tico Republicano",
         "Pessoas\u2013Animais\u2013Natureza": "PAN - Pessoas\u2013Animais\u2013Natureza",
-        "Partido Comunista dos Trabalhadores Portugueses":
-            "PCTP/MRPP - Partido Comunista dos Trabalhadores Portugueses",
+        "Partido Comunista dos Trabalhadores Portugueses": "PCTP/MRPP - Partido Comunista dos Trabalhadores Portugueses",
         "RIR": "RIR - Reagir Incluir Reciclar",
         "Partido da Terra": "MPT - Partido da Terra",
     }
 
-    # parties cache
-    parties_data = get_all_parties_with_members_count()
-    print(f"{len(parties_data)} parties info (image + nr affiliated personalities)")
+    # 'all_parties_info.json' - display in 'Partidos'
+    parties_data = get_all_parties_and_members_with_relationships()
+    print(f"{len(parties_data)} parties info (image + nr affiliated w/ relationships")
     with open(static_data + "all_parties_info.json", "w") as f_out:
         json.dump(parties_data, f_out, indent=4)
 
-    # parties cache for search box, filtering only portuguese political parties
+    # 'parties.json cache' - search box, filtering only for political parties from Portugal (Q45)
     parties = [
         {"name": parties_mapping.get(x["party_label"], x["party_label"]), "wiki_id": x["wiki_id"]}
         for x in sorted(parties_data, key=lambda x: x["party_label"])
-        if x["party_country"] == "Portugal"
+        if x["party_country"] == "Q45"
     ]
     with open(static_data + "parties.json", "w") as f_out:
         json.dump(parties, f_out, indent=4)
 
-    # members of each party
+    # 'party_members.json' - shows members of each party, only those with at least 1 relationship
     party_members = defaultdict(list)
     for party in parties_data:
 
