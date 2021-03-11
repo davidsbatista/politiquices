@@ -30,9 +30,10 @@ Web App
 
 
     - Checklist:
-        - Não há 'other' relationships
-        - Relações: "opõe-se" / "apoia"
-        - Remover texto em inglês
+        - Não há 'other' relationships em lado nenhum
+        - Apenas mostra pessoas que têm relações
+        - Relações são todas "opõe-se" / "apoia"
+        - Não há texto nenhum em inglês
 
     - Analytics de acessos
         - https://matomo.org/

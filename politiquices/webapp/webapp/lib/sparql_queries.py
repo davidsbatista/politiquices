@@ -258,7 +258,8 @@ def get_persons_wiki_id_name_image_url():
 def get_all_parties_with_members_count():
     query = f"""
         SELECT DISTINCT ?political_party ?party_label ?party_logo ?country_label
-                (COUNT(?person) as ?nr_personalities){{
+                        (COUNT(?person) as ?nr_personalities)
+        WHERE {{
             ?person wdt:P31 wd:Q5 .
             SERVICE <{wikidata_endpoint}> {{
                 ?person wdt:P102 ?political_party .

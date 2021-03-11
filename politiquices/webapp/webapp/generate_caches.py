@@ -41,14 +41,14 @@ def get_entities():
 def personalities_json_cache():
     """
     Generates JSONs from SPARQL queries:
-        - 'all_entities_info.json': a list of of dicts: name, image_url, nr_articles
-        - 'wiki_id_info.json': a mapping from wiki_id -> person_info
-        - 'persons.json': a sorted list by name of tuples (person_name, wiki_id)
+      - 'all_entities_info.json': a list of of dicts: name, image_url, nr_articles
+      - 'wiki_id_info.json': a mapping from wiki_id -> person_info
+      - 'persons.json': a sorted list by name of tuples (person_name, wiki_id)
     """
 
     # persons cache
     per_data = get_entities()
-    print(f"{len(per_data)} entities card info (positions + wikidata_link + image + nr articles)")
+    print(f"{len(per_data)} entities card info (name + image + nr articles)")
 
     with open(static_data + "all_entities_info.json", "w") as f_out:
         json.dump(per_data, f_out, indent=4)
@@ -101,10 +101,7 @@ def parties_json_cache(all_politiquices_persons):
 
     # parties cache for search box, filtering only portuguese political parties
     parties = [
-        {
-            "name": parties_mapping.get(x["party_label"], x["party_label"]),
-            "wiki_id": x["wiki_id"],
-        }
+        {"name": parties_mapping.get(x["party_label"], x["party_label"]), "wiki_id": x["wiki_id"]}
         for x in sorted(parties_data, key=lambda x: x["party_label"])
         if x["party_country"] == "Portugal"
     ]
