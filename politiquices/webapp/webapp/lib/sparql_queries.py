@@ -655,14 +655,6 @@ def get_person_relationships(wiki_id):
                 other_ent_name = e["ent2_str"]["value"].split("/")[-1]
                 focus_ent = e["ent1_str"]["value"].split("/")[-1]
 
-        # annotated data that needs to be discarded from the Graph
-        elif e['rel_type']['value'] in ['other', 'more_entities', 'meet_together',
-                                        'ent1_asks_action_ent2', 'ent2_asks_action_ent1']:
-            rel_type = "other"
-            other_ent_url = ent1_wiki
-            other_ent_name = e["ent1_str"]["value"].split("/")[-1]
-            focus_ent = e["ent2_str"]["value"].split("/")[-1]
-
         else:
             raise Exception(e["rel_type"]["value"] + " not known")
 

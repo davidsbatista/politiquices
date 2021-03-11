@@ -1,5 +1,6 @@
 import argparse
 import operator
+import re
 from enum import Enum
 from datetime import datetime
 from itertools import groupby
@@ -67,10 +68,9 @@ def remove_duplicates_with_same_url(f_name):
     unique = []
     duplicate = 0
     for entry in processed_titles(f_name):
+        url = entry["url"]
         if entry["url"].startswith(publico_urls):
             url = minimize_publico_urls(entry["url"])
-        else:
-            url = entry["url"]
 
         if url not in seen:
             unique.append(entry)
@@ -238,7 +238,7 @@ def build_person(wikidata_id, name, persons):
         )
 
 
-def process_classified_titles(titles, persons, gold_urls=None):
+def process_classified_titles(titles, arquivo_publico_urls, persons, gold_urls):
     relationships = []
     articles = []
 
@@ -255,12 +255,6 @@ def process_classified_titles(titles, persons, gold_urls=None):
         if e1_wiki == e2_wiki:
             continue
 
-        scores = [(k, v) for k, v in title["scores"].items()]
-        rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
-        person_1 = title["entities"][0]
-        person_2 = title["entities"][1]
-        news_title = title["title"].strip()
-
         # detect article origin
         url_type = "arquivo"
         if url.startswith(publico_urls):
@@ -268,17 +262,26 @@ def process_classified_titles(titles, persons, gold_urls=None):
         elif url.startswith("https://www.linguateca.pt/CHAVE?"):
             url_type = "chave"
 
-        # transform all publico.pt urls to: https://publico.pt/<news_id>
+        # transform all publico.pt urls into a short-form: https://publico.pt/<news_id>
         url = minimize_publico_urls(url) if url_type == "publico" else url
 
         # discard URLs part of the gold-data
         if url in gold_urls:
             continue
 
+        # discard publico.pt URLS already in arquivo.pt
+        if url_type == "publico" and url in arquivo_publico_urls:
+            continue
+
+        scores = [(k, v) for k, v in title["scores"].items()]
+        rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
+        person_1 = title["entities"][0]
+        person_2 = title["entities"][1]
+        news_title = title["title"].strip()
+
         try:
             crawled_date = extract_date(title["date"], url_type)
         except ValueError as e:
-            # print(url, '\t', e)
             continue
 
         p1_id = e1_wiki
@@ -314,7 +317,13 @@ def process_gold(titles):
     articles = []
 
     for entry in titles:
+
         if entry["ent1_id"] == 'None' or entry["ent2_id"] == 'None':
+            continue
+
+        # only index support/opposition relationships, discard all other types of rel_types
+        if entry['label'] not in ['ent1_supports_ent2', 'ent2_supports_ent1',
+                                  'ent2_opposes_ent1', 'ent1_opposes_ent2']:
             continue
 
         ent1_id = entry["ent1_id"].split("/")[-1]
@@ -445,6 +454,31 @@ def populate_graph(articles, persons, relationships):
     print("relationships: ", len(relationships))
 
 
+def get_publico_urls_in_arquivo(articles):
+    arquivo_publico_urls = []
+    for article in articles:
+        for url in re.finditer(r'https?:\/\/w?w?w?\.?publico\.pt[^?]+', article['url']):
+            publico_url = url.group()
+
+            try:
+                publico_id = int(publico_url.split("-")[-1])
+                arquivo_publico_urls.append(f'https://publico.pt/{publico_id}')
+            except ValueError as e:
+
+                try:
+                    publico_id = int(publico_url.split("_")[-1])
+                    arquivo_publico_urls.append(f'https://publico.pt/{publico_id}')
+                except ValueError as e:
+
+                    try:
+                        publico_id = int(publico_url.split("/amp")[0].split("-1")[-1])
+                        arquivo_publico_urls.append(f'https://publico.pt/{publico_id}')
+                    except ValueError as e:
+                        print("could net get id for ", publico_url)
+
+    return arquivo_publico_urls
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--publico", help="input JSONL file with publico.pt results")
@@ -469,6 +503,7 @@ def main():
     chave = []
     articles_gold = []
     rels_gold = []
+    arquivo_publico_urls = []
     gold_urls = None
     gold_persons = None
 
@@ -485,9 +520,12 @@ def main():
         # remove duplicates on same crawled url but different crawl date, keep oldest version
         unique = remove_url_crawled_diff_dates_duplicates(arquivo_unique_url)
 
-        # remove duplicates: (i.e., title + crawl date same, one url is sub-domain of other)
         # ToDo: check if this still happens
+        # remove duplicates: (i.e., title + crawl date same, one url is sub-domain of other)
         arquivo = remove_duplicates_same_domain(unique)
+
+        # gather all publico.pt URLs
+        arquivo_publico_urls = get_publico_urls_in_arquivo(unique)
         print("arquivo.pt: ", len(arquivo), end="\n\n")
 
     if args.publico:
@@ -501,6 +539,7 @@ def main():
     # pass all articles, persons which can be the already built persons from annotations or empty
     articles, persons, relationships = process_classified_titles(
         arquivo + publico + chave,
+        arquivo_publico_urls=arquivo_publico_urls,
         gold_urls=gold_urls,
         persons=gold_persons
     )

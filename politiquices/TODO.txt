@@ -4,14 +4,11 @@ Web App
     - fazer o script para o video
         - roadmap da apresentação
         - intro, explicar o que é, e o que tem;
-
     - acabar o relatório
 
     - arranjar notícias com estes gajos!
         https://www.wikidata.org/wiki/Q52112309
         https://www.wikidata.org/wiki/Q72310730
-
-    - mesma noticia no publico.pt e no arquivo.pt ?
 
     - BUGS:
         - Mostrar apenas partidos PT ou todos?
