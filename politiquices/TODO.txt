@@ -31,7 +31,6 @@ Web App
             'Álvaro Almeida' != Álvaro Augusto Matos Almeida
 
     - Grafo:
-        - Personalidade box com entradas repetidas
         - limpar, ficar na versão final
         - arrastar um nó e parar, desligar a física
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z

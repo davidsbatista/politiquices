@@ -166,13 +166,8 @@
             até:
             <select style="width:75px;" class="form-control" id="ano_to" ></select>
 
-            <br>
-            k-clique:
-            <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                    class="form-control" style="width:50px;" maxlength="2"
-                   id="k_clique" value="3" placeholder="3">
+            <hr>
 
-            <br>
             personalidade:
             <input type="text" class="form-control" style="width:85px;" maxlength="15" id="graph_entity">
             <input type="hidden" id="graph_entity-value" type="text" name="wiki">
@@ -415,7 +410,6 @@
         var year_to = $("#ano_to").val();
         var freq_min = $("#freq_min").val();
         var freq_max = $("#freq_max").val();
-        var k_clique = $("#k_clique").val();
         var entity = $("#graph_entity-value").val();
 
         data = {freq_min: freq_min,
@@ -423,7 +417,6 @@
                 rel_type: rel_type,
                 year_from: year_from,
                 year_to: year_to,
-                k_clique: k_clique,
                 entity: entity}
 
         //query neo4j
@@ -547,14 +540,6 @@
 </script>
 
 <script>
-  persons_only = [];
-  var persons2wiki_id = {};
-  $.getJSON("static/json/persons.json", function(json_data){
-        for (var i = 0, len = json_data.length; i < len; i++) {
-          persons_only.push(json_data[i].name);
-          persons2wiki_id[json_data[i].name] = json_data[i].wiki_id
-        };
-    });
 
   // ToDO: generalizar
   // taken from: https://stackoverflow.com/questions/9710922/jquery-accent-insensitive-with-multiple-values-autocomplete
@@ -575,7 +560,7 @@
   }
 
   var accentMap = {
-      "à": "a", "â": "a", "ã": "a",
+      "à": "a", "â": "a", "ã": "a", "á":"a",
       "é": "e", "è": "e", "ê": "e", "ë": "e",
       "ï": "i", "î": "i", 
       "ô": "o", "ö": "o", "ó": "o",
