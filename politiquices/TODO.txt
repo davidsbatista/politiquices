@@ -15,9 +15,6 @@ Web App
 
     - stats apenas com 'oposição' e 'apoio'
     - espaço entre filtro tempo + botão 'PROCURAR'
-
-    - procurar por Mário Centeno, "á" -> autocomplete
-
     - sparlq queries no index, abrir janela nova? adicionar 'todas' ?
 
     - verificar todas as possibilidades deste query
@@ -29,17 +26,7 @@ Web App
         &html=true
         &annotate
 
-
-
     - BUGS:
-        Bugs nos gráficos individuais e tabelas com relações, exemplos:
-            - https://www.politiquices.pt/entity?q=Q60780752
-
-
-        - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
-            https://www.politiquices.pt/entity?q=Q10294458&annotate
-
-
         - http://0.0.0.0:5000/entity?q=Q10395752
             'Álvaro Almeida' != Álvaro Augusto Matos Almeida
 
