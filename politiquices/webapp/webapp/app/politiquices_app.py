@@ -107,6 +107,8 @@ def graph():
     freq_min = 10
     freq_max = 30
 
+    print(request.args)
+
     # if not arguments were given, render graph with default arguments
     if not list(request.args.items()):
         nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min, k_clique=3)

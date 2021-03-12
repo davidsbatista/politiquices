@@ -3,11 +3,18 @@ Web App
 
     - acabar o relatório
     - fazer o script para o video
+
         - roadmap da apresentação
+
             1. intro_ explicar o que é o projecto
+
                 - tirar frases chave do relatório
+
             2. mostrar um exemplo com queries
+
             3. mostrar um exemplo de navegação no grafo
+               3.1 uma rede geral
+               3.2 a rede uma entidade em específico
 
     - arranjar notícias com estes gajos!
         https://www.wikidata.org/wiki/Q52112309
@@ -32,15 +39,17 @@ Web App
 
     - Grafo:
         - limpar, ficar na versão final
+
         - arrastar um nó e parar, desligar a física
-        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-        - max_hops numa rede
+
         - https://www.politiquices.pt/entity?q=Q3060511 -> Eurico de Melo
             - 2 relações na tabela, mas apenas 1 no grafo
 
         - António Vitorino apoia Durão Barroso 2004-2004:
             - mostra 2 no arco, só há 1
 
+        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+        - max_hops numa rede
 
     - Checklist
         - Site:
