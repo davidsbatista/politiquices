@@ -1,7 +1,6 @@
 from collections import defaultdict
 
 import networkx as nx
-from networkx.algorithms.community import k_clique_communities
 
 from politiquices.webapp.webapp.lib.cache import wiki_id_info
 from politiquices.webapp.webapp.lib.neo4j_connect import Neo4jConnection
@@ -214,6 +213,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
             if node["id"] == k:
                 node["value"] = v
 
+    """
     if k_clique > 1:
         # add communities color to nodes_info
         communities = list(k_clique_communities(g, k_clique))
@@ -226,5 +226,6 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
                             "background": communities_colors[idx],
                             "highlight": {"border": "#2B7CE9", "background": "#D2E5FF"},
                         }
+    """
 
     return nodes, edges

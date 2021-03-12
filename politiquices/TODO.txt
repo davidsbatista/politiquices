@@ -3,33 +3,53 @@ Web App
 
     - acabar o relatório
     - fazer o script para o video
+
         - roadmap da apresentação
-        - intro, explicar o que é, e o que tem;
+
+            1. intro_ explicar o que é o projecto
+
+                - tirar frases chave do relatório
+
+            2. mostrar um exemplo com queries
+
+            3. mostrar um exemplo de navegação no grafo
+               3.1 uma rede geral
+               3.2 a rede uma entidade em específico
 
     - arranjar notícias com estes gajos!
         https://www.wikidata.org/wiki/Q52112309
         https://www.wikidata.org/wiki/Q72310730
 
     - stats apenas com 'oposição' e 'apoio'
+    - espaço entre filtro tempo + botão 'PROCURAR'
+    - sparlq queries no index, abrir janela nova? adicionar 'todas' ?
 
-    - espaço entre filtto tempo + botão 'PROCURAR'
+    - verificar todas as possibilidades deste query
+        https://www.politiquices.pt/queries?query_nr=one
+        $e1=Q21568721&e2=Q610788
+        &year_from=2000
+        &year_to=2019
+        &relationship=apoia -> dará para por todas aqui?
+        &html=true
+        &annotate
 
     - BUGS:
-        - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
-            https://www.politiquices.pt/entity?q=Q10294458&annotate
+        - http://0.0.0.0:5000/entity?q=Q10395752
+            'Álvaro Almeida' != Álvaro Augusto Matos Almeida
 
     - Grafo:
         - limpar, ficar na versão final
+
         - arrastar um nó e parar, desligar a física
-        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-        - max_hops numa rede
-        - Personalidade box com entradas repetidas
 
         - https://www.politiquices.pt/entity?q=Q3060511 -> Eurico de Melo
             - 2 relações na tabela, mas apenas 1 no grafo
 
         - António Vitorino apoia Durão Barroso 2004-2004:
             - mostra 2 no arco, só há 1
+
+        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+        - max_hops numa rede
 
     - Checklist
         - Site:
@@ -41,6 +61,7 @@ Web App
         - GitHub:
             - no training data
             - no hard-coded passwords
+            - no hard-coded IP addresses
 
 
     - Analytics de acessos

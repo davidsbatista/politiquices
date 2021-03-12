@@ -106,11 +106,12 @@ def graph():
     year_to = "2019"
     freq_min = 10
     freq_max = 30
-    k_clique = 3
+
+    print(request.args)
 
     # if not arguments were given, render graph with default arguments
     if not list(request.args.items()):
-        nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min, k_clique)
+        nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min, k_clique=3)
         return render_template("graph.html", nodes=nodes, edges=edges)
 
     freq_min = int(request.args.get("freq_min"))
@@ -123,7 +124,6 @@ def graph():
     else:
         relation = "ACUSA|APOIA"
 
-    k_clique = int(request.args.get("k_clique"))
     year_from = request.args.get("year_from")
     year_to = request.args.get("year_to")
 
@@ -132,7 +132,7 @@ def graph():
         nodes, edges = get_entity_network(wiki_id, relation, freq_min, freq_max, year_from, year_to)
         return jsonify({"nodes": nodes, "edges": edges})
 
-    nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min, k_clique)
+    nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min, k_clique=3)
     return jsonify({"nodes": nodes, "edges": edges})
 
 

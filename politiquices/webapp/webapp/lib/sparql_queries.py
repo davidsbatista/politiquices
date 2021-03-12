@@ -907,7 +907,7 @@ def get_relationship_between_parties(per_party_a, per_party_b, relation, start_y
              {{ 
                 SELECT ?rel ?arquivo_doc ?title ?date ?score
                 WHERE {{
-                      ?rel politiquices:type ?ent1_opposes_ent2;
+                      ?rel politiquices:type '{relation}';
                            politiquices:score ?score;
                            politiquices:url ?arquivo_doc.
                       ?arquivo_doc dc:title ?title;
