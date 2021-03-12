@@ -139,41 +139,48 @@
     <div class="container" id="container">
       <div class="row">
         <div class="col" style="max-width: 10%" id="controls">
-            <hr>
-            Min.
+            <br>
+            n.º min
             <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                   class="form-control" style="width:50px;" maxlength="2"
+                   class="form-control" style="width:52px; height:30px;" maxlength="3"
                    id="freq_min" value="10" placeholder="10">
-            Max.
+            <br>
+            n.º max
             <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
-                   class="form-control" style="width:50px;" maxlength="2"
+                   class="form-control" style="width:52px; height:30px;" maxlength="3"
                    id="freq_max" value="30" placeholder="30">
-            <hr>
-            Relação:
-            <select style="width:85px;" class="form-control" id="rel_type">
-                <option value="supports">Apoia</option>
-                <option value="opposes">Acusa</option>
-                <option value="all" selected>Todas</option>
-            </select>
-            <hr>
-            De:
+            <br>
+
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="opposes" id="check_opposes" checked>
+              <label class="form-check-label" for="flexCheckDefault">opõe-se</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" value="support" id="check_supports" checked>
+              <label class="form-check-label" for="flexCheckChecked">apoia</label>
+            </div>
+
+            <br>
+            de:
             <select style="width:75px;" class="form-control" id="ano_from"></select>
-            Até:
+            até:
             <select style="width:75px;" class="form-control" id="ano_to" ></select>
-            <hr>
+
+            <br>
             k-clique:
             <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                     class="form-control" style="width:50px;" maxlength="2"
                    id="k_clique" value="3" placeholder="3">
-            <hr>
-            Personalidade:
+
+            <br>
+            personalidade:
             <input type="text" class="form-control" style="width:85px;" maxlength="15" id="graph_entity">
             <input type="hidden" id="graph_entity-value" type="text" name="wiki">
-            Max Hops:
+            <br>
+            grau
             <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                    class="form-control" style="width:50px;" maxlength="2"
                    id="hops" value="3" placeholder="3">
-            <hr>
             <br>
             <input type="submit" value="Actualizar" id="reload"/>
         </div>
@@ -385,13 +392,29 @@
 
     $('#ano_from option').eq((2000-1994)).prop('selected', true);
     $('#ano_to option').eq((2019-1994)).prop('selected', true);
+
     $("#reload").click(function() {
+
+        var opposes = $("#check_opposes").is(':checked');
+        var supports = $("#check_supports").is(':checked');
+
+        if (opposes && supports) {
+          var rel_type = 'all'  
+        }
+        else if (opposes && !supports) {
+          var rel_type = 'opposes'
+        }
+        else if (!opposes && supports) {
+          var rel_type = 'supports'
+        }
+        else {
+          alert("Tem que escolher pelo menos um tipo de relação")
+        }
 
         var year_from = $("#ano_from").val();
         var year_to = $("#ano_to").val();
         var freq_min = $("#freq_min").val();
         var freq_max = $("#freq_max").val();
-        var rel_type = $("#rel_type").val();
         var k_clique = $("#k_clique").val();
         var entity = $("#graph_entity-value").val();
 
@@ -434,14 +457,6 @@
                   pointer = params['pointer']['DOM']
                   node = network.getNodeAt(pointer)
                   edge = network.getEdgeAt(pointer)
-                  console.log("node: ", node)
-                  console.log("edge: ", edge)
-                  console.log('pointer')
-                  console.log('y:', pointer['x'])
-                  console.log('x:', pointer['y'])
-                  console.log('event')
-                  console.log('y:', params['event']['center']['y'])
-                  console.log('x:', params['event']['center']['x'])
                   
                   // clicked nothing
                   if (node == null && edge == null) {

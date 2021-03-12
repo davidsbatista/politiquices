@@ -1,32 +1,35 @@
 Web App
 =======
 
+    - acabar o relatório
     - fazer o script para o video
         - roadmap da apresentação
         - intro, explicar o que é, e o que tem;
-    - acabar o relatório
 
     - arranjar notícias com estes gajos!
         https://www.wikidata.org/wiki/Q52112309
         https://www.wikidata.org/wiki/Q72310730
 
+    - stats apenas com 'oposição' e 'apoio'
+
+    - espaço entre filtto tempo + botão 'PROCURAR'
+
     - BUGS:
-        - Mostrar apenas partidos PT ou todos?
         - BE vs. BE - "Helena Pinto subsitui Louça" -> query sparql está a apanhar 'other' ?
             https://www.politiquices.pt/entity?q=Q10294458&annotate
 
     - Grafo:
+        - limpar, ficar na versão final
+        - arrastar um nó e parar, desligar a física
+        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+        - max_hops numa rede
+        - Personalidade box com entradas repetidas
+
         - https://www.politiquices.pt/entity?q=Q3060511 -> Eurico de Melo
             - 2 relações na tabela, mas apenas 1 no grafo
 
         - António Vitorino apoia Durão Barroso 2004-2004:
             - mostra 2 no arco, só há 1
-
-        - normalizar tudo para: opõe-se/apoia
-        - limpar, ficar na versão final
-        - arrastar um nó e parar, desligar a física
-        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-        - max_hops numa rede
 
     - Checklist
         - Site:

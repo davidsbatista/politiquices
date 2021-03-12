@@ -78,7 +78,7 @@ def remove_duplicates_with_same_url(f_name):
         else:
             duplicate += 1
 
-    print(f"Removed {duplicate} URL duplicates")
+    # print(f"Removed {duplicate} URL duplicates")
     return unique
 
 
@@ -136,7 +136,7 @@ def remove_url_crawled_diff_dates_duplicates(unique_url):
             }
         unique.append(result)
 
-    print(f"Removed {found_duplicate} same URL crawled different dates duplicates")
+    # print(f"Removed {found_duplicate} same URL crawled different dates duplicates")
 
     return unique
 
@@ -177,7 +177,7 @@ def remove_duplicates_same_domain(unique):
         }
         articles_unique.append(result)
 
-    print(f"{len(articles_unique)} unique articles")
+    # print(f"{len(articles_unique)} unique articles")
 
     return articles_unique
 
@@ -255,22 +255,26 @@ def process_classified_titles(titles, arquivo_publico_urls, persons, gold_urls):
         if e1_wiki == e2_wiki:
             continue
 
-        # detect article origin
+        # detect article origin, defaults to arquivo
         url_type = "arquivo"
+
         if url.startswith(publico_urls):
             url_type = "publico"
+            url = minimize_publico_urls(url)
+            if url in arquivo_publico_urls:
+                continue
+
         elif url.startswith("https://www.linguateca.pt/CHAVE?"):
             url_type = "chave"
 
-        # transform all publico.pt urls into a short-form: https://publico.pt/<news_id>
-        url = minimize_publico_urls(url) if url_type == "publico" else url
-
-        # discard URLs part of the gold-data
+        # discard URLs part of the gold-data; note that arquivo.pt urls can contain publico.pt
+        # urls crawled that are also in the golden data those need to be converted from arquivo.pt
+        # crawled url to publico short url
+        exceptions = ["http://www.publico.pt/ar95/noticias/","http://www.publico.pt/publico/1999/"]
+        if not any(x in url for x in exceptions):
+            match = re.match(r'https://arquivo.*(https?:\/\/w?w?w?\.?publico\.pt[^?]+)', url)
+            url = minimize_publico_urls(match.group(1)) if match else url
         if url in gold_urls:
-            continue
-
-        # discard publico.pt URLS already in arquivo.pt
-        if url_type == "publico" and url in arquivo_publico_urls:
             continue
 
         scores = [(k, v) for k, v in title["scores"].items()]
@@ -393,7 +397,7 @@ def populate_graph(articles, persons, relationships):
     g.bind("wd", wiki_item)
     g.bind("wdt", wiki_prop)
 
-    print("adding Persons")
+    print("\nadding Persons")
     for wikidata_id, person in persons.items():
 
         # ToDo: make sure pref name is at least two names: first + surname
@@ -452,6 +456,7 @@ def populate_graph(articles, persons, relationships):
     print("persons      : ", len(persons))
     print("articles     : ", len(articles))
     print("relationships: ", len(relationships))
+    print()
 
 
 def get_publico_urls_in_arquivo(articles):
@@ -459,22 +464,20 @@ def get_publico_urls_in_arquivo(articles):
     for article in articles:
         for url in re.finditer(r'https?:\/\/w?w?w?\.?publico\.pt[^?]+', article['url']):
             publico_url = url.group()
-
             try:
                 publico_id = int(publico_url.split("-")[-1])
                 arquivo_publico_urls.append(f'https://publico.pt/{publico_id}')
             except ValueError as e:
-
                 try:
                     publico_id = int(publico_url.split("_")[-1])
                     arquivo_publico_urls.append(f'https://publico.pt/{publico_id}')
                 except ValueError as e:
-
                     try:
                         publico_id = int(publico_url.split("/amp")[0].split("-1")[-1])
                         arquivo_publico_urls.append(f'https://publico.pt/{publico_id}')
                     except ValueError as e:
-                        print("could net get id for ", publico_url)
+                        # print("could net get id for ", publico_url)
+                        continue
 
     return arquivo_publico_urls
 
@@ -509,32 +512,32 @@ def main():
 
     if args.annotations:
         training_data = read_ground_truth("../../politiquices_training_data.tsv")
-        articles_gold, gold_persons, rels_gold = process_gold(training_data)
-        print("ground truth: ", len(articles_gold), end="\n\n")
+        training_data_webapp = read_ground_truth("../api_annotations/annotations_from_webapp.tsv")
+        articles_gold, gold_persons, rels_gold = process_gold(training_data+training_data_webapp)
+        print("ground truth : ", len(articles_gold))
         gold_urls = [article.url for article in articles_gold]
 
     if args.arquivo:
         # remove duplicates: keep only unique urls
         arquivo_unique_url = remove_duplicates_with_same_url(args.arquivo)
 
-        # remove duplicates on same crawled url but different crawl date, keep oldest version
+        # remove duplicates: same crawled url but different crawl date, keep oldest version
         unique = remove_url_crawled_diff_dates_duplicates(arquivo_unique_url)
 
-        # ToDo: check if this still happens
-        # remove duplicates: (i.e., title + crawl date same, one url is sub-domain of other)
+        # remove duplicates: title + crawl date same and URL overlaps, e.g.: with/without params
         arquivo = remove_duplicates_same_domain(unique)
 
         # gather all publico.pt URLs
         arquivo_publico_urls = get_publico_urls_in_arquivo(unique)
-        print("arquivo.pt: ", len(arquivo), end="\n\n")
+        print("arquivo.pt   : ", len(arquivo))
 
     if args.publico:
         publico = remove_duplicates_with_same_url(args.publico)
-        print("publico.pt: ", len(publico), end="\n\n")
+        print("publico.pt   : ", len(publico))
 
     if args.chave:
         chave = [entry for entry in processed_titles(args.chave)]
-        print("CHAVE     : ", len(chave), end="\n\n")
+        print("CHAVE        : ", len(chave))
 
     # pass all articles, persons which can be the already built persons from annotations or empty
     articles, persons, relationships = process_classified_titles(

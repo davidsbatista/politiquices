@@ -20,12 +20,13 @@ def minimize_publico_urls(url):
     """
     Transforms a publico.pt URL from the long form into a short form, e.g https://publico.pt/<id>
     """
+    url = url.replace("/amp", "")
     news_id = url.split("-")[-1].replace("?all=1", "")
     if not re.match(r"^[0-9]+$", news_id):
         news_id_ = news_id.split("_")[-1]
         news_id = news_id_.replace(".1", "")
     if not re.match(r"^[0-9]+$", news_id):
-        raise ValueError("invalid publico.pt id: ", news_id)
+        raise ValueError("invalid publico.pt id: ", url, news_id)
     url = "https://publico.pt/" + news_id
     return url
 
