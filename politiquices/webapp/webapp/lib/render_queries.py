@@ -93,7 +93,7 @@ def entity_full_story(wiki_id, annotate):
         "education": person.education,
 
         # titles/articles frequency by relationships by year, for ChartJS
-        "year_month_labels": chart_js_data["labels"],
+        "year_labels": chart_js_data["labels"],
         "opposed_freq": chart_js_data["opposed_freq"],
         "supported_freq": chart_js_data["supported_freq"],
         "opposed_by_freq": chart_js_data["opposed_by_freq"],

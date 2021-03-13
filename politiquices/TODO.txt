@@ -12,38 +12,38 @@ Web App
                3.1 uma rede geral
                3.2 a rede uma entidade em específico
 
-    - arranjar notícias com estes gajos!
-        https://www.wikidata.org/wiki/Q52112309
-        https://www.wikidata.org/wiki/Q72310730
-
     - espaço entre filtro tempo + botão 'PROCURAR'
+    - "Com quem se relaciona mais frequentemente?"
+        - adaptar o número de linhas das tabelas conforme o número de resultados
+
+    - 1996 e 1997 não estão presentes
+
     - sparlq queries no index, abrir janela nova? adicionar 'todas' ?
+        - verificar todas as possibilidades deste query
+            https://www.politiquices.pt/queries?query_nr=one
+            $e1=Q21568721&e2=Q610788
+            &year_from=2000
+            &year_to=2019
+            &relationship=apoia -> dará para por todas aqui?
+            &html=true
+            &annotate
 
-    - verificar todas as possibilidades deste query
-        https://www.politiquices.pt/queries?query_nr=one
-        $e1=Q21568721&e2=Q610788
-        &year_from=2000
-        &year_to=2019
-        &relationship=apoia -> dará para por todas aqui?
-        &html=true
-        &annotate
+    - Quais as personalidades (importantes) na wikidata que não aparecem no politiquices.pt?
+        - https://www.wikidata.org/wiki/Q52112309
+        - https://www.wikidata.org/wiki/Q72310730
 
-    - BUGS:
-        - http://0.0.0.0:5000/entity?q=Q10395752
-            'Álvaro Almeida' != Álvaro Augusto Matos Almeida
 
     - Grafo:
 
         - arrastar um nó e parar, desligar a física
-
-        - https://www.politiquices.pt/entity?q=Q3060511 -> Eurico de Melo
-            - 2 relações na tabela, mas apenas 1 no grafo
 
         - António Vitorino apoia Durão Barroso 2004-2004:
             - mostra 2 no arco, só há 1
 
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - max_hops numa rede
+
+
 
     - Checklist
         - Site:
@@ -73,6 +73,9 @@ Web App
             - Banif: Centeno desmente Bruxelas e Costa rebate narrativa da "falha grave"
             - Março: Costa discute saída da família do BES. Salgado diz que seria o dilúvio
 
+        - 'Álvaro Almeida' != Álvaro Augusto Matos Almeida
+            - http://0.0.0.0:5000/entity?q=Q10395752
+
 
     Geral (low)
     ----------
@@ -101,6 +104,8 @@ Web App
 
 relationship classifier
 ======================
+    - se o output é 'other' não faz sentido correr o classificador de direcção
+
     - run script with PYTHONHASHSEED=0
     - explorar os padroes encontrados
     - controlar overfitting?

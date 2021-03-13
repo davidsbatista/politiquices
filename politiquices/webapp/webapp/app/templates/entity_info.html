@@ -93,7 +93,7 @@
     <script>
     var ctx = document.getElementById('myChart');
     var color = Chart.helpers.color;
-    var year_labels = {{ items['year_month_labels']|tojson }};
+    var year_labels = {{ items['year_labels']|tojson }};
     var opposed_freq = {{ items['opposed_freq']|tojson }};
     var supported_freq = {{ items['supported_freq']|tojson }};
     var opposed_by_freq = {{ items['opposed_by_freq']|tojson }};
@@ -107,12 +107,12 @@
             {label: 'opõe-se', backgroundColor: "#FF0000", fill: true, data: opposed_freq},
             {label: 'é oposto(a) por', backgroundColor: "#980000", fill: true, data: opposed_by_freq},
             {label: 'apoia', backgroundColor: "#44861E", fill: true, data: supported_freq},
-            {label: 'é apoiado(a)', backgroundColor: "#70DA33", fill: false, true: supported_by_freq}
+            {label: 'é apoiado(a)', backgroundColor: "#70DA33", fill: true, data: supported_by_freq}
             ]
           },
         options: {
           scales: {
-            x: {stacked: true},
+            x: {stacked: false},
           }
         }
     });

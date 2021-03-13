@@ -1,6 +1,5 @@
 from flask import Flask
-from flask import request, jsonify
-from flask import render_template
+from flask import request, jsonify, render_template
 
 from politiquices.webapp.webapp.config import entities_batch_size
 from politiquices.webapp.webapp.lib.utils import get_info
