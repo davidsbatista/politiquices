@@ -60,17 +60,26 @@
         var ctx = document.getElementById('articles_rel_type');
         var color = Chart.helpers.color;
         var year_labels = {{ items['nr_articles_year_labels']|tojson }};
-        var ent1_opposes_ent2 = {{ items['ent1_opposes_ent2']|tojson }};
-        var ent2_opposes_ent1 = {{ items['ent2_opposes_ent1']|tojson }};
-        var ent1_supports_ent2 = {{ items['ent1_supports_ent2']|tojson }};
-        var ent2_supports_ent1 = {{ items['ent2_supports_ent1']|tojson }};
-        var ent1_other_ent2 = {{ items['ent1_other_ent2']|tojson }};
-        var ent2_other_ent1 = {{ items['ent2_other_ent1']|tojson }};
+        var opposes = {{ items['opposes']|tojson }};
+        var supports = {{ items['supports']|tojson }};
+
         var myChart = new Chart(ctx, {
             type: 'bar',
             data: {
                 labels: year_labels,
                 datasets: [
+                {
+                    label: 'oposição',
+                    backgroundColor: "#FF0000",
+                    data: opposes
+                },
+                {
+                    label: 'apoio',
+                    backgroundColor: "#44861E",
+                    data: supports,
+                },
+
+                /*
                 {
                     label: 'ent1_opposes_ent2',
                     backgroundColor: "#FF0000",
@@ -91,7 +100,6 @@
                     backgroundColor: "#70DA33",
                     data: ent2_supports_ent1,
                 },
-                /*
                 {
                     label: 'ent1_other_ent2',
                     backgroundColor: "#d4d4d4",
