@@ -21,7 +21,6 @@ from politiquices.webapp.webapp.lib.sparql_queries import (
     get_person_relationships,
     get_nr_of_persons,
     get_total_nr_of_articles,
-    get_nr_articles_per_year,
     get_total_articles_by_year_by_relationship_type,
     get_persons_articles_freq
 )
@@ -462,26 +461,27 @@ def get_stats():
     # number of persons, parties, articles
     nr_persons = get_nr_of_persons()
     nr_parties = len(all_parties_info)
+
+    # total nr of article with and without 'other' relationships
     nr_all_articles, nr_all_no_other_articles = get_total_nr_of_articles()
 
-    # articles per year chart
-    nr_articles_year_labels, nr_articles_year_values = get_nr_articles_per_year()
-
-    # articles per relationship type per year chart
+    # articles per relationship type per year; the sparql query returns results for each rel_type
+    # but we aggregate relationships: 'opposes', 'supports, i.e., discard direction and 'other'
+    all_years = get_chart_labels_min_max()
     values = get_total_articles_by_year_by_relationship_type()
+    aggregated_values = defaultdict(lambda: {'opposes': 0, 'supports': 0})
+    for year in all_years:
+        if year in values.keys():
+            for rel, freq in values[year].items():
+                if 'opposes' in rel:
+                    aggregated_values[year]['opposes'] += int(freq)
+                if 'supports' in rel:
+                    aggregated_values[year]['supports'] += int(freq)
+        else:
+            aggregated_values[year]['opposes'] = 0
+            aggregated_values[year]['supports'] = 0
 
-    # aggregate values by 'opposes', 'supports, i.e., discard direction
-    def default_values():
-        return {'opposes': 0, 'supports': 0}
-    aggregated_values = defaultdict(default_values)
-    for year, freq_rel in values.items():
-        for rel, freq in freq_rel.items():
-            if 'opposes' in rel:
-                aggregated_values[year]['opposes'] += int(freq)
-            if 'supports' in rel:
-                aggregated_values[year]['supports'] += int(freq)
-
-    # personality frequency chart
+    # personalities frequency chart
     per_freq_labels = []
     per_freq_values = []
     per_freq = get_persons_articles_freq()
@@ -489,7 +489,7 @@ def get_stats():
         per_freq_labels.append(wiki_id_info[x["person"].split("/")[-1]]["name"])
         per_freq_values.append(x["freq"])
 
-    # person co-occurrence chart
+    # personalities co-occurrence chart
     co_occurrences_labels = []
     co_occurrences_values = []
     for x in top_co_occurrences:
@@ -499,19 +499,9 @@ def get_stats():
     return {
         "nr_parties": nr_parties,
         "nr_persons": nr_persons,
-        "nr_all_articles": nr_all_articles,
         "nr_all_no_other_articles": nr_all_no_other_articles,
 
-        "nr_articles_year_labels": nr_articles_year_labels,
-        "nr_articles_year_values": nr_articles_year_values,
-
-        # "ent1_opposes_ent2": [values[year]['ent1_opposes_ent2'] for year in values],
-        # "ent2_opposes_ent1": [values[year]['ent2_opposes_ent1'] for year in values],
-        # "ent1_supports_ent2": [values[year]['ent1_supports_ent2'] for year in values],
-        # "ent2_supports_ent1": [values[year]['ent2_supports_ent1'] for year in values],
-        # "ent1_other_ent2": [values[year]['ent1_other_ent2'] for year in values],
-        # "ent2_other_ent1": [values[year]['ent2_other_ent1'] for year in values],
-
+        "nr_articles_year_labels": all_years,
         "supports": [aggregated_values[year]['supports'] for year in aggregated_values],
         "opposes": [aggregated_values[year]['opposes'] for year in aggregated_values],
 

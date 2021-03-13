@@ -13,10 +13,15 @@ Web App
                3.2 a rede uma entidade em específico
 
     - espaço entre filtro tempo + botão 'PROCURAR'
+
     - "Com quem se relaciona mais frequentemente?"
         - adaptar o número de linhas das tabelas conforme o número de resultados
 
-    - 1996 e 1997 não estão presentes
+    - "Relações expressas em títulos de notícias"
+        - fonte mais pequena para os sub-titulos
+
+    - stats:
+        1996 e 1997 não estão presentes
 
     - sparlq queries no index, abrir janela nova? adicionar 'todas' ?
         - verificar todas as possibilidades deste query

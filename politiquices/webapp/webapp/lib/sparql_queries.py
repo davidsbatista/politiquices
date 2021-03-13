@@ -11,7 +11,7 @@ from politiquices.webapp.webapp.config import (
     ps_logo,
     wikidata_endpoint
 )
-from politiquices.webapp.webapp.lib.utils import make_https
+from politiquices.webapp.webapp.lib.utils import make_https, get_chart_labels_min_max
 
 POLITIQUICES_PREFIXES = """
     PREFIX politiquices: <http://www.politiquices.pt/>
@@ -40,7 +40,7 @@ PREFIXES = POLITIQUICES_PREFIXES + WIKIDATA_PREFIXES + OTHERS
 
 
 # Statistics
-def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
+def get_nr_articles_per_year():
     query = """
         SELECT ?year (COUNT(?arquivo_doc) AS ?nr_articles)
         WHERE {
@@ -51,12 +51,10 @@ def get_nr_articles_per_year() -> Tuple[List[int], List[int]]:
         ORDER BY ?year
         """
     result = query_sparql(PREFIXES + "\n" + query, "politiquices")
-    year = []
-    nr_articles = []
+    nr_articles = dict()
     for x in result["results"]["bindings"]:
-        year.append(int(x["year"]["value"]))
-        nr_articles.append(int(x["nr_articles"]["value"]))
-    return year, nr_articles
+        nr_articles[int(x["year"]["value"])] = int(x["nr_articles"]["value"])
+    return nr_articles
 
 
 def get_total_nr_of_articles():
