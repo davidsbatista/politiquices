@@ -469,7 +469,18 @@ def get_stats():
 
     # articles per relationship type per year chart
     values = get_total_articles_by_year_by_relationship_type()
-    
+
+    # aggregate values by 'opposes', 'supports, i.e., discard direction
+    def default_values():
+        return {'opposes': 0, 'supports': 0}
+    aggregated_values = defaultdict(default_values)
+    for year, freq_rel in values.items():
+        for rel, freq in freq_rel.items():
+            if 'opposes' in rel:
+                aggregated_values[year]['opposes'] += int(freq)
+            if 'supports' in rel:
+                aggregated_values[year]['supports'] += int(freq)
+
     # personality frequency chart
     per_freq_labels = []
     per_freq_values = []
@@ -494,12 +505,15 @@ def get_stats():
         "nr_articles_year_labels": nr_articles_year_labels,
         "nr_articles_year_values": nr_articles_year_values,
 
-        "ent1_opposes_ent2": [values[year]['ent1_opposes_ent2'] for year in values],
-        "ent2_opposes_ent1": [values[year]['ent2_opposes_ent1'] for year in values],
-        "ent1_supports_ent2": [values[year]['ent1_supports_ent2'] for year in values],
-        "ent2_supports_ent1": [values[year]['ent2_supports_ent1'] for year in values],
-        "ent1_other_ent2": [values[year]['ent1_other_ent2'] for year in values],
-        "ent2_other_ent1": [values[year]['ent2_other_ent1'] for year in values],
+        # "ent1_opposes_ent2": [values[year]['ent1_opposes_ent2'] for year in values],
+        # "ent2_opposes_ent1": [values[year]['ent2_opposes_ent1'] for year in values],
+        # "ent1_supports_ent2": [values[year]['ent1_supports_ent2'] for year in values],
+        # "ent2_supports_ent1": [values[year]['ent2_supports_ent1'] for year in values],
+        # "ent1_other_ent2": [values[year]['ent1_other_ent2'] for year in values],
+        # "ent2_other_ent1": [values[year]['ent2_other_ent1'] for year in values],
+
+        "supports": [aggregated_values[year]['supports'] for year in aggregated_values],
+        "opposes": [aggregated_values[year]['opposes'] for year in aggregated_values],
 
         "per_freq_labels": per_freq_labels[0:500],
         "per_freq_values": per_freq_values[0:500],

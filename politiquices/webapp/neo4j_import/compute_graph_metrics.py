@@ -16,7 +16,7 @@ def get_graph_from_sparql():
     all_edges_supports = open('all_edges_supports_urls.csv', 'w')
     all_edges_opposes = open('all_edges_opposes_urls.csv', 'w')
 
-    print(len(links))
+    print(f"{len(links)} edges extracted")
 
     for x in links:
         wiki_id_a = x["person_a"].split("/")[-1]

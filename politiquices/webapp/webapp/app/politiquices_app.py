@@ -94,7 +94,7 @@ def party_members():
 
 
 @app.route("/stats")
-def status():
+def stats():
     data = get_stats()
     return render_template("stats.html", items=data)
 
