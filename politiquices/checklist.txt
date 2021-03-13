@@ -1,0 +1,11 @@
+
+- Site:
+    - Não há 'other' relationships em lado nenhum
+    - Apenas mostra pessoas que têm relações
+    - Relações são todas "opõe-se" / "apoia"
+    - Não há texto nenhum em inglês
+
+- GitHub:
+    - no training data
+    - no hard-coded passwords
+    - no hard-coded IP addresses

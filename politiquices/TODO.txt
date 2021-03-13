@@ -20,8 +20,6 @@ Web App
     - "Relações expressas em títulos de notícias"
         - fonte mais pequena para os sub-titulos
 
-    - stats:
-        1996 e 1997 não estão presentes
 
     - sparlq queries no index, abrir janela nova? adicionar 'todas' ?
         - verificar todas as possibilidades deste query
@@ -37,30 +35,15 @@ Web App
         - https://www.wikidata.org/wiki/Q52112309
         - https://www.wikidata.org/wiki/Q72310730
 
-
     - Grafo:
 
-        - arrastar um nó e parar, desligar a física
+        - tirar os labels dos arcos, e explicar o que a cor representa
 
-        - António Vitorino apoia Durão Barroso 2004-2004:
-            - mostra 2 no arco, só há 1
+        - arrastar um nó e parar, desligar a física
 
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - max_hops numa rede
 
-
-
-    - Checklist
-        - Site:
-            - Não há 'other' relationships em lado nenhum
-            - Apenas mostra pessoas que têm relações
-            - Relações são todas "opõe-se" / "apoia"
-            - Não há texto nenhum em inglês
-
-        - GitHub:
-            - no training data
-            - no hard-coded passwords
-            - no hard-coded IP addresses
 
     - Analytics de acessos
         - https://matomo.org/

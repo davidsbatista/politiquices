@@ -1,3 +1,4 @@
+import re
 import sys
 from typing import Tuple, List
 from collections import defaultdict
@@ -763,21 +764,47 @@ def get_person_relationships_by_year(wiki_id, rel_type, ent="ent1"):
 
 # Relationship Queries
 def get_relationship_between_two_persons(wiki_id_one, wiki_id_two, rel_type, start_year, end_year):
+
+    rel_only = re.match(r'ent[1-2]_(.*)_ent[1-2]', rel_type).groups()[0]
+    if rel_type.endswith("ent2"):
+        rel_type_inverted = "ent2_" + rel_only + "_ent1"
+    elif rel_type.endswith("ent1"):
+        rel_type_inverted = "ent1_" + rel_only + "_ent2"
+    else:
+        raise Exception("this should not happen")
+
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
-        WHERE {{          
-          ?rel politiquices:ent1 wd:{wiki_id_one};
-               politiquices:ent2 wd:{wiki_id_two};       
-               politiquices:type '{rel_type}';
-               politiquices:score ?score;
-               politiquices:url ?arquivo_doc;
-               politiquices:ent1 ?ent1;
-               politiquices:ent2 ?ent2;
-               politiquices:ent1_str ?ent1_str;
-               politiquices:ent2_str ?ent2_str.
-
-          ?arquivo_doc dc:title ?title ;
-                       dc:date ?date . FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
+        WHERE {{ 
+            {{          
+              ?rel politiquices:ent1 wd:{wiki_id_one};
+                   politiquices:ent2 wd:{wiki_id_two};       
+                   politiquices:type '{rel_type}';
+                   politiquices:score ?score;
+                   politiquices:url ?arquivo_doc;
+                   politiquices:ent1 ?ent1;
+                   politiquices:ent2 ?ent2;
+                   politiquices:ent1_str ?ent1_str;
+                   politiquices:ent2_str ?ent2_str.
+    
+              ?arquivo_doc dc:title ?title ;
+                           dc:date ?date . FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
+           }}
+           UNION
+           {{          
+              ?rel politiquices:ent2 wd:{wiki_id_one};
+                   politiquices:ent1 wd:{wiki_id_two};       
+                   politiquices:type '{rel_type_inverted}';
+                   politiquices:score ?score;
+                   politiquices:url ?arquivo_doc;
+                   politiquices:ent1 ?ent1;
+                   politiquices:ent2 ?ent2;
+                   politiquices:ent1_str ?ent1_str;
+                   politiquices:ent2_str ?ent2_str.
+    
+              ?arquivo_doc dc:title ?title ;
+                           dc:date ?date . FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
+           }}            
         }}
         ORDER BY ASC(?date)
         """
