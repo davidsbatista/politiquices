@@ -3,11 +3,7 @@ Web App
 
     - acabar o relatório
     - fazer o script para o video
-
-        - roadmap da apresentação
-
             1. intro_ explicar o que é o projecto
-
                 - tirar frases chave do relatório
 
             2. mostrar um exemplo com queries
@@ -61,7 +57,6 @@ Web App
             - no hard-coded passwords
             - no hard-coded IP addresses
 
-
     - Analytics de acessos
         - https://matomo.org/
         - https://computingforgeeks.com/install-matomo-piwik-web-analytics-tool-on-ubuntu/
@@ -74,18 +69,15 @@ Web App
 
     entity_linking
     --------------
-        - remover os hard mappings do query_kb? e.g., Costa -> António Costa
-            - 'Costa':
-                - is not always 'António Costa', can be often 'Carlos Costa' -> https://arquivo.pt/wayback/20141117234314/http://expresso.sapo.pt/marco-costa-discute-saida-da-familia-do-bes-salgado-diz-que-seria-o-diluvio=f898400
-                - apply entity linking algorithm
+        - verify if these titles are in 'António Costa' or 'Carlos Costa'
+            - Banif: Centeno desmente Bruxelas e Costa rebate narrativa da "falha grave"
+            - Março: Costa discute saída da família do BES. Salgado diz que seria o dilúvio
 
 
     Geral (low)
     ----------
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
-
         - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
-
         - party members: - load on scroll down ?
         - clicar no branco fazer collapse ao menu (hamburger)
         - cache + cópia do resize das imagens para este display

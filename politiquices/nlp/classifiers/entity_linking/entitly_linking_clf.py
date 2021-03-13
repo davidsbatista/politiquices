@@ -27,7 +27,6 @@ class EntityLinking:
 
         mappings = {
             "António Costa": "António Luís Santos da Costa",
-            "Costa": "António Luís Santos da Costa",
             "Carrilho": "Manuel Maria Carrilho",
             "Cavaco Silva": "Aníbal Cavaco Silva",
             "Cavaco": "Aníbal Cavaco Silva",

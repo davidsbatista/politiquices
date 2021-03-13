@@ -1,17 +1,9 @@
 import json
 import requests
 
+from politiquices.nlp.data_sources.arquivo_pt.utils import load_domains
 
 URL_REQUEST = "http://arquivo.pt/wayback/cdx"
-
-
-def load_domains():
-    domains = []
-    with open("config_data/domains.txt", "rt") as f_in:
-        for line in f_in:
-            if not line.startswith("#") and len(line) > 1:
-                domains.append(line.strip("\n"))
-    return domains
 
 
 def get_domain_crawl_timeline(domain):

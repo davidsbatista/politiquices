@@ -7,23 +7,16 @@ import requests
 from jsonlines import jsonlines
 from loguru import logger
 
-from politiquices.nlp.utils.utils import load_domains, just_sleep
+from politiquices.nlp.data_sources.arquivo_pt.utils import load_domains, load_entities
+from politiquices.nlp.utils.utils import just_sleep
 
+# make sure to follow arquivo.pt guidelines for API usage
 # https://docs.google.com/spreadsheets/d/1f4OZWE1BOtMS7JJcruNh8Rpem-MbmBVnLrERcmP9OZU/edit#gid=0
 
 OUTPUT_DIR = "crawled"
 URL_REQUEST = "http://arquivo.pt/textsearch"
 
 domains_crawled_dates = None
-
-
-def load_entities():
-    names = []
-    with open('config_data/entities_names.txt', 'rt') as f_in:
-        for line in f_in:
-            if not line.startswith('#') and len(line) > 1:
-                names.append(line.strip('\n'))
-    return names
 
 
 def runner(domains, query):
