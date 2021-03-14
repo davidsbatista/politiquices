@@ -42,7 +42,6 @@ Web App
 
 
     - Grafo:
-        - tirar os labels dos arcos, e explicar o que a cor representa
         - arrastar um nó e parar, desligar a física
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - max_hops numa rede

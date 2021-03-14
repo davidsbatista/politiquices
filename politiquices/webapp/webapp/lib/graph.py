@@ -157,7 +157,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
                                 "highlight": highlight,
                             },
                             "scaling": {"max": 7},
-                            "label": rel_text,
+                            "title": rel_text,
                             "value": freq,
                         }
                     )
