@@ -1,13 +1,6 @@
 Web App
 =======
 
-    - ver BUG no heatmap: PS opoem-se Sócrates -> António Barreto
-    - ver André Ventura -> Apoiado por: Costa, Marques Mendes -> Erros!
-
-    - inverter relações e ordem dos argumentos para os outros queries
-        - person vs. party
-
-
     - acabar o relatório
     - fazer o script para o video
             1. intro_ explicar o que é o projecto
@@ -22,8 +15,6 @@ Web App
             3. mostrar um exemplo de navegação no grafo
                3.1 uma rede geral
                3.2 a rede uma entidade em específico
-
-
 
 
     - espaço entre filtro tempo + botão 'PROCURAR'

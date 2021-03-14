@@ -904,30 +904,30 @@ def get_relationship_between_person_and_party(person, party, relation, start_yea
     inverted_relationship = invert_relationship(relation)
 
     query = f"""
-        SELECT DISTINCT ?ent2 ?ent2_str ?ent1_str ?arquivo_doc ?date ?title ?score
+        SELECT DISTINCT ?ent2 ?ent2_str ?ent1_str ?rel_type ?arquivo_doc ?date ?title ?score
         WHERE {{
             {{
-                ?rel politiquices:type '{relation}';
-                     politiquices:ent1 wd:{person};
+                ?rel politiquices:ent1 wd:{person};
                      politiquices:ent2 ?ent2;
                      politiquices:ent1_str ?ent1_str;
                      politiquices:ent2_str ?ent2_str;
                      politiquices:score ?score;
                      politiquices:url ?arquivo_doc .
+                ?rel politiquices:type ?rel_type. FILTER((?rel_type)='{relation}')
 
                 ?arquivo_doc dc:title ?title;
                              dc:date ?date; FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
             }}
               UNION
             {{
-                ?rel politiquices:type '{inverted_relationship}';
-                     politiquices:ent1 ?ent2;
+                ?rel politiquices:ent1 ?ent2;
                      politiquices:ent2 wd:{person};
                      politiquices:ent1_str ?ent1_str;
                      politiquices:ent2_str ?ent2_str;
                      politiquices:score ?score;
                      politiquices:url ?arquivo_doc .
-§
+                ?rel politiquices:type ?rel_type. FILTER((?rel_type)='{inverted_relationship}')
+
                 ?arquivo_doc dc:title ?title;
                              dc:date ?date; FILTER(YEAR(?date)>={start_year} && YEAR(?date)<={end_year})
             }}
@@ -940,11 +940,17 @@ def get_relationship_between_person_and_party(person, party, relation, start_yea
         ORDER BY DESC(?date) ASC(?score)
         """
 
-    print(PREFIXES + "\n" + query)
-
     result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     results = []
     for x in result["results"]["bindings"]:
+
+        if x["rel_type"]["value"].startswith("ent1"):
+            ent2_wiki = x["ent2"]["value"]
+            ent1_wiki = person
+        elif x["rel_type"]["value"].startswith("ent2"):
+            ent1_wiki = x["ent2"]["value"]
+            ent2_wiki = person
+
         results.append(
             {
                 "url": x["arquivo_doc"]["value"],
@@ -952,9 +958,9 @@ def get_relationship_between_person_and_party(person, party, relation, start_yea
                 "title": x["title"]["value"],
                 "rel_type": relation,
                 "score": x["score"]["value"][0:5],
-                "ent1_wiki": person,
+                "ent1_wiki": ent1_wiki,
                 "ent1_str": x["ent1_str"]["value"],
-                "ent2_wiki": x["ent2"]["value"],
+                "ent2_wiki": ent2_wiki,
                 "ent2_str": x["ent2_str"]["value"],
             }
         )
