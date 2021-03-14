@@ -16,7 +16,6 @@ Web App
                3.1 uma rede geral
                3.2 a rede uma entidade em específico
 
-
     - espaço entre filtro tempo + botão 'PROCURAR'
 
     - "Com quem se relaciona mais frequentemente?"
@@ -25,7 +24,8 @@ Web App
     - "Relações expressas em títulos de notícias"
         - fonte mais pequena para os sub-titulos
 
-
+    - retirar o AJAX de tudo, ou arranjar maneira de navegar para frente e trás no site de forma
+      coerente
     - sparlq queries no index, abrir janela nova? adicionar 'todas' ?
         - verificar todas as possibilidades deste query
             https://www.politiquices.pt/queries?query_nr=one
@@ -53,13 +53,10 @@ Web App
         - https://computingforgeeks.com/install-matomo-piwik-web-analytics-tool-on-ubuntu/
         - https://www.howtoforge.com/how-to-install-matomo-web-analytics-on-ubuntu-2004/
 
-
     - HTML:
         - Limpar o Javascript: re-utilizar
         - libs todas locais
         - CSS todo fora do HTML
-
-
 
     entity_linking
     --------------
