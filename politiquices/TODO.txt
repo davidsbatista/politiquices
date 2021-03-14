@@ -2,6 +2,7 @@ Web App
 =======
 
     - ver BUG no heatmap: PS opoem-se Sócrates -> António Barreto
+    - ver André Ventura -> Apoiado por: Costa, Marques Mendes -> Erros!
 
     - inverter relações e ordem dos argumentos para os outros queries
         - person vs. party
