@@ -78,7 +78,7 @@ def get_entity_network(wiki_id, relation, freq_min, freq_max, year_from, year_to
                                 "highlight": highlight,
                             },
                             "scaling": {"max": 7},
-                            # "label": rel_text,
+                            "title": rel_text,
                             "value": freq,
                         }
                     )

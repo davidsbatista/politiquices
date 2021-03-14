@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+
+{% block body %}
 
 <br>
 
@@ -186,7 +189,11 @@
                     year: year,
                     relationship: rel_text
                 };
+                var url = `/queries?e1=${ent1_wiki_id}&e2=${ent2_wiki_id}&year=${year}&relationship=${data['relationship']}&html=True`
+                console.log(url)
+                window.location.href = url
 
+                /*
                 $.ajax({
                     type: 'get',
                     data: data,
@@ -200,6 +207,7 @@
                         $('#container').html(output.responseText);
                     }
                 });
+                */
 
             }
         }
@@ -217,3 +225,7 @@
     var chart = new ApexCharts(document.querySelector("#chart"), options);
     chart.render();
 </script>
+
+<br><br><br>
+
+{% endblock %}

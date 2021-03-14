@@ -7,7 +7,6 @@
 <div class="container" id="container">
 
     <script>
-
       $(function() {
         $( "#slider" ).slider({
             range: true,
@@ -58,7 +57,14 @@
               { 
                 alert("Seleccione uma Personalidade ou Partido")
               }
-              else {
+            else {
+              $('#loading').show();
+              var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}&html=True`
+              window.location.href = url
+              console.log(url)
+            }
+            /*
+            else {
                 $.ajax({
                   type: 'get',
                   data: data,
@@ -75,11 +81,13 @@
                         $('#inner').append(html);
                     }
                     else {
-                        $('#inner').html(output.responseText);
+                      var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}&html=True`
+                      window.location.href = url
                     }    
                   }
                 });
-              }            
+              }
+              */
         });
 
         /* Dropdown for view that allows to correct/annotated relationships */
@@ -109,7 +117,7 @@
         var accentMap = {
             "à": "a", "â": "a", "ã": "a", "á": "a",
             "é": "e", "è": "e", "ê": "e", "ë": "e",
-            "ï": "i", "î": "i", 
+            "ï": "i", "î": "i", "í": "i",
             "ô": "o", "ö": "o", "ó": "o",
             "û": "u", "ù": "u"
         };
@@ -317,4 +325,3 @@
 </div>
 
 {% endblock %}
-

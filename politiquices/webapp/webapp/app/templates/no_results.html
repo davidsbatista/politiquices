@@ -1,5 +1,337 @@
+{% extends 'base.html' %}
+
+{% block title %} politiquices.pt {% endblock %}
+
+{% block body %}
+
+<div class="container" id="container">
+
+  <script>
+    $(function() {
+      $( "#slider" ).slider({
+          range: true,
+          min: 1994,
+          max: 2019,
+          values: [ 2000, 2015 ],
+          slide: function( event, ui ) {
+            $("#from").html(ui.values[0]);
+            $("#to").html(ui.values[1]);
+          }
+      });
+
+    });
+
+    all_entities_only = [];
+    var entity2wiki_id = {};
+    
+    $.getJSON("static/json/parties.json", function(json_data){
+        for (var i = 0, len = json_data.length; i < len; i++) {              
+            all_entities_only.push(json_data[i].name);
+            entity2wiki_id[json_data[i].name] = json_data[i].wiki_id
+        };
+    });
+    
+    $.getJSON("static/json/persons.json", function(json_data){
+        for (var i = 0, len = json_data.length; i < len; i++) {
+            all_entities_only.push(json_data[i].name);
+            entity2wiki_id[json_data[i].name] = json_data[i].wiki_id
+        };
+    });
+        
+    $(document).ready ( function () {
+  
+      /* Relações entre duas entidades */
+      $(document).on ("click", "#button", function () {
+          var wiki_id_one = $('#autocomplete_entity_one_value').val();
+          var wiki_id_two = $('#autocomplete_entity_two_value').val();
+          var year_from = $("#slider" ).slider( "values", 0 );
+          var year_to = $("#slider" ).slider( "values", 1 );
+          var e = document.getElementById("dropdownMenuButton");
+          var data = {e1: wiki_id_one,
+                      e2: wiki_id_two,
+                      year_from: year_from,
+                      year_to: year_to,
+                      relationship: e.textContent
+                    };
+          if (wiki_id_one == '' || wiki_id_two == '') 
+            { 
+              alert("Seleccione uma Personalidade ou Partido")
+            }
+          else {
+            $('#loading').show();
+            var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}&html=True`
+            window.location.href = url
+            console.log(url)
+          }
+          /*
+          else {
+              $.ajax({
+                type: 'get',
+                data: data,
+                url: '/queries',
+                error: function () {
+                  alert("There was an error processing this page.");
+                  return false;
+                },
+                complete: function (output) {
+                  // bit dirty, if size of the returned HTML == 1, no results
+                  // otherwise present it's results
+                  var html = $(output.responseText);
+                  if (html.length == 1) {
+                      $('#inner').append(html);
+                  }
+                  else {
+                    var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}&html=True`
+                    window.location.href = url
+                  }    
+                }
+              });
+            }
+            */
+      });
+
+      /* Dropdown for view that allows to correct/annotated relationships */
+      $(document).ready(function() {
+        $(".dropdown-menu").on('click', 'a', function(){
+          $(this).parents('.dropdown').find('button').text($(this).text());
+        });
+      });
+
+      // taken from: https://stackoverflow.com/questions/9710922/jquery-accent-insensitive-with-multiple-values-autocomplete
+      var normalize = function(term) {
+        var ret = "";
+        for (var i = 0; i < term.length; i++) {
+          ret += accentMap[term.charAt(i)] || term.charAt(i);
+        }
+        return ret;
+      };
+
+      function split(val) {
+        return val.split(/,\s*/);
+      }
+
+      function extractLast(term) {
+        return split(term).pop();
+      }
+
+      var accentMap = {
+          "à": "a", "â": "a", "ã": "a", "á": "a",
+          "é": "e", "è": "e", "ê": "e", "ë": "e",
+          "ï": "i", "î": "i", "í": "i",
+          "ô": "o", "ö": "o", "ó": "o",
+          "û": "u", "ù": "u"
+      };
+
+      $('#autocomplete_entity_one').keydown(function(e) {          
+        if (e.keyCode === $.ui.keyCode.TAB &&
+          $(this).data("autocomplete").menu.active) {
+          e.preventDefault();
+        }
+        
+        if (e.which == 13) {
+          e.preventDefault();
+        }
+
+        $('#autocomplete_entity_one').autocomplete({
+
+          minLength: 1,
+          autoFocus: true,
+          
+          //with accent check        
+          source: function(request, response) {
+            var matcher = new RegExp($.ui.autocomplete.escapeRegex(extractLast(request.term)), "i");
+            response($.grep(all_entities_only, function(value) {
+              value = value.truc || value.value || value;
+              return matcher.test(value) || matcher.test(normalize(value));
+            }));
+          },
+          
+          focus: function() {
+            // prevent value inserted on focus
+            return false;
+          },
+
+          select: function(event, ui) {   
+            var terms = split(this.value);
+            
+            // remove the current input
+            terms.pop();
+            
+            // add the selected item
+            terms.push(ui.item.value);
+            
+            this.value = ui.item.value;
+            $("#autocomplete_entity_one_value").val(entity2wiki_id[ui.item.value]);
+
+            return false;
+          }
+
+        })
+      })
+
+      $('#autocomplete_entity_two').keydown(function(e) {
+        if (e.keyCode === $.ui.keyCode.TAB &&
+          $(this).data("autocomplete").menu.active) {
+          e.preventDefault();
+        }
+
+        if (e.which == 13) {
+          e.preventDefault();
+        }
+
+        $('#autocomplete_entity_two').autocomplete({
+
+          minLength: 1,
+          autoFocus: true,
+          
+          //with accent check        
+          source: function(request, response) {
+            var matcher = new RegExp($.ui.autocomplete.escapeRegex(extractLast(request.term)), "i");
+            response($.grep(all_entities_only, function(value) {
+              value = value.truc || value.value || value;
+              return matcher.test(value) || matcher.test(normalize(value));
+            }));
+          },
+          
+          focus: function() {
+            // prevent value inserted on focus
+            return false;
+          },
+
+          select: function(event, ui) {   
+            var terms = split(this.value);
+            
+            // remove the current input
+            terms.pop();
+            
+            // add the selected item
+            terms.push(ui.item.value);
+            
+            this.value = ui.item.value;
+            $("#autocomplete_entity_two_value").val(entity2wiki_id[ui.item.value]);
+
+            return false;
+          }
+        })
+      })
+    
+    });
+
+  </script>
+
+  <br>
+
+  <div class="container" id="inner">
+
+    <!-- Introdução -->
+    <div class="container d-flex align-items-center justify-content-center">
+      <div class="w-100">
+          <p>O politiquices.pt permite pesquisar relações de <b>apoio</b> ou <b>oposição</b>
+              entre personalidades e partidos políticos expressas em títulos de notícias.</p>
+        </div>
+    </div>
+
+    <!-- Queries -->
+    <div class="container">
+      <div class="w-100">
+          <ul>
+            <li>Que acusações fez Passos Coelho a José Sócrates?</li>
+            <li>Quem do PS se opôs/apoiou a José Sócrates?</li>
+            <li>Que personalidades do BE se oposeram a Jerónimo de Sousa?</li>
+            <li>Que personalidades afiliadas ao BE se oposeram a personalidades do PCP?</li>
+            <li>Que personalidades do PS apoiaram/se oposeram a outras personalidades do PS?</li>
+          </ul>
+      </div>
+    </div>
+    
+    <br>
+    
+    <center>
+      <form class="container-fluid justify-content-center align-items-center">
+        <input id="autocomplete_entity_one_value" type="hidden" name="wiki">
+        <input id="autocomplete_entity_two_value" type="hidden" name="wiki">
+        <div class="control-group">
+            <div class="controls controls-row row-fluid col-xs-4">
+              <input id="autocomplete_entity_one" class="span10" type="text" placeholder="Partido ou Personalidade"/>
+                <div class="dropdown" style="display: inline;">
+                  <button class="btn btn-small btn-secondary dropdown-toggle" type="button"
+                          id="dropdownMenuButton" data-toggle="dropdown"
+                          aria-haspopup="true" aria-expanded="false">opõe-se</button>
+                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item">opõe-se</a>
+                            <a class="dropdown-item">apoia</a>
+                          </div>
+                </div>
+              <input id="autocomplete_entity_two" class="span10" type="text" placeholder="Partido ou Personalidade"/>
+              
+              <br><br>
+                              
+              <div class="form-group col-md-5">
+                <div class="input-group mx-auto mb-5">
+                  <div class="input-group-prepend">
+                    <div type="text" id="from" style="color:#002364; margin: 12px; font-weight:bold;">2000</div>
+                  </div>
+                  <div class="form-control" id="slider"></div>                    
+                  <div class="input-group-prepend">
+                    <div type="text" id="to" style="color:#002364; margin: 12px; font-weight:bold;">2015</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </form>
+    </center>
+
+    <center>
+      <div class="container-fluid justify-content-center align-items-center">
+        <button type="button" id='button' class="btn btn-primary btn-large">Procurar</button>
+      </div>
+    </center>
+  
+   <hr>
+
+    <!-- Grafo -->
+    <div class="container d-flex align-items-center justify-content-center">
+      <div class="row">
+        <div class="col-md-5">
+            <a class="nav-link" href="/graph">
+                <img class="d-block m-auto" src="static/images/graph_sample.png" width="100%">
+            </a>
+        </div>
+        <div class="col-md-5">
+          <br>
+            <p>É possível explorar as relações através de um grafo interactivo filtrando:</p>
+              <ul>
+                  <li>n.º notícias representando as relações entre quaisquer duas personalidades</li>
+                  <li>tipo de relações: <b>apoio</b> our <b>oposição</b></li>
+                  <li>um interval de anos onde surgem as notícias</li>
+              </ul>
+
+            <p> Ao navegar no grafo:</p>
+              <ul>
+                  <li>clique nos nós para ver a personalidade</li>
+                  <li>clique nos arcos entre nós para ver as notícias</li>
+                  <li>arcos a <span style="color: #44861E; font-weight: bold;">verde</span> indicam relações de apoio</li>
+                  <li>arcos a <span style="color: #FF0000; font-weight: bold;">vermelho</span> indicam relações de oposição</li>
+              </ul>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <br><br>
+  
+</div>
+
 <div id="alert_no_results" class="alert alert-warning" role="alert">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span>
     </button>
     <strong>Não foram encontrados resultados</strong>
   </div>
+  
+  <script>
+    window.history.replaceState({}, document.title, location.protocol + '//' + location.host);
+  </script>
+
+{% endblock %}
