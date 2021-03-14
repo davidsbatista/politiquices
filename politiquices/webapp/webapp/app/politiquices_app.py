@@ -145,12 +145,15 @@ def queries():
     print(request.args)
     query_nr = request.args.get("query_nr")
 
+    # ToDo: move this query_nr==2 to a different endpoint
     if query_nr == "two":
         entity_one = request.args.get("e1")
         entity_two = request.args.get("e2")
         data = entity_vs_entity(entity_one, entity_two)
+
         if data is None:
             return render_template("no_results.html")
+
         return render_template(
             "entity_vs_entity.html",
 

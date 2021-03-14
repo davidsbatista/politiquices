@@ -1,16 +1,29 @@
 Web App
 =======
 
+    - ver BUG no heatmap: PS opoem-se Sócrates -> António Barreto
+
+    - inverter relações e ordem dos argumentos para os outros queries
+        - person vs. party
+
+
     - acabar o relatório
     - fazer o script para o video
             1. intro_ explicar o que é o projecto
                 - tirar frases chave do relatório
 
             2. mostrar um exemplo com queries
+               2.1 per vs per
+               2.2 per vs party
+               2.3 part vs. per
+               2.4 party vs party
 
             3. mostrar um exemplo de navegação no grafo
                3.1 uma rede geral
                3.2 a rede uma entidade em específico
+
+
+
 
     - espaço entre filtro tempo + botão 'PROCURAR'
 
@@ -35,12 +48,10 @@ Web App
         - https://www.wikidata.org/wiki/Q52112309
         - https://www.wikidata.org/wiki/Q72310730
 
+
     - Grafo:
-
         - tirar os labels dos arcos, e explicar o que a cor representa
-
         - arrastar um nó e parar, desligar a física
-
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - max_hops numa rede
 
@@ -50,10 +61,13 @@ Web App
         - https://computingforgeeks.com/install-matomo-piwik-web-analytics-tool-on-ubuntu/
         - https://www.howtoforge.com/how-to-install-matomo-web-analytics-on-ubuntu-2004/
 
+
     - HTML:
         - Limpar o Javascript: re-utilizar
         - libs todas locais
         - CSS todo fora do HTML
+
+
 
     entity_linking
     --------------
@@ -63,6 +77,8 @@ Web App
 
         - 'Álvaro Almeida' != Álvaro Augusto Matos Almeida
             - http://0.0.0.0:5000/entity?q=Q10395752
+
+
 
 
     Geral (low)
@@ -88,6 +104,7 @@ Web App
             - backup dos certificados HTTPS
             - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
             - Wrap everything in docker, it's reproducible ?
+
 
 
 relationship classifier

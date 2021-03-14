@@ -207,7 +207,7 @@ def party_vs_party(party_a, party_b, rel_text, start_year, end_year):
     for r in results:
         per_vs_person_linkable(r)
 
-    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
+    relationships_json = make_json([r for r in results])
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
 
     for r in results:
@@ -283,7 +283,10 @@ def party_vs_person(party_wiki_id, per_wiki_id, rel_text, start_year, end_year):
 
     for r in results:
         per_vs_person_linkable(r)
-    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
+
+    relationships_json = make_json([r for r in results])
+
+    print(len(relationships_json))
 
     # heatmap # ToDo: make this in a single loop
     heatmap = []
@@ -337,10 +340,12 @@ def person_vs_person(per_one, per_two, rel_text, start_year, end_year, annotate)
                   "rel_type": r["rel_type"]} for r in results]
         return {'items': items}
 
-    relationships_json = make_json([r for r in results if r["rel_type"] == rel])
+    relationships_json = make_json([r for r in results])
     rel_freq_year = {year: 0 for year in get_chart_labels_min_max()}
     for r in results:
         rel_freq_year[r["date"][0:4]] += 1
+
+    print(len(relationships_json))
 
     data = {
         'relationships': relationships_json,
@@ -356,8 +361,7 @@ def person_vs_person(per_one, per_two, rel_text, start_year, end_year, annotate)
 # full-story between 2 entities
 def entity_vs_entity(wiki_id_one, wiki_id_two):
     """
-    Get all the relationships between two persons, centered in one entity, meaning that
-    the relationships are updated to reflect this
+    Get all the relationships between two persons, centered around entity
     """
     person_one_info = get_person_info(wiki_id_one)
     person_two_info = get_person_info(wiki_id_two)
@@ -365,76 +369,47 @@ def entity_vs_entity(wiki_id_one, wiki_id_two):
     if len(results) == 0:
         return None
 
-    # ToDo: refactor all this
+    for r in results:
+        per_vs_person_linkable(r)
+
+    opposed = make_json([r for r in results if r["rel_type"] == "ent1_opposes_ent2"])
+    supported = make_json([r for r in results if r["rel_type"] == "ent1_supports_ent2"])
+    opposed_by = make_json([r for r in results if r["rel_type"] == "ent2_opposes_ent1"])
+    supported_by = make_json([r for r in results if r["rel_type"] == "ent2_supports_ent1"])
+    all_json = opposed + supported + opposed_by + supported_by
+
     def relationships_counter():
         return {
             "ent1_opposes_ent2": 0,
             "ent1_supports_ent2": 0,
-            "ent1_opposed_by_ent2": 0,
-            "ent1_supported_by_ent2": 0,
+            "ent2_opposes_ent1": 0,
+            "ent2_supports_ent1": 0,
         }
 
     # an entry for each year between the min and max years in the dataset
-    rels_freq_by_year = defaultdict(relationships_counter)
-    labels = get_chart_labels_min_max()
-    for label in labels:
-        rels_freq_by_year[label]["ent1_opposes_ent2"] = 0
-
-    for relationship in results:
-        ent1_wiki_id = relationship["ent1_wiki"]
-        year = relationship["date"][0:4]
-        rel_type = relationship["rel_type"]
-
-        if rel_type.startswith("ent1"):
-            if ent1_wiki_id != wiki_id_one:
-                if "supports" in rel_type:
-                    rels_freq_by_year[year]["ent1_supported_by_ent2"] += 1
-                    relationship["rel_type_new"] = "ent1_supported_by_ent2"
-                if "opposes" in rel_type:
-                    rels_freq_by_year[year]["ent1_opposed_by_ent2"] += 1
-                    relationship["rel_type_new"] = "ent1_opposed_by_ent2"
-            else:
-                rels_freq_by_year[year][rel_type] += 1
-                relationship["rel_type_new"] = rel_type
-
-        if rel_type.startswith("ent2"):
-            if ent1_wiki_id != wiki_id_one:
-                if "supports" in rel_type:
-                    rels_freq_by_year[year]["ent1_supports_ent2"] += 1
-                    relationship["rel_type_new"] = "ent1_supports_ent2"
-                if "opposes" in rel_type:
-                    rels_freq_by_year[year]["ent1_opposes_ent2"] += 1
-                    relationship["rel_type_new"] = "ent1_opposes_ent2"
-            else:
-                if "supports" in rel_type:
-                    rels_freq_by_year[year]["ent1_supported_by_ent2"] += 1
-                    relationship["rel_type_new"] = "ent1_supported_by_ent2"
-                if "opposes" in rel_type:
-                    rels_freq_by_year[year]["ent1_opposed_by_ent2"] += 1
-                    relationship["rel_type_new"] = "ent1_opposed_by_ent2"
+    rels_freq_by_year = {year: relationships_counter() for year in get_chart_labels_min_max()}
 
     for r in results:
-        per_vs_person_linkable(r)
-
-    opposed = make_json([r for r in results if r["rel_type_new"] == "ent1_opposes_ent2"])
-    supported = make_json([r for r in results if r["rel_type_new"] == "ent1_supports_ent2"])
-    opposed_by = make_json([r for r in results if r["rel_type_new"] == "ent1_opposed_by_ent2"])
-    supported_by = make_json([r for r in results if r["rel_type_new"] == "ent1_supported_by_ent2"])
-    all_json = opposed + supported + opposed_by + supported_by
+        rels_freq_by_year[r['date'][0:4]][r['rel_type']] += 1
 
     # build chart information
     labels = list(rels_freq_by_year.keys())
     ent1_opposes_ent2 = []
     ent1_supports_ent2 = []
-    ent1_opposed_by_ent2 = []
-    ent1_supported_by_ent2 = []
+    ent2_opposes_ent1 = []
+    ent2_supports_ent1 = []
+
     for year in rels_freq_by_year:
         ent1_opposes_ent2.append(rels_freq_by_year[year]["ent1_opposes_ent2"])
         ent1_supports_ent2.append(rels_freq_by_year[year]["ent1_supports_ent2"])
-        ent1_opposed_by_ent2.append(rels_freq_by_year[year]["ent1_opposed_by_ent2"])
-        ent1_supported_by_ent2.append(rels_freq_by_year[year]["ent1_supported_by_ent2"])
+        ent2_opposes_ent1.append(rels_freq_by_year[year]["ent2_opposes_ent1"])
+        ent2_supports_ent1.append(rels_freq_by_year[year]["ent2_supports_ent1"])
 
     return {
+        # persons information
+        'person_one_info': person_one_info,
+        'person_two_info': person_two_info,
+
         # relationships
         'opposed': opposed,
         'supported': supported,
@@ -442,16 +417,12 @@ def entity_vs_entity(wiki_id_one, wiki_id_two):
         'supported_by': supported_by,
         'all_relationships': all_json,
 
-        # persons information
-        'person_one_info': person_one_info,
-        'person_two_info': person_two_info,
-
         # chart information
         'labels': labels,
         'ent1_opposes_ent2': ent1_opposes_ent2,
         'ent1_supports_ent2': ent1_supports_ent2,
-        'ent1_opposed_by_ent2': ent1_opposed_by_ent2,
-        'ent1_supported_by_ent2': ent1_supported_by_ent2
+        'ent1_opposed_by_ent2': ent2_opposes_ent1,
+        'ent1_supported_by_ent2': ent2_supports_ent1
     }
 
 
