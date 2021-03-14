@@ -323,7 +323,7 @@
           var hostname = window.location.origin
           var year_from = $("#ano_from").text();
           var year_to = $("#ano_to").text();
-          var url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&year_from=${year_from}&year_to=${year_to}&relationship=${rel_text}&html=true`
+          var url = `${hostname}/queries?&e1=${from}&e2=${to}&year_from=${year_from}&year_to=${year_to}&relationship=${rel_text}&html=true`
           var noticias_html = `<a href=${url} target="_blank">${freq} notícias</a>`
           var e1_url = `${hostname}/entity?q=${from}`
           var e1_html = `<a href=${e1_url} target="_blank">${from_name}</a>`
@@ -503,7 +503,7 @@
                     var hostname = window.location.origin
                     var year_from = $("#ano_from").text();
                     var year_to = $("#ano_to").text();
-                    var url = `${hostname}/queries?query_nr=one&e1=${from}&e2=${to}&year_from=${year_from}&year_to=${year_to}&relationship=${rel_text}&html=true`
+                    var url = `${hostname}/queries?&e1=${from}&e2=${to}&year_from=${year_from}&year_to=${year_to}&relationship=${rel_text}&html=true`
                     var noticias_html = `<a href=${url} target="_blank">${freq} notícias</a>`
                     var e1_url = `${hostname}/entity?q=${from}`
                     var e1_html = `<a href=${e1_url} target="_blank">${from_name}</a>`

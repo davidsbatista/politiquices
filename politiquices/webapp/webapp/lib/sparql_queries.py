@@ -801,14 +801,8 @@ def get_relationship_between_two_persons(wiki_id_one, wiki_id_two, rel_type, sta
         """
 
     result = query_sparql(PREFIXES + "\n" + query, "politiquices")
-
-    print(len(result["results"]["bindings"]))
-
     results = []
     for x in result["results"]["bindings"]:
-
-        print(x["rel_type"]["value"])
-
         results.append(
             {
                 "url": x["arquivo_doc"]["value"],
@@ -870,9 +864,6 @@ def get_relationship_between_party_and_person(party, person, rel_type, start_yea
 
     result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     results = []
-
-    print(len(result["results"]["bindings"]))
-
     for x in result["results"]["bindings"]:
 
         if x["rel_type"]["value"].startswith("ent1"):

@@ -48,8 +48,7 @@
             var year_from = $("#slider" ).slider( "values", 0 );
             var year_to = $("#slider" ).slider( "values", 1 );
             var e = document.getElementById("dropdownMenuButton");
-            var data = {query_nr: 'one',
-                        e1: wiki_id_one,
+            var data = {e1: wiki_id_one,
                         e2: wiki_id_two,
                         year_from: year_from,
                         year_to: year_to,
@@ -57,7 +56,7 @@
                       };
             if (wiki_id_one == '' || wiki_id_two == '') 
               { 
-                alert("Tem que preencher as input boxes")
+                alert("Seleccione uma Personalidade ou Partido")
               }
               else {
                 $.ajax({
@@ -295,15 +294,17 @@
             <br>
               <p>É possível explorar as relações através de um grafo interactivo filtrando:</p>
                 <ul>
-                    <li>n.º notícias com as relações entre 2 personalidades</li>
+                    <li>n.º notícias representando as relações entre 2 personalidades</li>
                     <li>tipo de relações: <b>oposição</b> ou <b>apoio</b></li>
-                    <li>o período temporal, um interval de anos</li>
+                    <li>um interval de anos onde surgem as notícias</li>
                 </ul>
 
               <p> Ao navegar no grafo:</p>
                 <ul>
                     <li>clique nos nós para ver a personalidade</li>
-                    <li>clique nas ligações entre nós para ver as notícias</li>
+                    <li>clique nos arcos entre nós para ver as notícias</li>
+                    <li>arcos a verde indicam relações de apoio</li>
+                    <li>arcos a vermelho indicam relações de oposição</li>
                 </ul>
           </div>
         </div>

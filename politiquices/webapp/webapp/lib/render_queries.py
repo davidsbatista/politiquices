@@ -345,9 +345,6 @@ def entity_vs_entity(wiki_id_one, wiki_id_two):
     """
     Get all the relationships between two persons, centered around entity
     """
-
-    print("I'm here muthafucka")
-
     person_one_info = get_person_info(wiki_id_one)
     person_two_info = get_person_info(wiki_id_two)
     results = get_all_relationships_between_two_entities(wiki_id_one, wiki_id_two)

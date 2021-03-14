@@ -151,7 +151,7 @@
             <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_person_opposes %}
-                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
+                <tr class='clickable-row' data-href=/versus?&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
                     <td class="underline-on-hover">{{item.name}}</td>
                     <td class="underline-on-hover">{{item.nr_articles}}</td>
                 </tr>
@@ -165,7 +165,7 @@
           <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_person_supports %}
-                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
+                <tr class='clickable-row' data-href=/versus?&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
                     <td class="underline-on-hover">{{item.name}}</td>
                     <td class="underline-on-hover">{{item.nr_articles}}</td>
                 </tr>
@@ -179,7 +179,7 @@
           <table style="overflow-y: scroll; display:block; height:500px;" class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_opposes_person %}
-                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
+                <tr class='clickable-row' data-href=/versus?&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
                     <td class="underline-on-hover">{{item.name}}</td>
                     <td class="underline-on-hover">{{item.nr_articles}}</td>
                 </tr>
@@ -194,7 +194,7 @@
                  class="table table-responsive-md table-hover">
               <tbody>
               {% for item in items.top_relations.who_supports_person %}
-                <tr class='clickable-row' data-href=/queries?query_nr=two&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
+                <tr class='clickable-row' data-href=/versus?&e1={{items.wiki_id}}&e2={{item.wiki_id}}>
                     <td class="underline-on-hover">{{item.name}}</td>
                     <td class="underline-on-hover">{{item.nr_articles}}</td>
                 </tr>
