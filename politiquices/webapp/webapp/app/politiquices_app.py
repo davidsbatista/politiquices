@@ -178,7 +178,6 @@ def queries():
     print(request.args)
 
     # which type of rendering ?
-    html = True if "html" in request.args else False
     annotate = True if "annotate" in request.args else False
 
     # time interval for the query
@@ -197,30 +196,15 @@ def queries():
     e2_info, e2_type = get_info(entity_two, all_entities_info, all_parties_info)
 
     if e1_type == "person" and e2_type == "person":
-
         data = person_vs_person(entity_one, entity_two, rel_text, year_from, year_to, annotate)
-
         if data is None:
             return render_template("no_results.html")
-
         if annotate:
             return render_template(
                 "query_person_person_annotate.html",
                 entity_one=e1_info,
                 entity_two=e2_info,
                 items=data['items'],
-            )
-
-        if html:
-            return render_template(
-                "query_person_person_full.html",
-                relationship_text=rel_text,
-                rel_text=rel_text,
-                relationships=data['relationships'],
-                person_one=e1_info,
-                person_two=e2_info,
-                labels=data['labels'],
-                rel_freq_year=data['rel_freq_year'],
             )
 
         return render_template(

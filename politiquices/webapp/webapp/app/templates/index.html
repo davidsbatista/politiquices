@@ -59,35 +59,10 @@
               }
             else {
               $('#loading').show();
-              var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}&html=True`
+              var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}`
               window.location.href = url
               console.log(url)
             }
-            /*
-            else {
-                $.ajax({
-                  type: 'get',
-                  data: data,
-                  url: '/queries',
-                  error: function () {
-                    alert("There was an error processing this page.");
-                    return false;
-                  },
-                  complete: function (output) {
-                    // bit dirty, if size of the returned HTML == 1, no results
-                    // otherwise present it's results
-                    var html = $(output.responseText);
-                    if (html.length == 1) {
-                        $('#inner').append(html);
-                    }
-                    else {
-                      var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}&html=True`
-                      window.location.href = url
-                    }    
-                  }
-                });
-              }
-              */
         });
 
         /* Dropdown for view that allows to correct/annotated relationships */

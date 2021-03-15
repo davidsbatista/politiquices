@@ -59,7 +59,7 @@
             }
           else {
             $('#loading').show();
-            var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}&html=True`
+            var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}`
             window.location.href = url
             console.log(url)
           }
@@ -81,7 +81,7 @@
                       $('#inner').append(html);
                   }
                   else {
-                    var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}&html=True`
+                    var url = `/queries?e1=${wiki_id_one}&e2=${wiki_id_two}&year_from=${year_from}&year_to=${year_to}&relationship=${data['relationship']}`
                     window.location.href = url
                   }    
                 }
