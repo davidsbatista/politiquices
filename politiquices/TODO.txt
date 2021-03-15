@@ -28,13 +28,6 @@ Web App
         José Adriano Machado Souto de Moura
         "oposto por" Mário Soares -> no results
 
-
-    - retirar o AJAX de tudo, ou arranjar maneira de navegar para frente e trás no site de forma coerente
-        - https://smallenvelop.com/display-loading-icon-page-loads-completely/
-        - https://stackoverflow.com/questions/37513071/ajax-back-button-functionality
-        - https://blog.webnersolutions.com/handling-browser-back-or-forward-button-clicks-for-ajax-content/
-
-
     - sparlq queries no index, abrir janela nova? adicionar 'todas' ?
         - verificar todas as possibilidades deste query
             https://www.politiquices.pt/queries?query_nr=one
