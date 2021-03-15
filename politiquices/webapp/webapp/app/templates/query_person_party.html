@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
+{% block title %}  {{person.name}} {{relationship_text}} {{party.party_label}} {% endblock %}
+
 {% block body %}
 
 <br>
 
-<div class="container" id="results">
+<div class="container">
 
     <!-- Info about the two entities -->
     <div class="row justify-content-center">
@@ -64,8 +66,7 @@
     <br><br>
 
     <!-- Char with relationships throughout the years -->
-    <center><h4><b>Frequência das relações ao longo dos anos</b></h4></center>
-    <br>
+    <center><h4><b>Frequência de Notícias</b></h4></center>
     <div class="container h-100">
       <div class="row h-100 justify-content-center align-items-center">
         <canvas id="myChart" width="900" height="250"></canvas>
@@ -110,13 +111,12 @@
     <br><br>
 
     <!--Heat with relationships/persons throughout the years -->
-    <center><h4><b>Frequência de outras personalidades nas relações ao longo dos anos</b></h4></center>
+    <center><h4><b>Personalidades</b></h4></center>
     <div id="chart"></div>
     <br><br>
 
     <!-- List of relationships -->
-    <center id="relationships"><h4><b>Relações expressas em títulos de notícias</b></h4></center>
-    <br><br>
+    <center><h4><b>Notícias</b></h4></center>
     <div class="container" id="single_table">
         <table id="table">
             <thead>

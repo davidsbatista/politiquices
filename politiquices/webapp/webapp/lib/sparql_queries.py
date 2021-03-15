@@ -2,7 +2,12 @@ import sys
 from collections import defaultdict
 
 from SPARQLWrapper import SPARQLWrapper, JSON
-from politiquices.webapp.webapp.lib.data_models import OfficePosition, Person, PoliticalParty
+
+from politiquices.webapp.webapp.lib.data_models import (
+    OfficePosition,
+    Person,
+    PoliticalParty
+)
 from politiquices.webapp.webapp.config import (
     live_wikidata,
     no_image,

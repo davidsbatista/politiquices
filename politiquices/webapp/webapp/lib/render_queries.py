@@ -94,10 +94,10 @@ def entity_full_story(wiki_id, annotate):
                            for k, v in person_as_target['who_supports_person'].items()]
 
     top_entities_in_rel_type = {
-        "who_person_opposes": who_person_opposes,
-        "who_person_supports": who_person_supports,
-        "who_opposes_person": who_opposes_person,
-        "who_supports_person": who_supports_person,
+        "who_person_opposes": sorted(who_person_opposes, key=lambda x: x['nr_articles'], reverse=True),
+        "who_person_supports": sorted(who_person_supports, key=lambda x: x['nr_articles'], reverse=True),
+        "who_opposes_person": sorted(who_opposes_person, key=lambda x: x['nr_articles'], reverse=True),
+        "who_supports_person": sorted(who_supports_person, key=lambda x: x['nr_articles'], reverse=True),
     }
 
     # get the data to create the graph
@@ -113,7 +113,7 @@ def entity_full_story(wiki_id, annotate):
         "occupations": person.occupations,
         "education": person.education,
 
-        # titles/articles frequency by relationships by year, for ChartJS
+        # ChartJS: titles/articles frequency by relationships by year
         "year_labels": chart_js_data["labels"],
         "opposed_freq": chart_js_data["opposed_freq"],
         "supported_freq": chart_js_data["supported_freq"],
@@ -123,7 +123,7 @@ def entity_full_story(wiki_id, annotate):
         # top-persons in each relationship
         "top_relations": top_entities_in_rel_type,
 
-        # relationships in json for bootstrap-table
+        # bootstrap-table: relationships in JSON
         'opposed': opposed_json,
         'supported': supported_json,
         'opposed_by': opposed_by_json,
