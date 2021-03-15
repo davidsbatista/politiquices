@@ -157,7 +157,6 @@ def entity_versus_entity():
         supported=data['supported'],
         opposed_by=data['opposed_by'],
         supported_by=data['supported_by'],
-        # ToDo: duplicate from above...very ugly
         all_relationships=data['all_relationships'],
 
         # persons information

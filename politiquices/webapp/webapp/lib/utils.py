@@ -101,6 +101,24 @@ def make_json(relationships):
     return json_data
 
 
+def make_single_json(relationship):
+    """
+    transform titles/relationships into a json, for bootstrap-table
+    """
+    link = f"<a href=\"{relationship['url']}\" target=\"_blank\" rel=\"noopener noreferrer\"> " \
+           f"<img src=\"{relationship['link_image']}\" width=\"{relationship['image_width']}\" " \
+           f"height=\"20\"></a>"
+
+    return {"data": relationship["date"],
+            "titulo": f"{relationship['title_clickable']}",
+            "link": link,
+            "url": relationship["url"],
+            'ent1': relationship['ent1_str'],
+            'ent2': relationship['ent2_str'],
+            'ent1_wiki': make_https(relationship['ent1_wiki']),
+            'ent2_wiki': make_https(relationship['ent2_wiki'])}
+
+
 def get_relationship(rel_text):
     opposes_gradient = '#E60001'
     supports_gradient = '#44861E'

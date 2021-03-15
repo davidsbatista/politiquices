@@ -123,22 +123,6 @@
             var url = $(this).data("href")
             console.log(url)
             window.location.href = url
-
-            /*
-            $.ajax({
-              type: 'get',
-              data: null,
-              url: url,
-              error: function () {
-                alert("There was an error processing this page.");
-                return false;
-              },
-              complete: function (output) {
-                $('#container').html(output.responseText);
-                $(document).scrollTop(0);
-              }
-            });
-            */
         });
 
     });
@@ -215,7 +199,7 @@
     <center id="relationships"><h4><b>Relações expressas em títulos de notícias</b></h4></center>
     <br>
     <div class="container">
-      <div class="row">
+      <div class="row justify-content-center">
         <div id="opposes" role="button" class="underline-on-hover font-weight-bold h4 col-sm">
           Opõe-se
         </div>

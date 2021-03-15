@@ -16,6 +16,9 @@ Web App
                3.1 uma rede geral
                3.2 a rede uma entidade em específico
 
+    - Fix/Review:
+        - sparql_queries.py -> get_person_relationships() -> big awful function
+
     - espaço entre filtro tempo + botão 'PROCURAR'
 
     - "Com quem se relaciona mais frequentemente?"
@@ -24,24 +27,9 @@ Web App
     - "Relações expressas em títulos de notícias"
         - fonte mais pequena para os sub-titulos
 
-    - BUG:
-        José Adriano Machado Souto de Moura
-        "oposto por" Mário Soares -> no results
-
-    - sparlq queries no index, abrir janela nova? adicionar 'todas' ?
-        - verificar todas as possibilidades deste query
-            https://www.politiquices.pt/queries?query_nr=one
-            $e1=Q21568721&e2=Q610788
-            &year_from=2000
-            &year_to=2019
-            &relationship=apoia -> dará para por todas aqui?
-            &html=true
-            &annotate
-
     - Quais as personalidades (importantes) na wikidata que não aparecem no politiquices.pt?
         - https://www.wikidata.org/wiki/Q52112309
         - https://www.wikidata.org/wiki/Q72310730
-
 
     - bootstrap-table javascript local
     - Datatables: final do base.html -> por tudo local

@@ -365,7 +365,7 @@ def get_nr_relationships_as_target(relationship: str):
     ]
 
 
-# Parties
+# Political Parties
 def get_persons_affiliated_with_party(political_party: str):
     query = f"""
         SELECT DISTINCT ?partyLabel ?political_party_logo ?person ?personLabel ?image_url {{
@@ -539,6 +539,7 @@ def get_person_detailed_info(wiki_id):
     return {"education": education, "occupation": occupations, "position": positions}
 
 
+# Person relationships
 def get_person_relationships(wiki_id):
     query = f"""
         SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
@@ -671,60 +672,64 @@ def get_person_relationships(wiki_id):
     return relations
 
 
-def get_top_relationships(wiki_id: str):
-    persons_ent1 = defaultdict(list)
+def get_top_relationships(wiki_id):
+    # get all the relationships where the person acts as subject, i.e: opposes and supports
     query = f"""
-        SELECT ?rel_type ?ent2 ?ent2_name (COUNT(?arquivo_doc) as ?nr_articles)
-        WHERE {{ 
-          ?rel politiquices:ent1 wd:{wiki_id}  .
-          ?rel politiquices:ent2 ?ent2 .
-          ?ent2 rdfs:label ?ent2_name .
-          ?rel politiquices:type ?rel_type .
-          ?rel politiquices:url ?arquivo_doc .
-          FILTER(?rel_type != "other")
-        }} GROUP BY ?rel_type ?ent2 ?ent2_name
-        ORDER BY ?rel_type DESC(?nr_articles)
-        """
-    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
-    for x in results["results"]["bindings"]:
-        persons_ent1[x["rel_type"]["value"]].append(
-            {
-                "wiki_id": x["ent2"]["value"].split("/")[-1],
-                "name": x["ent2_name"]["value"],
-                "nr_articles": int(x["nr_articles"]["value"]),
-            }
-        )
-
-    persons_ent2 = defaultdict(list)
-    query = f"""
-        SELECT ?rel_type ?ent1 ?ent1_name (COUNT(?arquivo_doc) as ?nr_articles)
-        WHERE {{ 
-          ?rel politiquices:ent1 ?ent1  .
-          ?ent1 rdfs:label ?ent1_name .
-          ?rel politiquices:ent2 wd:{wiki_id}  .
-          ?rel politiquices:type ?rel_type .
-          ?rel politiquices:url ?arquivo_doc .
-          FILTER(?rel_type != "other")
+        SELECT ?rel_type ?ent2
+        WHERE {{
+          {{
+            ?rel politiquices:ent1 wd:{wiki_id};
+                 politiquices:ent2 ?ent2;
+                 politiquices:type ?rel_type. 
+                 FILTER(REGEX((?rel_type), "^ent1_opposes|ent1_supports"))
+          }}
+          UNION
+          {{
+            ?rel politiquices:ent2 wd:{wiki_id};
+                 politiquices:ent1 ?ent2;
+                 politiquices:type ?rel_type. 
+                 FILTER(REGEX((?rel_type), "^ent2_opposes|ent2_supports"))
+          }}
         }}
-        GROUP BY ?rel_type ?ent1 ?ent1_name
-        ORDER BY ?rel_type DESC(?nr_articles)
         """
     results = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    person_as_subject = defaultdict(lambda: defaultdict(int))
     for x in results["results"]["bindings"]:
-        persons_ent2[x["rel_type"]["value"]].append(
-            {
-                "wiki_id": x["ent1"]["value"].split("/")[-1],
-                "name": x["ent1_name"]["value"],
-                "nr_articles": int(x["nr_articles"]["value"]),
-            }
-        )
+        other_person = x["ent2"]["value"].split("/")[-1]
+        if 'opposes' in x["rel_type"]["value"]:
+            person_as_subject['who_person_opposes'][other_person] += 1
+        if 'supports' in x["rel_type"]["value"]:
+            person_as_subject['who_person_supports'][other_person] += 1
 
-    return {
-        "who_person_opposes": persons_ent1["ent1_opposes_ent2"],
-        "who_person_supports": persons_ent1["ent1_supports_ent2"],
-        "who_opposes_person": persons_ent2["ent1_opposes_ent2"],
-        "who_supports_person": persons_ent2["ent1_supports_ent2"],
-    }
+    # get all the relationships where the person acts as target, i.e.: is opposed/supported by
+    query = f"""
+        SELECT ?rel_type ?ent2
+        WHERE {{
+          {{
+            ?rel politiquices:ent1 wd:{wiki_id};
+                 politiquices:ent2 ?ent2;
+                 politiquices:type ?rel_type. 
+                 FILTER(REGEX((?rel_type), "^ent2_opposes|ent2_supports"))
+          }} 
+          UNION
+          {{
+            ?rel politiquices:ent2 wd:{wiki_id};
+                 politiquices:ent1 ?ent2;
+                 politiquices:type ?rel_type. 
+                 FILTER(REGEX((?rel_type), "^ent1_opposes|ent1_supports"))
+          }}
+        }}
+        """
+    results = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    person_as_target = defaultdict(lambda: defaultdict(int))
+    for x in results["results"]["bindings"]:
+        other_person = x["ent2"]["value"].split("/")[-1]
+        if 'opposes' in x["rel_type"]["value"]:
+            person_as_target['who_opposes_person'][other_person] += 1
+        if 'supports' in x["rel_type"]["value"]:
+            person_as_target['who_supports_person'][other_person] += 1
+
+    return person_as_subject, person_as_target
 
 
 def get_person_relationships_by_year(wiki_id, rel_type, ent="ent1"):
@@ -758,6 +763,63 @@ def get_person_relationships_by_year(wiki_id, rel_type, ent="ent1"):
         year_articles[str(year)] = int(x["nr_articles"]["value"])
 
     return year_articles
+
+
+# Get relationships for 'Entity vs. Entity'
+def get_all_relationships_between_two_entities(wiki_id_one, wiki_id_two):
+    query = f"""
+        SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
+        WHERE {{               
+          {{
+              ?rel politiquices:ent1 wd:{wiki_id_one};
+                   politiquices:ent2 wd:{wiki_id_two};
+                   politiquices:ent1 ?ent1;
+                   politiquices:ent2 ?ent2;
+                   politiquices:ent1_str ?ent1_str;
+                   politiquices:ent2_str ?ent2_str;
+                   politiquices:score ?score;
+                   politiquices:url ?arquivo_doc; 
+                   politiquices:type ?rel_type. FILTER(!REGEX(?rel_type,"other"))
+
+              ?arquivo_doc dc:title ?title;
+                           dc:date  ?date .
+          }} UNION {{
+              ?rel politiquices:ent2 wd:{wiki_id_one};
+                   politiquices:ent1 wd:{wiki_id_two};       
+                   politiquices:ent2 ?ent2;
+                   politiquices:ent1 ?ent1;
+                   politiquices:ent2_str ?ent2_str;
+                   politiquices:ent1_str ?ent1_str;
+                   politiquices:score ?score;
+                   politiquices:url ?arquivo_doc;   
+                   politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other"))
+
+              ?arquivo_doc dc:title ?title;
+                           dc:date  ?date .
+             }}
+        }}
+        ORDER BY ASC(?date)
+        """
+
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    relationships = []
+    for x in result["results"]["bindings"]:
+
+        relationships.append(
+            {
+                "url": x["arquivo_doc"]["value"],
+                "date": x["date"]["value"],
+                "title": x["title"]["value"],
+                "rel_type": x["rel_type"]["value"],
+                "score": x["score"]["value"][0:5],
+                "ent1_wiki": x["ent1"]["value"].split("/")[-1],
+                "ent1_str": x["ent1_str"]["value"],
+                "ent2_wiki": x["ent2"]["value"].split("/")[-1],
+                "ent2_str": x["ent2_str"]["value"],
+            }
+        )
+
+    return relationships
 
 
 # Relationship Queries
@@ -1031,68 +1093,6 @@ def get_relationship_between_parties(per_party_a, per_party_b, rel_type, start_y
     return relationships
 
 
-def get_all_relationships_between_two_entities(wiki_id_one, wiki_id_two):
-    query = f"""
-        SELECT DISTINCT ?arquivo_doc ?date ?title ?rel_type ?score ?ent1 ?ent1_str ?ent2 ?ent2_str
-        WHERE {{               
-              
-              {{
-
-              ?rel politiquices:ent1 wd:{wiki_id_one};
-                   politiquices:ent2 wd:{wiki_id_two};
-                   politiquices:ent1 ?ent1;
-                   politiquices:ent2 ?ent2;
-                   politiquices:ent1_str ?ent1_str;
-                   politiquices:ent2_str ?ent2_str;
-                   politiquices:score ?score;
-                   politiquices:url ?arquivo_doc;
-                   politiquices:type ?rel_type . 
-                   FILTER(REGEX((?rel_type), "^ent1_opposes|ent1_supports"))
-
-              ?arquivo_doc dc:title ?title;
-                           dc:date  ?date .
-
-              }} UNION {{
-
-              ?rel politiquices:ent2 wd:{wiki_id_one};
-                   politiquices:ent1 wd:{wiki_id_two};       
-                   politiquices:ent2 ?ent2;
-                   politiquices:ent1 ?ent1;
-                   politiquices:ent2_str ?ent2_str;
-                   politiquices:ent1_str ?ent1_str;
-                   politiquices:score ?score;
-                   politiquices:url ?arquivo_doc;  
-                   politiquices:type ?rel_type . 
-                   FILTER(REGEX((?rel_type), "^ent2_opposes|ent2_supports"))                 
-
-              ?arquivo_doc dc:title ?title;
-                           dc:date  ?date .
-                }}
-        }}
-        ORDER BY ASC(?date)
-        """
-
-    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
-    relationships = []
-    for x in result["results"]["bindings"]:
-
-        relationships.append(
-            {
-                "url": x["arquivo_doc"]["value"],
-                "date": x["date"]["value"],
-                "title": x["title"]["value"],
-                "rel_type": x["rel_type"]["value"],
-                "score": x["score"]["value"][0:5],
-                "ent1_wiki": x["ent1"]["value"],
-                "ent1_str": x["ent1_str"]["value"],
-                "ent2_wiki": x["ent2"]["value"],
-                "ent2_str": x["ent2_str"]["value"],
-            }
-        )
-
-    return relationships
-
-
 # Other
 def get_entities_without_image():
     query = f"""
@@ -1156,6 +1156,8 @@ def get_relationships_to_annotate():
 
     return to_annotate
 
+
+# ToDo: all personalities without any news article
 
 def query_sparql(query, endpoint):
     if endpoint == "wikidata":
