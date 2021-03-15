@@ -6,8 +6,11 @@ Web App
 
     - Adicionar o Entity Versus Entity
     - share HTML code between index.html and no_result.html
+    - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
+    - erros de paramêtros nao válidos no URL, fazer redirect para o index.html com mensagem de erro
 
     - acabar o relatório
+
     - fazer o script para o video
 
             1. intro_ explicar o que é o projecto
@@ -64,7 +67,6 @@ Web App
     Geral (low)
     ----------
         - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
-        - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
         - party members: - load on scroll down ?
         - clicar no branco fazer collapse ao menu (hamburger)
         - cache + cópia do resize das imagens para este display

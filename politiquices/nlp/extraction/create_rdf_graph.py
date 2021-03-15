@@ -319,11 +319,24 @@ def process_gold(titles):
     persons = defaultdict(Person)
     relationships = []
     articles = []
+    urls_to_ignore = []
+
+    def normalize_url(original_url):
+        normalized_url = original_url
+        if 'www.publico.pt' in original_url and 'arquivo.pt' not in original_url:
+            normalized_url = entry['url'].replace('www.publico.pt', 'publico.pt')
+        if entry["url"].startswith('http://publico.pt'):
+            normalized_url = make_https(entry["url"])
+        return normalized_url
 
     for entry in titles:
 
         if entry["ent1_id"] == 'None' or entry["ent2_id"] == 'None':
             continue
+
+        if entry['label'] == 'other':
+            # add 'other' URLS be skipped if they appear in the extracted data
+            urls_to_ignore.append(normalize_url(entry['url']))
 
         # only index support/opposition relationships, discard all other types of rel_types
         if entry['label'] not in ['ent1_supports_ent2', 'ent2_supports_ent1',
@@ -336,6 +349,7 @@ def process_gold(titles):
         build_person(ent2_id, entry["ent2"], persons)
 
         # normalize all publico.pt URLs, to avoid duplicates
+        # ToDo: try replace by the function above
         new_url = entry['url']
         if 'www.publico.pt' in entry['url'] and 'arquivo.pt' not in entry['url']:
             entry['url'] = entry['url'].replace('www.publico.pt', 'publico.pt')
@@ -364,7 +378,7 @@ def process_gold(titles):
             )
         )
 
-    return articles, persons, relationships
+    return articles, persons, relationships, urls_to_ignore
 
 
 def populate_graph(articles, persons, relationships):
@@ -513,9 +527,10 @@ def main():
     if args.annotations:
         training_data = read_ground_truth("../../politiquices_training_data.tsv")
         training_data_webapp = read_ground_truth("../api_annotations/annotations_from_webapp.tsv")
-        articles_gold, gold_persons, rels_gold = process_gold(training_data+training_data_webapp)
+        all_data = training_data+training_data_webapp
+        articles_gold, gold_persons, rels_gold, urls_to_ignore = process_gold(all_data)
         print("ground truth : ", len(articles_gold))
-        gold_urls = [article.url for article in articles_gold]
+        gold_urls = [article.url for article in articles_gold] + urls_to_ignore
 
     if args.arquivo:
         # remove duplicates: keep only unique urls
