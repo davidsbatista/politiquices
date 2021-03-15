@@ -5,6 +5,7 @@
     - Relações são todas "opõe-se" / "apoia"
     - Não há texto nenhum em inglês
     - Não mixed content, i.e.: tudo em https://
+    - console.logs() e prints()
 
 - GitHub:
     - no training data

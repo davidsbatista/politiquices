@@ -4,7 +4,11 @@ Web App
     - Fix/Review:
         - sparql_queries.py -> get_person_relationships() -> big awful function
 
+    - Jerónimo opõe-se a Cavaco:
+        - aparece lixo pelo meio
+
     - Adicionar o Entity Versus Entity
+
 
     - acabar o relatório
     - fazer o script para o video

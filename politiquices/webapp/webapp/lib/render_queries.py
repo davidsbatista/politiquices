@@ -349,8 +349,6 @@ def person_vs_person(per_one, per_two, rel_text, start_year, end_year, annotate)
     for r in results:
         rel_freq_year[r["date"][0:4]] += 1
 
-    print(len(relationships_json))
-
     data = {
         'relationships': relationships_json,
         'relationship_text': rel_text,
