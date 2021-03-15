@@ -1,6 +1,11 @@
 Web App
 =======
 
+    - Fix/Review:
+        - sparql_queries.py -> get_person_relationships() -> big awful function
+
+    - Adicionar o Entity Versus Entity
+
     - acabar o relatório
     - fazer o script para o video
 
@@ -19,23 +24,15 @@ Web App
                3.1 uma rede geral
                3.2 a rede uma entidade em específico
 
-    - Fix/Review:
-        - sparql_queries.py -> get_person_relationships() -> big awful function
-
-    - "Com quem se relaciona mais frequentemente?"
-        - entity_info.html -> 133, mudar o link para query_person_person em vez de versus
-        - http://0.0.0.0:5000/entity?q=Q381029
-        - adaptar o número de linhas das tabelas conforme o número de resultados
-
     - espaço entre filtro tempo + botão 'PROCURAR'
 
     - Quais as personalidades (importantes) na wikidata que não aparecem no politiquices.pt?
         - https://www.wikidata.org/wiki/Q52112309
         - https://www.wikidata.org/wiki/Q72310730
 
-
-    - bootstrap-table javascript local
-    - Datatables: final do base.html -> por tudo local
+    JS tudo local:
+        - bootstrap-table javascript local
+        - Datatables: final do base.html -> por tudo local
 
     - Grafo:
         - arrastar um nó e parar, desligar a física

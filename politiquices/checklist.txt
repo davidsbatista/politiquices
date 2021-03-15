@@ -4,6 +4,7 @@
     - Apenas mostra pessoas que têm relações
     - Relações são todas "opõe-se" / "apoia"
     - Não há texto nenhum em inglês
+    - Não mixed content, i.e.: tudo em https://
 
 - GitHub:
     - no training data
