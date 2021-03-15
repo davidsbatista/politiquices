@@ -3,16 +3,19 @@ Web App
 
     - acabar o relatório
     - fazer o script para o video
+
             1. intro_ explicar o que é o projecto
                 - tirar frases chave do relatório
 
-            2. mostrar um exemplo com queries
+            2. mostrar os dados de uma personalidade individual
+
+            3. mostrar um exemplo com queries
                2.1 per vs per
                2.2 per vs party
                2.3 part vs. per
                2.4 party vs party
 
-            3. mostrar um exemplo de navegação no grafo
+            4. mostrar um exemplo de navegação no grafo
                3.1 uma rede geral
                3.2 a rede uma entidade em específico
 
@@ -20,12 +23,11 @@ Web App
         - sparql_queries.py -> get_person_relationships() -> big awful function
 
     - "Com quem se relaciona mais frequentemente?"
+        - entity_info.html -> 133, mudar o link para query_person_person em vez de versus
         - http://0.0.0.0:5000/entity?q=Q381029
         - adaptar o número de linhas das tabelas conforme o número de resultados
 
-
     - espaço entre filtro tempo + botão 'PROCURAR'
-
 
     - Quais as personalidades (importantes) na wikidata que não aparecem no politiquices.pt?
         - https://www.wikidata.org/wiki/Q52112309
@@ -39,7 +41,6 @@ Web App
         - arrastar um nó e parar, desligar a física
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - max_hops numa rede
-
 
     - Analytics de acessos
         - https://matomo.org/
