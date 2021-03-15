@@ -4,11 +4,8 @@ Web App
     - Fix/Review:
         - sparql_queries.py -> get_person_relationships() -> big awful function
 
-    - Jerónimo opõe-se a Cavaco:
-        - aparece lixo pelo meio
-
     - Adicionar o Entity Versus Entity
-
+    - share HTML code between index.html and no_result.html
 
     - acabar o relatório
     - fazer o script para o video
@@ -63,9 +60,6 @@ Web App
 
         - 'Álvaro Almeida' != Álvaro Augusto Matos Almeida
             - http://0.0.0.0:5000/entity?q=Q10395752
-
-
-
 
     Geral (low)
     ----------
