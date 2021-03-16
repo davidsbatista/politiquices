@@ -128,9 +128,10 @@
                   return false;
                 },
                 complete: function (output) {
-                  $(window).off();    // remove $('#auto-scroll') if in 'Personalidades' page
+                  $(window).off(); // disable $('#auto-scroll') it's activated in 'Personalidades' page
                   $('#container').empty();
                   $('#container').html(output.responseText);
+                  $('html, body').animate({ scrollTop: 0 }, 'slow');
                 }
               });
 

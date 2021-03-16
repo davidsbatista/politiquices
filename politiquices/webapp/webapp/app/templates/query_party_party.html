@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}  {{party_one.party_label}} {{relationship_text}} {{party_two.party_label}} {% endblock %}
+{% block title %} {{party_one.party_label}} {{relationship_text}} {{party_two.party_label}} {% endblock %}
 
 {% block body %}
 
 <br>
 
-<div class="container">
+<div class="container" id="container">
 
     <!-- Info about the two entities -->
     <div class="row justify-content-center">
@@ -60,27 +60,20 @@
 
         var year_labels = {{ labels|tojson }};
         var rel_freq = {{ rel_freq_year|tojson }};
-        var rel_text = {{ relationship_text|tojson }};
+        var relationship_text = {{ relationship_text|tojson }};
+        var rel_color = {{ relationship_color|tojson }};
 
         // labels based on personalities names
         var ent1 = {{ party_one.party_label|tojson }};
         var ent2 = {{ party_two.party_label|tojson }};
-        var label = `${ent1} ${rel_text} ${ent2}`
-
-        if (rel_text == 'apoia') {
-            var color = "#44861E";
-        }
-
-        if (rel_text == 'opõe-se') {
-            var color = "#FF0000";
-        }
+        var label = `${ent1} ${relationship_text} ${ent2}`
 
         var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: year_labels,
           datasets: [
-            {label: label, backgroundColor: color, fill: true, data: rel_freq},
+            {label: label, backgroundColor: rel_color, fill: true, data: rel_freq},
             ]
           },
         options: {

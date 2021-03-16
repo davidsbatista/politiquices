@@ -119,12 +119,17 @@ def make_single_json(relationship):
             'ent2_wiki': make_https(relationship['ent2_wiki'])}
 
 
-def get_relationship(rel_text):
+def get_relationship(relationship):
     opposes_gradient = '#E60001'
     supports_gradient = '#44861E'
-    if rel_text == "opõe-se":
-        return opposes_gradient, "ent1_opposes_ent2"
-    return supports_gradient, "ent1_supports_ent2"
+
+    if relationship == "opposes":
+        return opposes_gradient, "ent1_opposes_ent2", "opõe-se a"
+
+    if relationship == "supports":
+        return supports_gradient, "ent1_supports_ent2", "apoia"
+
+    raise Exception("this should not happen")
 
 
 def invert_relationship(rel_type):
@@ -135,6 +140,7 @@ def invert_relationship(rel_type):
         rel_type_inverted = "ent1_" + rel_only + "_ent2"
     else:
         raise Exception("this should not happen")
+
     return rel_type_inverted
 
 

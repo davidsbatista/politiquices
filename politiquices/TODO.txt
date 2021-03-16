@@ -1,13 +1,18 @@
 Web App
 =======
 
-    - Fix/Review:
-        - sparql_queries.py -> get_person_relationships() -> big awful function
+	- estatísticas: label "mostrar" / "esconder"
+
+    - ao carregar o index.html: limpar as input boxes
+    - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
+
+    - erros de paramêtros nao válidos no URL:
+        - queries/ tem que ter duas entidades validas
+        - fazer redirect para o index.html com mensagem de erro
 
     - Adicionar o Entity Versus Entity
-    - share HTML code between index.html and no_result.html
+
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
-    - erros de paramêtros nao válidos no URL, fazer redirect para o index.html com mensagem de erro
 
     - acabar o relatório
 
@@ -34,14 +39,14 @@ Web App
         - https://www.wikidata.org/wiki/Q52112309
         - https://www.wikidata.org/wiki/Q72310730
 
-    JS tudo local:
+    - JS libs todas locais
         - bootstrap-table javascript local
         - Datatables: final do base.html -> por tudo local
 
     - Grafo:
         - arrastar um nó e parar, desligar a física
-        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
         - max_hops numa rede
+        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
     - Analytics de acessos
         - https://matomo.org/
@@ -50,9 +55,7 @@ Web App
 
     - HTML:
         - Limpar o Javascript: re-utilizar
-        - libs todas locais
         - CSS todo fora do HTML
-
 
 
     entity_linking
@@ -83,7 +86,6 @@ Web App
 
         DevOps:
         -------
-            - backup dos certificados HTTPS
             - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
             - Wrap everything in docker, it's reproducible ?
 

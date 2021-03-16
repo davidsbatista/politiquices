@@ -1,12 +1,12 @@
 {% extends 'base.html' %}
 
-{% block title %}  {{person.name}} {{relationship_text}} {{party.party_label}} {% endblock %}
+{% block title %} {{person.name}} {{relationship_text}} {{party.party_label}} {% endblock %}
 
 {% block body %}
 
 <br>
 
-<div class="container">
+<div class="container" id="container">
 
     <!-- Info about the two entities -->
     <div class="row justify-content-center">
@@ -78,20 +78,14 @@
 
         var year_labels = {{ labels|tojson }};
         var rel_freq = {{ rel_freq_year|tojson }};
-        var rel_text = {{ rel_text|tojson }};
+        var relationship_text = {{ relationship_text|tojson }};
+        var rel_type = {{ rel_type|tojson }};
+        var rel_color = {{ relationship_color|tojson }};
 
         // labels based on personalities names
         var ent1 = {{ person.name|tojson }};
         var ent2 = {{ party.party_label|tojson }};
-        var label = `${ent1} ${rel_text} ${ent2}`
-
-        if (rel_text == 'apoia') {
-            var rel_color = "#44861E";
-        }
-
-        if (rel_text == 'opõe-se') {
-            var rel_color = "#FF0000";
-        }
+        var label = `${ent1} ${relationship_text} ${ent2}`
 
         var myChart = new Chart(ctx, {
         type: 'bar',
@@ -168,7 +162,7 @@
 <script src="static/vendor/apexcharts.js"></script>
 <script>
     var heatmap = {{ heatmap|tojson }};
-    var heatmap_gradient = {{ heatmap_gradient|tojson }};
+    var heatmap_gradient = {{ relationship_color|tojson }};
     var heatmap_height = {{ heatmap_height|tojson }};
     var ent1_wiki_id = {{ person.wiki_id|tojson }};
     var options = {
@@ -181,34 +175,8 @@
                 var person = heatmap[config['seriesIndex']]['name'];
                 var year = config['dataPointIndex']+1994;
                 var ent2_wiki_id = persons2wiki_id[person];
-
-                // make an AJAX request
-                var data = {
-                    e1: ent1_wiki_id,
-                    e2: ent2_wiki_id,
-                    year: year,
-                    relationship: rel_text
-                };
-                var url = `/queries?e1=${ent1_wiki_id}&e2=${ent2_wiki_id}&year=${year}&relationship=${data['relationship']}`
-                console.log(url)
+                var url = `/queries?e1=${ent1_wiki_id}&e2=${ent2_wiki_id}&year=${year}&relationship=${rel_type}`
                 window.location.href = url
-
-                /*
-                $.ajax({
-                    type: 'get',
-                    data: data,
-                    url: '/queries',
-                    error: function () {
-                        alert("There was an error processing this page.");
-                        return false;
-                    },
-                    complete: function (output) {
-                        $('#container').empty();
-                        $('#container').html(output.responseText);
-                    }
-                });
-                */
-
             }
         }
       },

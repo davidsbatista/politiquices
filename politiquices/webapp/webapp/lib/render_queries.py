@@ -1,4 +1,5 @@
 from collections import Counter, defaultdict
+from functools import lru_cache
 
 from politiquices.webapp.webapp.lib.cache import (
     all_entities_info,
@@ -209,19 +210,19 @@ def get_party_members(wiki_id):
 
 
 # SPARQL database queries
-def party_vs_party(party_a, party_b, rel_text, start_year, end_year):
+def party_vs_party(party_a, party_b, relationship, start_year, end_year):
     """
     Given two parties, looks for relationships between members of both parties, performing
     a kind of cartesian product operation.
     """
 
     # get the members for each party
-    party_a_per = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
-    party_b_per = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
+    party_a = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_a)])
+    party_b = " ".join(["wd:" + x for x in get_wiki_id_affiliated_with_party(party_b)])
 
     # query the RDF and get the relationships
-    _, rel = get_relationship(rel_text)
-    results = get_relationship_between_parties(party_a_per, party_b_per, rel, start_year, end_year)
+    rel_color, rel_type, rel_text = get_relationship(relationship)
+    results = get_relationship_between_parties(party_a, party_b, rel_type, start_year, end_year)
 
     if len(results) == 0:
         return None
@@ -237,16 +238,18 @@ def party_vs_party(party_a, party_b, rel_text, start_year, end_year):
 
     return {'relationships_json': relationships_json,
             'rel_freq_year': [rel_freq_year[year] for year in rel_freq_year.keys()],
+            'relationship_text': rel_text,
+            'relationship_color': rel_color,
             'labels': get_chart_labels_min_max()}
 
 
-def person_vs_party(person_wiki_id, party_wiki_id, rel_text, start_year, end_year):
+def person_vs_party(person_wiki_id, party_wiki_id, relationship, start_year, end_year):
     """
     Relationships between an entity and (members of) a party
     """
-    gradient, rel = get_relationship(rel_text)
+    rel_color, rel_type, rel_text = get_relationship(relationship)
     results = get_relationship_between_person_and_party(
-        person_wiki_id, party_wiki_id, rel, start_year, end_year
+        person_wiki_id, party_wiki_id, rel_type, start_year, end_year
     )
     if len(results) == 0:
         return None
@@ -277,20 +280,21 @@ def person_vs_party(person_wiki_id, party_wiki_id, rel_text, start_year, end_yea
 
     return {
         'relationships_json': relationships_json,
-        'rel_freq_year':  [rel_freq_year[year] for year in rel_freq_year.keys()],
         'labels': get_chart_labels_min_max(),
+        'rel_freq_year': [rel_freq_year[year] for year in rel_freq_year.keys()],
+        'relationship_text': rel_text,
+        'relationship_color': rel_color,
         'heatmap': sorted_heatmap,
-        'heatmap_gradient': gradient,
         'heatmap_height': heatmap_height}
 
 
-def party_vs_person(party_wiki_id, per_wiki_id, rel_text, start_year, end_year):
+def party_vs_person(party_wiki_id, per_wiki_id, relationship, start_year, end_year):
     """
     relationships between (members of) a party and an entity
     """
-    gradient, rel = get_relationship(rel_text)
+    rel_color, rel_type, rel_text = get_relationship(relationship)
     results = get_relationship_between_party_and_person(
-        party_wiki_id, per_wiki_id, rel, start_year, end_year
+        party_wiki_id, per_wiki_id, rel_type, start_year, end_year
     )
     if len(results) == 0:
         return None
@@ -321,16 +325,17 @@ def party_vs_person(party_wiki_id, per_wiki_id, rel_text, start_year, end_year):
 
     return {
         'relationships_json': relationships_json,
-        'rel_freq_year': [rel_freq_year[year] for year in rel_freq_year.keys()],
         'labels': get_chart_labels_min_max(),
+        'rel_freq_year': [rel_freq_year[year] for year in rel_freq_year.keys()],
+        'relationship_text': rel_text,
+        'relationship_color': rel_color,
         'heatmap': sorted_heatmap,
-        'heatmap_gradient': gradient,
         'heatmap_height': heatmap_height}
 
 
-def person_vs_person(per_one, per_two, rel_text, start_year, end_year, annotate):
-    _, rel = get_relationship(rel_text)
-    results = get_relationship_between_two_persons(per_one, per_two, rel, start_year, end_year)
+def person_vs_person(per_one, per_two, relationship, start_year, end_year, annotate):
+    rel_color, rel_type, rel_text = get_relationship(relationship)
+    results = get_relationship_between_two_persons(per_one, per_two, rel_type, start_year, end_year)
 
     if len(results) == 0:
         return None
@@ -352,9 +357,9 @@ def person_vs_person(per_one, per_two, rel_text, start_year, end_year, annotate)
     data = {
         'relationships': relationships_json,
         'relationship_text': rel_text,
-        'labels': get_chart_labels_min_max(),
+        'relationship_color': rel_color,
         'rel_freq_year': [rel_freq_year[year] for year in rel_freq_year.keys()],
-        'rel_text': rel_text
+        'labels': get_chart_labels_min_max(),
     }
 
     return data
@@ -451,6 +456,7 @@ def entity_vs_entity(wiki_id_one, wiki_id_two):
 
 
 # data statistics
+@lru_cache
 def get_stats():
 
     # number of persons, parties, articles

@@ -61,7 +61,7 @@ def detail_entity():
         return render_template("entity_annotate.html", items=data)
 
     # decide which template to use
-    template = "entity_info.html" if from_search else "entity.html"
+    template = "entity_content.html" if from_search else "entity.html"
 
     return render_template(
         template,
@@ -175,6 +175,12 @@ def entity_versus_entity():
 @app.route("/queries")
 def queries():
     print(request.args)
+    # entity and relationship args
+    entity_one = request.args.get("e1")
+    entity_two = request.args.get("e2")
+
+    if not entity_one or not entity_two:
+        return render_template("index.html")
 
     # which type of rendering ?
     annotate = True if "annotate" in request.args else False
@@ -187,17 +193,16 @@ def queries():
         year_from = year
         year_to = year
 
-    # entity and relationship args
-    entity_one = request.args.get("e1")
-    entity_two = request.args.get("e2")
-    rel_text = request.args.get("relationship")
+    rel_type = request.args.get("relationship")
     e1_info, e1_type = get_info(entity_one, all_entities_info, all_parties_info)
     e2_info, e2_type = get_info(entity_two, all_entities_info, all_parties_info)
 
     if e1_type == "person" and e2_type == "person":
-        data = person_vs_person(entity_one, entity_two, rel_text, year_from, year_to, annotate)
+        data = person_vs_person(entity_one, entity_two, rel_type, year_from, year_to, annotate)
+
         if data is None:
             return render_template("no_results.html")
+
         if annotate:
             return render_template(
                 "query_person_person_annotate.html",
@@ -208,8 +213,8 @@ def queries():
 
         return render_template(
             "query_person_person.html",
-            relationship_text=rel_text,
-            rel_text=rel_text,
+            relationship_text=data['relationship_text'],
+            relationship_color=data['relationship_color'],
             relationships=data['relationships'],
             person_one=e1_info,
             person_two=e2_info,
@@ -218,48 +223,55 @@ def queries():
         )
 
     elif e1_type == "party" and e2_type == "person":
-        data = party_vs_person(entity_one, entity_two, rel_text, year_from, year_to)
+        data = party_vs_person(entity_one, entity_two, rel_type, year_from, year_to)
+
         if data is None:
             return render_template("no_results.html")
+
         return render_template(
             "query_party_person.html",
-            relationship_text=rel_text,
-            relationships=data['relationships_json'],
             party=e1_info,
             person=e2_info,
+            relationships=data['relationships_json'],
+            relationship_text=data['relationship_text'],
             labels=data['labels'],
             rel_freq_year=data['rel_freq_year'],
-            rel_text=rel_text,
+            rel_type=rel_type,
             heatmap=data['heatmap'],
-            heatmap_gradient=data['heatmap_gradient'],
-            heatmap_height=data['heatmap_height']
+            heatmap_height=data['heatmap_height'],
+            relationship_color=data['relationship_color']
         )
 
     elif e1_type == "person" and e2_type == "party":
-        data = person_vs_party(entity_one, entity_two, rel_text, year_from, year_to)
+        data = person_vs_party(entity_one, entity_two, rel_type, year_from, year_to)
+
         if data is None:
             return render_template("no_results.html")
+
         return render_template(
             "query_person_party.html",
-            relationship_text=rel_text,
-            relationships=data['relationships_json'],
             person=e1_info,
             party=e2_info,
+            relationships=data['relationships_json'],
+            relationship_text=data['relationship_text'],
             labels=data['labels'],
             rel_freq_year=data['rel_freq_year'],
-            rel_text=rel_text,
+            rel_type=rel_type,
             heatmap=data['heatmap'],
-            heatmap_gradient=data['heatmap_gradient'],
-            heatmap_height=data['heatmap_height']
+            heatmap_height=data['heatmap_height'],
+            relationship_color=data['relationship_color']
         )
 
     elif e1_type == "party" and e2_type == "party":
-        data = party_vs_party(entity_one, entity_two, rel_text, year_from, year_to)
+        data = party_vs_party(entity_one, entity_two, rel_type, year_from, year_to)
+
         if data is None:
             return render_template("no_results.html")
+
         return render_template(
             "query_party_party.html",
-            relationship_text=rel_text,
+            relationship_text=data['relationship_text'],
+            relationship_color=data['relationship_color'],
             relationships=data['relationships_json'],
             party_one=e1_info,
             party_two=e2_info,
