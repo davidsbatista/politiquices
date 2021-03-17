@@ -41,7 +41,6 @@ from politiquices.webapp.webapp.lib.utils import (
 
 # entity full story
 def entity_full_story(wiki_id, annotate):
-
     # get the person info: name, image, education, office positions, etc.
     person = get_person_info(wiki_id)
 
@@ -82,23 +81,36 @@ def entity_full_story(wiki_id, annotate):
     # get the top-related entities
     person_as_subject, person_as_target = get_top_relationships(wiki_id)
 
-    who_person_opposes = [{'wiki_id': k, 'nr_articles': v, 'name': wiki_id_info[k]['name']}
+    def get_name(e_wiki_id):
+        if name := wiki_id_info[e_wiki_id].get('shorter_name', None):
+            return name
+        return wiki_id_info[e_wiki_id]['name']
+
+    who_person_opposes = [{'wiki_id': k, 'nr_articles': v,
+                           'name': get_name(k)}
                           for k, v in person_as_subject['who_person_opposes'].items()]
 
-    who_person_supports = [{'wiki_id': k, 'nr_articles': v, 'name': wiki_id_info[k]['name']}
+    who_person_supports = [{'wiki_id': k, 'nr_articles': v,
+                            'name': get_name(k)}
                            for k, v in person_as_subject['who_person_supports'].items()]
 
-    who_opposes_person = [{'wiki_id': k, 'nr_articles': v, 'name': wiki_id_info[k]['name']}
+    who_opposes_person = [{'wiki_id': k, 'nr_articles': v,
+                           'name': get_name(k)}
                           for k, v in person_as_target['who_opposes_person'].items()]
 
-    who_supports_person = [{'wiki_id': k, 'nr_articles': v, 'name': wiki_id_info[k]['name']}
+    who_supports_person = [{'wiki_id': k, 'nr_articles': v,
+                            'name': get_name(k)}
                            for k, v in person_as_target['who_supports_person'].items()]
 
     top_entities_in_rel_type = {
-        "who_person_opposes": sorted(who_person_opposes, key=lambda x: x['nr_articles'], reverse=True),
-        "who_person_supports": sorted(who_person_supports, key=lambda x: x['nr_articles'], reverse=True),
-        "who_opposes_person": sorted(who_opposes_person, key=lambda x: x['nr_articles'], reverse=True),
-        "who_supports_person": sorted(who_supports_person, key=lambda x: x['nr_articles'], reverse=True),
+        "who_person_opposes": sorted(who_person_opposes, key=lambda x: x['nr_articles'],
+                                     reverse=True),
+        "who_person_supports": sorted(who_person_supports, key=lambda x: x['nr_articles'],
+                                      reverse=True),
+        "who_opposes_person": sorted(who_opposes_person, key=lambda x: x['nr_articles'],
+                                     reverse=True),
+        "who_supports_person": sorted(who_supports_person, key=lambda x: x['nr_articles'],
+                                      reverse=True),
     }
 
     # get the data to create the graph
@@ -149,8 +161,10 @@ def build_relationships_by_year(wiki_id: str):
     opposed_freq = {k: opposed_freq_sum[k] for k in sorted(opposed_freq_sum)}
 
     # supported_by
-    supported_by_freq_one = get_person_relationships_by_year(wiki_id, "ent2_supports_ent1", ent="ent1")
-    supported_by_freq_two = get_person_relationships_by_year(wiki_id, "ent1_supports_ent2", ent="ent2")
+    supported_by_freq_one = get_person_relationships_by_year(wiki_id, "ent2_supports_ent1",
+                                                             ent="ent1")
+    supported_by_freq_two = get_person_relationships_by_year(wiki_id, "ent1_supports_ent2",
+                                                             ent="ent2")
     supported_by_freq_sum = Counter(supported_by_freq_one) + Counter(supported_by_freq_two)
     supported_by_freq = {k: supported_by_freq_sum[k] for k in sorted(supported_by_freq_sum)}
 
@@ -458,7 +472,6 @@ def entity_vs_entity(wiki_id_one, wiki_id_two):
 # data statistics
 @lru_cache
 def get_stats():
-
     # number of persons, parties, articles
     nr_persons = get_nr_of_persons()
     nr_parties = len(all_parties_info)

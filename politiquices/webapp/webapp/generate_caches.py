@@ -52,6 +52,9 @@ def personalities_json_cache():
     with open(static_data + "all_entities_info.json", "w") as f_out:
         json.dump(per_data, f_out, indent=4)
 
+    with open("webapp/shorter_names_mapping.json", "r") as f_out:
+        shorter_names = json.loads(f_out.read())
+
     # persons.json - cache for search box
     persons = [{"name": x["name"], "wiki_id": x["wiki_id"]}
                for x in sorted(per_data, key=lambda x: x["name"])]
@@ -59,14 +62,17 @@ def personalities_json_cache():
         json.dump(persons, f_out, indent=True)
 
     # 'wiki_id_info.json'
-    wiki_id = {
-        x["wiki_id"]: {
+    wiki_id = {}
+    for x in per_data:
+        wiki_id[x["wiki_id"]] = {
             "name": x["name"],
             "image_url": x["image_url"],
             "nr_articles": x["nr_articles"],
         }
-        for x in per_data
-    }
+        shorter_name = shorter_names.get(x["wiki_id"], None)
+        if shorter_name:
+            wiki_id[x["wiki_id"]].update({"shorter_name": shorter_name})
+
     with open(static_data + "wiki_id_info.json", "w") as f_out:
         json.dump(wiki_id, f_out, indent=4)
 

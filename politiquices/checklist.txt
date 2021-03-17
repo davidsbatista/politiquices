@@ -1,8 +1,8 @@
 
 - Site:
     - Não há 'other' relationships em lado nenhum
-    - Apenas mostra pessoas que têm relações
-    - Relações são todas "opõe-se" / "apoia"
+    - Apenas mostrar pessoas que têm relações
+    - "opõe-se a", "apoia", "oposto por", "apoiado por" -> normalizar em todo o lado
     - Não há texto nenhum em inglês
     - Não mixed content, i.e.: tudo em https://
     - console.logs() e prints()

@@ -1,26 +1,36 @@
 Web App
 =======
-	
-	- Perguntas como "Com quem se relaciona mais frequentemente?" também dão bastante trabalho a processar. Fica mais fácil se for "Relações"
-
-	- - Verbo "opõe-se" não tem uma leitura imediata. Demorei um bocado a perceber o o que era. Se calhar substituia por  "Oposto a". Assim fica "Oposto a", "Oposto por", "Apoia", "Apoiado por".
-	
-	"oposto a", "oposto por", "apoia", "apoiado por" -> normalizar em todo o lado
-
 
     - TODO: encurtar nomes com mais de 2 ou 3 nomes
+
+    all duplicates, where from?
+    - http://0.0.0.0:5000/entity?q=Q9604772
+
+    corrigir:
+        http://0.0.0.0:5000/queries?&e1=Q182367&e2=Q9594142&relationship=opposes&year_from=1994&year_to=2019
+        http://0.0.0.0:5000/entity?q=Q65164957
+
+
+
+    - Personalidade:
+        Mostrar apenas o que é relevante nas relações
+            http://0.0.0.0:5000/entity?q=Q182367
+            http://0.0.0.0:5000/entity?q=Q91901804
+            http://0.0.0.0:5000/entity?q=Q23797153
+
+
 	- estatísticas: label "mostrar" / "esconder"
-    - ao carregar o index.html: limpar as input boxes
+
+    - ao carregar o index.html:
+        limpar as input boxes
     - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
+
     - erros de paramêtros nao válidos no URL:
         - queries/ tem que ter duas entidades validas
         - fazer redirect para o index.html com mensagem de erro
 
     - Adicionar o Entity Versus Entity
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
-
-    Vi uma estranha..o Donald trump tinha ligação ao Miguel poiares maduro, mas depois ao clicar
-    na notícia era o maduro da Venezuela 🙂
 
     - acabar o relatório
 

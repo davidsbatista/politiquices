@@ -1140,7 +1140,7 @@ def get_relationships_to_annotate():
           FILTER(REGEX(?rel_type,"other")).
         }
         ORDER BY ?date ?score
-        LIMIT 1000
+        LIMIT 5000
     """
     result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     to_annotate = []
