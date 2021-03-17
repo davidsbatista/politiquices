@@ -150,6 +150,11 @@
     var nodes = new vis.DataSet(nodes_lst)
     var edges = new vis.DataSet(edges_lst)
 
+    var rel_type_map = {
+        "opõe-se": "opposes",
+        "apoia": "supports",
+    };
+
     $(function() {
         $( "#slider_graph" ).slider({
             range: true,
@@ -315,6 +320,7 @@
         else if (node == null && edge != null) {          
           var edge_id = edge
           var rel_text = network.body.edges[edge_id].options.title;
+          var rel_type = rel_type_map[rel_text]
           var freq = network.body.edges[edge_id].options.value
           var from = network.body.edges[edge_id]["fromId"]
           var to = network.body.edges[edge_id]["toId"]
@@ -323,7 +329,7 @@
           var hostname = window.location.origin
           var year_from = $("#ano_from").text();
           var year_to = $("#ano_to").text();
-          var url = `${hostname}/queries?&e1=${from}&e2=${to}&year_from=${year_from}&year_to=${year_to}&relationship=${rel_text}`
+          var url = `${hostname}/queries?&e1=${from}&e2=${to}&year_from=${year_from}&year_to=${year_to}&relationship=${rel_type}`
           var noticias_html = `<a href=${url} target="_blank">${freq} notícias</a>`
           var e1_url = `${hostname}/entity?q=${from}`
           var e1_html = `<a href=${e1_url} target="_blank">${from_name}</a>`
@@ -494,7 +500,10 @@
                   // clicked an Edge
                   else if (node == null && edge != null) {          
                     var edge_id = edge
+
                     var rel_text = network.body.edges[edge_id].options.title;
+                    var rel_type = rel_type_map[rel_text]
+
                     var freq = network.body.edges[edge_id].options.value
                     var from = network.body.edges[edge_id]["fromId"]
                     var to = network.body.edges[edge_id]["toId"]
@@ -503,7 +512,7 @@
                     var hostname = window.location.origin
                     var year_from = $("#ano_from").text();
                     var year_to = $("#ano_to").text();
-                    var url = `${hostname}/queries?&e1=${from}&e2=${to}&year_from=${year_from}&year_to=${year_to}&relationship=${rel_text}`
+                    var url = `${hostname}/queries?&e1=${from}&e2=${to}&year_from=${year_from}&year_to=${year_to}&relationship=${rel_type}`
                     var noticias_html = `<a href=${url} target="_blank">${freq} notícias</a>`
                     var e1_url = `${hostname}/entity?q=${from}`
                     var e1_html = `<a href=${e1_url} target="_blank">${from_name}</a>`

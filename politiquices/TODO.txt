@@ -1,5 +1,12 @@
 Web App
 =======
+	
+	- Perguntas como "Com quem se relaciona mais frequentemente?" também dão bastante trabalho a processar. Fica mais fácil se for "Relações"
+
+	- - Verbo "opõe-se" não tem uma leitura imediata. Demorei um bocado a perceber o o que era. Se calhar substituia por  "Oposto a". Assim fica "Oposto a", "Oposto por", "Apoia", "Apoiado por".
+	
+	"oposto a", "oposto por", "apoia", "apoiado por" -> normalizar em todo o lado
+
 
     - TODO: encurtar nomes com mais de 2 ou 3 nomes
 	- estatísticas: label "mostrar" / "esconder"
