@@ -2,15 +2,20 @@ Web App
 =======
 
     - TODO: encurtar nomes com mais de 2 ou 3 nomes
+    - gerar nova wikidata com Nicolas Maduro, há mais ?
+
+    - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
+        https://stackoverflow.com/questions/33323400/ajax-get-is-getting-called-twice-in-endless-scroll
 
     all duplicates, where from?
     - http://0.0.0.0:5000/entity?q=Q9604772
 
     corrigir:
-        http://0.0.0.0:5000/queries?&e1=Q182367&e2=Q9594142&relationship=opposes&year_from=1994&year_to=2019
         http://0.0.0.0:5000/entity?q=Q65164957
+            -> should be this one instead https://www.wikidata.org/wiki/Q2643773
 
-
+        http://0.0.0.0:5000/queries?&e1=Q182367&e2=Q9594142&relationship=opposes&year_from=1994&year_to=2019
+            -> https://www.wikidata.org/wiki/Q10308719
 
     - Personalidade:
         Mostrar apenas o que é relevante nas relações
@@ -18,11 +23,11 @@ Web App
             http://0.0.0.0:5000/entity?q=Q91901804
             http://0.0.0.0:5000/entity?q=Q23797153
 
-
 	- estatísticas: label "mostrar" / "esconder"
 
     - ao carregar o index.html:
         limpar as input boxes
+
     - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
 
     - erros de paramêtros nao válidos no URL:
@@ -33,6 +38,7 @@ Web App
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
 
     - acabar o relatório
+
 
     - fazer o script para o video
 
@@ -87,7 +93,6 @@ Web App
 
     Geral (low)
     ----------
-        - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
         - party members: - load on scroll down ?
         - clicar no branco fazer collapse ao menu (hamburger)
         - cache + cópia do resize das imagens para este display

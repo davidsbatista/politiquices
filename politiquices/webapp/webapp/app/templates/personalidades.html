@@ -12,8 +12,10 @@
     var last_index = batch_size
 
     $(window).scroll(function () {
+        console.log("ajax call to load more")
+
         // End of the document reached?
-        if ($(document).height() - $(this).height() - 100 < $(this).scrollTop()) {
+        if ($(document).height() - $(this).height() - 200 < $(this).scrollTop()) {
             $.ajax({
                 type: "GET",
                 url: "/load_entities",
