@@ -1,18 +1,19 @@
 Web App
 =======
 
+    - TODO: encurtar nomes com mais de 2 ou 3 nomes
 	- estatísticas: label "mostrar" / "esconder"
-
     - ao carregar o index.html: limpar as input boxes
     - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
-
     - erros de paramêtros nao válidos no URL:
         - queries/ tem que ter duas entidades validas
         - fazer redirect para o index.html com mensagem de erro
 
     - Adicionar o Entity Versus Entity
-
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
+
+    Vi uma estranha..o Donald trump tinha ligação ao Miguel poiares maduro, mas depois ao clicar
+    na notícia era o maduro da Venezuela 🙂
 
     - acabar o relatório
 
