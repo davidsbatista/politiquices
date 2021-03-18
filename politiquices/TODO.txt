@@ -1,6 +1,7 @@
 Web App
 =======
 
+	- nomes curtos no grafo também
     - TODO: encurtar nomes com mais de 2 ou 3 nomes
     - gerar nova wikidata com Nicolas Maduro, há mais ?
 
@@ -18,8 +19,10 @@ Web App
             -> https://www.wikidata.org/wiki/Q10308719
 
     - Personalidade:
+
         Mostrar apenas o que é relevante nas relações
             http://0.0.0.0:5000/entity?q=Q182367
+			https://www.politiquices.pt/entity?q=Q9619510
             http://0.0.0.0:5000/entity?q=Q91901804
             http://0.0.0.0:5000/entity?q=Q23797153
 

@@ -1,5 +1,7 @@
 import re
 
+from politiquices.webapp.webapp.lib.cache import wiki_id_info
+
 
 def make_https(url):
     return re.sub(r'http://', "https://", url)
@@ -48,7 +50,6 @@ def per_vs_person_linkable(r):
 
 
 def clickable_title(r, wiki_id):
-
     # add link to focus entity
     link_one = r["title"].replace(
         r["focus_ent"], '<a id="ent_1" href="entity?q=' + wiki_id + '">' + r["focus_ent"] + "</a>"
@@ -68,6 +69,12 @@ def clickable_title(r, wiki_id):
     r['ent2_str'] = r['other_ent_name']
 
     return r
+
+
+def get_short_name(e_wiki_id):
+    if name := wiki_id_info[e_wiki_id].get('shorter_name', None):
+        return name
+    return wiki_id_info[e_wiki_id]['name']
 
 
 def make_json(relationships):

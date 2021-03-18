@@ -4,6 +4,7 @@ import networkx as nx
 
 from politiquices.webapp.webapp.lib.cache import wiki_id_info
 from politiquices.webapp.webapp.lib.neo4j_connect import Neo4jConnection
+from politiquices.webapp.webapp.lib.utils import get_short_name
 
 
 def query_neo4j(query):
@@ -106,7 +107,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
         if x["s"].id not in nodes_info:
             nodes_info[x["s"]["id"]] = {
                 "id": x["s"]["id"],
-                "label": x["s"]["name"],
+                "label": get_short_name(x["s"]["id"]),
                 "color": {
                     "border": "#2B7CE9",
                     "background": "#97C2FC",
@@ -116,7 +117,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
         if x["t"].id not in nodes_info:
             nodes_info[x["t"]["id"]] = {
                 "id": x["t"]["id"],
-                "label": x["t"]["name"],
+                "label": get_short_name(x["s"]["id"]),
                 "color": {
                     "border": "#2B7CE9",
                     "background": "#97C2FC",

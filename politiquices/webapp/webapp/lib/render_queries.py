@@ -32,10 +32,11 @@ from politiquices.webapp.webapp.lib.utils import (
     fill_zero_values,
     get_chart_labels_min_max,
     get_relationship,
+    get_short_name,
     make_https,
     make_json,
     make_single_json,
-    per_vs_person_linkable,
+    per_vs_person_linkable
 )
 
 
@@ -81,25 +82,20 @@ def entity_full_story(wiki_id, annotate):
     # get the top-related entities
     person_as_subject, person_as_target = get_top_relationships(wiki_id)
 
-    def get_name(e_wiki_id):
-        if name := wiki_id_info[e_wiki_id].get('shorter_name', None):
-            return name
-        return wiki_id_info[e_wiki_id]['name']
-
     who_person_opposes = [{'wiki_id': k, 'nr_articles': v,
-                           'name': get_name(k)}
+                           'name': get_short_name(k)}
                           for k, v in person_as_subject['who_person_opposes'].items()]
 
     who_person_supports = [{'wiki_id': k, 'nr_articles': v,
-                            'name': get_name(k)}
+                            'name': get_short_name(k)}
                            for k, v in person_as_subject['who_person_supports'].items()]
 
     who_opposes_person = [{'wiki_id': k, 'nr_articles': v,
-                           'name': get_name(k)}
+                           'name': get_short_name(k)}
                           for k, v in person_as_target['who_opposes_person'].items()]
 
     who_supports_person = [{'wiki_id': k, 'nr_articles': v,
-                            'name': get_name(k)}
+                            'name': get_short_name(k)}
                            for k, v in person_as_target['who_supports_person'].items()]
 
     top_entities_in_rel_type = {
