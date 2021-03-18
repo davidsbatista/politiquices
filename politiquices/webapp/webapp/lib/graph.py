@@ -117,7 +117,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
         if x["t"].id not in nodes_info:
             nodes_info[x["t"]["id"]] = {
                 "id": x["t"]["id"],
-                "label": get_short_name(x["s"]["id"]),
+                "label": get_short_name(x["t"]["id"]),
                 "color": {
                     "border": "#2B7CE9",
                     "background": "#97C2FC",
