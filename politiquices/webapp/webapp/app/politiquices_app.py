@@ -33,7 +33,9 @@ def index():
 # Personalidades (first call)
 @app.route("/entities")
 def list_entities():
-    return render_template("personalidades.html", items=all_entities_info[0:entities_batch_size])
+    return render_template("personalidades.html",
+                           items=all_entities_info[0:entities_batch_size],
+                           batch_size=entities_batch_size)
 
 
 # handles 'Personalidades' scroll down, response to AJAX calls

@@ -1,12 +1,11 @@
 Web App
 =======
 
-	- nomes curtos no grafo também
-    - TODO: encurtar nomes com mais de 2 ou 3 nomes
-    - gerar nova wikidata com Nicolas Maduro, há mais ?
-
     - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
         https://stackoverflow.com/questions/33323400/ajax-get-is-getting-called-twice-in-endless-scroll
+
+    - foto do otelo nao eh carregada:
+        http://0.0.0.0:5000/entity?q=Q1353499
 
     all duplicates, where from?
     - http://0.0.0.0:5000/entity?q=Q9604772
