@@ -1,9 +1,6 @@
 Web App
 =======
 
-    - Load on scroll on politiquices.pt tem um erro, repete rows, porque?
-        https://stackoverflow.com/questions/33323400/ajax-get-is-getting-called-twice-in-endless-scroll
-
     - foto do otelo nao eh carregada:
         http://0.0.0.0:5000/entity?q=Q1353499
 
