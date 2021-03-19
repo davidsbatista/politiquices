@@ -1,8 +1,5 @@
 import re
 
-from politiquices.webapp.webapp.lib.cache import wiki_id_info
-
-
 def make_https(url):
     return re.sub(r'http://', "https://", url)
 
@@ -71,7 +68,7 @@ def clickable_title(r, wiki_id):
     return r
 
 
-def get_short_name(e_wiki_id):
+def get_short_name(e_wiki_id, wiki_id_info):
     if name := wiki_id_info[e_wiki_id].get('shorter_name', None):
         return name
     return wiki_id_info[e_wiki_id]['name']

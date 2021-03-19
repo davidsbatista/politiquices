@@ -17,7 +17,7 @@ affiliated_with_relevant_political_party = """
                    wd:Q2054628 wd:Q10345627 wd:Q1819658 wd:Q6540639 wd:Q2054681 wd:Q1332539 
                    wd:Q1851550 wd:Q595575 wd:Q847263 wd:Q2054807 wd:Q3293542 wd:Q7232654 
                    wd:Q20901233 wd:Q10345705 wd:Q2054840 wd:Q1352945 wd:Q2105350 wd:Q18166125 
-                   wd:Q65164025 wd:Q769829
+                   wd:Q65164025 wd:Q769829 wd:Q46122950
                 }
              ?person wdt:P102 ?relevant_parties . 
              ?person rdfs:label ?personLabel }

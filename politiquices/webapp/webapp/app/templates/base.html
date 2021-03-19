@@ -128,7 +128,8 @@
                   return false;
                 },
                 complete: function (output) {
-                  $(window).off(); // disable $('#auto-scroll') it's activated in 'Personalidades' page
+                  // disable $('#auto-scroll') it's activated in 'Personalidades' page
+                  $(window).off();
                   $('#container').empty();
                   $('#container').html(output.responseText);
                   $('html, body').animate({ scrollTop: 0 }, 'slow');

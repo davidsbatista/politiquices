@@ -18,7 +18,7 @@ from politiquices.webapp.webapp.lib.render_queries import (
 
 from politiquices.webapp.webapp.lib.sparql_queries import (
     get_entities_without_image,
-    get_relationships_to_annotate,
+    get_relationships_to_annotate, personalities_only_with_other,
 )
 
 
@@ -112,7 +112,7 @@ def graph():
 
     # if not arguments were given, render graph with default arguments
     if not list(request.args.items()):
-        nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min, k_clique=3)
+        nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min)
         return render_template("graph.html", nodes=nodes, edges=edges)
 
     freq_min = int(request.args.get("freq_min"))
@@ -133,7 +133,7 @@ def graph():
         nodes, edges = get_entity_network(wiki_id, relation, freq_min, freq_max, year_from, year_to)
         return jsonify({"nodes": nodes, "edges": edges})
 
-    nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min, k_clique=3)
+    nodes, edges = get_network(relation, year_from, year_to, freq_max, freq_min)
     return jsonify({"nodes": nodes, "edges": edges})
 
 
@@ -325,6 +325,13 @@ def annotations():
 def complete():
     result = get_entities_without_image()
     return render_template("incomplete_entities.html", items=result)
+
+
+# other: personalities only with other rels
+@app.route("/only_other")
+def only_other():
+    results = personalities_only_with_other()
+    return render_template("incomplete_entities_no_rels.html", items=results)
 
 
 if __name__ == "__main__":
