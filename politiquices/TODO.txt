@@ -19,8 +19,6 @@ Web App
     corrigir:
         - http://0.0.0.0:5000/entity?q=Q10395752 -> wrong 'Álvaro Almeida'
 
-        http://0.0.0.0:5000/entity?q=Q65164957
-            -> should be this one instead https://www.wikidata.org/wiki/Q2643773
 
         http://0.0.0.0:5000/queries?&e1=Q182367&e2=Q9594142&relationship=opposes&year_from=1994&year_to=2019
             -> https://www.wikidata.org/wiki/Q10308719
