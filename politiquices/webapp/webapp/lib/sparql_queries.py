@@ -224,8 +224,7 @@ def get_persons_wiki_id_name_image_url():
         SELECT DISTINCT ?item ?label ?image_url {{
             ?item wdt:P31 wd:Q5.
             SERVICE <{wikidata_endpoint}> {{
-                ?item rdfs:label ?label .
-                FILTER(LANG(?label) = "pt")
+                ?item rdfs:label ?label . FILTER(LANG(?label) = "pt")
                 OPTIONAL {{ ?item wdt:P18 ?image_url. }}                
                 }}
             }}
@@ -1162,7 +1161,60 @@ def get_relationships_to_annotate():
     return to_annotate
 
 
-# ToDo: all personalities without any news article
+def personalities_only_with_other():
+
+    # get all entities with at least an 'other' relationship
+    query = """
+        SELECT DISTINCT ?person {
+            ?person wdt:P31 wd:Q5.
+            {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
+            ?rel politiquices:type ?rel_type . FILTER(REGEX((?rel_type), "other"))
+        }
+        ORDER BY ?person
+        """
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    all_with_other = set()
+    for x in result["results"]["bindings"]:
+        all_with_other.add(x["person"]["value"])
+
+    # get all entities with at least a 'normal' relationship
+    query = """
+        SELECT DISTINCT ?person{
+            ?person wdt:P31 wd:Q5.
+            {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
+             ?rel politiquices:type ?rel_type . 
+             FILTER(REGEX((?rel_type), "^ent1_opposes|ent1_supports|ent2_opposes|ent2_supports"))
+        }
+        ORDER BY ?person
+        """
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    all_except_other = set()
+    for x in result["results"]["bindings"]:
+        all_except_other.add(x["person"]["value"])
+
+    only_other = ['wd:'+entity.split("/")[-1]
+                  for entity in all_with_other.difference(all_except_other)]
+    query = f"""
+        SELECT DISTINCT ?wiki_id ?name ?image_url
+        {{
+            VALUES ?wiki_id {{{' '.join(only_other)}}} 
+            ?wiki_id rdfs:label ?name . FILTER(LANG(?name) = "pt")
+            OPTIONAL {{ ?wiki_id wdt:P18 ?image_url. }}                
+        }}
+        ORDER BY ?name
+    """
+
+    result = query_sparql(PREFIXES + "\n" + query, "wikidata")
+    results = []
+    for x in result["results"]["bindings"]:
+        results.append(
+            {'name': x['name']['value'],
+             'image_url': no_image if 'image_url' not in x else x['image_url']['value'],
+             'wiki_id': x['wiki_id']['value']}
+        )
+
+    return results
+
 
 def query_sparql(query, endpoint):
     if endpoint == "wikidata":

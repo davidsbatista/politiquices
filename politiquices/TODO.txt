@@ -1,6 +1,18 @@
 Web App
 =======
 
+    - Tirar mais noticias com gajos rcentes:
+        Cotrim Figueirdo
+        Tino
+        Tiago Mayan
+
+    - Grafo:
+        - arrastar um nó e parar, desligar a física
+        - max_hops numa rede
+        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
+
+        - Mário Soares apoia e opõe-se a José Sócrates, representar as duas setas
+
     - foto do otelo nao eh carregada:
         http://0.0.0.0:5000/entity?q=Q1353499
 
@@ -8,14 +20,21 @@ Web App
     - http://0.0.0.0:5000/entity?q=Q9604772
 
     corrigir:
+
+        https://www.politiquices.pt/entity?q=Q85853594
+            -> 'Flores'
+
         http://0.0.0.0:5000/entity?q=Q65164957
             -> should be this one instead https://www.wikidata.org/wiki/Q2643773
 
         http://0.0.0.0:5000/queries?&e1=Q182367&e2=Q9594142&relationship=opposes&year_from=1994&year_to=2019
             -> https://www.wikidata.org/wiki/Q10308719
 
-    - Personalidade:
+        https://www.politiquices.pt/queries?&e1=Q610788&e2=Q22005939&year_from=2000&year_to=2019&relationship=opposes
 
+
+
+    - Personalidade:
         Mostrar apenas o que é relevante nas relações
             http://0.0.0.0:5000/entity?q=Q182367
 			https://www.politiquices.pt/entity?q=Q9619510
@@ -23,9 +42,6 @@ Web App
             http://0.0.0.0:5000/entity?q=Q23797153
 
 	- estatísticas: label "mostrar" / "esconder"
-
-    - ao carregar o index.html:
-        limpar as input boxes
 
     - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
 
@@ -37,7 +53,6 @@ Web App
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
 
     - acabar o relatório
-
 
     - fazer o script para o video
 
@@ -65,11 +80,6 @@ Web App
     - JS libs todas locais
         - bootstrap-table javascript local
         - Datatables: final do base.html -> por tudo local
-
-    - Grafo:
-        - arrastar um nó e parar, desligar a física
-        - max_hops numa rede
-        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
     - Analytics de acessos
         - https://matomo.org/

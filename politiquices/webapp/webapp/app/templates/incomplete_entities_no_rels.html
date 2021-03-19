@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} Personalidades sem imagem {% endblock %}
+{% block title %} Personalidades sem artigos {% endblock %}
 
 {% block body %}
 
@@ -12,10 +12,10 @@
             <div class="col-lg-3 col-md-6 mb-4">
                 <div class="card h-100">
                     <center>
-                        <img class="figure-img img-fluid rounded" src="/static/images/no_picture.jpg" width="120" height="150" alt="">
+                        <img class="figure-img img-fluid rounded" src="{{item.image_url}}" width="120" height="150" alt="">
                     </center>
                     <div class="card-body">
-                        <h6 class="card-title"><a href=/entity?q={{item.wikidata_id}}>{{item.label}}</a></h6>
+                        <h6 class="card-title"><a href={{item.wiki_id}}>{{item.name}}</a></h6>
                     </div>
                 </div>
             </div>

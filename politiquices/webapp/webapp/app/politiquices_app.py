@@ -18,7 +18,7 @@ from politiquices.webapp.webapp.lib.render_queries import (
 
 from politiquices.webapp.webapp.lib.sparql_queries import (
     get_entities_without_image,
-    get_relationships_to_annotate,
+    get_relationships_to_annotate, personalities_only_with_other,
 )
 
 
@@ -325,6 +325,13 @@ def annotations():
 def complete():
     result = get_entities_without_image()
     return render_template("incomplete_entities.html", items=result)
+
+
+# other: personalities only with other rels
+@app.route("/only_other")
+def only_other():
+    results = personalities_only_with_other()
+    return render_template("incomplete_entities_no_rels.html", items=results)
 
 
 if __name__ == "__main__":
