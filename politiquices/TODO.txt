@@ -6,12 +6,13 @@ Web App
         Tino
         Tiago Mayan
 
+    - Foto + partido acima
+    - cargos + educação em baixo, ver como fica:
+            http://0.0.0.0:5000/entity?q=Q438868
+
     - Grafo:
         - arrastar um nó e parar, desligar a física
-        - max_hops numa rede
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-
-        - Mário Soares apoia e opõe-se a José Sócrates, representar as duas setas
 
     - foto do otelo nao eh carregada:
         http://0.0.0.0:5000/entity?q=Q1353499
@@ -52,6 +53,8 @@ Web App
     - Adicionar o Entity Versus Entity
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
 
+
+
     - acabar o relatório
 
     - fazer o script para o video
@@ -71,11 +74,11 @@ Web App
                3.1 uma rede geral
                3.2 a rede uma entidade em específico
 
+
+
     - espaço entre filtro tempo + botão 'PROCURAR'
 
-    - Quais as personalidades (importantes) na wikidata que não aparecem no politiquices.pt?
-        - https://www.wikidata.org/wiki/Q52112309
-        - https://www.wikidata.org/wiki/Q72310730
+
 
     - JS libs todas locais
         - bootstrap-table javascript local
@@ -108,6 +111,8 @@ Web App
 
         Agregacoes + info na personalidade:
         ------------------------------------
+             - Mostrar todos os que estão ligados pelas duas relaçoes:
+                e.g.: acusa e apoia, mário soares e sócrates
              - Governo
              - Assembleias
              - Profissao

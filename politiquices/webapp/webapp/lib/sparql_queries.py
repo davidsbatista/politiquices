@@ -1162,7 +1162,10 @@ def get_relationships_to_annotate():
 
 
 def personalities_only_with_other():
-
+    """
+    Get all personalities which are either in 'politiquices' graph or local 'wikdiata' graph
+    and are not mentioned in any news article or mentioned only in 'other' relationships
+    """
     # get all entities with at least an 'other' relationship
     query = """
         SELECT DISTINCT ?person {
@@ -1192,8 +1195,26 @@ def personalities_only_with_other():
     for x in result["results"]["bindings"]:
         all_except_other.add(x["person"]["value"])
 
+    # get the difference between other only and all except other
     only_other = ['wd:'+entity.split("/")[-1]
                   for entity in all_with_other.difference(all_except_other)]
+
+    # get all in wikidata
+    query = """SELECT DISTINCT ?entity { ?entity wdt:P31 wd:Q5 }"""
+    result = query_sparql(PREFIXES + "\n" + query, "wikidata")
+    all_wikidata = ['wd:'+x["entity"]["value"].split("/")[-1]
+                    for x in result["results"]["bindings"]]
+
+    # get all in politiquices
+    query = """SELECT DISTINCT ?entity { ?entity wdt:P31 wd:Q5 }"""
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
+    all_politiquices = ['wd:'+x["entity"]["value"].split("/")[-1]
+                        for x in result["results"]["bindings"]]
+
+    # get all in wikidata and not in politiquices
+    wikidata_only = set(all_wikidata).difference(set(all_politiquices))
+    only_other.extend(list(wikidata_only))
+
     query = f"""
         SELECT DISTINCT ?wiki_id ?name ?image_url
         {{
@@ -1203,7 +1224,6 @@ def personalities_only_with_other():
         }}
         ORDER BY ?name
     """
-
     result = query_sparql(PREFIXES + "\n" + query, "wikidata")
     results = []
     for x in result["results"]["bindings"]:

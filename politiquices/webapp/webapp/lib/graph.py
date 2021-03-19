@@ -14,7 +14,7 @@ def query_neo4j(query):
     return results
 
 
-def get_entity_network(wiki_id, relation, freq_min, freq_max, year_from, year_to, max_hops=1):
+def get_entity_network(wiki_id, relation, freq_min, freq_max, year_from, year_to):
     """
     Get the network up to 'max_hops' for a given entity
     """
@@ -35,7 +35,7 @@ def get_entity_network(wiki_id, relation, freq_min, freq_max, year_from, year_to
         if x['r'].start_node['id'] not in nodes_info:
             nodes_info[x['r'].start_node['id']] = {
                 "id": x['r'].start_node['id'],
-                "label": x['r'].start_node['name'],
+                "label": get_short_name(x["s"]["id"], wiki_id_info),
                 "color": {
                     "border": "#2B7CE9",
                     "background": "#97C2FC",
@@ -48,7 +48,7 @@ def get_entity_network(wiki_id, relation, freq_min, freq_max, year_from, year_to
     # add main/central node
     nodes_info[wiki_id] = {
         "id": wiki_id,
-        "label": wiki_id_info[wiki_id]['name'],
+        "label": get_short_name(wiki_id, wiki_id_info),
         "color": {
             "border": "#2B7CE9",
             "background": "#97C2FC",
@@ -107,7 +107,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
         if x["s"].id not in nodes_info:
             nodes_info[x["s"]["id"]] = {
                 "id": x["s"]["id"],
-                "label": get_short_name(x["s"]["id"]),
+                "label": get_short_name(x["s"]["id"], wiki_id_info),
                 "color": {
                     "border": "#2B7CE9",
                     "background": "#97C2FC",
@@ -117,7 +117,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
         if x["t"].id not in nodes_info:
             nodes_info[x["t"]["id"]] = {
                 "id": x["t"]["id"],
-                "label": get_short_name(x["t"]["id"]),
+                "label": get_short_name(x["t"]["id"], wiki_id_info),
                 "color": {
                     "border": "#2B7CE9",
                     "background": "#97C2FC",
@@ -186,6 +186,15 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
     g = nx.Graph()
     g.add_nodes_from(networkx_nodes)
     g.add_edges_from(networkx_edges)
+
+    # set node size as the value of the pagerank
+    page_rank_values = nx.pagerank(g)
+    for k, v in page_rank_values.items():
+        for node in nodes:
+            if node["id"] == k:
+                node["value"] = v
+
+    """
     communities_colors = {
         0: "#33ff49",
         1: "#4363d84",
@@ -206,15 +215,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
         16: "#00007519",
         17: "#a9a9a",
     }
-
-    # set node size as the value of the pagerank
-    page_rank_values = nx.pagerank(g)
-    for k, v in page_rank_values.items():
-        for node in nodes:
-            if node["id"] == k:
-                node["value"] = v
-
-    """
+    
     if k_clique > 1:
         # add communities color to nodes_info
         communities = list(k_clique_communities(g, k_clique))

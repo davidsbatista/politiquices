@@ -83,19 +83,19 @@ def entity_full_story(wiki_id, annotate):
     person_as_subject, person_as_target = get_top_relationships(wiki_id)
 
     who_person_opposes = [{'wiki_id': k, 'nr_articles': v,
-                           'name': get_short_name(k)}
+                           'name': get_short_name(k, wiki_id_info)}
                           for k, v in person_as_subject['who_person_opposes'].items()]
 
     who_person_supports = [{'wiki_id': k, 'nr_articles': v,
-                            'name': get_short_name(k)}
+                            'name': get_short_name(k, wiki_id_info)}
                            for k, v in person_as_subject['who_person_supports'].items()]
 
     who_opposes_person = [{'wiki_id': k, 'nr_articles': v,
-                           'name': get_short_name(k)}
+                           'name': get_short_name(k, wiki_id_info)}
                           for k, v in person_as_target['who_opposes_person'].items()]
 
     who_supports_person = [{'wiki_id': k, 'nr_articles': v,
-                            'name': get_short_name(k)}
+                            'name': get_short_name(k, wiki_id_info)}
                            for k, v in person_as_target['who_supports_person'].items()]
 
     top_entities_in_rel_type = {
