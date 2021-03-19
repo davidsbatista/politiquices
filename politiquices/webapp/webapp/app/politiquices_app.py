@@ -290,7 +290,7 @@ def chave():
     return render_template("chave_template.html", article=article)
 
 
-# get all 'other' relationships and shows then in annotation template
+# admin only: get all 'other' relationships and shows then in annotation template
 @app.route("/annotate")
 def annotations():
     to_annotate = get_relationships_to_annotate()
@@ -320,14 +320,14 @@ def annotations():
     return render_template("annotate_other.html", items=to_annotate)
 
 
-# other: personalities without image
+# admin only: personalities without image
 @app.route("/complete")
 def complete():
     result = get_entities_without_image()
     return render_template("incomplete_entities.html", items=result)
 
 
-# other: personalities only with other rels
+# admin only: personalities with only 'other' relationships or not relationships at all
 @app.route("/only_other")
 def only_other():
     results = personalities_only_with_other()

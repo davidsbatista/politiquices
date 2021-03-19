@@ -6,10 +6,6 @@ Web App
         Tino
         Tiago Mayan
 
-    - Foto + partido acima
-    - cargos + educação em baixo, ver como fica:
-            http://0.0.0.0:5000/entity?q=Q438868
-
     - Grafo:
         - arrastar um nó e parar, desligar a física
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
@@ -21,9 +17,7 @@ Web App
     - http://0.0.0.0:5000/entity?q=Q9604772
 
     corrigir:
-
-        https://www.politiquices.pt/entity?q=Q85853594
-            -> 'Flores'
+        - http://0.0.0.0:5000/entity?q=Q10395752 -> wrong 'Álvaro Almeida'
 
         http://0.0.0.0:5000/entity?q=Q65164957
             -> should be this one instead https://www.wikidata.org/wiki/Q2643773
@@ -48,6 +42,7 @@ Web App
     - erros de paramêtros nao válidos no URL:
         - queries/ tem que ter duas entidades validas
         - fazer redirect para o index.html com mensagem de erro
+
 
     - Adicionar o Entity Versus Entity
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html

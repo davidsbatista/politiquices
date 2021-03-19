@@ -35,7 +35,9 @@
               </tbody>
             </table>
             </div>
+    </div>
 
+    <div id="outer" class="container d-flex align-items-center justify-content-center">
         <!-- Positions -->
         <div class="col-auto">
             <table>
@@ -79,6 +81,7 @@
         </div>
 
     </div>
+    
     <br><br>
 
     <!-- Chart with relationships freq. throughout the years -->
@@ -102,7 +105,7 @@
             data: {
               labels: year_labels,
               datasets: [
-                {label: 'opõe-se', backgroundColor: "#FF0000", fill: true, data: opposed_freq},
+                {label: 'opõe-se a', backgroundColor: "#FF0000", fill: true, data: opposed_freq},
                 {label: 'é oposto(a) por', backgroundColor: "#980000", fill: true, data: opposed_by_freq},
                 {label: 'apoia', backgroundColor: "#44861E", fill: true, data: supported_freq},
                 {label: 'é apoiado(a)', backgroundColor: "#70DA33", fill: true, data: supported_by_freq}
