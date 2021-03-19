@@ -92,7 +92,7 @@ def get_entity_network(wiki_id, relation, freq_min, freq_max, year_from, year_to
     return nodes, edges
 
 
-def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
+def get_network(relation, year_from, year_to, freq_max, freq_min):
 
     query = f"MATCH (s)-[r:{relation}]->(t) " \
             f"WHERE r.data >= date('{year_from}-01-01') AND r.data <= date('{year_to}-12-31') " \
@@ -172,7 +172,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
 
     nodes = [node_info for node_id, node_info in nodes_info.items() if node_id in nodes_in_graph]
 
-    # build a networkx structure, compute communities
+    # build a networkx structure to: compute pagerank, compute communities, etc.
     networkx_nodes = []
     networkx_edges = []
     for node, other in bidirectional_edges.items():
@@ -193,41 +193,5 @@ def get_network(relation, year_from, year_to, freq_max, freq_min, k_clique):
         for node in nodes:
             if node["id"] == k:
                 node["value"] = v
-
-    """
-    communities_colors = {
-        0: "#33ff49",
-        1: "#4363d84",
-        2: "#f582315",
-        3: "#911eb46",
-        4: "#42d4f47",
-        5: "#f032e68",
-        6: "#bfef459",
-        7: "#fabed410",
-        8: "#46999011",
-        9: "#dcbeff12",
-        10: "#9A632413",
-        11: "#fffac814",
-        12: "#80000015",
-        13: "#aaffc316",
-        14: "#80800017",
-        15: "#ffd8b118",
-        16: "#00007519",
-        17: "#a9a9a",
-    }
-    
-    if k_clique > 1:
-        # add communities color to nodes_info
-        communities = list(k_clique_communities(g, k_clique))
-        for idx, c in enumerate(communities):
-            for n in c:
-                for node in nodes:
-                    if node["id"] == n:
-                        node["color"] = {
-                            "border": "#222222",
-                            "background": communities_colors[idx],
-                            "highlight": {"border": "#2B7CE9", "background": "#D2E5FF"},
-                        }
-    """
 
     return nodes, edges

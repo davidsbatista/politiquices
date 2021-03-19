@@ -34,7 +34,6 @@ Web App
         https://www.politiquices.pt/queries?&e1=Q610788&e2=Q22005939&year_from=2000&year_to=2019&relationship=opposes
 
 
-
     - Personalidade:
         Mostrar apenas o que é relevante nas relações
             http://0.0.0.0:5000/entity?q=Q182367
