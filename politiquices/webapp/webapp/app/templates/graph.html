@@ -132,7 +132,7 @@
 
       .ui-slider-horizontal {
           height: 20px;
-          width: 130px;
+          width: 148px;
       }
 
       .ui-slider .ui-slider-handle {
@@ -162,8 +162,12 @@
             max: 2019,
             values: [ 2000, 2019 ],
             slide: function( event, ui ) {
-              $("#ano_from").html(ui.values[0]);
-              $("#ano_to").html(ui.values[1]);
+
+            var from = '<center>'+ui.values[0]+'</center>'
+            var to = '<center>'+ui.values[1]+'</center>'
+
+              $("#ano_from").html(from);
+              $("#ano_to").html(to);
             }
         });
     });
@@ -174,16 +178,18 @@
     <div class="container" id="container">
       <div class="row">
         <div class="col" style="max-width: 14%" id="controls">
+            <center>
             <br>
-            n.º min
+            n.º min notícias
             <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                    class="form-control" style="width:52px; height:30px;" maxlength="3"
                    id="freq_min" value="10" placeholder="10">
             <br>
-            n.º max
+            n.º max notícias
             <input type="text" onkeypress='return event.charCode >= 48 && event.charCode <= 57'
                    class="form-control" style="width:52px; height:30px;" maxlength="3"
                    id="freq_max" value="30" placeholder="30">
+            </center>
             <br>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" value="opposes" id="check_opposes" checked>
@@ -195,16 +201,17 @@
               <label class="form-check-label" for="flexCheckChecked">apoia</label>
             </div>
             <br>
-            <div type="text" id="ano_from" style="color:#002364; margin: 12px; font-weight:bold;">2000</div>
+            <div type="text" id="ano_from" style="color:#002364; margin: 15px; font-weight:bold;"><center>2000</center></div>
             <div class="form-control" id="slider_graph"></div>
-            <div type="text" id="ano_to" style="color:#002364; margin: 12px; font-weight:bold;">2019</div>
+            <div type="text" id="ano_to" style="color:#002364; margin: 15px; font-weight:bold;"><center>2019</center></div>
             <hr>
-            Explorar rede de personalidade:
+            <center>Rede pessoal
             <input type="text" class="form-control" style="width:150px; height:30px; font-size:13px;"
                    maxlength="15" id="graph_entity">
             <input type="hidden" id="graph_entity-value" type="text" name="wiki">
-            <br>
+            <br><br>
             <input type="submit" value="Actualizar" id="reload"/>
+            </center>
         </div>
         <hr>
         <div class="col" style="max-width: 86%" id="graph">
