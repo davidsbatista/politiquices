@@ -1,6 +1,12 @@
 Web App
 =======
 
+    graph has 162426 statements.
+
+    persons      :  778
+    articles     :  17814
+    relationships:  17814
+
    - Tirar mais noticias com gajos rcentes:
         Cotrim Figueirdo
         Tino
