@@ -14,11 +14,11 @@ class DirectionClassifier:
 
     def __init__(self):
         self.nlp = pt_core_news_lg.load(
+            # "tok2vec"
             disable=[
                 "tagger",
                 "parser",
-                "lemmatizer",
-                "tok2vec",
+                # "lemmatizer",
                 "ner",
                 "attribute_ruler",
             ]
@@ -48,48 +48,20 @@ class DirectionClassifier:
 
     def get_pos_tags(self, sentence):
         doc = self.nlp(sentence)
-        return [(t.text, t.pos_, t.tag_) for t in doc]
+        return [(t.text, t.pos_, t.morph) for t in doc]
 
     def detect_direction(self, sentence, ent1, ent2):
+        # returns: label, pattern, context, pos_tags
 
         pos_tags = self.get_pos_tags(sentence)
+        context = self.get_context(pos_tags, ent1, ent2)
 
-        mentioned_at_end = """MENTIONED_AT_END: {%s}""" % "<PUNCT><VERB><NOUN|PROPN|ADP>*$"
-        mentioned_at_end_pattern = nltk.RegexpParser(mentioned_at_end)
 
-        possessive = """POSSESSIVE_CASE: {%s}""" % "<NOUN><ADP><PROPN><PROPN|ADV|ADP>*$"
-        possessive_pattern = nltk.RegexpParser(possessive)
+        if not context:
+            return "ent1_rel_ent2", None, None, pos_tags
 
         passive_voice_mark = """PASSIVE_VOICE: {%s}""" % "<AUX*>?<VERB><ADP>"
         passive_voice_pattern = nltk.RegexpParser(passive_voice_mark)
-
-        # , diz/afirma <ent2>
-        if (",", "PUNCT", "PU|@PU") in pos_tags:
-            last_comma_idx = max(idx for idx, val in enumerate(pos_tags) if val[0] == ",")
-            patterns_found = mentioned_at_end_pattern.parse(pos_tags[last_comma_idx:])
-            for t in patterns_found.subtrees():
-                if t.label() == "MENTIONED_AT_END":
-                    return "ent2_rel_ent1", patterns_found
-
-        context = self.get_context(pos_tags, ent1, ent2)
-        print(context)
-
-        if not context:
-            return "ent1_rel_ent2", None
-
-        # ataque|acusações|apoio|apelo de <ent2>
-        valid_nouns = ["críticas", "acusações", "ataques", "ataque", "apoio", "apelo"]
-        patterns_found = possessive_pattern.parse(context)
-        for t in patterns_found.subtrees():
-            if t.label() == "POSSESSIVE_CASE":
-                elements = list(t)
-                if (
-                        elements[0][0] in valid_nouns
-                        and elements[1][0] in ["de"]
-                        and ent2 in " ".join(t[0] for t in elements)
-                ):
-                    return "ent2_rel_ent1", patterns_found
-
 
         # passive voice
         patterns_found = passive_voice_pattern.parse(context)
@@ -100,7 +72,7 @@ class DirectionClassifier:
                 verb_checked = False
                 prp_checked = False
                 for el in elements:
-                    result = _check_passive(el)
+                    result = self._check_passive(el)
                     if result == "verb":
                         verb_checked = True
 
@@ -108,6 +80,36 @@ class DirectionClassifier:
                         prp_checked = True
 
                     if verb_checked and prp_checked:
-                        return "ent2_rel_ent1", patterns_found
+                        return "ent2_rel_ent1", patterns_found, context, pos_tags
 
-        return "ent1_rel_ent2", None
+        # defaults to 'ent1_rel_ent2'
+        return "ent1_rel_ent2", None, context, pos_tags
+
+        # mentioned_at_end = """MENTIONED_AT_END: {%s}""" % "<PUNCT><VERB><NOUN|PROPN|ADP>*$"
+        # mentioned_at_end_pattern = nltk.RegexpParser(mentioned_at_end)
+        #
+        # possessive = """POSSESSIVE_CASE: {%s}""" % "<NOUN><ADP><PROPN><PROPN|ADV|ADP>*$"
+        # possessive_pattern = nltk.RegexpParser(possessive)
+        #
+        #
+        # # , diz/afirma <ent2>
+        # if (",", "PUNCT", "PU|@PU") in pos_tags:
+        #     last_comma_idx = max(idx for idx, val in enumerate(pos_tags) if val[0] == ",")
+        #     patterns_found = mentioned_at_end_pattern.parse(pos_tags[last_comma_idx:])
+        #     for t in patterns_found.subtrees():
+        #         if t.label() == "MENTIONED_AT_END":
+        #             return "ent2_rel_ent1", patterns_found
+        #
+        #
+        # # ataque|acusações|apoio|apelo de <ent2>
+        # valid_nouns = ["críticas", "acusações", "ataques", "ataque", "apoio", "apelo"]
+        # patterns_found = possessive_pattern.parse(context)
+        # for t in patterns_found.subtrees():
+        #     if t.label() == "POSSESSIVE_CASE":
+        #         elements = list(t)
+        #         if (
+        #                 elements[0][0] in valid_nouns
+        #                 and elements[1][0] in ["de"]
+        #                 and ent2 in " ".join(t[0] for t in elements)
+        #         ):
+        #             return "ent2_rel_ent1", patterns_found

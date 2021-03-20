@@ -28,14 +28,17 @@ def main():
 
             true = "ent2_rel_ent1" if d["label"].endswith("ent1") else "ent1_rel_ent2"
             true_direction.append(true)
-            pred, pattern = direction_clf.detect_direction(clean_title, ent1, ent2)
+            pred, pattern, context, pos_tags = direction_clf.detect_direction(clean_title, ent1, ent2)
             pred_direction.append(pred)
 
-            if true != pred:
+            if context is None:
+            #if true != pred:
                 print("true: ", true)
                 print("pred: ", pred)
                 print(d["title"], "\t", d["label"])
-                print(pattern)
+                # print(pattern)
+                print(context)
+                # print(pos_tags)
                 print()
                 print("\n-----------------------------")
 
