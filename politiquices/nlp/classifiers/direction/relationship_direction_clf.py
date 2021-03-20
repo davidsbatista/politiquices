@@ -24,7 +24,15 @@ class DirectionClassifier:
             ]
         )
 
-    def get_context(self, title_pos_tags, ent1, ent2):
+    @staticmethod
+    def _check_passive(el):
+        if el[1] == "VERB" and "PCP" in el[2]:
+            return "verb"
+        elif el[1] == "ADP" and el[0] in ["pelo", "por"]:
+            return "prp"
+
+    @staticmethod
+    def get_context(title_pos_tags, ent1, ent2):
         ent1_tokens = ent1.split()
         ent2_tokens = ent2.split()
         title_text = [t[0] for t in title_pos_tags]
@@ -55,8 +63,6 @@ class DirectionClassifier:
         passive_voice_mark = """PASSIVE_VOICE: {%s}""" % "<AUX*>?<VERB><ADP>"
         passive_voice_pattern = nltk.RegexpParser(passive_voice_mark)
 
-        print(pos_tags)
-
         # , diz/afirma <ent2>
         if (",", "PUNCT", "PU|@PU") in pos_tags:
             last_comma_idx = max(idx for idx, val in enumerate(pos_tags) if val[0] == ",")
@@ -66,6 +72,7 @@ class DirectionClassifier:
                     return "ent2_rel_ent1", patterns_found
 
         context = self.get_context(pos_tags, ent1, ent2)
+        print(context)
 
         if not context:
             return "ent1_rel_ent2", None
@@ -83,11 +90,6 @@ class DirectionClassifier:
                 ):
                     return "ent2_rel_ent1", patterns_found
 
-        def _check_passive(el):
-            if el[1] == "VERB" and "PCP" in el[2]:
-                return "verb"
-            elif el[1] == "ADP" and el[0] in ["pelo", "por"]:
-                return "prp"
 
         # passive voice
         patterns_found = passive_voice_pattern.parse(context)
