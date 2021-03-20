@@ -55,6 +55,8 @@ class DirectionClassifier:
         passive_voice_mark = """PASSIVE_VOICE: {%s}""" % "<AUX*>?<VERB><ADP>"
         passive_voice_pattern = nltk.RegexpParser(passive_voice_mark)
 
+        print(pos_tags)
+
         # , diz/afirma <ent2>
         if (",", "PUNCT", "PU|@PU") in pos_tags:
             last_comma_idx = max(idx for idx, val in enumerate(pos_tags) if val[0] == ",")

@@ -127,7 +127,7 @@ class RelationshipClassifier:
 
         misclassifications = []
         correct = []
-        for title, pred_y, true_y, score in zip(x_test, pred_labels, y_test, scores):
+        for title, pred_y, true_y, score in zip(x_test_tks, pred_labels, y_test, scores):
             if pred_y != true_y:
                 misclassifications.append([title, pred_y, true_y, score])
             else:

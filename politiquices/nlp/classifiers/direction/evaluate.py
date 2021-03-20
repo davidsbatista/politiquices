@@ -23,12 +23,7 @@ def main():
             ent2 = d["ent2"]
 
             if ent1 not in clean_title or ent2 not in clean_title:
-                print("skipped: ", idx)
-                print(d['title'])
-                print(clean_title)
-                print(ent1)
-                print(ent2)
-                print("\n")
+                print("skipped: ", clean_title)
                 continue
 
             true = "ent2_rel_ent1" if d["label"].endswith("ent1") else "ent1_rel_ent2"
@@ -36,7 +31,6 @@ def main():
             pred, pattern = direction_clf.detect_direction(clean_title, ent1, ent2)
             pred_direction.append(pred)
 
-            """
             if true != pred:
                 print("true: ", true)
                 print("pred: ", pred)
@@ -44,7 +38,6 @@ def main():
                 print(pattern)
                 print()
                 print("\n-----------------------------")
-            """
 
     print(classification_report(true_direction, pred_direction))
 
