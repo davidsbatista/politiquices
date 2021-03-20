@@ -1,11 +1,12 @@
 import nltk
 import pt_core_news_lg
+
 from politiquices.nlp.utils.utils import find_sub_list
 
 
 class DirectionClassifier:
     """
-    # use spaCy to extract title morphological information
+    use spaCy to extract morphological information
 
     https://www.linguateca.pt/Floresta/doc/VISLsymbolset-manual.html
     https://www.linguateca.pt/Floresta/index_en.html

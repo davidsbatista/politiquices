@@ -16,14 +16,19 @@ def main():
     true_direction = []
     pred_direction = []
 
-    for d in all_data:
+    for idx, d in enumerate(all_data):
         if "supports" in d["label"] or "opposes" in d["label"]:
             clean_title = clean_title_quotes(clean_title_re(d['title']))
             ent1 = d["ent1"]
             ent2 = d["ent2"]
 
             if ent1 not in clean_title or ent2 not in clean_title:
-                print("skipped")
+                print("skipped: ", idx)
+                print(d['title'])
+                print(clean_title)
+                print(ent1)
+                print(ent2)
+                print("\n")
                 continue
 
             true = "ent2_rel_ent1" if d["label"].endswith("ent1") else "ent1_rel_ent2"
