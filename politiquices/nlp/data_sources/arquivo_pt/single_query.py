@@ -1,13 +1,15 @@
+import argparse
 import json
 import concurrent
+from datetime import datetime
+from datetime import timedelta
 from collections import defaultdict
 from concurrent.futures.thread import ThreadPoolExecutor
 
 import requests
-from jsonlines import jsonlines
 from loguru import logger
 
-from politiquices.nlp.data_sources.arquivo_pt.utils import load_domains, load_entities
+from politiquices.nlp.data_sources.arquivo_pt.utils import load_domains
 from politiquices.nlp.utils.utils import just_sleep
 
 # make sure to follow arquivo.pt guidelines for API usage
@@ -19,19 +21,19 @@ URL_REQUEST = "http://arquivo.pt/textsearch"
 domains_crawled_dates = None
 
 
-def runner(domains, query):
+def runner(domains, query, start_date, end_date):
     all_results = defaultdict(list)
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_url = {executor.submit(query_arquivo, query, url): url for url in domains}
+        future_to_url = {
+            executor.submit(query_arquivo, query, url, start_date, end_date):
+                url for url in domains
+        }
         try:
             for future in concurrent.futures.as_completed(future_to_url, timeout=120):
                 url = future_to_url[future]
                 data = future.result()
                 all_results[url] = data
-                # start_date = domains_crawled_dates[url]['first_crawl']
-                # end_date = domains_crawled_dates[url]['last_crawl']
                 logger.info(f'{url}\t{len(data)}')
-                # ToDo: log success for query,url,from,to
 
         except Exception as exc:
             logger.debug(f'{query} generated an exception: {exc}')
@@ -39,13 +41,13 @@ def runner(domains, query):
     return all_results
 
 
-def query_arquivo(query, domain, timeout=10, n_attempts=10):
+def query_arquivo(query, domain, start_date, end_date, timeout=10, n_attempts=10):
 
     # ToDo: do more queries to the same domain for smaller time intervals
     params = {
         "q": query,
-        "from": 20190101,  # domains_crawled_dates[domain]['first_crawl'],
-        "to": 20200320,  # domains_crawled_dates[domain]['last_crawl'],
+        "from": start_date,
+        "to": end_date,
         "siteSearch": domain,
         "maxItems": 2000,
         "dedupField": 'title',
@@ -70,29 +72,43 @@ def query_arquivo(query, domain, timeout=10, n_attempts=10):
     return None
 
 
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--entity", help="entity query")
+    parser.add_argument("--start_date", help="from date")
+    parser.add_argument("--end_date", help="to date")
+    args = parser.parse_args()
+    return args
+
+
 def main():
+
+    args = parse_args()
+    start_date = args.start_date
+    end_date = args.end_date
+    query_name = args.entity
+
+    # domains to be crawled
     domains = load_domains()
-    names = load_entities()
 
-    print("querying:")
-    print(f'{len(domains)} domains')
-    print(f'{len(names)} entities')
-    print()
-
-    # read domains crawled span times
+    # domains crawled span times
     with open('config_data/domains_crawled_dates.json') as f_in:
         global domains_crawled_dates
         domains_crawled_dates = json.load(f_in)
 
-    for name in names:
-        print(name)
-        f_name = '_'.join(name.split()) + '.jsonl'
-        results = runner(domains, name)
-        if results:
-            with jsonlines.open(OUTPUT_DIR+"/"+f_name, mode='w') as writer:
-                for k, v in results.items():
-                    for r in v:
-                        writer.write(r)
+    today = datetime.today()
+    today_minus_1_year = today - timedelta(days=365)
+    today_minus_1_year_str = today_minus_1_year.strftime("%Y%m%d")
+
+    print(f"querying: {query_name} {start_date} {today_minus_1_year_str}")
+    results = runner(domains, query_name, start_date, today_minus_1_year_str)
+
+    for r, v in results.items():
+        print(r)
+        for x in v:
+            print(x['tstamp'], x['title'])
+            print()
+        print("\n\n---")
 
 
 if __name__ == '__main__':

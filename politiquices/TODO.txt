@@ -12,21 +12,22 @@ Web App
         Tino
         Tiago Mayan
 
+
    - Grafo:
         - arrastar um nó e parar, desligar a física
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
 
+
    - foto do otelo nao eh carregada:
         http://0.0.0.0:5000/entity?q=Q1353499
+
 
     - same news article with different timestamp and different URL (added same params):
     - http://0.0.0.0:5000/entity?q=Q9604772
 
-
     corrigir:
         - http://0.0.0.0:5000/entity?q=Q10395752 -> wrong 'Álvaro Almeida'
         - https://www.politiquices.pt/entity?q=Q10324736 ->  Moniz Pereira being linked to Moura Guedes
-
 
     - Personalidade:
         Mostrar apenas o que é relevante nas relações
