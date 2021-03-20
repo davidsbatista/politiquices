@@ -232,8 +232,8 @@ def get_persons_wiki_id_name_image_url():
         """
     persons = set()
     items_as_dict = dict()
-    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
 
+    result = query_sparql(PREFIXES + "\n" + query, "politiquices")
     for e in result["results"]["bindings"]:
 
         # this is just avoid duplicate entities, same entity with two labels
@@ -306,17 +306,16 @@ def get_all_parties_and_members_with_relationships():
 def get_total_nr_articles_for_each_person():
     # NOTE: 'ent1_other_ent2' and 'ent2_other_ent1' relationships are being discarded
     query = """
-        SELECT ?person_name ?person (COUNT(*) as ?count)
+        SELECT ?person (COUNT(*) as ?count)
         WHERE {
           VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
                               'ent1_supports_ent2' 'ent2_supports_ent1'}
             ?person wdt:P31 wd:Q5 ;
-            rdfs:label ?person_name .
             {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
             ?rel politiquices:type ?rel_values .
           }
-        GROUP BY ?person_name ?person
-        ORDER BY DESC (?count) ASC (?person_name)
+        GROUP BY ?person
+        ORDER BY DESC (?count)
         """
     results = query_sparql(PREFIXES + "\n" + query, "politiquices")
     return {
