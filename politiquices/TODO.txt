@@ -7,20 +7,14 @@ Web App
     articles     :  17814
     relationships:  17814
 
-   - Tirar mais noticias com gajos rcentes:
-        Cotrim Figueirdo
-        Tino
-        Tiago Mayan
+    - espaço entre filtro tempo + botão 'PROCURAR'
+    - estatísticas: label "mostrar" / "esconder"
+    - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
 
 
    - Grafo:
         - arrastar um nó e parar, desligar a física
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-
-
-   - foto do otelo nao eh carregada:
-        http://0.0.0.0:5000/entity?q=Q1353499
-
 
     - same news article with different timestamp and different URL (added same params):
     - http://0.0.0.0:5000/entity?q=Q9604772
@@ -36,10 +30,6 @@ Web App
             http://0.0.0.0:5000/entity?q=Q91901804
             http://0.0.0.0:5000/entity?q=Q23797153
 
-	- estatísticas: label "mostrar" / "esconder"
-
-    - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
-
     - erros de paramêtros nao válidos no URL:
         - queries/ tem que ter duas entidades validas
         - fazer redirect para o index.html com mensagem de erro
@@ -47,8 +37,6 @@ Web App
 
     - Adicionar o Entity Versus Entity
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
-
-
 
 
     - acabar o relatório
@@ -59,21 +47,23 @@ Web App
                 - tirar frases chave do relatório
 
             2. mostrar os dados de uma personalidade individual
+                + main info + chart for all relationships
+                + clicar numa personalidade e ver todas as relações
+                + ir ao detalhe de ver na tabela cada uma das relações
+                    - escolher o tipo de relação
+                    - procurar + ordenar + exportar para ficheiro
 
             3. mostrar um exemplo com queries
                2.1 per vs per
-               2.2 per vs party
-               2.3 part vs. per
+                2.2 per vs party
+                    -> mostrar o heatmap
+                2.3 part vs. per
+                    -> mostrar o heatmap
                2.4 party vs party
 
             4. mostrar um exemplo de navegação no grafo
                3.1 uma rede geral
                3.2 a rede uma entidade em específico
-
-
-
-    - espaço entre filtro tempo + botão 'PROCURAR'
-
 
 
     - JS libs todas locais
@@ -107,15 +97,16 @@ Web App
 
         Agregacoes + info na personalidade:
         ------------------------------------
+             - listar relações familiares
              - Mostrar todos os que estão ligados pelas duas relaçoes:
                 e.g.: acusa e apoia, mário soares e sócrates
+             - conflitos dentro mesmo governo
              - Governo
              - Assembleias
              - Profissao
              - Educacao
              - listar todos os membros do Governo X
              - listar todos os que já foram Ministros <qq cena>
-             - listar relações familiares
 
         DevOps:
         -------

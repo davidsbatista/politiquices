@@ -105,7 +105,7 @@ def main():
     too_short_log.close()
     other_topics_log.close()
 
-    print("total          : ", total)
+    print("\ntotal        : ", total)
     print("failed to clean: ", cleaning)
     print("duplicated     : ", nr_duplicates)
     print("too_short      : ", too_short)

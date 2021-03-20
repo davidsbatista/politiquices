@@ -9,13 +9,14 @@ from politiquices.nlp.utils.utils import (
 
 
 def main():
-    publico = read_ground_truth("../../../../annotations/publico.csv")
-    arquivo = read_ground_truth("../../../../annotations/arquivo.csv")
+    training_data = read_ground_truth("../../../politiquices_training_data.tsv")
+    training_data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.tsv")
+    all_data = training_data + training_data_webapp
     direction_clf = DirectionClassifier()
     true_direction = []
     pred_direction = []
 
-    for d in publico + arquivo:
+    for d in all_data:
         if "supports" in d["label"] or "opposes" in d["label"]:
             clean_title = clean_title_quotes(clean_title_re(d['title']))
             ent1 = d["ent1"]
