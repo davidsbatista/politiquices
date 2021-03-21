@@ -4,11 +4,18 @@ from collections import Counter
 import spacy
 from sklearn.model_selection import StratifiedKFold
 
-from politiquices.nlp.utils.utils import read_ground_truth
+from politiquices.nlp.utils.utils import read_ground_truth, find_sub_list
 from politiquices.nlp.utils.utils import clean_title_re
 from politiquices.nlp.utils.utils import clean_title_quotes
 
-spacy_tokenizer = spacy.load("pt_core_news_lg", disable=['parser', 'tagger', 'ner'])
+nlp = spacy.load("pt_core_news_lg", disable=[
+    "tok2vec"
+    "tagger",
+    "parser",
+    "lemmatizer",
+    "ner",
+    "attribute_ruler",
+])
 
 
 def pre_process_train_data(data):
@@ -48,20 +55,43 @@ def pre_process_train_data(data):
     return titles, y_train
 
 
-def tokenize(sentences):
-    return [[str(t).lower() for t in spacy_tokenizer(sent)] for sent in sentences]
+def get_context(title_pos_tags, ent1, ent2):
+    ent1_tokens = ent1.split()
+    ent2_tokens = ent2.split()
+    title_text = [t[0] for t in title_pos_tags]
+    ent1_interval = find_sub_list(ent1_tokens, title_text)
+    if ent1_interval:
+        ent1_start, ent1_end = ent1_interval
+        ent2_interval = find_sub_list(ent2_tokens, title_text)
+        if ent2_interval:
+            ent2_start, ent2_end = ent2_interval
+            return title_pos_tags[ent1_end+1: ent2_start]
+
+
+def get_pos_tags(sentence):
+    doc = nlp(sentence)
+    return [(t.text, t.pos_, t.morph) for t in doc]
 
 
 def main():
     training_data = read_ground_truth("../../../politiquices_training_data.tsv")
     training_data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.tsv")
     all_data = training_data + training_data_webapp
-    titles, labels = pre_process_train_data(all_data)
 
-    for title in titles:
+    for sample in all_data:
+        title = sample['title']
+        ent1 = sample['ent1']
+        ent2 = sample['ent2']
+        pos_tags = get_pos_tags(title)
+        context = get_context(pos_tags, ent1, ent2)
+
         print(title)
-        # pos_tags = self.get_pos_tags(title)
-        # context = self.get_context(title, ent1, ent2)
+        print(ent1)
+        print(ent2)
+        if context is None:
+            exit(-1)
+        print([t[0] for t in context])
+        print("\n\n--------------")
 
 
 if __name__ == "__main__":
