@@ -21,7 +21,8 @@ class WordSentiment:
                     word, pos = word_pos.split(".")
                     self.word_sentiment[word] = sentiment
                 except ValueError:
-                    print(line)
+                    pass
+                    # print(line)
 
     def get_sentiment(self, word, pos=None):
         return self.word_sentiment.get(word, None)

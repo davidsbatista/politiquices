@@ -2,9 +2,11 @@ import re
 from collections import Counter, defaultdict
 
 import spacy
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 
 from politiquices.nlp.classifiers.relationship.sentiment import WordSentiment
+from politiquices.nlp.classifiers.utils.ml_utils import print_cm
 from politiquices.nlp.utils.utils import (
     read_ground_truth,
     find_sub_list,
@@ -17,9 +19,7 @@ nlp = spacy.load(
     disable=["tagger", "parser", "ner", "attribute_ruler"],
 )
 
-
-def pre_process_train_data(data):
-    other = [
+other_labels = [
         "ent1_asks_support_ent2",
         "ent2_asks_support_ent1",
         "ent1_asks_action_ent2",
@@ -31,28 +31,6 @@ def pre_process_train_data(data):
         "meet_together",
         "other",
     ]
-
-    titles = []
-    labels = []
-
-    for d in data:
-        titles.append((clean_title_quotes((clean_title_re(d["title"]))), d["ent1"], d["ent2"]))
-        if d["label"] not in other:
-            labels.append(d["label"])
-        else:
-            labels.append("other")
-
-    y_train = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in labels]
-    print("\nSamples per class:")
-    for k, v in Counter(y_train).items():
-        print(k, "\t", v)
-    print("\nTotal nr. messages:\t", len(y_train))
-    print("\n")
-
-    # replace entity name by 'PER'
-    titles = [d[0].replace(d[1], "PER").replace(d[2], "PER") for d in titles]
-
-    return titles, y_train
 
 
 def get_context(title_pos_tags, ent1, ent2):
@@ -81,9 +59,20 @@ def main():
     word_sentiment = WordSentiment()
     contexts = defaultdict(int)
 
-    other = ['e']
+    other = ['e', ',']
+    supports = ['apoiar', 'convidar', 'elogiar', 'confiança', 'felicitar']
+    opposes = ['acusar', 'criticar', 'responsabilizar', 'desmentir', 'atacar', 'contrariar']
+
+    true_labels = []
+    pred_labels = []
 
     for sample in all_data:
+
+        if sample['label'] in other_labels:
+            true_labels.append('other')
+        else:
+            true_labels.append(re.sub(r"_?ent[1-2]_?", "", sample['label']))
+
         title = sample["title"]
         ent1 = sample["ent1"]
         ent2 = sample["ent2"]
@@ -96,8 +85,20 @@ def main():
         # print([(t.text, t.pos_, t.morph) for t in context])
         # print([t.text for t in context if t.pos_ == 'ADJ'])
 
-        contexts[(' '.join([t.text for t in context]))] += 1
+        context_text = ' '.join([t.lemma_ for t in context])
+        contexts[context_text] += 1
 
+        pred_label = 'other'
+        if any(x == context for x in other):
+            pred_label = 'other'
+        elif any(x in context_text for x in supports):
+            pred_label = 'supports'
+        elif any(x in context_text for x in opposes):
+            pred_label = 'opposes'
+
+        pred_labels.append(pred_label)
+
+        """
         if ' '.join([t.text for t in context]) == '':
             print(title)
             print(ent1)
@@ -105,6 +106,7 @@ def main():
             print()
             print(sample['label'])
             print("\n\n--------------")
+        """
 
         """
         for t in context:
@@ -113,8 +115,15 @@ def main():
             print(t.text, t.pos_, t.lemma_, '\t', word_sentiment.get_sentiment(t.lemma_))
         """
 
-    # for x in sorted(contexts, key=lambda x: contexts[x], reverse=True):
-    #    print(x, contexts[x])
+    for x in sorted(contexts, key=lambda x: contexts[x], reverse=True):
+        print(x, contexts[x])
+
+    print()
+
+    print(classification_report(true_labels, pred_labels, zero_division=0.00))
+    cm = confusion_matrix(true_labels, pred_labels, labels=['opposes', 'other', 'supports'])
+    print_cm(cm, labels=['opposes', 'other', 'supports'])
+    print()
 
 
 if __name__ == "__main__":
