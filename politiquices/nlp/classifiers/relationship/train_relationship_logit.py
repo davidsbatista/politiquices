@@ -1,21 +1,21 @@
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 
 import spacy
 from sklearn.model_selection import StratifiedKFold
 
-from politiquices.nlp.utils.utils import read_ground_truth, find_sub_list
-from politiquices.nlp.utils.utils import clean_title_re
-from politiquices.nlp.utils.utils import clean_title_quotes
+from politiquices.nlp.classifiers.relationship.sentiment import WordSentiment
+from politiquices.nlp.utils.utils import (
+    read_ground_truth,
+    find_sub_list,
+    clean_title_quotes,
+    clean_title_re,
+)
 
-nlp = spacy.load("pt_core_news_lg", disable=[
-    "tok2vec"
-    "tagger",
-    "parser",
-    "lemmatizer",
-    "ner",
-    "attribute_ruler",
-])
+nlp = spacy.load(
+    "pt_core_news_lg",
+    disable=["tagger", "parser", "ner", "attribute_ruler"],
+)
 
 
 def pre_process_train_data(data):
@@ -40,7 +40,7 @@ def pre_process_train_data(data):
         if d["label"] not in other:
             labels.append(d["label"])
         else:
-            labels.append('other')
+            labels.append("other")
 
     y_train = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in labels]
     print("\nSamples per class:")
@@ -58,19 +58,19 @@ def pre_process_train_data(data):
 def get_context(title_pos_tags, ent1, ent2):
     ent1_tokens = ent1.split()
     ent2_tokens = ent2.split()
-    title_text = [t[0] for t in title_pos_tags]
+    title_text = [t.text for t in title_pos_tags]
     ent1_interval = find_sub_list(ent1_tokens, title_text)
     if ent1_interval:
         ent1_start, ent1_end = ent1_interval
         ent2_interval = find_sub_list(ent2_tokens, title_text)
         if ent2_interval:
             ent2_start, ent2_end = ent2_interval
-            return title_pos_tags[ent1_end+1: ent2_start]
+            return title_pos_tags[ent1_end + 1: ent2_start]
 
 
 def get_pos_tags(sentence):
     doc = nlp(sentence)
-    return [(t.text, t.pos_, t.morph) for t in doc]
+    return [t for t in doc]
 
 
 def main():
@@ -78,20 +78,43 @@ def main():
     training_data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.tsv")
     all_data = training_data + training_data_webapp
 
+    word_sentiment = WordSentiment()
+    contexts = defaultdict(int)
+
+    other = ['e']
+
     for sample in all_data:
-        title = sample['title']
-        ent1 = sample['ent1']
-        ent2 = sample['ent2']
+        title = sample["title"]
+        ent1 = sample["ent1"]
+        ent2 = sample["ent2"]
         pos_tags = get_pos_tags(title)
         context = get_context(pos_tags, ent1, ent2)
 
-        print(title)
-        print(ent1)
-        print(ent2)
         if context is None:
             exit(-1)
-        print([t[0] for t in context])
-        print("\n\n--------------")
+
+        # print([(t.text, t.pos_, t.morph) for t in context])
+        # print([t.text for t in context if t.pos_ == 'ADJ'])
+
+        contexts[(' '.join([t.text for t in context]))] += 1
+
+        if ' '.join([t.text for t in context]) == '':
+            print(title)
+            print(ent1)
+            print(ent2)
+            print()
+            print(sample['label'])
+            print("\n\n--------------")
+
+        """
+        for t in context:
+            if t.pos_ in ['ADP']:
+                continue
+            print(t.text, t.pos_, t.lemma_, '\t', word_sentiment.get_sentiment(t.lemma_))
+        """
+
+    # for x in sorted(contexts, key=lambda x: contexts[x], reverse=True):
+    #    print(x, contexts[x])
 
 
 if __name__ == "__main__":
