@@ -38,3 +38,20 @@ weighted avg       0.67      0.67      0.67      2651
      opposes    807.0    202.0     59.0
        other    261.0    717.0    103.0
     supports    127.0    119.0    256.0
+
+
+
+FINAL REPORT
++ default TfidfVectorizer tokenizer
++ n-grams=(1,2)
++ SGDClasifier(max_iter=15000)
+
+              precision    recall  f1-score   support
+
+     opposes       0.67      0.74      0.71      1068
+       other       0.68      0.63      0.65      1081
+    supports       0.57      0.54      0.55       502
+
+    accuracy                           0.66      2651
+   macro avg       0.64      0.64      0.64      2651
+weighted avg       0.66      0.66      0.66      2651

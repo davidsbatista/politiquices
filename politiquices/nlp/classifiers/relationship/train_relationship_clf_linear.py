@@ -58,7 +58,7 @@ def remap_y_target(y_labels):
             for y_sample in y_labels]
 
 
-def get_text_tokens(x_data):
+def get_text_tokens(x_data, tokenized=True):
     textual_context = []
     for x in x_data:
         title = x['title']
@@ -66,7 +66,10 @@ def get_text_tokens(x_data):
         ent2 = x['ent2']
         pos_tags = get_pos_tags(title)
         context = get_context(pos_tags, ent1, ent2)
-        context_text = [t.text for t in context]
+        if tokenized:
+            context_text = [t.text for t in context]
+        else:
+            context_text = ' '.join([t.text for t in context])
         textual_context.append(context_text)
 
     return textual_context
@@ -92,28 +95,28 @@ def main():
         x_test = [doc for idx, doc in enumerate(all_data) if idx in test_index]
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
-
-        # get textual contexts
-        train_textual_context = get_text_tokens(x_train)
-        test_textual_context = get_text_tokens(x_test)
-
         # target vector
         le = LabelEncoder()
         y_train_encoded = le.fit_transform(y_train)
 
-        tfidf = TfidfVectorizer(tokenizer=dummy_fun, preprocessor=dummy_fun)
+        # get textual contexts
+        train_textual_context = get_text_tokens(x_train, tokenized=False)
+        test_textual_context = get_text_tokens(x_test, tokenized=False)
+
+        # no tokenization
+        # tfidf = TfidfVectorizer(tokenizer=dummy_fun, preprocessor=dummy_fun)
+
+        # n-grams
+        tfidf = TfidfVectorizer(ngram_range=(1, 2))
+
         tf_idf_weights = tfidf.fit_transform(train_textual_context)
 
         # clf = LogisticRegression(max_iter=15000)
         clf = SGDClassifier(max_iter=15000)
         clf.fit(tf_idf_weights, y_train_encoded)
-
         test_tf_idf_weights = tfidf.transform(test_textual_context)
         predictions = clf.predict(test_tf_idf_weights)
         y_pred = [le.classes_[pred] for pred in predictions]
-
-        print(y_pred)
-        print(y_test)
 
         """
         print("fold: ", fold_n)

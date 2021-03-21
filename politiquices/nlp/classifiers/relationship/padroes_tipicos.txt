@@ -8,18 +8,18 @@ Exemplos:
 - PER acusa PER
 - PER defende PER
 
-Poderá também haver uma negação que muda o sentido da expressão.
-
 Examplos:
-- PER defende demissão de PER -> opposes
 - PER defende PER -> support
 - PER acredita em PER -> support
+
+
+NOTE: Poderá também haver uma negação que muda o sentido da expressão.
+- PER defende demissão de PER -> opposes
 - PER não acredita em PER -> opposes
 
 
 
-
-2.
+2. PER <uninformal expression> PER <expression containing positive or negative aspect>
 PER diz que PER <expressão>
 PER defende que PER <expressão>
 PER considera PER <expressão>
@@ -55,11 +55,11 @@ e.g.:
     PER: PER fez "um discurso de facção, um discurso sectário"
 
 
+
 5.
 Títulos com uma terceira entidade envolvida são discartados:
 -----------------------------------------------------------
 - Assunção Esteves criticada por receber Manuel Coelho
-
 
 
 - filter out sentences by size or certain structures/components (syntactic parsing)

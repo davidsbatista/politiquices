@@ -11,7 +11,6 @@ Web App
     - estatísticas: label "mostrar" / "esconder"
     - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
 
-
    - Grafo:
         - arrastar um nó e parar, desligar a física
         - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
@@ -117,32 +116,10 @@ Web App
 
 relationship classifier
 ======================
-    - se o output é 'other' não faz sentido correr o classificador de direcção
 
-    - run script with PYTHONHASHSEED=0
     - explorar os padroes encontrados
-    - controlar overfitting?
 
-    - Transformer models: https://huggingface.co/transformers/quicktour.html
-
-    - Training Neural Networks:
-        - ModelCheckpoint: maximize for precision in lowest class
-        - Optimizer and Learning Rate
-        - batch size, Early Stop
-        - https://parameterfree.com/2020/12/06/neural-network-maybe-evolved-to-make-adam-the-best-optimizer/
-        - https://spacy.io/usage/training#tips
-        - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
-        - https://towardsdatascience.com/checklist-for-debugging-neural-networks-d8b2a9434f21
-
-    - https://towardsdatascience.com/handling-class-imbalanced-data-using-a-loss-specifically-made-for-it-6e58fd65ffab
-    - https://www.tensorflow.org/tutorials/structured_data/imbalanced_data
-    - https://github.com/vandit15/Class-balanced-loss-pytorch
-
-    - embeddings
-        - Uppercase and lower case, improvement?
-        - better/cleaner higher dimensions? train on own corpus
-        - catch negations, how? e.g.: defende != não + defende
-        - tool to visualize embeddings
+    - se o output é 'other' não faz sentido correr o classificador de direcção
 
     🔹 Look at the data carefully. Do EDA
     🔹 Look at the targets. See how they are distributed & what kind of problem this is
@@ -156,3 +133,27 @@ relationship classifier
     🔹 When you think you have reached a limit with different models, try feature selection
     🔹 Done with feature engineering and feature selection? You will realize that by following above steps, you have also chosen a few best models that work well with your data
     🔹 Now its time to do hyperparameter optimization and squeeze the last few drops from your best models
+
+
+    - Transformer models: https://huggingface.co/transformers/quicktour.html
+
+    - Training Neural Networks:
+        - run script with PYTHONHASHSEED=0
+        - ModelCheckpoint: maximize for precision in lowest class
+        - Optimizer and Learning Rate
+        - batch size, Early Stop
+        - control overfitting
+        - https://parameterfree.com/2020/12/06/neural-network-maybe-evolved-to-make-adam-the-best-optimizer/
+        - https://spacy.io/usage/training#tips
+        - http://karpathy.github.io/2019/04/25/recipe/#2-set-up-the-end-to-end-trainingevaluation-skeleton--get-dumb-baselines
+        - https://towardsdatascience.com/checklist-for-debugging-neural-networks-d8b2a9434f21
+        - embeddings
+            - Uppercase and lower case, improvement?
+            - better/cleaner higher dimensions? train on own corpus
+            - catch negations, how? e.g.: defende != não + defende
+            - tool to visualize embeddings
+
+    - handling imbalenced data:
+        - https://towardsdatascience.com/handling-class-imbalanced-data-using-a-loss-specifically-made-for-it-6e58fd65ffab
+        - https://www.tensorflow.org/tutorials/structured_data/imbalanced_data
+        - https://github.com/vandit15/Class-balanced-loss-pytorch
