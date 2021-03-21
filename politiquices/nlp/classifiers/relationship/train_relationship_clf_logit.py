@@ -2,7 +2,7 @@ import re
 
 import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
@@ -53,75 +53,94 @@ def get_pos_tags(sentence):
     return [t for t in doc]
 
 
+def remap_y_target(y_labels):
+    return ['other' if y_sample in other_labels else re.sub(r"_?ent[1-2]_?", "", y_sample)
+            for y_sample in y_labels]
+
+
+def get_text_tokens(x_data):
+    textual_context = []
+    for x in x_data:
+        title = x['title']
+        ent1 = x['ent1']
+        ent2 = x['ent2']
+        pos_tags = get_pos_tags(title)
+        context = get_context(pos_tags, ent1, ent2)
+        context_text = [t.text for t in context]
+        textual_context.append(context_text)
+
+    return textual_context
+
+
+def dummy_fun(doc):
+    return doc
+
+
 def main():
     training_data = read_ground_truth("../../../politiquices_training_data.tsv")
     training_data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.tsv")
     all_data = training_data + training_data_webapp
+    labels = remap_y_target([s['label'] for s in all_data])
+    skf = StratifiedKFold(n_splits=5, random_state=42, shuffle=True)
 
-    titles = [s['title'] for s in all_data]
-    labels = [s['label'] for s in all_data]
+    all_data_shuffled = []
+    all_preds = []
+    all_trues = []
 
-    skf = StratifiedKFold(n_splits=2, random_state=42, shuffle=True)
-    fold_n = 0
     for train_index, test_index in skf.split(all_data, labels):
         x_train = [doc for idx, doc in enumerate(all_data) if idx in train_index]
         x_test = [doc for idx, doc in enumerate(all_data) if idx in test_index]
-        y_train = [doc['label'] for idx, doc in enumerate(all_data) if idx in train_index]
-        y_test = [doc['label'] for idx, doc in enumerate(all_data) if idx in test_index]
+        y_train = [label for idx, label in enumerate(labels) if idx in train_index]
+        y_test = [label for idx, label in enumerate(labels) if idx in test_index]
 
-        train_context = []
+        # get textual contexts
+        train_textual_context = get_text_tokens(x_train)
+        test_textual_context = get_text_tokens(x_test)
 
-        for x in x_train:
-            title = x['title']
-            ent1 = x['ent1']
-            ent2 = x['ent2']
-            pos_tags = get_pos_tags(title)
-            context = get_context(pos_tags, ent1, ent2)
-            context_text = [t.text for t in context]
-            train_context.append(context_text)
-
-        def dummy_fun(doc):
-            return doc
-
-        tfidf = TfidfVectorizer(tokenizer=dummy_fun, preprocessor=dummy_fun)
-        tfidf.fit_transform(train_context)
-        tf_idf_weights = tfidf.fit_transform(train_context)
-        y_train = ['other' if y_sample in other_labels else re.sub(r"_?ent[1-2]_?", "", y_sample)
-                   for y_sample in y_train]
+        # target vector
         le = LabelEncoder()
         y_train_encoded = le.fit_transform(y_train)
-        print(tf_idf_weights.shape)
-        print(y_train_encoded.shape)
-        logit = LogisticRegression(max_iter=5000, verbose=1)
-        logit.fit(tf_idf_weights, y_train_encoded)
 
-        # test model
-        test_context = []
-        for x in x_test:
-            title = x['title']
-            ent1 = x['ent1']
-            ent2 = x['ent2']
-            pos_tags = get_pos_tags(title)
-            context = get_context(pos_tags, ent1, ent2)
-            context_text = [t.text for t in context]
-            test_context.append(context_text)
+        tfidf = TfidfVectorizer(tokenizer=dummy_fun, preprocessor=dummy_fun)
+        tf_idf_weights = tfidf.fit_transform(train_textual_context)
 
-        test_tf_idf_weights = tfidf.transform(raw_documents=test_context)
-        y_test = ['other' if y_sample in other_labels else re.sub(r"_?ent[1-2]_?", "", y_sample)
-                   for y_sample in y_test]
-        predictions = logit.predict(test_tf_idf_weights)
-        print(predictions)
+        # clf = LogisticRegression(max_iter=15000)
+        clf = SGDClassifier(max_iter=15000)
+        clf.fit(tf_idf_weights, y_train_encoded)
+
+        test_tf_idf_weights = tfidf.transform(test_textual_context)
+        predictions = clf.predict(test_tf_idf_weights)
         y_pred = [le.classes_[pred] for pred in predictions]
 
+        print(y_pred)
+        print(y_test)
+
+        """
+        print("fold: ", fold_n)
         print(classification_report(y_test, y_pred, zero_division=0.00))
         cm = confusion_matrix(y_test, y_pred, labels=['opposes', 'other', 'supports'])
         print_cm(cm, labels=['opposes', 'other', 'supports'])
+        print("\n")
+        fold_n += 1
+        """
 
-    """
-    print(classification_report(true_labels, pred_labels, zero_division=0.00))
-    cm = confusion_matrix(true_labels, pred_labels, labels=['opposes', 'other', 'supports'])
+        all_data_shuffled.extend(x_train)
+        all_trues.extend(y_test)
+        all_preds.extend(y_pred)
+
+    print("\n\nFINAL REPORT")
+    print(classification_report(all_trues, all_preds, zero_division=0.00))
+    cm = confusion_matrix(all_trues, all_preds, labels=['opposes', 'other', 'supports'])
     print_cm(cm, labels=['opposes', 'other', 'supports'])
     print()
+
+    """
+    for x_data, y_pred, y_true in zip(all_data_shuffled,all_trues, all_preds):
+        if y_pred == y_true:
+            continue
+        print('true:', y_true, '\t', 'pred:', y_pred)
+        print(x_data)
+        print("\n\n---------")
     """
 
 
