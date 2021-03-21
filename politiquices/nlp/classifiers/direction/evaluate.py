@@ -31,15 +31,11 @@ def main():
             pred, pattern, context, pos_tags = direction_clf.detect_direction(clean_title, ent1, ent2)
             pred_direction.append(pred)
 
-            if context is None:
-            #if true != pred:
+            if true != pred:
                 print("true: ", true)
                 print("pred: ", pred)
                 print(d["title"], "\t", d["label"])
-                # print(pattern)
                 print(context)
-                # print(pos_tags)
-                print()
                 print("\n-----------------------------")
 
     print(classification_report(true_direction, pred_direction))

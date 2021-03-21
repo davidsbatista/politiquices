@@ -8,28 +8,25 @@ class DirectionClassifier:
     """
     use spaCy to extract morphological information
 
+    https://spacy.io/api/morphology
+
     https://www.linguateca.pt/Floresta/doc/VISLsymbolset-manual.html
     https://www.linguateca.pt/Floresta/index_en.html
     """
 
     def __init__(self):
-        self.nlp = pt_core_news_lg.load(
-            # "tok2vec"
-            disable=[
+        self.nlp = pt_core_news_lg.load(disable=[
+                "tok2vec"
                 "tagger",
                 "parser",
-                # "lemmatizer",
+                "lemmatizer",
                 "ner",
                 "attribute_ruler",
-            ]
-        )
-
-    @staticmethod
-    def _check_passive(el):
-        if el[1] == "VERB" and "PCP" in el[2]:
-            return "verb"
-        elif el[1] == "ADP" and el[0] in ["pelo", "por"]:
-            return "prp"
+            ])
+        passive_voice_mark = """POTENTIALLY_PASSIVE_VOICE: {%s}""" % "<VERB><ADP>"
+        self.passive_voice_pattern = nltk.RegexpParser(passive_voice_mark)
+        mentioned_at_end = """MENTIONED_AT_END: {%s}""" % "<PUNCT><VERB>$"
+        self.mentioned_at_end_pattern = nltk.RegexpParser(mentioned_at_end)
 
     @staticmethod
     def get_context(title_pos_tags, ent1, ent2):
@@ -42,7 +39,7 @@ class DirectionClassifier:
             ent2_interval = find_sub_list(ent2_tokens, title_text)
             if ent2_interval:
                 ent2_start, ent2_end = ent2_interval
-                return title_pos_tags[ent1_start: ent2_end + 1]
+                return title_pos_tags[ent1_end+1: ent2_start]
 
         return None
 
@@ -51,65 +48,51 @@ class DirectionClassifier:
         return [(t.text, t.pos_, t.morph) for t in doc]
 
     def detect_direction(self, sentence, ent1, ent2):
-        # returns: label, pattern, context, pos_tags
+
+        # possessive = """POSSESSIVE_CASE: {%s}""" % "<NOUN><ADP><PROPN><PROPN|ADV|ADP>*$"
+        # possessive_pattern = nltk.RegexpParser(possessive)
 
         pos_tags = self.get_pos_tags(sentence)
         context = self.get_context(pos_tags, ent1, ent2)
 
-
         if not context:
             return "ent1_rel_ent2", None, None, pos_tags
 
-        passive_voice_mark = """PASSIVE_VOICE: {%s}""" % "<AUX*>?<VERB><ADP>"
-        passive_voice_pattern = nltk.RegexpParser(passive_voice_mark)
-
-        # passive voice
-        patterns_found = passive_voice_pattern.parse(context)
+        # the passive voice
+        patterns_found = self.passive_voice_pattern.parse(context)
         for t in patterns_found.subtrees():
-            if t.label() == "PASSIVE_VOICE":
+            if t.label() == "POTENTIALLY_PASSIVE_VOICE":
                 elements = list(t)
-                # print(elements)
-                verb_checked = False
-                prp_checked = False
-                for el in elements:
-                    result = self._check_passive(el)
-                    if result == "verb":
-                        verb_checked = True
+                if elements[0][2].get("Voice") == ['Pass']:
+                    return "ent2_rel_ent1", patterns_found, context, pos_tags
 
-                    if result == "prp":
-                        prp_checked = True
+        # a very frequent pattern: ", <diz|afirma|acusa> <ent2>"
+        patterns_found = self.mentioned_at_end_pattern.parse(context)
+        for t in patterns_found.subtrees():
+            if t.label() == "MENTIONED_AT_END":
+                elements = list(t)
+                if elements[1][2].get("Mood") == ['Ind']:
+                    return "ent2_rel_ent1", patterns_found, context, pos_tags
 
-                    if verb_checked and prp_checked:
-                        return "ent2_rel_ent1", patterns_found, context, pos_tags
+        # [('desvaloriza', 'VERB', Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin), ('acusações', 'NOUN', Gender=Fem|Number=Plur), ('de', 'ADP', )]
+        # [('diz', 'VERB', Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin), ('que', 'SCONJ', ), ('acusações', 'NOUN', Gender=Fem|Number=Plur), ('de', 'ADP', )]
+        # [('recebe', 'VERB', Mood=Ind | Number=Sing | Person=3 | Tense=Pres | VerbForm=Fin), ('apoio', 'NOUN', Gender=Masc | Number=Sing), ('de', 'ADP',)]
 
+
+        """
+        # ataque|acusações|apoio|apelo de <ent2>
+        valid_nouns = ["críticas", "acusações", "ataques", "ataque", "apoio", "apelo"]
+        patterns_found = possessive_pattern.parse(context)
+        for t in patterns_found.subtrees():
+            if t.label() == "POSSESSIVE_CASE":
+                elements = list(t)
+                if (
+                        elements[0][0] in valid_nouns
+                        and elements[1][0] in ["de"]
+                        and ent2 in " ".join(t[0] for t in elements)
+                ):
+                    return "ent2_rel_ent1", patterns_found, context, pos_tags
+        """
         # defaults to 'ent1_rel_ent2'
         return "ent1_rel_ent2", None, context, pos_tags
 
-        # mentioned_at_end = """MENTIONED_AT_END: {%s}""" % "<PUNCT><VERB><NOUN|PROPN|ADP>*$"
-        # mentioned_at_end_pattern = nltk.RegexpParser(mentioned_at_end)
-        #
-        # possessive = """POSSESSIVE_CASE: {%s}""" % "<NOUN><ADP><PROPN><PROPN|ADV|ADP>*$"
-        # possessive_pattern = nltk.RegexpParser(possessive)
-        #
-        #
-        # # , diz/afirma <ent2>
-        # if (",", "PUNCT", "PU|@PU") in pos_tags:
-        #     last_comma_idx = max(idx for idx, val in enumerate(pos_tags) if val[0] == ",")
-        #     patterns_found = mentioned_at_end_pattern.parse(pos_tags[last_comma_idx:])
-        #     for t in patterns_found.subtrees():
-        #         if t.label() == "MENTIONED_AT_END":
-        #             return "ent2_rel_ent1", patterns_found
-        #
-        #
-        # # ataque|acusações|apoio|apelo de <ent2>
-        # valid_nouns = ["críticas", "acusações", "ataques", "ataque", "apoio", "apelo"]
-        # patterns_found = possessive_pattern.parse(context)
-        # for t in patterns_found.subtrees():
-        #     if t.label() == "POSSESSIVE_CASE":
-        #         elements = list(t)
-        #         if (
-        #                 elements[0][0] in valid_nouns
-        #                 and elements[1][0] in ["de"]
-        #                 and ent2 in " ".join(t[0] for t in elements)
-        #         ):
-        #             return "ent2_rel_ent1", patterns_found
