@@ -9,6 +9,7 @@ class DirectionClassifier:
     use spaCy to extract morphological information
 
     https://spacy.io/api/morphology
+    https://universaldependencies.org/u/pos/index.html
 
     https://www.linguateca.pt/Floresta/doc/VISLsymbolset-manual.html
     https://www.linguateca.pt/Floresta/index_en.html
@@ -27,6 +28,8 @@ class DirectionClassifier:
         self.passive_voice_pattern = nltk.RegexpParser(passive_voice_mark)
         mentioned_at_end = """MENTIONED_AT_END: {%s}""" % "<PUNCT><VERB>$"
         self.mentioned_at_end_pattern = nltk.RegexpParser(mentioned_at_end)
+        third_pattern = """THIRD_PATTERN: {%s}""" % "<NOUN><ADP>$"
+        self.third_pattern = nltk.RegexpParser(third_pattern)
 
     @staticmethod
     def get_context(title_pos_tags, ent1, ent2):
@@ -49,9 +52,6 @@ class DirectionClassifier:
 
     def detect_direction(self, sentence, ent1, ent2):
 
-        # possessive = """POSSESSIVE_CASE: {%s}""" % "<NOUN><ADP><PROPN><PROPN|ADV|ADP>*$"
-        # possessive_pattern = nltk.RegexpParser(possessive)
-
         pos_tags = self.get_pos_tags(sentence)
         context = self.get_context(pos_tags, ent1, ent2)
 
@@ -66,7 +66,7 @@ class DirectionClassifier:
                 if elements[0][2].get("Voice") == ['Pass']:
                     return "ent2_rel_ent1", patterns_found, context, pos_tags
 
-        # a very frequent pattern: ", <diz|afirma|acusa> <ent2>"
+        # a very frequent pattern at the end of the context: ", <diz|afirma|acusa> <ent2>"
         patterns_found = self.mentioned_at_end_pattern.parse(context)
         for t in patterns_found.subtrees():
             if t.label() == "MENTIONED_AT_END":
@@ -74,25 +74,15 @@ class DirectionClassifier:
                 if elements[1][2].get("Mood") == ['Ind']:
                     return "ent2_rel_ent1", patterns_found, context, pos_tags
 
-        # [('desvaloriza', 'VERB', Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin), ('acusações', 'NOUN', Gender=Fem|Number=Plur), ('de', 'ADP', )]
-        # [('diz', 'VERB', Mood=Ind|Number=Sing|Person=3|Tense=Pres|VerbForm=Fin), ('que', 'SCONJ', ), ('acusações', 'NOUN', Gender=Fem|Number=Plur), ('de', 'ADP', )]
-        # [('recebe', 'VERB', Mood=Ind | Number=Sing | Person=3 | Tense=Pres | VerbForm=Fin), ('apoio', 'NOUN', Gender=Masc | Number=Sing), ('de', 'ADP',)]
-
-
-        """
-        # ataque|acusações|apoio|apelo de <ent2>
+        # another common pattern
         valid_nouns = ["críticas", "acusações", "ataques", "ataque", "apoio", "apelo"]
-        patterns_found = possessive_pattern.parse(context)
+        patterns_found = self.third_pattern.parse(context)
         for t in patterns_found.subtrees():
-            if t.label() == "POSSESSIVE_CASE":
+            if t.label() == "THIRD_PATTERN":
                 elements = list(t)
-                if (
-                        elements[0][0] in valid_nouns
-                        and elements[1][0] in ["de"]
-                        and ent2 in " ".join(t[0] for t in elements)
-                ):
+                if elements[0][0] in valid_nouns:
                     return "ent2_rel_ent1", patterns_found, context, pos_tags
-        """
+
         # defaults to 'ent1_rel_ent2'
         return "ent1_rel_ent2", None, context, pos_tags
 

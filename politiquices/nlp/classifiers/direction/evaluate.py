@@ -35,7 +35,7 @@ def main():
                 print("true: ", true)
                 print("pred: ", pred)
                 print(d["title"], "\t", d["label"])
-                print(context)
+                # print(context)
                 print("\n-----------------------------")
 
     print(classification_report(true_direction, pred_direction))
