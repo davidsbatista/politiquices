@@ -1,4 +1,6 @@
 
+main question is: where is the part of the text that as the positve or negative aspect?
+
 1.
 PER <expressão verbal> PER:
 ---------------------------
@@ -39,8 +41,7 @@ e.g:
 
 
 
-3.
-- PER e PER <expressão>
+3. PER e PER <expressão>
 ------------------------
 
 
@@ -56,7 +57,19 @@ e.g.:
 
 
 
-5.
+5. PER adj adp? PER
+--------------------
+o adj determina se é oposição ou suporte
+
+e.g:
+    Guterres solidário com Sampaio no caso do urânio empobrecido
+    [('solidário', 'ADJ', Gender=Masc|Number=Sing), ('com', 'ADP', )]
+
+
+
+
+
+6.
 Títulos com uma terceira entidade envolvida são discartados:
 -----------------------------------------------------------
 - Assunção Esteves criticada por receber Manuel Coelho
