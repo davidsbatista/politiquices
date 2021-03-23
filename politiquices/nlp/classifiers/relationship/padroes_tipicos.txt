@@ -20,7 +20,6 @@ NOTE: Poderá também haver uma negação que muda o sentido da expressão.
 - PER não acredita em PER -> opposes
 
 
-
 2. PER <uninformal expression> PER <expression containing positive or negative aspect>
 PER diz que PER <expressão>
 PER defende que PER <expressão>
@@ -41,23 +40,8 @@ e.g:
 
 
 
-3. PER e PER <expressão>
-------------------------
 
-
-
-
-4.
-PER_1: PER_2 <expressão>
---------------------
-PER_2 é normalmente o alvo de uma opinião de PER_1 contido em expressão
-
-e.g.:
-    PER: PER fez "um discurso de facção, um discurso sectário"
-
-
-
-5. PER adj adp? PER
+3. PER adj adp? PER
 --------------------
 o adj determina se é oposição ou suporte
 
@@ -65,6 +49,22 @@ e.g:
     Guterres solidário com Sampaio no caso do urânio empobrecido
     [('solidário', 'ADJ', Gender=Masc|Number=Sing), ('com', 'ADP', )]
 
+
+
+
+4. PER e PER <expressão>
+------------------------
+
+
+
+
+5.
+PER_1: PER_2 <expressão>
+--------------------
+PER_2 é normalmente o alvo de uma opinião de PER_1 contido em expressão
+
+e.g.:
+    PER: PER fez "um discurso de facção, um discurso sectário"
 
 
 

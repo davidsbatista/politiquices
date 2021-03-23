@@ -57,7 +57,7 @@ def main():
     training_data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.tsv")
     all_data = training_data + training_data_webapp
 
-    verb = "<ADV>*<AUX>*<VERB><PART>*<ADV>*"
+    verb = "<ADV>?<AUX|VERB><PART>?<ADV>?"
     word = "<NOUN|ADJ|ADV|DET|ADP>"
     preposition = "<ADP|ADJ>"
     rel_pattern = "( %s (%s* (%s)+ )? )+ " % (verb, word, preposition)
@@ -65,7 +65,9 @@ def main():
     reverb_pattern = nltk.RegexpParser(reverb_mark)
 
     word_sentiment = WordSentiment()
-    contexts = defaultdict(int)
+    contexts = defaultdict(list)
+    verbs = defaultdict(int)
+    verbs_lemma = defaultdict(int)
 
     for sample in all_data:
 
@@ -76,33 +78,36 @@ def main():
         context = get_context(pos_tags, ent1, ent2)
 
         # to catch errors in training data
-        if context is None:
-            exit(-1)
-
-        # Pattern III: "PER e PER"
-        if len(context) == 1 and context[0].text == 'e':
+        if context is None or len(context) == 0:
             continue
 
-        # Pattern II: PER <VERB> <SCONJ|ADP> PER <expression w/ positive or negative aspect>
-        if len(context) == 2:
+        contexts['_'.join([t.pos_ for t in context])].append([t.text for t in context])
+
+        if len(context) == 1 and context[0].pos_ == 'VERB':
+            """
             print(sample['label'])
             print(title)
             print(ent1)
             print(ent2)
-            print()
-            if context[0].pos_ == 'VERB' and (context[1].pos_ == 'SCONJ' or context[1].pos_ == 'ADP'):
-                print(context)
-                print([(t.text, t.pos_, t.morph) for t in context])
-            else:
-                print("WHATS THIS?")
-                print(context)
-                print([(t.text, t.pos_, t.morph) for t in context])
-            print()
+            print(context)
             print("\n-----------------")
-            continue
-        else:
-            continue
+            """
+            verbs_lemma[context[0].lemma_] += 1
 
+    """
+    for x in sorted(verbs_lemma, key=lambda x: verbs_lemma[x], reverse=True):
+        print(x, verbs_lemma[x], word_sentiment.get_sentiment(x))
+    print(len(verbs_lemma))
+    """
+
+    for pos_tags in sorted(contexts, key=lambda x: len(contexts[x]), reverse=True):
+        print(pos_tags, len(contexts[pos_tags]))
+        for context in sorted(contexts[pos_tags]):
+            print(context)
+        print("\n\n-----")
+
+    """
+        # Pattern I: PER <verbal expression w/ positive or negative aspect> PER:
         reverb_patterns = []
         context_text_pos = [(t, t.pos_, t.morph) for t in context]
         patterns_found = reverb_pattern.parse(context_text_pos)
@@ -110,42 +115,72 @@ def main():
             if tokens.label() == "REVERB_PATTERN":
                 reverb_patterns.append(list(tokens))
 
-        # if len(reverb_patterns) == 1 and len(reverb_patterns[0]) == 1:
-        print(sample['label'])
-        print(title)
-        print(ent1)
-        print(ent2)
-        print()
-        print(context_text_pos)
-        print()
-        """
-        print(reverb_patterns[0][0])
-        raw = reverb_patterns[0][0][0].text
-        lemma = reverb_patterns[0][0][0].lemma_
-        print(f"{raw}   : ", word_sentiment.get_sentiment(raw))
-        print(f"{lemma} : ", word_sentiment.get_sentiment(lemma))
-        lemma = reverb_patterns[0][0][0].lemma_
-        contexts[lemma] += 1
-        print("\n-----------------")
-        """
+        if len(reverb_patterns) == 1 and len(reverb_patterns[0]) == 1:
+            print(sample['label'])
+            print(title)
+            print(ent1)
+            print(ent2)
+            print("Pattern I")
+            # print(context_text_pos)
+            print()
+            print(reverb_patterns[0][0])
+            raw = reverb_patterns[0][0][0].text
+            lemma = reverb_patterns[0][0][0].lemma_
+            print(f"{raw}   : ", word_sentiment.get_sentiment(raw))
+            print(f"{lemma} : ", word_sentiment.get_sentiment(lemma))
+            lemma = reverb_patterns[0][0][0].lemma_
+            contexts[lemma] += 1
+            print("\n-----------------")
 
-        # print([(t.text, t.pos) for t in context])
-        # print()
-        # print([(t.text, t.pos_, t.morph) for t in context])
-        # context_text = ' '.join([t.lemma_ for t in context])
-        # contexts[context_text] += 1
+        continue
 
-        """
-        for t in context:
-            if t.pos_ in ['ADP']:
+        if len(context) == 2:
+            # Pattern II:
+            # PER <VERB> <SCONJ|ADP> PER <expression w/ positive or negative aspect>
+            if context[0].pos_ == 'VERB' and (context[1].pos_ == 'SCONJ' or context[1].pos_ == 'ADP'):
+                print(sample['label'])
+                print(title)
+                print(ent1)
+                print(ent2)
+                print("Pattern II")
+                print(context_text_pos)
+                print()
+                print(context)
+                print([(t.text, t.pos_, t.morph) for t in context])
+                print("\n-----------------")
+
+            # Pattern III:
+            # PER <ADJ> <ADJ|CONJ> PER
+            # the expression dominated by an ADJ indicates the positive or negative aspect
+            elif context[0].pos_ == 'ADJ' and (context[1].pos_ == 'ADP' or context[1].pos_ == 'SCONJ'):
+                print(sample['label'])
+                print(title)
+                print(ent1)
+                print(ent2)
+                print("Pattern III")
+                print(context_text_pos)
+                print()
+                print(context)
+                print([(t.text, t.pos_, t.morph) for t in context])
+                print("\n-----------------")
+
+            else:
+                print(sample['label'])
+                print(title)
+                print(ent1)
+                print(ent2)
+                print()
+                print("WHATS THIS?")
+                print(context)
+                print([(t.text, t.pos_, t.morph) for t in context])
+                print("\n-----------------")
                 continue
-            print(t.text, t.pos_, t.lemma_, '\t', word_sentiment.get_sentiment(t.lemma_))
+
+        # Pattern IV:
+        # "PER e PER" - usually other
+        if len(context) == 1 and context[0].text == 'e':
+            continue
         """
-
-    for x in sorted(contexts, key=lambda x: contexts[x], reverse=True):
-        print(x, contexts[x])
-
-    print(len(contexts))
 
 
 if __name__ == "__main__":
