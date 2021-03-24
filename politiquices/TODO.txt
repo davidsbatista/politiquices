@@ -7,8 +7,7 @@ Web App
     articles     :  17814
     relationships:  17814
 
-    - estatísticas: label "mostrar" / "esconder"
-    - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
+   - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
 
    - Grafo:
         - arrastar um nó e parar, desligar a física
@@ -35,7 +34,6 @@ Web App
 
     - Adicionar o Entity Versus Entity
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
-
 
     - acabar o relatório
 
