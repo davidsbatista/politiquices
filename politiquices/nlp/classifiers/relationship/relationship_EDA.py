@@ -82,17 +82,7 @@ def main():
             continue
 
         contexts['_'.join([t.pos_ for t in context])].append([t.text for t in context])
-
-        if len(context) == 1 and context[0].pos_ == 'VERB':
-            """
-            print(sample['label'])
-            print(title)
-            print(ent1)
-            print(ent2)
-            print(context)
-            print("\n-----------------")
-            """
-            verbs_lemma[context[0].lemma_] += 1
+        # ToDo: add label
 
     """
     for x in sorted(verbs_lemma, key=lambda x: verbs_lemma[x], reverse=True):
