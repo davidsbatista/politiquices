@@ -7,7 +7,6 @@ Web App
     articles     :  17814
     relationships:  17814
 
-    - espaço entre filtro tempo + botão 'PROCURAR'
     - estatísticas: label "mostrar" / "esconder"
     - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
 
@@ -118,7 +117,6 @@ relationship classifier
 ======================
 
     - explorar os padroes encontrados
-
     - se o output é 'other' não faz sentido correr o classificador de direcção
 
     🔹 Look at the data carefully. Do EDA

@@ -132,7 +132,7 @@
 
       .ui-slider-horizontal {
           height: 20px;
-          width: 148px;
+          width: 138px;
       }
 
       .ui-slider .ui-slider-handle {
@@ -160,7 +160,7 @@
             range: true,
             min: 1994,
             max: 2019,
-            values: [ 2000, 2019 ],
+            values: [ 2000, 2015 ],
             slide: function( event, ui ) {
 
             var from = '<center>'+ui.values[0]+'</center>'
@@ -191,11 +191,11 @@
                    id="freq_max" value="30" placeholder="30">
             </center>
             <br>
-            <div class="form-check">
+            <div class="form-check" style="color:#002364; margin: 15px;">
               <input class="form-check-input" type="checkbox" value="opposes" id="check_opposes" checked>
               <label class="form-check-label" for="flexCheckDefault">opõe-se</label>
             </div>
-            <div class="form-check">
+            <div class="form-check" style="color:#002364; margin: 15px;">
               <input class="form-check-input" type="checkbox" value="support" id="check_supports"
                      checked>
               <label class="form-check-label" for="flexCheckChecked">apoia</label>
@@ -203,11 +203,10 @@
             <br>
             <div type="text" id="ano_from" style="color:#002364; margin: 15px; font-weight:bold;"><center>2000</center></div>
             <div class="form-control" id="slider_graph"></div>
-            <div type="text" id="ano_to" style="color:#002364; margin: 15px; font-weight:bold;"><center>2019</center></div>
+            <div type="text" id="ano_to" style="color:#002364; margin: 15px; font-weight:bold;"><center>2015</center></div>
             <hr>
             <center>Rede pessoal
-            <input type="text" class="form-control" style="width:150px; height:30px; font-size:13px;"
-                   maxlength="15" id="graph_entity">
+            <input type="text" class="form-control" style="width:138px; height:30px; font-size:13px;" maxlength="15" id="graph_entity">
             <input type="hidden" id="graph_entity-value" type="text" name="wiki">
             <br><br>
             <input type="submit" value="Actualizar" id="reload"/>
