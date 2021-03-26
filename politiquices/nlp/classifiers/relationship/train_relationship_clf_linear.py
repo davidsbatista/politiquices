@@ -144,13 +144,15 @@ def main():
         # tfidf = TfidfVectorizer(ngram_range=(1, 2))
         tf_idf_weights = tfidf.fit_transform(train_textual_context)
 
+        """
         clf = LogisticRegression(
             max_iter=15000,
             multi_class='multinomial',
             n_jobs=5,
         )
+        """
         # clf = SGDClassifier(max_iter=15000)
-        # clf = LinearSVC()
+        clf = LinearSVC(class_weight='balanced')
 
         clf.fit(tf_idf_weights, y_train_encoded)
         test_tf_idf_weights = tfidf.transform(test_textual_context)
