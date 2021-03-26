@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request, jsonify, render_template
 
+from politiquices.nlp.utils.utils import read_ground_truth
 from politiquices.webapp.webapp.config import entities_batch_size
 from politiquices.webapp.webapp.lib.utils import get_info
 from politiquices.webapp.webapp.lib.graph import get_entity_network, get_network
@@ -293,7 +294,16 @@ def chave():
 # admin only: get all 'other' relationships and shows then in annotation template
 @app.route("/annotate")
 def annotations():
-    to_annotate = get_relationships_to_annotate()
+    data = read_ground_truth("../../../politiquices_training_data.tsv")
+    data_webapp = read_ground_truth("../../../nlp/api_annotations/annotations_from_webapp.tsv")
+    training_data = [d['title'] for d in data + data_webapp]
+    all_other = get_relationships_to_annotate()
+    to_annotate = []
+    for doc in all_other:
+        if doc['title'] in training_data:
+            print("skipping...")
+            continue
+        to_annotate.append(doc)
 
     for idx, r in enumerate(to_annotate):
         link_one = r["title"].replace(

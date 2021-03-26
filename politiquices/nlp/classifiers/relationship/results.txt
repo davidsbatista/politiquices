@@ -1,57 +1,62 @@
 FINAL REPORT
 ------------
-+ spaCy tokenization
-+ LogisticRegression(max_iter=15000)
+- spaCy tokenization
+- LogisticRegression(max_iter=15000, multi_class='multinomial)
 
               precision    recall  f1-score   support
 
-     opposes       0.70      0.72      0.71      1068
-       other       0.64      0.75      0.69      1081
-    supports       0.70      0.39      0.50       502
+     opposes       0.71      0.71      0.71      1070
+       other       0.63      0.75      0.68      1078
+    supports       0.69      0.40      0.51       504
 
-    accuracy                           0.67      2651
-   macro avg       0.68      0.62      0.63      2651
-weighted avg       0.67      0.67      0.66      2651
+    accuracy                           0.67      2652
+   macro avg       0.68      0.62      0.63      2652
+weighted avg       0.67      0.67      0.66      2652
+
+       t/p    opposes    other supports
+     opposes    758.0    281.0     31.0
+       other    207.0    811.0     60.0
+    supports    101.0    201.0    202.0
+
+
+
+- spaCy tokenization
+- LogisticRegression(max_iter=15000, multi_class='multinomial)
+- 'diz que' -> select after
+
+              precision    recall  f1-score   support
+
+     opposes       0.73      0.65      0.68      1070
+       other       0.60      0.77      0.67      1078
+    supports       0.68      0.41      0.51       504
+
+    accuracy                           0.65      2652
+   macro avg       0.67      0.61      0.62      2652
+weighted avg       0.67      0.65      0.65      2652
 
 
        t/p    opposes    other supports
-     opposes    771.0    263.0     34.0
-       other    219.0    812.0     50.0
-    supports    116.0    191.0    195.0
+     opposes    691.0    343.0     36.0
+       other    181.0    834.0     63.0
+    supports     77.0    219.0    208.0
 
 
-FINAL REPORT
-+ spaCy tokenization
-+ SGDClasifier(max_iter=15000)
+
+- spaCy tokenization
+- LinearSVC()
+- 'diz que' -> select after
 
               precision    recall  f1-score   support
 
-     opposes       0.68      0.76      0.71      1068
-       other       0.69      0.66      0.68      1081
-    supports       0.61      0.51      0.56       502
+     opposes       0.70      0.65      0.67      1070
+       other       0.62      0.70      0.66      1080
+    supports       0.56      0.49      0.52       502
 
-    accuracy                           0.67      2651
-   macro avg       0.66      0.64      0.65      2651
-weighted avg       0.67      0.67      0.67      2651
+    accuracy                           0.64      2652
+   macro avg       0.63      0.61      0.62      2652
+weighted avg       0.64      0.64      0.64      2652
 
        t/p    opposes    other supports
-     opposes    807.0    202.0     59.0
-       other    261.0    717.0    103.0
-    supports    127.0    119.0    256.0
-
-
-
-FINAL REPORT
-+ default TfidfVectorizer tokenizer
-+ n-grams=(1,2)
-+ SGDClasifier(max_iter=15000)
-
-              precision    recall  f1-score   support
-
-     opposes       0.67      0.74      0.71      1068
-       other       0.68      0.63      0.65      1081
-    supports       0.57      0.54      0.55       502
-
-    accuracy                           0.66      2651
-   macro avg       0.64      0.64      0.64      2651
-weighted avg       0.66      0.66      0.66      2651
+     opposes    693.0    300.0     77.0
+       other    206.0    754.0    120.0
+    supports     92.0    163.0    247.0

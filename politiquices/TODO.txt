@@ -36,8 +36,9 @@ Web App
     - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
 
     - acabar o relatório
+		https://www.w3.org/DesignIssues/LinkedData.html
 
-    - fazer o script para o video
+    - script para o video
 
             1. intro_ explicar o que é o projecto
                 - tirar frases chave do relatório

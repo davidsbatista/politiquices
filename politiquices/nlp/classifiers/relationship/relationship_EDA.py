@@ -65,7 +65,7 @@ def main():
     reverb_pattern = nltk.RegexpParser(reverb_mark)
 
     word_sentiment = WordSentiment()
-    contexts = defaultdict(list)
+    contexts = defaultdict(lambda: defaultdict(list))
     verbs = defaultdict(int)
     verbs_lemma = defaultdict(int)
 
@@ -81,8 +81,14 @@ def main():
         if context is None or len(context) == 0:
             continue
 
-        contexts['_'.join([t.pos_ for t in context])].append([t.text for t in context])
-        # ToDo: add label
+        label = sample['label']
+
+        if label in other_labels:
+            label = 'other'
+        else:
+            label = re.sub(r"_?ent[1-2]_?", "", label)
+
+        contexts['_'.join([t.pos_ for t in context])][label].append(' '.join([t.text for t in context]))
 
     """
     for x in sorted(verbs_lemma, key=lambda x: verbs_lemma[x], reverse=True):
@@ -91,10 +97,16 @@ def main():
     """
 
     for pos_tags in sorted(contexts, key=lambda x: len(contexts[x]), reverse=True):
-        print(pos_tags, len(contexts[pos_tags]))
-        for context in sorted(contexts[pos_tags]):
-            print(context)
-        print("\n\n-----")
+        print(pos_tags, "labels->", len(set(contexts[pos_tags])))
+        for label in contexts[pos_tags]:
+            print(label)
+            print("-----")
+            for text in sorted(set(contexts[pos_tags][label])):
+                print(text)
+            print("\n")
+        print("\n\n")
+
+    print(len(contexts))
 
     """
         # Pattern I: PER <verbal expression w/ positive or negative aspect> PER:
