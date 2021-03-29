@@ -7,61 +7,78 @@ Web App
     articles     :  17814
     relationships:  17814
 
-   - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
+    - Sobre:
+        - Download do TTL e de como indexar no Jena + queries de exemplos
+        - TODO no github de como indexar o .ttl com exemplos de queries
 
-   - Grafo:
+        - percentagem de artigos:
+            - arquivo.pt ?
+            - CHAVE ?
+            - publico.pt ?
+
+
+    - script para o video
+
+        1. intro_ explicar o que é o projecto
+            - tirar frases chave do relatório
+
+        2. mostrar um exemplo com queries
+           2.1 per vs per
+           2.2 per vs party
+               -> mostrar o heatmap
+           2.3 part vs. per
+               -> mostrar o heatmap
+           2.4 party vs party
+
+        3. mostrar um exemplo de navegação no grafo
+           3.1 uma rede geral
+           3.2 a rede uma entidade em específico
+
+        4. mostrar os dados de uma personalidade individual
+            + main info + chart for all relationships
+            + clicar numa personalidade e ver todas as relações
+            + ir ao detalhe de ver na tabela cada uma das relações
+                - escolher o tipo de relação
+                - procurar + ordenar + exportar para ficheiro
+
+
+
+    UI:
+    --
+      Grafo:
+        - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
+        - rede de uma entidade, duas direcções
         - arrastar um nó e parar, desligar a física
-        - triangulos politicos: qual a relação tipica entre X e Y, se X e Y sempre acusam/defendem Z
-
-    - same news article with different timestamp and different URL (added same params):
-    - http://0.0.0.0:5000/entity?q=Q9604772
-
-    corrigir:
-        - http://0.0.0.0:5000/entity?q=Q10395752 -> wrong 'Álvaro Almeida'
-        - https://www.politiquices.pt/entity?q=Q10324736 ->  Moniz Pereira being linked to Moura Guedes
-
-    - Personalidade:
+      Personalidade:
         Mostrar apenas o que é relevante nas relações
             http://0.0.0.0:5000/entity?q=Q182367
 			https://www.politiquices.pt/entity?q=Q9619510
             http://0.0.0.0:5000/entity?q=Q91901804
             http://0.0.0.0:5000/entity?q=Q23797153
+       Adicionar o Entity Versus Entity ?
+        - Limpar o Javascript: re-utilizar
+        - CSS todo fora do HTML
 
-    - erros de paramêtros nao válidos no URL:
-        - queries/ tem que ter duas entidades validas
-        - fazer redirect para o index.html com mensagem de erro
 
+    Backend:
+    -------
+        - same news article with different timestamp and different URL (added same params):
+        - http://0.0.0.0:5000/entity?q=Q9604772
+        - António Pires de Lima x2 (eliminar 1, só tem um artigo)
 
-    - Adicionar o Entity Versus Entity
-    - tirar todos os alerts -> substituir por uma pagina de erro -> ir para index.html
+        entity_linking
+        --------------
+            - http://0.0.0.0:5000/entity?q=Q10395752 -> wrong 'Álvaro Almeida'
+            - https://www.politiquices.pt/entity?q=Q10324736 ->  Moniz Pereira being linked to Moura Guedes
+            - verify if these titles are in 'António Costa' or 'Carlos Costa'
+                - Banif: Centeno desmente Bruxelas e Costa rebate narrativa da "falha grave"
+                - Março: Costa discute saída da família do BES. Salgado diz que seria o dilúvio
+            - 'Álvaro Almeida' != Álvaro Augusto Matos Almeida
+                - http://0.0.0.0:5000/entity?q=Q10395752
 
-    - acabar o relatório
-		https://www.w3.org/DesignIssues/LinkedData.html
-
-    - script para o video
-
-            1. intro_ explicar o que é o projecto
-                - tirar frases chave do relatório
-
-            2. mostrar os dados de uma personalidade individual
-                + main info + chart for all relationships
-                + clicar numa personalidade e ver todas as relações
-                + ir ao detalhe de ver na tabela cada uma das relações
-                    - escolher o tipo de relação
-                    - procurar + ordenar + exportar para ficheiro
-
-            3. mostrar um exemplo com queries
-               2.1 per vs per
-                2.2 per vs party
-                    -> mostrar o heatmap
-                2.3 part vs. per
-                    -> mostrar o heatmap
-               2.4 party vs party
-
-            4. mostrar um exemplo de navegação no grafo
-               3.1 uma rede geral
-               3.2 a rede uma entidade em específico
-
+        - erros de paramêtros nao válidos no URL:
+            - queries/ tem que ter duas entidades validas
+            - fazer redirect para o index.html com mensagem de erro
 
     - JS libs todas locais
         - bootstrap-table javascript local
@@ -72,19 +89,8 @@ Web App
         - https://computingforgeeks.com/install-matomo-piwik-web-analytics-tool-on-ubuntu/
         - https://www.howtoforge.com/how-to-install-matomo-web-analytics-on-ubuntu-2004/
 
-    - HTML:
-        - Limpar o Javascript: re-utilizar
-        - CSS todo fora do HTML
+    - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
 
-
-    entity_linking
-    --------------
-        - verify if these titles are in 'António Costa' or 'Carlos Costa'
-            - Banif: Centeno desmente Bruxelas e Costa rebate narrativa da "falha grave"
-            - Março: Costa discute saída da família do BES. Salgado diz que seria o dilúvio
-
-        - 'Álvaro Almeida' != Álvaro Augusto Matos Almeida
-            - http://0.0.0.0:5000/entity?q=Q10395752
 
     Geral (low)
     ----------
@@ -92,45 +98,24 @@ Web App
         - clicar no branco fazer collapse ao menu (hamburger)
         - cache + cópia do resize das imagens para este display
 
-        Agregacoes + info na personalidade:
-        ------------------------------------
-             - listar relações familiares
-             - Mostrar todos os que estão ligados pelas duas relaçoes:
-                e.g.: acusa e apoia, mário soares e sócrates
-             - conflitos dentro mesmo governo
-             - Governo
-             - Assembleias
-             - Profissao
-             - Educacao
-             - listar todos os membros do Governo X
-             - listar todos os que já foram Ministros <qq cena>
-
-        DevOps:
-        -------
-            - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
-            - Wrap everything in docker, it's reproducible ?
-
-
 
 relationship classifier
 ======================
-
-    - explorar os padroes encontrados
-    - se o output é 'other' não faz sentido correr o classificador de direcção
-
     🔹 Look at the data carefully. Do EDA
     🔹 Look at the targets. See how they are distributed & what kind of problem this is
     🔹 Choose the right metric to evaluate your models
-    🔹 Split the data into folds. You can use this for cross-validation or for hold out based validation
+    🔹 Split the data into folds. You can use this for cross-validation or for hold out based
+       validation
     🔹 Build a first basic model. This is going to be your baseline.
     🔹 Now try to improve on the baseline by adding new features
     🔹 To add new features, go back to data. Look at the EDA. That's why its quite important
     🔹 When you think you have reached a limit with feature engineering, try different models
     🔹 Keep log of all the scores, features and models
     🔹 When you think you have reached a limit with different models, try feature selection
-    🔹 Done with feature engineering and feature selection? You will realize that by following above steps, you have also chosen a few best models that work well with your data
-    🔹 Now its time to do hyperparameter optimization and squeeze the last few drops from your best models
-
+    🔹 Done with feature engineering and feature selection? You will realize that by following above
+       steps, you have also chosen a few best models that work well with your data
+    🔹 Now its time to do hyperparameter optimization and squeeze the last few drops from your
+       best models
 
     - Transformer models: https://huggingface.co/transformers/quicktour.html
 
@@ -150,7 +135,7 @@ relationship classifier
             - catch negations, how? e.g.: defende != não + defende
             - tool to visualize embeddings
 
-    - handling imbalenced data:
+    - handling imbalanced data:
         - https://towardsdatascience.com/handling-class-imbalanced-data-using-a-loss-specifically-made-for-it-6e58fd65ffab
         - https://www.tensorflow.org/tutorials/structured_data/imbalanced_data
         - https://github.com/vandit15/Class-balanced-loss-pytorch
