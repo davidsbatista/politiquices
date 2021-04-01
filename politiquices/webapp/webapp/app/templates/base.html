@@ -130,8 +130,7 @@
                 complete: function (output) {
                   // disable $('#auto-scroll') it's activated in 'Personalidades' page
                   $(window).off();
-                  $('#container').empty();
-                  $('#container').html(output.responseText);
+                  $('#container').replaceWith(output.responseText);
                   $('html, body').animate({ scrollTop: 0 }, 'slow');
                 }
               });
@@ -203,9 +202,10 @@
   <script src="static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Datatables -->
-  <link href="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.css" rel="stylesheet">
-  <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
+  <link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/locale/bootstrap-table-pt-PT.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/export/bootstrap-table-export.min.js"></script>
   <script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
-  <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
 </body>
 </html>

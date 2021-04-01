@@ -141,8 +141,8 @@
               <tbody>
               {% for item in items.top_relations.who_person_opposes %}
                 <tr class='clickable-row' data-href=/queries?&e1={{items.wiki_id}}&e2={{item.wiki_id}}&relationship=opposes&year_from=1994&year_to=2019>
-                    <td class="underline-on-hover">{{item.name}}</td>
-                    <td class="underline-on-hover">{{item.nr_articles}}</td>
+                    <td id="top-row">{{item.name}}</td>
+                    <td id="top-row">{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -155,8 +155,8 @@
               <tbody>
               {% for item in items.top_relations.who_person_supports %}
                 <tr class='clickable-row' data-href=/queries?&e1={{items.wiki_id}}&e2={{item.wiki_id}}&relationship=supports&year_from=1994&year_to=2019>
-                    <td class="underline-on-hover">{{item.name}}</td>
-                    <td class="underline-on-hover">{{item.nr_articles}}</td>
+                    <td id="top-row">{{item.name}}</td>
+                    <td id="top-row">{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -169,8 +169,8 @@
               <tbody>
               {% for item in items.top_relations.who_opposes_person %}
                 <tr class='clickable-row' data-href=/queries?&e2={{items.wiki_id}}&e1={{item.wiki_id}}&relationship=opposes&year_from=1994&year_to=2019>
-                    <td class="underline-on-hover">{{item.name}}</td>
-                    <td class="underline-on-hover">{{item.nr_articles}}</td>
+                    <td id="top-row">{{item.name}}</td>
+                    <td id="top-row">{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -184,8 +184,8 @@
               <tbody>
               {% for item in items.top_relations.who_supports_person %}
                 <tr class='clickable-row' data-href=/queries?&e2={{items.wiki_id}}&e1={{item.wiki_id}}&relationship=supports&year_from=1994&year_to=2019>
-                    <td class="underline-on-hover">{{item.name}}</td>
-                    <td class="underline-on-hover">{{item.nr_articles}}</td>
+                    <td id="top-row">{{item.name}}</td>
+                    <td id="top-row">{{item.nr_articles}}</td>
                 </tr>
               {% endfor %}
               </tbody>
@@ -197,18 +197,40 @@
 
     <!-- Select list of relationships -->
     <center id="relationships"><h4><b>Notícias</b></h4></center>
+
     <br>
+
+    <!--
+    <div class="container">
+      <div class="row">
+          <div class="col-sm"><a href="#" class="btn btn-primary btn-md active" role="button" style="background-color: #1e69e3;" aria-pressed="true">Opõe-se</a></div>
+          <div class="col-sm"><a href="#" class="btn btn-primary btn-md" role="button" style="background-color: #1e69e3;" aria-pressed="true">Apoia</a></div>
+          <div class="col-sm"><a href="#" class="btn btn-primary btn-md" role="button" style="background-color: #1e69e3;" aria-pressed="true">Oposto(a) por</a></div>
+          <div class="col-sm"><a href="#" class="btn btn-primary btn-md" role="button" style="background-color: #1e69e3;" aria-pressed="true">Apoiado(a) por</a></div>
+          <div class="col-sm"><a href="#" class="btn btn-primary btn-md" role="button" aria-pressed="true">Todas</a></div>
+        </div>
+      </div>
+    </div>
+    -->
+    <!--
+    <div class="col-sm"><a href="#" class="btn btn-primary btn-sm active" role="button" style="background-color: #FF0000;" aria-pressed="true">Opõe-se</a></div>
+          <div class="col-sm"><a href="#" class="btn btn-primary btn-sm" role="button" style="background-color: #980000;" aria-pressed="true">Apoia</a></div>
+          <div class="col-sm"><a href="#" class="btn btn-primary btn-sm" role="button" style="background-color: #44861E;" aria-pressed="true">Oposto(a) por</a></div>
+          <div class="col-sm"><a href="#" class="btn btn-primary btn-sm" role="button" style="background-color: #70DA33;" aria-pressed="true">Apoiado(a) por</a></div>
+    -->
+
+    <br><br>
+
     <div class="container">
       <div class="row">
         <div id="opposes" role="button" class="underline-on-hover font-weight-bold h5 col-sm"><center>Opõe-se</center></div>
         <div id="supports" role="button" class="underline-on-hover font-weight-normal h5 col-sm"><center>Apoia</center></div>
         <div id="opposed_by" role="button" class="underline-on-hover font-weight-normal h5 col-sm"><center>Oposto(a) por</center></div>
         <div id="supported_by" role="button" class="underline-on-hover font-weight-normal h5 col-sm"><center>Apoiado(a) por</center></div>
-        <div id="all" role="button" class="underline-on-hover font-weight-normal h5 col-sm"><center>Todas</center>
-        </div>
+        <div id="all" role="button" class="underline-on-hover font-weight-normal h5 col-sm"><center>Todas</center></div>
       </div>
     </div>
-    <br>
+
     <div class="container" id="single_table">
         <table id="table">
             <thead>

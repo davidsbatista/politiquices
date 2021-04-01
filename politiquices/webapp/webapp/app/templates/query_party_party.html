@@ -107,8 +107,10 @@
 </div>
 
 <!-- Datatables: for some reason this needs to reloaded to trigger the rendering of the table -->
-<script src="https://unpkg.com/bootstrap-table@1.18.2/dist/bootstrap-table.min.js"></script>
-
+  <link href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/locale/bootstrap-table-pt-PT.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/extensions/export/bootstrap-table-export.min.js"></script>
 <script>
     var relationships = {{ relationships|safe }};
     var $table = $('#table');
@@ -123,6 +125,7 @@
             search: true,
             height: "600",
             showExport: true,
+            showButtonText: true,
             exportTypes: ['csv'],
             exportDataType: 'all',
             showFooter: false,

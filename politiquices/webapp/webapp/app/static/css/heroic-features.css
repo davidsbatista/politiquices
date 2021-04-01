@@ -84,8 +84,16 @@ body.loading .modal {
 
 
 /* Links for from top-related entities, on full entity view */ 
-[data-href] { cursor: pointer; }
+[data-href] {
+    cursor: pointer;
+}
 
+[data-href]:hover {
+  font-weight: bold;
+}
+
+
+/* Underline text when click in title for relationship type in table */
 .underline-on-hover:hover {
     text-decoration: underline;
 }
