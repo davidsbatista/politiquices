@@ -200,51 +200,27 @@
 
     <br>
 
-    <!--
-    <div class="container">
-      <div class="row">
-          <div class="col-sm"><a href="#" class="btn btn-primary btn-md active" role="button" style="background-color: #1e69e3;" aria-pressed="true">Opõe-se</a></div>
-          <div class="col-sm"><a href="#" class="btn btn-primary btn-md" role="button" style="background-color: #1e69e3;" aria-pressed="true">Apoia</a></div>
-          <div class="col-sm"><a href="#" class="btn btn-primary btn-md" role="button" style="background-color: #1e69e3;" aria-pressed="true">Oposto(a) por</a></div>
-          <div class="col-sm"><a href="#" class="btn btn-primary btn-md" role="button" style="background-color: #1e69e3;" aria-pressed="true">Apoiado(a) por</a></div>
-          <div class="col-sm"><a href="#" class="btn btn-primary btn-md" role="button" aria-pressed="true">Todas</a></div>
-        </div>
-      </div>
-    </div>
-    -->
-    <!--
-    <div class="col-sm"><a href="#" class="btn btn-primary btn-sm active" role="button" style="background-color: #FF0000;" aria-pressed="true">Opõe-se</a></div>
-          <div class="col-sm"><a href="#" class="btn btn-primary btn-sm" role="button" style="background-color: #980000;" aria-pressed="true">Apoia</a></div>
-          <div class="col-sm"><a href="#" class="btn btn-primary btn-sm" role="button" style="background-color: #44861E;" aria-pressed="true">Oposto(a) por</a></div>
-          <div class="col-sm"><a href="#" class="btn btn-primary btn-sm" role="button" style="background-color: #70DA33;" aria-pressed="true">Apoiado(a) por</a></div>
-    -->
-
-    <br><br>
-
-    <div class="container">
-      <div class="row">
-        <div id="opposes" role="button" class="underline-on-hover font-weight-bold h5 col-sm"><center>Opõe-se</center></div>
-        <div id="supports" role="button" class="underline-on-hover font-weight-normal h5 col-sm"><center>Apoia</center></div>
-        <div id="opposed_by" role="button" class="underline-on-hover font-weight-normal h5 col-sm"><center>Oposto(a) por</center></div>
-        <div id="supported_by" role="button" class="underline-on-hover font-weight-normal h5 col-sm"><center>Apoiado(a) por</center></div>
-        <div id="all" role="button" class="underline-on-hover font-weight-normal h5 col-sm"><center>Todas</center></div>
-      </div>
-    </div>
-
     <div class="container" id="single_table">
-        <table id="table">
-            <thead>
-                <tr>
-                    <th data-sortable="true" data-field="data">Data</th>
-                    <th data-field="titulo">Título</th>
-                    <th data-field="ent1" data-force-export="true" data-visible="false">Personalidade_1</th>
-                    <th data-field="ent2" data-force-export="true" data-visible="false">Personalidade_2</th>
-                    <th data-field="ent1_wiki" data-force-export="true" data-visible="false">Wikidata_PER_1</th>
-                    <th data-field="ent2_wiki" data-force-export="true" data-visible="false">Wikidata_PER_2</th>
-                    <th data-align="center" data-force-hide="true" data-field="link">Artigo</th>
-                    <th data-field="url" data-force-export="true" data-visible="false">URL</th>
-                </tr>
-            </thead>
+
+      <button id="opposes" type="button" style="background: #007bff;" class="btn btn-primary font-weight-bold">Opõe-se a</button>
+      <button id="supports" type="button" style="background: #58a8ff;" class="btn btn-primary">Apoia</button>
+      <button id="opposed_by" type="button" style="background: #58a8ff;" class="btn btn-primary">Oposto(a) por</button>
+      <button id="supported_by" type="button" style="background: #58a8ff;" class="btn btn-primary">Apoiado(a) por</button>
+      <button id="all" type="button" style="background: #58a8ff;" class="btn btn-primary">Todas</button>
+      
+      <table id="table">
+          <thead>
+              <tr>
+                <th data-sortable="true" data-field="data">Data</th>
+                <th data-field="titulo">Título</th>
+                <th data-field="ent1" data-force-export="true" data-visible="false">Personalidade_1</th>
+                <th data-field="ent2" data-force-export="true" data-visible="false">Personalidade_2</th>
+                <th data-field="ent1_wiki" data-force-export="true" data-visible="false">Wikidata_PER_1</th>
+                <th data-field="ent2_wiki" data-force-export="true" data-visible="false">Wikidata_PER_2</th>
+                <th data-align="center" data-force-hide="true" data-field="link">Artigo</th>
+                <th data-field="url" data-force-export="true" data-visible="false">URL</th>
+              </tr>
+          </thead>
         </table>
     </div>
 
@@ -264,11 +240,11 @@
     $(function (table) {
         $('#table').bootstrapTable({
             data: opposed,  // by default we show the 'opposed' table
-            //toolbar: "#toolbar",
-            //pagination: true,
-            //sidePagination: "server",
-            //pageSize: "10",
-            //pageList: "[10, 25, 50, All]",
+            // toolbar: "#toolbar",
+            // pagination: true,
+            // sidePagination: "server",
+            // pageSize: "10",
+            // pageList: "[10, 25, 50, All]",
             search: true,
             height: "600",
             showExport: true,
@@ -285,51 +261,51 @@
     $("#opposes").click(function() {
       $('#table').bootstrapTable('load', opposed);
       $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold').css('background', '#007bff');
+      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
     });
 
     $("#supports").click(function() {
       $('#table').bootstrapTable('load', supported);
       $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold').css('background', '#007bff');
+      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
     });
 
     $("#opposed_by").click(function() {
       $('#table').bootstrapTable('load', opposed_by);
       $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold').css('background', '#007bff');
+      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
     });
 
     $("#supported_by").click(function() {
       $('#table').bootstrapTable('load', supported_by);
       $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold').css('background', '#007bff');
+      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#all").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
     });
 
     $("#all").click(function() {
       $('#table').bootstrapTable('load', all_relationships);
       $(document).scrollTop($(relationships).offset().top);
-      $(this).removeClass('font-weight-normal').addClass('font-weight-bold');
-      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal');
-      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal');
+      $(this).removeClass('font-weight-normal').addClass('font-weight-bold').css('background', '#007bff');
+      $("#supports").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#opposes").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#opposed_by").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
+      $("#supported_by").removeClass('font-weight-bold').addClass('font-weight-normal').css('background', '#58a8ff');
 
     });
 

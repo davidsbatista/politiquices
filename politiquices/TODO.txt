@@ -42,16 +42,8 @@ Web App
                 - escolher o tipo de relação
                 - procurar + ordenar + exportar para ficheiro
 
-
     UI:
     ---
-		* Os filtros da tabela ("Opõe-se", "Apoia", "Oposto(a) por", "Apoioado(a) por", "Todas") estão
-		  distantes da tabela ao ponto de parecem que não tem nada a haver com a mesma.
-		  Seria fixe mover isso para uma select com uma label "Filtrar por: ".
-		  Estes dois elementos ficariam no mesmo nível da caixa pesquisa mas alinhado à esquerda.
-
-
-
       Grafo:
         - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
         - rede de uma entidade, duas direcções
