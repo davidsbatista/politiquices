@@ -1,11 +1,12 @@
 Web App
 =======
 
-    graph has 162426 statements.
+    graph has 162375 statements.
 
-    persons      :  778
-    articles     :  17814
-    relationships:  17814
+    persons      :  777
+    articles     :  17805
+    relationships:  17805
+
 
     - Sobre:
         - Download do TTL e de como indexar no Jena + queries de exemplos
@@ -40,7 +41,6 @@ Web App
             + ir ao detalhe de ver na tabela cada uma das relações
                 - escolher o tipo de relação
                 - procurar + ordenar + exportar para ficheiro
-
 
 
     UI:
@@ -83,8 +83,6 @@ Web App
             - verify if these titles are in 'António Costa' or 'Carlos Costa'
                 - Banif: Centeno desmente Bruxelas e Costa rebate narrativa da "falha grave"
                 - Março: Costa discute saída da família do BES. Salgado diz que seria o dilúvio
-            - 'Álvaro Almeida' != Álvaro Augusto Matos Almeida
-                - http://0.0.0.0:5000/entity?q=Q10395752
 
         - erros de paramêtros nao válidos no URL:
             - queries/ tem que ter duas entidades validas
