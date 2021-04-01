@@ -44,17 +44,27 @@ Web App
 
 
     UI:
-    --
+    ---
+    	- Tens o texto da caixa de pesquisa em inglês (Search)
+	 	- Tens o texto para exportar data em inglês (Export data)
+		* Os filtros da tabela ("Opõe-se", "Apoia", "Oposto(a) por", "Apoioado(a) por", "Todas") estão
+		  distantes da tabela ao ponto de parecem que não tem nada a haver com a mesma. Seria fixe mover
+		  isso para uma select com uma label "Filtrar por: ". Estes dois elementos ficariam no mesmo
+		  nível da caixa pesquisa mas alinhado à esquerda.
+	
       Grafo:
         - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
         - rede de uma entidade, duas direcções
         - arrastar um nó e parar, desligar a física
+
       Personalidade:
         Mostrar apenas o que é relevante nas relações
             http://0.0.0.0:5000/entity?q=Q182367
 			https://www.politiquices.pt/entity?q=Q9619510
             http://0.0.0.0:5000/entity?q=Q91901804
             http://0.0.0.0:5000/entity?q=Q23797153
+
+
        Adicionar o Entity Versus Entity ?
         - Limpar o Javascript: re-utilizar
         - CSS todo fora do HTML
