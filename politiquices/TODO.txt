@@ -1,11 +1,11 @@
 Web App
 =======
 
-    graph has 162375 statements.
+    graph has 162221 statements.
 
     persons      :  777
-    articles     :  17805
-    relationships:  17805
+    articles     :  17788
+    relationships:  17788
 
 
     - Sobre:
