@@ -1,5 +1,6 @@
 import sys
 from collections import defaultdict
+from functools import lru_cache
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
@@ -826,6 +827,7 @@ def get_all_relationships_between_two_entities(wiki_id_one, wiki_id_two):
 
 
 # Relationship Queries
+@lru_cache(maxsize=50)
 def get_relationship_between_two_persons(wiki_id_one, wiki_id_two, rel_type, start_year, end_year):
 
     rel_type_inverted = invert_relationship(rel_type)
@@ -885,6 +887,7 @@ def get_relationship_between_two_persons(wiki_id_one, wiki_id_two, rel_type, sta
     return results
 
 
+@lru_cache(maxsize=50)
 def get_relationship_between_party_and_person(party, person, rel_type, start_year, end_year):
 
     rel_type_inverted = invert_relationship(rel_type)
@@ -955,6 +958,7 @@ def get_relationship_between_party_and_person(party, person, rel_type, start_yea
     return results
 
 
+@lru_cache(maxsize=50)
 def get_relationship_between_person_and_party(person, party, relation, start_year, end_year):
 
     inverted_relationship = invert_relationship(relation)
@@ -1024,6 +1028,7 @@ def get_relationship_between_person_and_party(person, party, relation, start_yea
     return results
 
 
+@lru_cache(maxsize=50)
 def get_relationship_between_parties(per_party_a, per_party_b, rel_type, start_year, end_year):
 
     inverted_rel_type = invert_relationship(rel_type)
