@@ -1,7 +1,5 @@
 from collections import defaultdict
 
-import networkx as nx
-
 from politiquices.webapp.webapp.lib.cache import wiki_id_info
 from politiquices.webapp.webapp.lib.neo4j_connect import Neo4jConnection
 from politiquices.webapp.webapp.lib.utils import get_short_name

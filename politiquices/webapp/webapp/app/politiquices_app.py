@@ -105,7 +105,7 @@ def stats():
 def graph():
     relation = "ACUSA|APOIA"
     year_from = "2000"
-    year_to = "2015"
+    year_to = "2014"
     freq_min = 10
     freq_max = 30
 

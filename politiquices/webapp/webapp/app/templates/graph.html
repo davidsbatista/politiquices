@@ -160,7 +160,7 @@
             range: true,
             min: 1994,
             max: 2019,
-            values: [ 2000, 2015 ],
+            values: [ 2000, 2014 ],
             slide: function( event, ui ) {
 
             var from = '<center>'+ui.values[0]+'</center>'
@@ -202,7 +202,7 @@
             <br>
             <div type="text" id="ano_from" style="color:#002364; margin: 15px; font-weight:bold;"><center>2000</center></div>
             <div class="form-control" id="slider_graph"></div>
-            <div type="text" id="ano_to" style="color:#002364; margin: 15px; font-weight:bold;"><center>2015</center></div>
+            <div type="text" id="ano_to" style="color:#002364; margin: 15px; font-weight:bold;"><center>2014</center></div>
             <hr>
             <center>Rede pessoal
             <input type="text" class="form-control" style="width:138px; height:30px; font-size:13px;" maxlength="15" id="graph_entity">
@@ -237,7 +237,9 @@
 
       var options = {
         physics:{
-            enabled: true
+            enabled: true,
+            //solver: 'repulsion'
+            solver: 'forceAtlas2Based'
         },
         interaction: {
             navigationButtons: true,
@@ -253,7 +255,7 @@
           arrows: {
             to: { enabled: true }
           },
-          length: 250,
+          length: 300,
           scaling:{
                 min: 1,
                 max: 15,
