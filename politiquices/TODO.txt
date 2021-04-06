@@ -52,6 +52,7 @@ Web App
 
       Personalidade:
         Mostrar apenas o que é relevante nas relações
+            https://www.politiquices.pt/entity?q=Q5511406
             http://0.0.0.0:5000/entity?q=Q182367
 			https://www.politiquices.pt/entity?q=Q9619510
             http://0.0.0.0:5000/entity?q=Q91901804

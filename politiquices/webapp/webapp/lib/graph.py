@@ -172,6 +172,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min):
 
     nodes = [node_info for node_id, node_info in nodes_info.items() if node_id in nodes_in_graph]
 
+    """
     # build a networkx structure to: compute pagerank, compute communities, etc.
     networkx_nodes = []
     networkx_edges = []
@@ -192,6 +193,7 @@ def get_network(relation, year_from, year_to, freq_max, freq_min):
     for k, v in page_rank_values.items():
         for node in nodes:
             if node["id"] == k:
-                node["value"] = v
+                node["value"] = 1.0
+    """
 
     return nodes, edges
