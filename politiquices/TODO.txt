@@ -1,14 +1,27 @@
 Web App
 =======
 
-    - Sobre:
-        - Download do TTL e de como indexar no Jena + queries de exemplos
-        - TODO no github de como indexar o .ttl com exemplos de queries
+    - Download dos TTL e de como indexar no Jena + queries de exemplos
+    - TODO no github de como indexar o .ttl com exemplos de queries
 
-        - percentagem de artigos:
-            - arquivo.pt ?
-            - CHAVE ?
-            - publico.pt ?
+    - António Pires de Lima x2 (eliminar 1, só tem um artigo)
+    @prefix ns1: <http://purl.org/dc/elements/1.1/> .
+    @prefix ns2: <http://www.w3.org/2004/02/skos/core#> .
+
+    BUG:
+    wd:Q1688029 ns2:altLabel "Jerónimo"@pt,
+        "Jerónimo De Sousa"@pt,
+        "Jerónimo Sousa"@pt,
+        "Jerónimo de Sousa"@pt,
+        "Jerónimo de Sousa\"nem"@pt,
+        "João Ferreira"@pt ;
+    wdt:P31 wd:Q5 .
+
+
+    - percentagem de artigos:
+        - arquivo.pt ?
+        - CHAVE ?
+        - publico.pt ?
 
     UI:
     ---
@@ -16,25 +29,24 @@ Web App
         - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
         - rede de uma entidade, duas direcções
 
-      Personalidade:
-        Mostrar apenas o que é relevante nas relações
-            https://www.politiquices.pt/entity?q=Q5511406
-            http://0.0.0.0:5000/entity?q=Q182367
-			https://www.politiquices.pt/entity?q=Q9619510
-            http://0.0.0.0:5000/entity?q=Q91901804
-            http://0.0.0.0:5000/entity?q=Q23797153
+  Personalidade:
+    Mostrar apenas o que é relevante nas relações
+        https://www.politiquices.pt/entity?q=Q5511406
+        http://0.0.0.0:5000/entity?q=Q182367
+        https://www.politiquices.pt/entity?q=Q9619510
+        http://0.0.0.0:5000/entity?q=Q91901804
+        http://0.0.0.0:5000/entity?q=Q23797153
 
 
-       Adicionar o Entity Versus Entity ?
-        - Limpar o Javascript: re-utilizar
-        - CSS todo fora do HTML
+   Adicionar o Entity Versus Entity ?
+    - Limpar o Javascript: re-utilizar
+    - CSS todo fora do HTML
 
 
     Backend:
     -------
         - same news article with different timestamp and different URL (added same params):
         - http://0.0.0.0:5000/entity?q=Q9604772
-        - António Pires de Lima x2 (eliminar 1, só tem um artigo)
 
         entity_linking
         --------------
