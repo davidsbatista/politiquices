@@ -1,13 +1,6 @@
 Web App
 =======
 
-    graph has 162221 statements.
-
-    persons      :  777
-    articles     :  17788
-    relationships:  17788
-
-
     - Sobre:
         - Download do TTL e de como indexar no Jena + queries de exemplos
         - TODO no github de como indexar o .ttl com exemplos de queries
@@ -17,38 +10,11 @@ Web App
             - CHAVE ?
             - publico.pt ?
 
-
-    - script para o video
-
-        1. intro_ explicar o que é o projecto
-            - tirar frases chave do relatório
-
-        2. mostrar um exemplo com queries
-           2.1 per vs per
-           2.2 per vs party
-               -> mostrar o heatmap
-           2.3 part vs. per
-               -> mostrar o heatmap
-           2.4 party vs party
-
-        3. mostrar um exemplo de navegação no grafo
-           3.1 uma rede geral
-           3.2 a rede uma entidade em específico
-
-        4. mostrar os dados de uma personalidade individual
-            + main info + chart for all relationships
-            + clicar numa personalidade e ver todas as relações
-            + ir ao detalhe de ver na tabela cada uma das relações
-                - escolher o tipo de relação
-                - procurar + ordenar + exportar para ficheiro
-
     UI:
     ---
       Grafo:
         - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
         - rede de uma entidade, duas direcções
-        - arrastar um nó e parar, desligar a física
-
 
       Personalidade:
         Mostrar apenas o que é relevante nas relações
