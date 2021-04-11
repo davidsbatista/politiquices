@@ -88,10 +88,10 @@
 ##### List of articles mentioning support/defense of José Sócrates  
     
     PREFIX ns2: <http://purl.org/dc/elements/1.1/>
+    PREFIX ns2: <http://www.w3.org/2004/02/skos/core#>    
     PREFIX my_prefix: <http://some.namespace/with/name#>
     PREFIX dc: <http://purl.org/dc/elements/1.1/>
     PREFIX wd: <http://www.wikidata.org/entity/>
-    PREFIX ns2: <http://www.w3.org/2004/02/skos/core#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
     SELECT DISTINCT ?rel_type ?score ?arquivo_doc ?title ?ent1 ?ent1_name ?ent2_name
@@ -108,7 +108,7 @@
     }
     LIMIT 25
 
----
+
 ##### List all the politicians in the graph belonging to the 'PS' through Wikidata endpoint     
 
     PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
