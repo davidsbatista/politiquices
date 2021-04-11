@@ -12,64 +12,43 @@
         <br>
 
         <center><h4><b>Introdução</b></h4></center>
-        <p>O politiquices.pt é um projecto que tem como base os títulos de artigos de
-            notícias recolhidos pelo <a href="https://www.arquivo.pt">arquivo.pt</a>.</p>
 
-        <p>Os artigos recolhidos são pré-processados de modo a que sejam identificadas no título
-            personalidades  relevantes da política portuguesa e, caso existam, as relações de
-            acusação/oposição ou defesa/suporte.</p>
 
-        <p>As personalidades políticas identificadas são associadas ao seu  identificador na
-            <a href="https://www.wikidata.org">wikidata.org</a>, de modo a que a informação relativa
-            a essa personalidade possa ser associada, enriquecendo as relações com outros factos,
-            como: afiliação política, cargos políticos, área de formação, profissão, etc.
+        <p>O Politiquices dá a possibilidade de explorar e analisar as relações de apoio e oposição
+            entre personalidades políticas expressas em títulos de notícias. As personalidades envolvidas
+            são associadas às suas entradas na <a href="https://www.wikidata.org">Wikidata</a>. Deste modo,
+            informação associada à personalidade (e.g.: filiação política, cargos políticos, etc.)
+            pode ser usada na análise das relações extraídas.</p>
 
-        <p>Este processo resulta num grafo ligando artigos de notícias do <a href="https://www.arquivo.pt">arquivo.pt</a>
-           com as personalidades políticas mencionadas, as relações expressas nos artigos, e
-           outros factos relativos às personalidades políticas.</p>
-
-        <p>Este grafo é indexado num motor de SPARQL permitindo depois fazer várias perguntas
-            usando toda informação contida no grafo.</p>
-
-        <p>A versão mais recente deste grafo está disponível para download: <a href="">politiquices_2020-12-28.ttl<a/></p>
+        <p>Este processo resulta num grafo ligando personalidades políticas através de uma relação de
+            oposição ou apoio através de <a href="https://www.arquivo.pt">notícias arquivadas</a>. O
+            grafo é indexado num <a href="https://jena.apache.org/documentation/fuseki2/index.html">motor de SPARQL</a>
+            permitindo depois fazer diferentes interrogações usando toda informação contida no grafo.</p>
 
         <br>
 
-        <center><h4><b>Completar informação</b></h4></center>
+        <center><h4><b>Download do Grafo</b></h4></center>
 
-        <p>Os factos e imagems relativos às personalidades contidas no politiquices.pt são extraídos
-            da <a href="https://www.wikidata.org">wikidata.org</a>. A Wikidata é base de conhecimento:
-            <a href="https://www.wikidata.org/wiki/Wikidata:Introduction">estruturada, aberta e
-            colaborativa</a>.
+        <p>É possível fazer o download do grafo e usá-lo localmente ou integrá-lo com outras aplicações.
+            <ul>
+              <li>Versao mais recente do grafo: <a href="">politiquices_2020-12-28.ttl</a> | <a href="">wikidata_politiquices_2020-12-28.ttl</a></li>
+              <li>Como o indexar o grafo: <a href="https://github.com/davidsbatista/politiquices/blob/master/politiquices/webapp/tutorials/fuseki_tutorial.md"> Fuseki Tutorial</a></li>
+              <li>Exemplo de interrogações ao grafo: <a href="https://github.com/davidsbatista/politiquices/blob/master/politiquices/webapp/sparql_queries.md">SPARQL queries</a></li>
+            </ul>
         </p>
 
-        <p>Os dados podem ser lidos por software como por humanos, e a informação é continuamente
-            actualizado através da participação de vários editores.
-        </p>
+        <br>
 
-        <p>Há personalidades que ocorrem com frequência nas notícias que não estão presentes,
-            há outras para as quais a informação está incompleta.
-        </p>
+        <center><h4><b>Contribuir para o projecto</b></h4></center>
 
-        <p>Personalidades políticas relevantes, com presença nas notíticas, e informação adicional
-            como os cargos públicos, ocupação profisional, etc. poderá ser completada  recorrendo
-            a diversas fontes de dados:
-        </p>
-
+        <p>A <a href="https://www.wikidata.org">Wikidata</a> é uma base de conhecimento <a href="https://www.wikidata.org/wiki/Wikidata:Introduction">
+            estruturada, aberta e colaborativa</a> mantida através da participação de vários editores.
+            Existem personalidades políticas que não têm uma entrada na Wikidata, e há outras para as
+            quais a informação está incompleta, isto poderá ser completado recorrendo fontes de dados como:</p>
         <ul>
-            <li><a target="_blank" href="https://www.parlamento.pt/DeputadoGP/Paginas/Deputados_ef.aspx">Deputados no Parlamento</a></li>
-            <li><a target="_blank" href="https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores">Lista de Governos Portugueses</a></li>
+            <li><a target="_blank" href="https://www.parlamento.pt/Cidadania/Paginas/DARegistoBiografico.aspx">Registo biográfico dos deputados para Legislaturas da Assembleia da República (JSON)</a></li>
+            <li><a target="_blank" href="https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores">Lista de Governos da República Portuguesa</a></li>
         </ul>
-            <!--
-            http://www.politicaparatodos.pt/
-            https://demo.cratica.org/
-            http://casacomum.org/cc/projeto
-            -->
-
-        <p>Outra informaçao em falta é uma imagem associada a uma personalidade, muitas das personalidades
-           presentes no politiquices.pt <a target="_blank" href="/complete">ainda não têm uma imagem</a>.
-        </p>
-
     </div>
 
 </div>

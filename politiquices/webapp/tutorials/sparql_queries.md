@@ -1,91 +1,97 @@
+### List the personalities in the graph
 
-##### List the total number of persons (politicians)
-
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-    
-    SELECT COUNT(?x) WHERE {
+    PREFIX  wd: <http://www.wikidata.org/entity/>
+
+    SELECT ?x WHERE {
         ?x wdt:P31 wd:Q5
     }
 
 
-##### List the total number of articles
 
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
+### List articles in the graph
+
+    PREFIX politiquices: <http://www.politiquices.pt/>
+    PREFIX ns1: <http://purl.org/dc/elements/1.1/>
     
-    SELECT COUNT(?x) WHERE {
-      ?x my_prefix:arquivo ?y .
+    SELECT ?date ?title ?article WHERE {
+        ?x politiquices:url ?article .
+        ?article ns1:title ?title;
+                 ns1:date ?date.
+    }
+    LIMIT 1000
+
+
+
+### The total number of articles
+
+    PREFIX politiquices: <http://www.politiquices.pt/>
+    
+    SELECT (COUNT(?x) as ?n_artigos) WHERE {
+        ?x politiquices:url ?y .
     }
 
 
-##### List the total number of news articles by year 
+
+### The total number of news articles grouped by year 
 
     PREFIX        dc: <http://purl.org/dc/elements/1.1/>
     
-    SELECT ?year COUNT(?x) WHERE {
+    SELECT ?year (COUNT(?x) as ?n_artigos) WHERE {
       ?x dc:date ?date .
     }
     GROUP BY (YEAR(?date) AS ?year)
     ORDER BY ?year
 
 
-##### List all the politicians and the number of articles where they occur
 
-    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX        bd:  <http://www.bigdata.com/rdf#>
-    PREFIX  wikibase:  <http://wikiba.se/ontology#>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX dc: <http://purl.org/dc/elements/1.1/>
-    
-    # ?arquivo_doc ?title
-    
-    SELECT ?person_name ?person (COUNT(*) as ?count){
-      ?person rdfs:label ?person_name .
-      ?person wdt:P31 wd:Q5 .
-      {?rel my_prefix:ent1 ?person} UNION {?rel my_prefix:ent2 ?person} .
-      ?rel my_prefix:arquivo ?arquivo_doc .
-      ?arquivo_doc dc:title ?title .
+### List for each personality the total number of articles where he/she occurs
+
+    PREFIX           wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX            wd: <http://www.wikidata.org/entity/>
+    PREFIX  politiquices: <http://www.politiquices.pt/>
+        
+    SELECT ?person (COUNT(*) as ?count)
+    WHERE {
+      VALUES ?rel_values {'ent1_opposes_ent2' 'ent2_opposes_ent1' 
+                          'ent1_supports_ent2' 'ent2_supports_ent1'}
+      ?person wdt:P31 wd:Q5 ;
+              {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
+      ?rel politiquices:type ?rel_values .
     }
-    GROUP BY ?person_name ?person
-    HAVING (count(distinct *) > 1)
+    GROUP BY ?person
     ORDER BY DESC (?count)
 
 
-##### List all the politicians in the graph and the party they belong through Wikidata endpoint     
+
+### The personalities in the graph, and the party they belong using the data from Wikidata     
 
     PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
     PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX        bd:  <http://www.bigdata.com/rdf#>
-    PREFIX  wikibase:  <http://wikiba.se/ontology#>
     PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
-
-    SELECT DISTINCT ?person ?p ?portuguese_party ?portuguese_partyLabel{
-      ?person rdfs:label ?p
-      SERVICE <https://query.wikidata.org/sparql> {
+    
+    SELECT DISTINCT ?person ?person_name ?portuguese_party ?party_name {
+      ?person wdt:P31 wd:Q5 .
+      SERVICE <http://0.0.0.0:3030/wikidata/query> {
+        ?person rdfs:label ?person_name.
         ?person wdt:P27 wd:Q45.
         ?person wdt:P102 ?portuguese_party .
-        ?portuguese_party rdfs:label ?portuguese_partyLabel
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label }
+        ?portuguese_party rdfs:label ?party_name
       }
-      FILTER(LANG(?portuguese_partyLabel) = "pt")
+      FILTER(LANG(?party_name) = "pt")
+      FILTER(LANG(?person_name) = "pt")
     }
-    LIMIT 10
-    
----
+
+
+
+
 ##### List of articles mentioning support/defense of José Sócrates  
     
     PREFIX ns2: <http://purl.org/dc/elements/1.1/>
+    PREFIX ns2: <http://www.w3.org/2004/02/skos/core#>    
     PREFIX my_prefix: <http://some.namespace/with/name#>
     PREFIX dc: <http://purl.org/dc/elements/1.1/>
     PREFIX wd: <http://www.wikidata.org/entity/>
-    PREFIX ns2: <http://www.w3.org/2004/02/skos/core#>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
     SELECT DISTINCT ?rel_type ?score ?arquivo_doc ?title ?ent1 ?ent1_name ?ent2_name
@@ -102,7 +108,7 @@
     }
     LIMIT 25
 
----
+
 ##### List all the politicians in the graph belonging to the 'PS' through Wikidata endpoint     
 
     PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>

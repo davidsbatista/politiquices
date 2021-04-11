@@ -24,7 +24,7 @@
 \usepackage{microtype}
 \usepackage{natbib}
 
-%\aclfinalcopy % Uncomment this line for the final submission
+\aclfinalcopy % Uncomment this line for the final submission
 
 %\setlength\titlebox{5cm}
 % You can expand the titlebox if you need extra space
@@ -34,25 +34,25 @@
 
 \newcommand\BibTeX{B\textsc{ib}\TeX}
 
-\title{Politiquices: Exploring Political Relationships in Portuguese News Titles}
+\title{Politiquices: Exploring Support and Opposition Relationships \\in Archieved Portuguese Political News Headlines}
 
-\author{First Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  \texttt{email@domain} \\\And
-  Second Author \\
-  Affiliation / Address line 1 \\
-  Affiliation / Address line 2 \\
-  Affiliation / Address line 3 \\
-  \texttt{email@domain} \\}
+\author{David S. Batista \\
+  Comtravo GmbH \\
+  \texttt{david.batista@comtravo.com}
+}
 
 \date{}
 
 \begin{document}
 \maketitle
 \begin{abstract}
-
+News headlines within a political context often carry information evolving two political personalities.
+In this work we analyzed hundreds of thousands of news headlines looking for those containing at least 
+two political personalities with an entry on Wikidata and the presence of a support or opposition relationships 
+from one political personality to another. This envoveld building different components: a knowledge base with
+Wikidata entities and two classifiers one to detect the relationship and the second to detect the direction of
+the relationship. The result is a graph represented as a RDF liking two political entities represented in Wikidata
+through a news article which expresses a relationship of oppositon or support from one entity to the other.
 \end{abstract}
 
 
@@ -60,56 +60,87 @@
 \label{sec:intro}
 
 
-\section{Relationships}
-\label{sec:rel}
+% https://www.emerald.com/insight/content/doi/10.1108/GKMC-07-2020-0098/full/html
+% Understanding quotation extraction and attribution: towards automatic extraction of public figure’s statements for journalism in Indonesia
+
 
 % supports, defends,
-
 % criticizes, opposses, accuses, attacks
 
-% meet_together
+\section{Knowledge Base}
+\label{sec_kb}
 
-% replaces
+Since the target of our relationships are relevant portuguese political personalities we queried
+Wikidata~\cite{MKGGB2018} to retrieve the page of several such personalities. This was achieved through a series
+of queries issued through the Wikidata endpoint\footnote{\url{https://query.wikidata.org/}}, namely:
+
+\begin{itemize}  
+\item persons that are or were affiliated with portuguese political parties
+\item portuguese persons born after 1935 whose profission is: judge, economist, lawyer, civil servant, politician, businessperson or banker
+\item persons that had at least one position from a list of public office position (e.g., ministry, party leader, embassador, etc.)
+\item a list of selected personalities that could not be retrived from the queries
+\end{itemize}  
+
+We download the Wikidata entry for each of the personalities retrieved from the 
+queries above, using another endpoint\footnote{\url{https://www.wikidata.org/wiki/Special:EntityData?}},
+and then select the label and alternative name properties for each entity, and together with the wikidata identifier
+create an ElasticSearch index using these 3 fields.
 
 
-\subsection{Dataset}
-\label{subsec:rel_data}
+\section{Crawling Data}
+\label{sec:crawl}
 
-\subsubsection{Data Collection}
-\label{subsubsec:rel_data_collec}
+The source for the news headlines was arquivo.pt, the portuguese web archive~\cite{SearchPastPWA2013}. We crawled news headlines through the arquivo.pt search API restricting the results to occurrences of names of political personalities gathered in Section~\ref{sec_kb} and targeting 45 selected .pt domains belonging diverse information sources, e.g.: online newspapers, television and radio stations websites and content aggregator portals. The CDX server interface allowed us to obtain the temporal limits (i.e., first and last crawl dates) of the archieved content for each domain, being the overall extremes between 1996 and 2019.
+
+A second source of 
 
 
-\subsubsection{Data Annotation}
+
+
+
+
+
+\section{Relatioships Dataset}
 \label{subsubsec:rel_data_annot}
 
 
 \begin{table}[!h]
 \centering
 \begin{tabular}{lccr}
-\hline \textbf{Relationship} & \textbf{Arg1,Arg2} & \textbf{Arg1,Arg2} & \textbf{Total} \\ \hline
-opposes        &  &  \\
-supports       &  &  \\
+\hline \textbf{Relationship} & \textbf{Arg1,Arg2} & \textbf{Arg2,Arg1} & \textbf{Total} \\ \hline
+opposes        &   &     \\
+supports       &   &     \\
 other          & - & - & \\
 \hline
 \end{tabular}
 \caption{\label{font-table}  }
 \end{table}
 
-\subsection{Relationship Classifier}
-\label{subsec:rel_classifier}
+\section{Classifiers}
 
-Just a test reference\citep{Ando2005} and continue
 
 \subsection{Entity Linking}
 \label{subsec:ent_linking}
 
 
-\section{Crawling Data}
-\label{sec:crawl}
+\subsection{Relationship Classifier}
+\label{subsec:rel_classifier}
+
+\subsection{Relationship Direction Classifier}
+\label{subsec:rel_direction}
+
+
+
+
 
 
 \section{Triples Graph}
 \label{sec:triples_graph}
+
+
+
+
+
 
 \bibliography{references}
 \bibliographystyle{acl_natbib}

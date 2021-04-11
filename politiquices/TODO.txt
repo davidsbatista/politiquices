@@ -1,74 +1,52 @@
 Web App
 =======
 
-    graph has 162221 statements.
+    - Download dos TTL e de como indexar no Jena + queries de exemplos
+    - TODO no github de como indexar o .ttl com exemplos de queries
 
-    persons      :  777
-    articles     :  17788
-    relationships:  17788
+    - António Pires de Lima x2 (eliminar 1, só tem um artigo)
+    @prefix ns1: <http://purl.org/dc/elements/1.1/> .
+    @prefix ns2: <http://www.w3.org/2004/02/skos/core#> .
+
+    BUG:
+    wd:Q1688029 ns2:altLabel "Jerónimo"@pt,
+        "Jerónimo De Sousa"@pt,
+        "Jerónimo Sousa"@pt,
+        "Jerónimo de Sousa"@pt,
+        "Jerónimo de Sousa\"nem"@pt,
+        "João Ferreira"@pt ;
+    wdt:P31 wd:Q5 .
 
 
-    - Sobre:
-        - Download do TTL e de como indexar no Jena + queries de exemplos
-        - TODO no github de como indexar o .ttl com exemplos de queries
-
-        - percentagem de artigos:
-            - arquivo.pt ?
-            - CHAVE ?
-            - publico.pt ?
-
-
-    - script para o video
-
-        1. intro_ explicar o que é o projecto
-            - tirar frases chave do relatório
-
-        2. mostrar um exemplo com queries
-           2.1 per vs per
-           2.2 per vs party
-               -> mostrar o heatmap
-           2.3 part vs. per
-               -> mostrar o heatmap
-           2.4 party vs party
-
-        3. mostrar um exemplo de navegação no grafo
-           3.1 uma rede geral
-           3.2 a rede uma entidade em específico
-
-        4. mostrar os dados de uma personalidade individual
-            + main info + chart for all relationships
-            + clicar numa personalidade e ver todas as relações
-            + ir ao detalhe de ver na tabela cada uma das relações
-                - escolher o tipo de relação
-                - procurar + ordenar + exportar para ficheiro
+    - percentagem de artigos:
+        - arquivo.pt ?
+        - CHAVE ?
+        - publico.pt ?
 
     UI:
     ---
       Grafo:
         - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
         - rede de uma entidade, duas direcções
-        - arrastar um nó e parar, desligar a física
+
+  Personalidade:
+    Mostrar apenas o que é relevante nas relações
+        https://www.politiquices.pt/entity?q=Q5511406
+        http://0.0.0.0:5000/entity?q=Q182367
+        https://www.politiquices.pt/entity?q=Q9619510
+        http://0.0.0.0:5000/entity?q=Q91901804
+        http://0.0.0.0:5000/entity?q=Q23797153
 
 
-      Personalidade:
-        Mostrar apenas o que é relevante nas relações
-            https://www.politiquices.pt/entity?q=Q5511406
-            http://0.0.0.0:5000/entity?q=Q182367
-			https://www.politiquices.pt/entity?q=Q9619510
-            http://0.0.0.0:5000/entity?q=Q91901804
-            http://0.0.0.0:5000/entity?q=Q23797153
-
-
-       Adicionar o Entity Versus Entity ?
-        - Limpar o Javascript: re-utilizar
-        - CSS todo fora do HTML
+   Adicionar o Entity Versus Entity ?
+    - Limpar o Javascript: re-utilizar
+    - CSS todo fora do HTML
 
 
     Backend:
     -------
         - same news article with different timestamp and different URL (added same params):
         - http://0.0.0.0:5000/entity?q=Q9604772
-        - António Pires de Lima x2 (eliminar 1, só tem um artigo)
 
         entity_linking
         --------------
