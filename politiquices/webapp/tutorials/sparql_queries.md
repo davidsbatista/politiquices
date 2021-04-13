@@ -66,172 +66,108 @@
 
 ### The personalities in the graph, and the party they belong using the data from Wikidata     
 
-    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    
-    SELECT DISTINCT ?person ?person_name ?portuguese_party ?party_name {
-      ?person wdt:P31 wd:Q5 .
-      SERVICE <http://0.0.0.0:3030/wikidata/query> {
-        ?person rdfs:label ?person_name.
-        ?person wdt:P27 wd:Q45.
-        ?person wdt:P102 ?portuguese_party .
-        ?portuguese_party rdfs:label ?party_name
-      }
-      FILTER(LANG(?party_name) = "pt")
-      FILTER(LANG(?person_name) = "pt")
-    }
-
-
-
-
-##### List of articles mentioning support/defense of José Sócrates  
-    
-    PREFIX ns2: <http://purl.org/dc/elements/1.1/>
-    PREFIX ns2: <http://www.w3.org/2004/02/skos/core#>    
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX dc: <http://purl.org/dc/elements/1.1/>
     PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
-    SELECT DISTINCT ?rel_type ?score ?arquivo_doc ?title ?ent1 ?ent1_name ?ent2_name
-    WHERE {
-      ?rel my_prefix:type "ent1_supports_ent2" .
-      ?rel my_prefix:score ?score .
-      ?rel my_prefix:type ?rel_type .
-      ?rel my_prefix:ent1 ?ent1 .
-      ?rel my_prefix:ent2 wd:Q182367 .
-      wd:Q182367 rdfs:label ?ent2_name .
-      ?ent1 rdfs:label ?ent1_name .
-      ?rel my_prefix:arquivo ?arquivo_doc .
-      ?arquivo_doc dc:title ?title
-    }
-    LIMIT 25
-
-
-##### List all the politicians in the graph belonging to the 'PS' through Wikidata endpoint     
-
-    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX        bd:  <http://www.bigdata.com/rdf#>
-    PREFIX  wikibase:  <http://wikiba.se/ontology#>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
-    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
-    
-    SELECT DISTINCT ?person ?name ?personLabel {
+    SELECT DISTINCT ?person ?personLabel {
       ?person wdt:P31 wd:Q5 .
-      ?person ns2:prefLabel ?name
-      SERVICE <https://query.wikidata.org/sparql> {
+      SERVICE <http://0.0.0.0:3030/wikidata/query> {
         ?person wdt:P102 wd:Q847263.
-        ?person rdfs:label ?personLabel.
+        ?person rdfs:label ?personLabel
         FILTER(LANG(?personLabel) = "pt")
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label }
       }
     }
 
----
-##### List everyone belonging to 'PS' that have ever opposed 'José Sócrates'
 
-    PREFIX       ns1: <http://purl.org/dc/elements/1.1/>
-    PREFIX       ns2: <http://www.w3.org/2004/02/skos/core#>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX        wd: <http://www.wikidata.org/entity/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX        bd: <http://www.bigdata.com/rdf#>
-    PREFIX       wdt: <http://www.wikidata.org/prop/direct/>
-    PREFIX  wikibase: <http://wikiba.se/ontology#>
+
+### Get articles where someone supports José Sócrates  
     
-    SELECT DISTINCT ?rel_type ?score ?arquivo_doc ?title ?ent1 ?ent1_name ?ent2_name
+    PREFIX politiquices: <http://www.politiquices.pt/>
+    PREFIX dc: <http://purl.org/dc/elements/1.1/>
+    
+    SELECT DISTINCT ?url ?title ?ent1 ?ent1_name ?score 
     WHERE {
-      ?rel my_prefix:type "ent1_opposes_ent2" .
-      ?rel my_prefix:score ?score .
-      ?rel my_prefix:type ?rel_type .
-      ?rel my_prefix:ent1 ?ent1 .
-      ?rel my_prefix:ent2 wd:Q182367 .
-      wd:Q182367 rdfs:label ?ent2_name .
-      ?ent1 rdfs:label ?ent1_name .
-      ?rel my_prefix:arquivo ?arquivo_doc .
-      ?arquivo_doc dc:title ?title
-      SERVICE <https://query.wikidata.org/sparql> {
-        ?ent1 wdt:P102 wd:Q847263 .
-        ?ent1 rdfs:label ?personLabel.
-        FILTER(LANG(?personLabel) = "pt")
-        SERVICE wikibase:label { bd:serviceParam wikibase:language "pt". ?item rdfs:label ?label }
-           }
-       }
+      ?rel politiquices:type "ent1_supports_ent2" .
+      ?rel politiquices:score ?score .
+      ?rel politiquices:type ?rel_type .
+      ?rel politiquices:ent1 ?ent1 .
+      ?rel politiquices:ent1_str ?ent1_name .
+      ?rel politiquices:ent2 wd:Q182367 .
+      ?rel politiquices:url ?url .
+      ?url dc:title ?title
+    }
     LIMIT 25
 
-##### 'José Sócrates' is ent2 in all type of relationships
 
-    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX        bd:  <http://www.bigdata.com/rdf#>
-    PREFIX  wikibase:  <http://wikiba.se/ontology#>
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
-    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
+
+### List all the politicians in the graph belonging to the 'PS'     
+
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
-    SELECT DISTINCT ?rel_type ?arquivo_doc ?title ?ent1 ?ent1_name
-    WHERE {
-      {
-        ?rel my_prefix:ent2 wd:Q182367 .
-        ?rel my_prefix:type ?rel_type .
-        ?rel my_prefix:ent1 ?ent1 .
-        ?ent1 rdfs:label ?ent1_name . 
-        ?rel my_prefix:arquivo ?arquivo_doc .
-        ?arquivo_doc dc:title ?title }
+    SELECT DISTINCT ?person ?personLabel {
+      ?person wdt:P31 wd:Q5 .
+      SERVICE <http://0.0.0.0:3030/wikidata/query> {
+        ?person wdt:P102 wd:Q847263.
+        ?person rdfs:label ?personLabel
+        FILTER(LANG(?personLabel) = "pt")
+      }
     }
 
 
-##### 'José Sócrates' is ent1 in all type of relationships
 
-    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX        bd:  <http://www.bigdata.com/rdf#>
-    PREFIX  wikibase:  <http://wikiba.se/ontology#>
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
-    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
-    
-    SELECT DISTINCT ?rel_type ?arquivo_doc ?title ?ent2 ?ent2_name
-    WHERE {
+### List everyone affiliated with 'Partido Socialista' that opposed 'José Sócrates'
+
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX politiquices: <http://www.politiquices.pt/>
+    PREFIX dc: <http://purl.org/dc/elements/1.1/>
+        
+    SELECT DISTINCT ?url ?title ?ent1 ?ent1_str ?ent1_name ?score WHERE {
+      ?rel politiquices:type "ent1_opposes_ent2" .
+      ?rel politiquices:score ?score .
+      ?rel politiquices:type ?rel_type .
+      ?rel politiquices:ent1 ?ent1 .
+      ?rel politiquices:ent1_str ?ent1_str .
+      ?rel politiquices:ent2 wd:Q182367 .
+      ?rel politiquices:url ?url .
+      ?url dc:title ?title
       {
-        ?rel my_prefix:ent1 wd:Q182367 .
-        ?rel my_prefix:type ?rel_type .
-        ?rel my_prefix:ent2 ?ent2 .
-        ?ent2 rdfs:label ?ent2_name . 
-        ?rel my_prefix:arquivo ?arquivo_doc .
-        ?arquivo_doc dc:title ?title }
-        FILTER (?rel_type != "other")
+        SELECT ?ent1 ?ent1_name WHERE 
+        {
+          ?ent1 wdt:P31 wd:Q5 .
+          SERVICE <http://0.0.0.0:3030/wikidata/query> {
+            ?ent1 wdt:P102 wd:Q847263.
+            ?ent1 rdfs:label ?ent1_name
+            FILTER(LANG(?ent1_name) = "pt")
+          }
+        }
+      }
     }
 
 
-##### All office positions hold by 'José Sócrates'
 
-    PREFIX       wdt:  <http://www.wikidata.org/prop/direct/>
-    PREFIX        wd:  <http://www.wikidata.org/entity/>
-    PREFIX        bd:  <http://www.bigdata.com/rdf#>
-    PREFIX  wikibase:  <http://wikiba.se/ontology#>
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
-    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
+### All public office positions hold by 'José Sócrates'
 
-    SELECT DISTINCT ?image_url ?officeLabel ?education ?start ?end WHERE {
-      wd:Q182367 wdt:P18 ?image_url;
-                 p:P39 ?officeStmnt.
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX wd:  <http://www.wikidata.org/entity/>
+    PREFIX p: <http://www.wikidata.org/prop/>
+    PREFIX ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    
+    SELECT DISTINCT ?office_title ?start ?end WHERE {
+      wd:Q182367 p:P39 ?officeStmnt.
       ?officeStmnt ps:P39 ?office.
-      OPTIONAL { ?officeStmnt pq:P580 ?start. }
-      OPTIONAL { ?officeStmnt pq:P582 ?end. }  
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
+      ?office rdfs:label ?office_title. FILTER(LANG(?office_title)="pt")
+      OPTIONAL { 
+        ?officeStmnt pq:P580 ?start. 
+        ?officeStmnt pq:P582 ?end. 
+      }  
     } ORDER BY ?start
+
 
 
 ##### All the wiki id from persons in the graph and the 'known as' and 'image_url' from Wikidata
