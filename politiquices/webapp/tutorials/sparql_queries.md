@@ -81,6 +81,25 @@
 
 
 
+### Top personalities that oppose someone
+    
+    PREFIX politiquices: <http://www.politiquices.pt/>
+    
+    SELECT DISTINCT ?person_a (COUNT(?url) as ?nr_articles) {
+      { ?rel politiquices:ent1 ?person_a .
+        ?rel politiquices:type 'ent1_opposes_ent2'.
+      }  
+      UNION 
+      { ?rel politiquices:ent2 ?person_a .
+        ?rel politiquices:type 'ent2_opposes_ent1'.
+      }
+      ?rel politiquices:url ?url .
+    }
+    GROUP BY ?person_a
+    ORDER BY DESC(?nr_articles)
+
+
+
 ### Get articles where someone supports José Sócrates  
     
     PREFIX politiquices: <http://www.politiquices.pt/>
@@ -150,7 +169,43 @@
 
 
 
-### All public office positions hold by 'José Sócrates'
+### Personalities with a family relationship (e.g.: 'father', 'fon' or 'brother') connected through 
+    a support or opposes relationship  
+
+    PREFIX  politiquices: <http://www.politiquices.pt/>
+    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX        wd: <http://www.wikidata.org/entity/>
+    PREFIX       wdt: <http://www.wikidata.org/prop/direct/>
+    
+    SELECT DISTINCT ?person ?personLabel ?human_relationship ?other_person ?other_personLabel
+        WHERE {
+          VALUES ?human_relationship { wdt:P22 wdt:P25 wdt:P1038 }
+          ?person ?human_relationship ?other_person;
+                  rdfs:label ?personLabel. FILTER(LANG(?personLabel) = "pt") .
+          ?other_person rdfs:label ?other_personLabel. FILTER(LANG(?other_personLabel) = "pt") .
+          {SELECT DISTINCT ?person
+            WHERE {
+              SERVICE <http://0.0.0.0:3030/politiquices/query> {
+                ?person wdt:P31 wd:Q5 .
+                {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
+                ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other")) .
+              }
+            }
+          }
+          {SELECT DISTINCT ?other_person
+            WHERE {
+              SERVICE <http://0.0.0.0:3030/politiquices/query> {
+                ?other_person wdt:P31 wd:Q5;
+                {?rel politiquices:ent1 ?other_person} UNION {?rel politiquices:ent2 ?other_person} .
+                ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other")) .
+              }
+            }
+          }
+        }
+
+
+
+### All public office positions hold by 'José Sócrates' (Wikidata Graph)
 
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX wd:  <http://www.wikidata.org/entity/>
@@ -167,6 +222,42 @@
         ?officeStmnt pq:P582 ?end. 
       }  
     } ORDER BY ?start
+
+
+
+### All the professional occupations from 'José Sócrates' (Wikidata Graph)
+
+    PREFIX p: <http://www.wikidata.org/prop/>
+    PREFIX ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX wd:  <http://www.wikidata.org/entity/>
+        
+    SELECT DISTINCT ?occupation_label
+    WHERE {
+      wd:Q182367 p:P106 ?occupationStmnt .
+      ?occupationStmnt ps:P106 ?occupation .
+      ?occupation rdfs:label ?occupation_label FILTER(LANG(?occupation_label) = "pt").
+    }
+
+
+
+### All the education information from 'José Sócrates' (Wikidata Graph)
+
+    PREFIX p: <http://www.wikidata.org/prop/>
+    PREFIX ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX wd:  <http://www.wikidata.org/entity/>
+
+
+    SELECT DISTINCT ?educatedAt_label
+    WHERE {
+          wd:Q182367 p:P69 ?educatedAtStmnt .
+          ?educatedAtStmnt ps:P69 ?educatedAt .
+          ?educatedAt rdfs:label ?educatedAt_label FILTER(LANG(?educatedAt_label) = "pt").
+    }
+
 
 
 
@@ -192,111 +283,84 @@
     }
 
 
-##### All the occupations, educations from a personality
+
+### All the "Governo Constitucional de Portugal" that José Sócrates was part of 
 
     PREFIX         p: <http://www.wikidata.org/prop/>
     PREFIX        ps: <http://www.wikidata.org/prop/statement/>
     PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
     PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    
-    SELECT DISTINCT ?personLabel ?occupation_label ?educatedAt_label ?position_label
-    WHERE {
-      
-      wd:Q182367 rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
-      
-      wd:Q182367 p:P106 ?occupationStmnt .
-      ?occupationStmnt ps:P106 ?occupation .
-      ?occupation rdfs:label ?occupation_label FILTER(LANG(?occupation_label) = "pt").
-      
-      wd:Q182367 p:P69 ?educatedAtStmnt .
-      ?educatedAtStmnt ps:P69 ?educatedAt .
-      ?educatedAt rdfs:label ?educatedAt_label FILTER(LANG(?educatedAt_label) = "pt").
-      
-      wd:Q182367 p:P39 ?positionStmnt .
-      ?positionStmnt ps:P39 ?position .
-      ?position rdfs:label ?position_label FILTER(LANG(?position_label) = "pt").
-    
-    
-    }
-    LIMIT 100
-
-
-
-### All the governments based on the persons 
-
-    PREFIX         p: <http://www.wikidata.org/prop/>
-    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
-    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
     PREFIX wd: <http://www.wikidata.org/entity/>
     
     SELECT DISTINCT ?cabinet ?cabinetLabel WHERE {
-      ?person wdt:P31 wd:Q5;
-              wdt:P27 wd:Q45;
-              p:P39 ?officeStmnt.
+      wd:Q182367 wdt:P31 wd:Q5;
+                 wdt:P27 wd:Q45;
+                 p:P39 ?officeStmnt.
       ?officeStmnt ps:P39 ?office.
       OPTIONAL { ?officeStmnt pq:P580 ?start. }
       OPTIONAL { ?officeStmnt pq:P582 ?end. }  
       ?officeStmnt pq:P5054 ?cabinet. 
       ?cabinet ?x ?y.
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
+      ?cabinet rdfs:label ?cabinetLabel . FILTER(LANG(?cabinetLabel) = "pt").
     } ORDER BY ?start
 
 
 
-### All parliaments
+### All 'Legislaturas da Terceira República Portuguesa' (only works on live wikidata)
 
-    PREFIX         p: <http://www.wikidata.org/prop/>
-    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
-    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX        wd: <http://www.wikidata.org/entity/>
+    PREFIX p: <http://www.wikidata.org/prop/>
+    PREFIX ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
-    SELECT DISTINCT ?parlamentary_term ?parlamentary_termLabel ?start ?end WHERE {
-      ?parlamentary_term wdt:P31 wd:Q15238777;
-                         wdt:P17 wd:Q45;
-                         wdt:P571 ?start;
-                         wdt:P582 ?end.
-    
-    SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
+    SELECT DISTINCT ?assembly ?assembly_label ?start ?end WHERE {
+      ?assembly wdt:P31 wd:Q15238777;
+                wdt:P17 wd:Q45;
+                wdt:P571 ?start;
+                wdt:P582 ?end;
+                rdfs:label ?assembly_label . FILTER(LANG(?assembly_label) = "pt").
     } 
     ORDER BY DESC (?start)
-    
 
-### All members of a parliament
 
-    PREFIX         p: <http://www.wikidata.org/prop/>
-    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
-    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX        wd: <http://www.wikidata.org/entity/>
+
+### All members of the 11th Portuguese Assembly, e.g: wd:Q25431189
+
+    PREFIX p: <http://www.wikidata.org/prop/>
+    PREFIX ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
     SELECT DISTINCT ?person ?personLabel WHERE {
       ?person wdt:P31 wd:Q5;
               wdt:P27 wd:Q45;
-              p:P39 ?officeStmnt.
-      
+              p:P39 ?officeStmnt;
+              rdfs:label ?personLabel . FILTER(LANG(?personLabel) = "pt")
       ?officeStmnt ps:P39 ?office.
       ?officeStmnt pq:P2937 wd:Q25431189. 
-    
-      SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],pt". }
     } 
-    ORDER BY DESC (?start)
-    
+    ORDER BY DESC (?personLabel)
 
-### All position grouped by count
 
-    PREFIX         p: <http://www.wikidata.org/prop/>
-    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
-    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX 		  wd: <http://www.wikidata.org/entity/>
+
+### All 'public office' positions grouped by count
+
+    PREFIX p: <http://www.wikidata.org/prop/>
+    PREFIX ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
     SELECT DISTINCT ?position_label (COUNT(?person) AS ?n)
     WHERE {
       ?person wdt:P31 wd:Q5;
-           rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
+              rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
       ?person p:P39 ?positionStmnt .
       ?positionStmnt ps:P39 ?position .
       ?position rdfs:label ?position_label FILTER(LANG(?position_label) = "pt").
@@ -306,19 +370,20 @@
     ORDER BY DESC (?n)
 
 
-### All occupation grouped by count
 
-    PREFIX         p: <http://www.wikidata.org/prop/>
-    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
-    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX 		  wd: <http://www.wikidata.org/entity/>
+### All 'occupations' grouped by count
+
+    PREFIX p: <http://www.wikidata.org/prop/>
+    PREFIX ps: <http://www.wikidata.org/prop/statement/>
+    PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX wd: <http://www.wikidata.org/entity/>
     PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
     SELECT DISTINCT ?occupation_label (COUNT(?person) AS ?n)
     WHERE {
       ?person wdt:P31 wd:Q5;
-           rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
+              rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
       ?person p:P106 ?occupationStmnt .
       ?occupationStmnt ps:P106 ?occupation .
       ?occupation rdfs:label ?occupation_label FILTER(LANG(?occupation_label) = "pt").
@@ -328,84 +393,24 @@
     ORDER BY DESC (?n)
 
 
-### All 'Governo Constitucional de Portugal'
+
+### 'Governo Constitucional' with the count of number of personalities from the graph
 
 
-    PREFIX         p: <http://www.wikidata.org/prop/>
-    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
-    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX 		  wd: <http://www.wikidata.org/entity/>
-    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX p: <http://www.wikidata.org/prop/>
+    PREFIX ps: <http://www.wikidata.org/prop/statement/>
     PREFIX pq: <http://www.wikidata.org/prop/qualifier/>
+    PREFIX wd: <http://www.wikidata.org/entity/>
+    PREFIX wdt: <http://www.wikidata.org/prop/direct/>
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     
     SELECT DISTINCT ?cabinet ?cabinetLabel (COUNT(?person) as ?n)
     WHERE {
       ?person wdt:P31 wd:Q5;
-              rdfs:label ?personLabel FILTER(LANG(?personLabel) = "pt") .
-      ?person p:P39 ?officeStmnt .
+              p:P39 ?officeStmnt .
       ?officeStmnt ps:P39 ?office .
       ?officeStmnt pq:P5054 ?cabinet.
       ?cabinet rdfs:label ?cabinetLabel FILTER(LANG(?cabinetLabel) = "pt") .
     }
-    group by ?cabinet ?cabinetLabel
+    GROUP by ?cabinet ?cabinetLabel
     ORDER BY DESC (?n)
-  
-  
-### Top personalities that oppose someone
-    
-    PREFIX        dc: <http://purl.org/dc/elements/1.1/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX my_prefix: <http://some.namespace/with/name#>
-    PREFIX 		 ns1: <http://xmlns.com/foaf/0.1/>
-    PREFIX		 ns2: <http://www.w3.org/2004/02/skos/core#>
-    PREFIX        wd: <http://www.wikidata.org/entity/>
-    PREFIX       wds: <http://www.wikidata.org/entity/statement/>
-    PREFIX       wdv: <http://www.wikidata.org/value/>
-    PREFIX       wdt: <http://www.wikidata.org/prop/direct/>
-    PREFIX  wikibase: <http://wikiba.se/ontology#>
-    PREFIX         p: <http://www.wikidata.org/prop/>
-    PREFIX        ps: <http://www.wikidata.org/prop/statement/>
-    PREFIX        pq: <http://www.wikidata.org/prop/qualifier/>
-    PREFIX      rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-    PREFIX        bd: <http://www.bigdata.com/rdf#>
-    
-    SELECT DISTINCT ?person_a (COUNT(?url) as ?nr_articles) {
-      { ?rel my_prefix:ent1 ?person_a .
-        ?rel my_prefix:type 'ent1_opposes_ent2'.
-      }  
-      UNION 
-      { ?rel my_prefix:ent2 ?person_a .
-        ?rel my_prefix:type 'ent2_opposes_ent1'.
-      }
-      ?rel my_prefix:arquivo ?url .
-    }
-    GROUP BY ?person_a
-    ORDER BY DESC(?nr_articles)
-
-
-### Relações familiares no grafo
-
-    SELECT DISTINCT ?person ?personLabel ?human_relationship ?other_person ?other_personLabel
-    WHERE {
-      values ?human_relationship { wdt:P22 wdt:P25 wdt:P3373 }
-      ?person ?human_relationship ?other_person .
-      {SELECT DISTINCT ?person
-        WHERE {
-          SERVICE <http://0.0.0.0:3030/politiquices/query> {
-            ?person wdt:P31 wd:Q5 .
-            {?rel politiquices:ent1 ?person} UNION {?rel politiquices:ent2 ?person} .
-            ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other")) .
-          }
-        }
-      }
-      {SELECT DISTINCT ?other_person
-        WHERE {
-          SERVICE <http://0.0.0.0:3030/politiquices/query> {
-            ?other_person wdt:P31 wd:Q5 .
-            {?rel politiquices:ent1 ?other_person} UNION {?rel politiquices:ent2 ?other_person} .
-            ?rel politiquices:type ?rel_type FILTER(!REGEX(?rel_type,"other")) .
-          }
-        }
-      }
-    }
