@@ -1,30 +1,25 @@
 Web App
 =======
 
+    - artigo para o arXiv
+
+    - Limpar o Github e por publico
+
     - Analytics de acessos
-        - https://matomo.org/
-        - https://computingforgeeks.com/install-matomo-piwik-web-analytics-tool-on-ubuntu/
-        - https://www.howtoforge.com/how-to-install-matomo-web-analytics-on-ubuntu-2004/
+       - https://matomo.org/
+       - https://computingforgeeks.com/install-matomo-piwik-web-analytics-tool-on-ubuntu/
+       - https://www.howtoforge.com/how-to-install-matomo-web-analytics-on-ubuntu-2004/
 
-    - percentagem de artigos:
-        - arquivo.pt ?
-        - CHAVE ?
-        - publico.pt ?
+    - Grafo:
+       - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
+       - rede de uma entidade, duas direcções
 
-    UI:
-    ---
-      Grafo:
-        - garantir que quando se sai do grafo por pesquisar por personalidade nao ficam popup boxes
-        - rede de uma entidade, duas direcções
-
-  Personalidade:
-    Mostrar apenas o que é relevante nas relações
+    - Mostrar apenas o que é relevante nas relações
         https://www.politiquices.pt/entity?q=Q5511406
-        http://0.0.0.0:5000/entity?q=Q182367
         https://www.politiquices.pt/entity?q=Q9619510
+        http://0.0.0.0:5000/entity?q=Q182367
         http://0.0.0.0:5000/entity?q=Q91901804
         http://0.0.0.0:5000/entity?q=Q23797153
-
 
    Adicionar o Entity Versus Entity ?
     - Limpar o Javascript: re-utilizar
