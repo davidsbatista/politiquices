@@ -1,1 +1,1 @@
-../../../Fuseki-docker/fuseki-data/politiquices.ttl
+../../../fuseki-docker/fuseki-data/politiquices.ttl
