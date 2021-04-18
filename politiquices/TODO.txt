@@ -1,6 +1,11 @@
 Web App
 =======
 
+    - Analytics de acessos
+        - https://matomo.org/
+        - https://computingforgeeks.com/install-matomo-piwik-web-analytics-tool-on-ubuntu/
+        - https://www.howtoforge.com/how-to-install-matomo-web-analytics-on-ubuntu-2004/
+
     - percentagem de artigos:
         - arquivo.pt ?
         - CHAVE ?
@@ -25,7 +30,6 @@ Web App
     - Limpar o Javascript: re-utilizar
     - CSS todo fora do HTML
 
-
     Backend:
     -------
         - same news article with different timestamp and different URL (added same params):
@@ -45,11 +49,6 @@ Web App
     - JS libs todas locais
         - bootstrap-table javascript local
         - Datatables: final do base.html -> por tudo local
-
-    - Analytics de acessos
-        - https://matomo.org/
-        - https://computingforgeeks.com/install-matomo-piwik-web-analytics-tool-on-ubuntu/
-        - https://www.howtoforge.com/how-to-install-matomo-web-analytics-on-ubuntu-2004/
 
     - fix /etc/systemd/system/myproject.service probably needs uwsgi as apt-get instead pip install
 
