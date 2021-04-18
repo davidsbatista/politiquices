@@ -1,9 +1,6 @@
 Web App
 =======
 
-    - Download dos TTL e de como indexar no Jena + queries de exemplos
-    - TODO no github de como indexar o .ttl com exemplos de queries
-
     - percentagem de artigos:
         - arquivo.pt ?
         - CHAVE ?
