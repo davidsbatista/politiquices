@@ -4,20 +4,6 @@ Web App
     - Download dos TTL e de como indexar no Jena + queries de exemplos
     - TODO no github de como indexar o .ttl com exemplos de queries
 
-    - António Pires de Lima x2 (eliminar 1, só tem um artigo)
-    @prefix ns1: <http://purl.org/dc/elements/1.1/> .
-    @prefix ns2: <http://www.w3.org/2004/02/skos/core#> .
-
-    BUG:
-    wd:Q1688029 ns2:altLabel "Jerónimo"@pt,
-        "Jerónimo De Sousa"@pt,
-        "Jerónimo Sousa"@pt,
-        "Jerónimo de Sousa"@pt,
-        "Jerónimo de Sousa\"nem"@pt,
-        "João Ferreira"@pt ;
-    wdt:P31 wd:Q5 .
-
-
     - percentagem de artigos:
         - arquivo.pt ?
         - CHAVE ?
@@ -50,7 +36,6 @@ Web App
 
         entity_linking
         --------------
-            - http://0.0.0.0:5000/entity?q=Q10395752 -> wrong 'Álvaro Almeida'
             - https://www.politiquices.pt/entity?q=Q10324736 ->  Moniz Pereira being linked to Moura Guedes
             - verify if these titles are in 'António Costa' or 'Carlos Costa'
                 - Banif: Centeno desmente Bruxelas e Costa rebate narrativa da "falha grave"

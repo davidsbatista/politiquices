@@ -3,10 +3,7 @@
     - acusa/opoem-se c/ as duas direções
         e.g: "Sócrates e Alegre trocam acusações sobre co-incineração"
 
-- text index in SPARQL:
-    https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
-
--import into wikidata.org directly from parlamento.pt
+- create entry in wikidata.org directly from parlamento.pt
     Afonso Candal           https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=1488
     André Figueiredo        https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=2259
     Isabele Meyrelles       https://www.parlamento.pt/DeputadoGP/Paginas/Biografia.aspx?BID=6935
@@ -20,16 +17,14 @@
     Mário Nogueira (Fenprof)
     Tomás Correia (Montepio)
 
-
 queries ao arquivo
     - https://www.portugal.gov.pt/pt/gc22/governo/governos-anteriores
     - nomes da Ontologia POWER
 
-
-
+- text index in SPARQL:
+    https://medium.com/@rrichajalota234/how-to-apache-jena-fuseki-3-x-x-1304dd810f09
 
 - https://github.com/TheScienceMuseum/elastic-wikidata
-
 
 - more (types of) entities
     - Partidos Politicos e suas secções
