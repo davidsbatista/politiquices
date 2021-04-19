@@ -8,6 +8,7 @@
     - Não há texto nenhum em inglês
     - Não mixed content, i.e.: tudo em https://
     - console.logs() e prints()
+    - tirar o TODO e checklist e error e future
 
 - GitHub:
     - no training data

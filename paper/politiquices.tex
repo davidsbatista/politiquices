@@ -34,7 +34,7 @@
 
 \newcommand\BibTeX{B\textsc{ib}\TeX}
 
-\title{Politiquices: Exploring Support and Opposition Relationships \\in Archieved Portuguese Political News Headlines}
+\title{Politiquices: Exploring Support and Opposition Relationships \\in Portuguese Political News Headlines}
 
 \author{David S. Batista \\
   Comtravo GmbH \\
@@ -81,36 +81,30 @@ of queries issued through the Wikidata endpoint\footnote{\url{https://query.wiki
 \item a list of selected personalities that could not be retrived from the queries
 \end{itemize}  
 
-We download the Wikidata entry for each of the personalities retrieved from the 
-queries above, using another endpoint\footnote{\url{https://www.wikidata.org/wiki/Special:EntityData?}},
-and then select the label and alternative name properties for each entity, and together with the wikidata identifier
-create an ElasticSearch index using these 3 fields.
+We download the Wikidata entry for each of the personalities retrieved from the queries above, using another endpoint\footnote{\url{https://www.wikidata.org/wiki/Special:EntityData?}}. For each entity
+we selected: the label, the alternative name properties and the wikidata identifier; and then created an index these three fields using ElasticSearch~\cite{10.5555/2904394} in it's `vanilla' setup, not making use of any advanced features such as custom scoring, tokenization or $n$-gram analyzers. 
 
 
 \section{Crawling Data}
 \label{sec:crawl}
 
-The source for the news headlines was arquivo.pt, the portuguese web archive~\cite{SearchPastPWA2013}. We crawled news headlines through the arquivo.pt search API restricting the results to occurrences of names of political personalities gathered in Section~\ref{sec_kb} and targeting 45 selected .pt domains belonging diverse information sources, e.g.: online newspapers, television and radio stations websites and content aggregator portals. The CDX server interface allowed us to obtain the temporal limits (i.e., first and last crawl dates) of the archieved content for each domain, being the overall extremes between 1996 and 2019.
+The source for the news headlines was arquivo.pt, the portuguese web archive~\cite{SearchPastPWA2013}. We crawled news headlines through the arquivo.pt search API restricting the results to occurrences of names of political personalities gathered in Section~\ref{sec_kb} and targeting 45 selected .pt domains belonging to diverse information sources, e.g.: online newspapers, television and radio stations websites and content aggregator portals. The CDX server interface allowed us to obtain the temporal limits (i.e., first and last crawl dates) of the archieved content for each domain, being the overall extremes between 1996 and 2019.
 
-A second source of 
-
-
-
-
-
-
+A second source of news articles was the CHAVE collection\footnote{\url{https://www.linguateca.pt/CHAVE/}}\cite{DBLP:conf/clef/SantosR04, santos-rocha-2001-evaluating}, containing PUBLICO news articles published between 1994 and 1995. We also added some news articles, which were not archieved in arquivo.pt, and that we crawled directly from the publico.pt website.
 
 \section{Relatioships Dataset}
 \label{subsubsec:rel_data_annot}
+
+We process each article's title with spaCy version XX using the portuguese-model-lg-news, to identify the named-entities. For each detected named-entity we queried it against the Knowledge Base described on Section~\ref{sec_kb} and kept the first result to associated it with a wikidata identifier. We then selected only titles with two detected named entities and for each an associated wikidata identifier.
 
 
 \begin{table}[!h]
 \centering
 \begin{tabular}{lccr}
-\hline \textbf{Relationship} & \textbf{Arg1,Arg2} & \textbf{Arg2,Arg1} & \textbf{Total} \\ \hline
-opposes        &   &     \\
-supports       &   &     \\
-other          & - & - & \\
+\hline \textbf{Relationship} & \textbf{Arg1 $\rightarrow$ Arg2} & \textbf{Arg2 $\rightarrow$ Arg1} & \textbf{Total} \\ \hline
+opposes        &  925 & 80  & 1.005 \\
+supports       &  418 & 32  &   450 \\
+other          &    - & -   &   992 \\
 \hline
 \end{tabular}
 \caption{\label{font-table}  }
@@ -118,13 +112,18 @@ other          & - & - & \\
 
 \section{Classifiers}
 
+% setup: folds, random seed, test val;
+
 
 \subsection{Entity Linking}
 \label{subsec:ent_linking}
 
 
+
+
 \subsection{Relationship Classifier}
 \label{subsec:rel_classifier}
+
 
 \subsection{Relationship Direction Classifier}
 \label{subsec:rel_direction}

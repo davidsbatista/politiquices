@@ -2,7 +2,6 @@ Web App
 =======
 
     - artigo para o arXiv
-
     - Limpar o Github e por publico
 
     - Grafo:
