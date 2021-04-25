@@ -149,7 +149,8 @@ class EntityLinking:
                             return [c]
         return matches
 
-    def merge_substrings(self, entities):
+    @staticmethod
+    def merge_substrings(entities):
         """
         This function eliminates entities which are already substrings of other entities.
 
@@ -165,7 +166,7 @@ class EntityLinking:
         new_entities = []
 
         # sort the locations by size
-        entities_sorted = sorted([self.clean_entity(x) for x in entities], key=len)
+        entities_sorted = sorted([EntityLinking.clean_entity(x) for x in entities], key=len)
 
         # starting with the shortest one see if it's a substring of any of the longer ones
         for idx, x in enumerate(entities_sorted):

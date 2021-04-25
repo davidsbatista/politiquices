@@ -1,19 +1,27 @@
 ## NLP
 
+O pipeline de NLP para processar os artigos de notícias e gerar um RDF. 
 
-### classifiers
- - ML and rule-based classifiers
- - ner, entity linking, relationship, direction
+### Classifiers
+ Os classificadores Machine Learning e também baseado em regras
+  - Named-Entity Recognition
+  - Entity Linking
+  - Relationship Classifier
+  - Relationship Direction Classifier
+    
+
+### Data Sources
+ Código para processar as várias fontes de notícias usadas no projecto:
+   - Arquivo.pt
+   - CHAVE
+   - publico.pt
 
 
-### data sources
- - data sources: arquivo.pt, publico.pt and CHAVE collection
-
-
-### extraction  
- - ner + linking entities against Wikidata
- - relationship extraction
-
+### Extraction  
+ Código para gerar um RDF com os dados finais:
+   - Pré-processar e limpar os artigos recolhidos 
+   - Aplicar o pipeline de NLP guardando os resultados
+   - Gerar um RDF a partir dos resultados
 
 ## Webapp
-  - an interface on top of a SPARQL engine + NEO4J to analyse the results
+ A aplicação Web contendo os queries SPARQL e o interface de exploração do grafo
