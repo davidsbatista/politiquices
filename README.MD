@@ -1,16 +1,13 @@
 ## Politiquices
 
-O [Politiquices](http://www.politiquices.pt]) dá a possibilidade de explorar relações de apoio e 
-oposição, entre personalidades políticas, expressas em títulos de notícias preservadas no Arquivo.pt.
+O [Politiquices](http://www.politiquices.pt]) permite de explorar relações de apoio e 
+oposição, entre personalidades políticas, expressas em títulos de notícias preservadas no [Arquivo.PT](https://arquivo.pt])
 
-As personalidades envolvidas sao associadas ao seu identificador na Wikidata, sendo que a informação 
-associada à personalidade (e.g.: filiação política, cargos políticos, etc.) fica a fazer parte 
-implícita da relação e pode ser usada na análise das relações extraídas.
+As personalidades envolvidas são associadas à sua entrada na [Wikidata](https://www.wikidata.org/), 
+deste modo, a informação associada à personalidade faz parte da relação.
 
 Este processo resulta numa rede de relações de apoio e oposição entre personalidades, e implicitamente 
-dos seus partidos políticos, cobrindo um período de cerca de 24 anos. 
-
-É possível fazer perguntas a esta rede, para qualquer período de tempo, como:
+dos seus partidos políticos. É possível fazer perguntas a esta rede, para qualquer período temporal:
 
 - Que personalidades do BE se oposeram a Jerónimo de Sousa?
 - Que acusações fez Passos Coelho a José Sócrates?
