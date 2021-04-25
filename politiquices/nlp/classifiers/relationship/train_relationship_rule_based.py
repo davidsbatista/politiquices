@@ -52,7 +52,7 @@ def get_pos_tags(sentence):
 
 
 def main():
-    training_data = read_ground_truth("../../../politiquices_training_data.tsv")
+    training_data = read_ground_truth("../../politiquices_training_data.tsv")
     training_data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.tsv")
     all_data = training_data + training_data_webapp
 
