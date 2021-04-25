@@ -1,18 +1,12 @@
 ## Politiquices
 
-O [Politiquices](http://www.politiquices.pt]) permite de explorar relações de apoio e 
-oposição, entre personalidades políticas, expressas em títulos de notícias preservadas no [Arquivo.PT](https://arquivo.pt])
+O [Politiquices](http://www.politiquices.pt]) permite de explorar relações de apoio e  oposição, entre personalidades políticas, expressas em títulos de notícias preservadas  no [Arquivo.PT](https://arquivo.pt]). As personalidades envolvidas são associadas à sua entrada na [Wikidata](https://www.wikidata.org/), deste modo, a informação associada à personalidade faz parte da relação.
 
-As personalidades envolvidas são associadas à sua entrada na [Wikidata](https://www.wikidata.org/), 
-deste modo, a informação associada à personalidade faz parte da relação.
-
-Este processo resulta numa rede de relações de apoio e oposição entre personalidades, e implicitamente 
-dos seus partidos políticos.
+Este processo resulta numa rede de relações de apoio e oposição entre personalidades, e implicitamente  dos seus partidos políticos.
 
 <p align="center">
-  <img src=politiquices.png width=60%>
+  <img src=politiquices.png width=75%>
 </p>
-
 
 É possível fazer perguntas a esta rede, para qualquer período temporal:
 
