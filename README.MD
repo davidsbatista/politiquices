@@ -17,6 +17,4 @@ dos seus partidos políticos. É possível fazer perguntas a esta rede, para qua
 - Que personalidades do PS apoiaram personalidades do PSD?
 - Que políticos do BE estiveram envolvidos em conflitos internos ao próprio partido?
 
-
-
-![Alt text](politiquices.png?raw=true "Title")
+<img src=politiquices.png width=60%>
