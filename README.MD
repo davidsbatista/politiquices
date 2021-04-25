@@ -7,7 +7,14 @@ As personalidades envolvidas são associadas à sua entrada na [Wikidata](https:
 deste modo, a informação associada à personalidade faz parte da relação.
 
 Este processo resulta numa rede de relações de apoio e oposição entre personalidades, e implicitamente 
-dos seus partidos políticos. É possível fazer perguntas a esta rede, para qualquer período temporal:
+dos seus partidos políticos.
+
+<p align="center">
+  <img src=politiquices.png width=60%>
+</p>
+
+
+É possível fazer perguntas a esta rede, para qualquer período temporal:
 
 - Que personalidades do BE se oposeram a Jerónimo de Sousa?
 - Que acusações fez Passos Coelho a José Sócrates?
@@ -16,7 +23,3 @@ dos seus partidos políticos. É possível fazer perguntas a esta rede, para qua
 - Que personalidades afiliadas ao BE se oposeram a personalidades do PCP?
 - Que personalidades do PS apoiaram personalidades do PSD?
 - Que políticos do BE estiveram envolvidos em conflitos internos ao próprio partido?
-
-<p align="center">
-  <img src=politiquices.png width=60%>
-</p>
