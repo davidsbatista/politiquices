@@ -17,11 +17,8 @@ Web App
 
 
     - correr o classificador novamente e ver o resulado:
-
         "cavaco opõe-se a santana"
-
         https://arquivo.pt/wayback/20190501192017/https://www.publico.pt/2019/05/01/politica/noticia/entrevista-europeias-cavaco-silva-condicionou-campanha-1987-santana-lopes-cvideo-audio-repeticao-1871098?utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+PublicoPolitica+%28Publico.pt+-+Pol%C3%ADtica%29
-
         https://www.politiquices.pt/queries?e1=Q57398&e2=Q239248&year_from=2010&year_to=2019&relationship=opposes
 
    Adicionar o Entity Versus Entity ?
