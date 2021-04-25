@@ -16,3 +16,7 @@ dos seus partidos políticos. É possível fazer perguntas a esta rede, para qua
 - Que personalidades afiliadas ao BE se oposeram a personalidades do PCP?
 - Que personalidades do PS apoiaram personalidades do PSD?
 - Que políticos do BE estiveram envolvidos em conflitos internos ao próprio partido?
+
+
+
+![Alt text](politiquices.png?raw=true "Title")
