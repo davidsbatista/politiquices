@@ -52,13 +52,12 @@ def test_clean_news_title():
 
 def test_clean_quotes():
     titles = [
-        '"PER dá empurrão a PER para montar ""o cavalo do poder"""',
+        'PER dá empurrão a PER para montar "o cavalo do poder"',
         'PER diz que quem tem PER não precisa de ter ″nenhum Clooney″',
         'PER diz que PER tem “obsessão fanática” contra plano tecnológico e científico de Sócrates',
         'PER diz que acordo do OE “serviu a agenda presidencial de PER”',
         'PER considera “prematura” candidatura de PER',
         'PER gostava de contribuir para que PER dormisse “menos bem"',
-        '"Maria de Belém: ""Marcelo Rebelo de Sousa é um agitador""',
     ]
 
     expected = [
@@ -68,7 +67,6 @@ def test_clean_quotes():
         'PER diz que acordo do OE "serviu a agenda presidencial de PER"',
         'PER considera "prematura" candidatura de PER',
         'PER gostava de contribuir para que PER dormisse "menos bem"',
-        'Maria de Belém: "Marcelo Rebelo de Sousa é um agitador"',
     ]
 
     for original, expected in zip(titles, expected):
