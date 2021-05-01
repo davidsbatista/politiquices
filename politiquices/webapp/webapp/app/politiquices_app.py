@@ -294,7 +294,7 @@ def chave():
 # admin only: get all 'other' relationships and shows then in annotation template
 @app.route("/annotate")
 def annotations():
-    data = read_ground_truth("../../../nlp/politiquices_training_data.tsv")
+    data = read_ground_truth("../../../nlp/classifiers/politiquices_training_data.tsv")
     data_webapp = read_ground_truth("../../../nlp/api_annotations/annotations_from_webapp.tsv")
     training_data = [d['title'] for d in data + data_webapp]
     all_other = get_relationships_to_annotate()

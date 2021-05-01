@@ -171,7 +171,7 @@ def read_extra_entities(f_name):
 
 
 def get_wiki_ids_from_annotations():
-    training_data = read_ground_truth("../../politiquices_training_data.tsv")
+    training_data = read_ground_truth("../politiquices_training_data.tsv")
     annotated_wiki_ids = set()
     for entry in training_data:
         p1_id = entry["ent1_id"]

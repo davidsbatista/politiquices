@@ -257,7 +257,6 @@ class EntityLinking:
             if only 1 candidate has a perfect match -> return that one
             else
                 try to expand named-entity based on article's complete text:
-
         """
 
         candidates = self.query_kb(entity, all_results=True)

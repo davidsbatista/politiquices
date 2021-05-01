@@ -552,7 +552,7 @@ def main():
     gold_persons = None
 
     if args.annotations:
-        training_data = read_ground_truth("../politiquices_training_data.tsv")
+        training_data = read_ground_truth("../classifiers/politiquices_training_data.tsv")
         training_data_webapp = read_ground_truth("../api_annotations/annotations_from_webapp.tsv")
         all_data = training_data + training_data_webapp
         gold_articles, gold_persons, rels_gold, urls_to_ignore = process_gold(all_data)
