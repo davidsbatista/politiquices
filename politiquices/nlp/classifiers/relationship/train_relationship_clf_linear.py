@@ -59,7 +59,7 @@ def get_pos_tags(sentence):
 
 
 def remap_y_target(y_labels):
-    return ['other' if y_sample in other_labels else re.sub(r"_?ent[1-2]_?", "", y_sample)
+    return [re.sub(r"_?ent[1-2]_?", "", y_sample) if y_sample != 'other' else 'other'
             for y_sample in y_labels]
 
 
@@ -75,7 +75,6 @@ def get_text_tokens(x_data, tokenized=True):
         pos_tags = get_pos_tags(title)
         between, after = get_context(pos_tags, ent1, ent2)
         context_text = ' '.join([t.text for t in between])
-
         if tokenized:
             if context_text == 'diz que':
                 # context_text = [t.lemma_ for t in after if t.pos_ in filter_only_pos]
@@ -100,11 +99,14 @@ def get_features(textual_context):
 
 
 def main():
+    """
     training_data = read_ground_truth("../politiquices_training_data.tsv")
     training_data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.tsv")
     all_data = training_data + training_data_webapp
+    """
+    all_data = read_ground_truth("../politiquices_data_v1.0.csv")
     labels = remap_y_target([s['label'] for s in all_data])
-    skf = StratifiedKFold(n_splits=3, random_state=42, shuffle=True)
+    skf = StratifiedKFold(n_splits=4, random_state=42, shuffle=True)
 
     all_data_shuffled = []
     all_preds = []

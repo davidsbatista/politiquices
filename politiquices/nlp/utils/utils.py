@@ -94,19 +94,14 @@ def read_ground_truth(filename, delimiter="\t"):
     with open(filename, newline="") as csv_file:
         titles = csv.reader(csv_file, delimiter=delimiter)
         for row in titles:
-            sample = {
+            data.append({
                 "title": row[0],
                 "label": row[1],
-                "idiomatic": row[2],
-                "date": row[3],
-                "url": row[4],
-                "ent1": row[5],
-                "ent2": row[6],
-            }
-            # if wiki_id annotations are present
-            if len(row) == 9:
-                sample.update({"ent1_id": row[7], "ent2_id": row[8]})
-            data.append(sample)
+                "date": row[2],
+                "url": row[3],
+                "ent1": row[4],
+                "ent2": row[5],
+            })
 
     return data
 
