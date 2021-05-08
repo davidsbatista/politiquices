@@ -29,5 +29,5 @@ dos seus partidos políticos.
 E também explorar as páginas e as relações de cada personalidade incuida no grafo:
 
 <p align="center">
-  <img src=personalidade.png width=70%>
+  <img src=personalidade.png width=50%>
 </p>
