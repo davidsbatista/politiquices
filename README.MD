@@ -9,7 +9,7 @@ dos seus partidos políticos.
 É possível explorar esta rede usando uma interface gráfica: 
 
 <p align="center">
-  <img src=grafo.png width=75%>
+  <img src=grafo.png width=70%>
 </p>
 
 É também é possível fazer perguntas directamente ao grafo para qualquer período temporal:
@@ -29,5 +29,5 @@ dos seus partidos políticos.
 E também explorar as páginas e as relações de cada personalidade incuida no grafo:
 
 <p align="center">
-  <img src=personalidade.png width=75%>
+  <img src=personalidade.png width=70%>
 </p>
