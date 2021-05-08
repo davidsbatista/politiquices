@@ -9,7 +9,7 @@ dos seus partidos políticos.
 É possível explorar esta rede usando uma interface gráfica: 
 
 <p align="center">
-  <img src=grafo.png width=70%>
+  <img src=grafo.png width=60%>
 </p>
 
 É também é possível fazer perguntas directamente ao grafo para qualquer período temporal:
