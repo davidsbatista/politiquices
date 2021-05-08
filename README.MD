@@ -23,7 +23,7 @@ dos seus partidos políticos.
 - Que políticos do BE estiveram envolvidos em conflitos internos ao próprio partido?
 
 <p align="center">
-  <img src=query.png width=75%>
+  <img src=query.png width=35%>
 </p>
 
 E também explorar as páginas e as relações de cada personalidade incuida no grafo:
