@@ -129,10 +129,13 @@ class EntityLinking:
         # without dashes and ANSI version of a string
 
     def expand_entities(self, entity, text):
-        persons = self.ner.tag(text)
-        expanded = [p for p in persons if entity in p and entity != p]
-        expanded_clean = [self.clean_entity(x) for x in expanded]
-        return self.merge_substrings(expanded_clean)
+        if text:
+            persons = self.ner.tag(text)
+            expanded = [p for p in persons if entity in p and entity != p]
+            expanded_clean = [self.clean_entity(x) for x in expanded]
+            return self.merge_substrings(expanded_clean)
+
+        return []
 
     @staticmethod
     def find_perfect_match(entity, candidates):
@@ -267,7 +270,6 @@ class EntityLinking:
             return None
 
         if len(candidates) == 1:
-            # ToDo: how many false positives does this generates?
             return candidates[0]
 
         if len(candidates) > 1:
@@ -301,7 +303,6 @@ class EntityLinking:
                     return candidates[0]
 
             # use expanded entity to issue a new query
-            # ToDo: call new function?
             candidates = self.query_kb(expanded_entity[0], all_results=True)
 
             if len(candidates) == 0:

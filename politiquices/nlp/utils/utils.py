@@ -101,6 +101,8 @@ def read_ground_truth(filename, delimiter="\t"):
                 "url": row[3],
                 "ent1": row[4],
                 "ent2": row[5],
+                "ent1_id": row[6],
+                "ent2_id": row[7],
             })
 
     return data

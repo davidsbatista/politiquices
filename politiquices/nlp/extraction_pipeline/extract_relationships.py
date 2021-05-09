@@ -29,9 +29,10 @@ def parse_args():
 
 def get_ner():
     # set up the custom NER system
-    with open('../classifiers/ner/names_phrase_patterns.txt', 'rt') as f_in:
+    ner_full_path = os.path.join(APP_ROOT, '../classifiers/ner/')
+    with open(ner_full_path+'/names_phrase_patterns.txt', 'rt') as f_in:
         names_phrase_patterns = [line.strip() for line in f_in]
-    with open('../classifiers/ner/names_token_patterns.txt', 'rt') as f_in:
+    with open(ner_full_path+'/names_token_patterns.txt', 'rt') as f_in:
         names_token_patterns = [line.strip() for line in f_in]
     return RuleBasedNer(names_token_patterns, names_phrase_patterns)
 
@@ -118,7 +119,7 @@ def main():
             entity1_wiki = el.entity_linking(persons[0], url)
             entity2_wiki = el.entity_linking(persons[1], url)
 
-            # relationship extraction
+            # relationship extraction_pipeline
             title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")
 
             # detect relationship direction
