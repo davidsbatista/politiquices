@@ -13,7 +13,7 @@ def get_caches_dir() -> str:
 class ArticlesDB:
 
     def __init__(self):
-        self.publico_cached = get_caches_dir()+"/full_text_cache/publico_full_text.txt"
+        self.publico_cached = get_caches_dir()+"/full_text_cache/publico_full_texts_cache.jsonl"
         self.chave_cached = get_caches_dir()+"/full_text_cache/CHAVE-Publico_94_95.jsonl"
         self.arquivo_cached = get_caches_dir()+"/full_text_cache/extracted_texts_newspaper.jsonl"
         self.publico_texts = self._load_publico_texts()
@@ -25,14 +25,8 @@ class ArticlesDB:
         print("Loading publico.pt cached texts")
         with open(self.publico_cached) as f_in:
             for line in f_in:
-                parts = line.split("\t")
-                try:
-                    url = minimize_publico_urls(parts[1])
-                except (ValueError, IndexError):
-                    continue
-                text = " ".join(parts[2:])
-                texts[url] = text
-
+                entry = json.loads(line)
+                texts[entry["url"]] = entry["text"]
             return texts
 
     def _load_chave_texts(self):

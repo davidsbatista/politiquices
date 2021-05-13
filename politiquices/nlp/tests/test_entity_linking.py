@@ -53,3 +53,15 @@ def test_merge_substrings():
 
     result = EntityLinking.merge_substrings(['Freitas do Amaral', 'Diogo Freitas do Amaral'])
     assert result == ['Diogo Freitas do Amaral']
+
+    result = EntityLinking.merge_substrings(['George Bush', 'George W. Bush'])
+    assert result == ['George W. Bush']
+
+    result = EntityLinking.merge_substrings(['Víto Gaspar', 'Vítor Gaspar'])
+    assert result == ['Vítor Gaspar']
+
+    result = EntityLinking.merge_substrings(['Jerónimo Sousa', 'Jerónimo de Sousa'])
+    assert result == ['Jerónimo de Sousa']
+
+    result = EntityLinking.merge_substrings(['Nicolas Maduro', 'Nicolás Maduro'])
+    assert result == ['Nicolás Maduro']

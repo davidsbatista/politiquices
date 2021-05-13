@@ -29,7 +29,9 @@ def minimize_publico_urls(url):
     if not re.match(r"^[0-9]+$", news_id):
         news_id = url.split("?id=")[-1]
     if not re.match(r"^[0-9]+$", news_id):
-        raise ValueError("invalid publico.pt id: ", url, news_id)
+        # raise ValueError("invalid publico.pt id: ", url, news_id)
+        return None
+
     url = "https://publico.pt/" + news_id
     return url
 

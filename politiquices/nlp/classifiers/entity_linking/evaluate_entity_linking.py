@@ -7,9 +7,36 @@ from politiquices.nlp.utils.utils import read_ground_truth, write_iterator_to_fi
 
 from sklearn.metrics import accuracy_score
 
+mappings = {
+    "Cavaco": "Aníbal Cavaco Silva",
+    # "António Costa": "António Luís Santos da Costa",
+    # "Carrilho": "Manuel Maria Carrilho",
+    # "Durão": "Durão Barroso",
+    # "Ferreira de o Amaral": "Joaquim Ferreira do Amaral",
+    # "Jerónimo": "Jerónimo de Sousa",
+    # "José Pedro Aguiar-Branco": "José Pedro Aguiar Branco",
+    # "Louçã": "Francisco Louçã",
+    # "Louça": "Francisco Louçã",
+    # "Marcelo": "Marcelo Rebelo de Sousa",
+    # "Rebelo de Sousa": "Marcelo Rebelo de Sousa",
+    # "Marques Mendes": "Luís Marques Mendes",
+    # "Menezes": "Luís Filipe Menezes",
+    # "Moura Guedes": "Manuela Moura Guedes",
+    # "Nobre": "Fernando Nobre",
+    # "Passos": "Pedro Passos Coelho",
+    # "Portas": "Paulo Portas",
+    # "Relvas": "Miguel Relvas",
+    # "Santana": "Pedro Santana Lopes",
+    # "Santos Silva": "Augusto Santos Silva",
+    # "Soares": "Mário Soares",
+    # "Sousa Tavares": "Miguel Sousa Tavares",
+    # "Vieira da Silva": "José Vieira da Silva",
+    # "Vitor Gaspar": "Vítor Gaspar",
+}
+
 articles_db = ArticlesDB()
 ner = get_ner()
-el = EntityLinking(ner, articles_db)
+el = EntityLinking(ner, articles_db, mappings)
 
 ent_surface_string = []
 ent_true = []
@@ -70,7 +97,7 @@ def main():
     print()
     print("accuracy: ", accuracy_score(ent_true, ent_pred))
 
-    write_iterator_to_file(sorted(not_found), "entity_linking_not_found.txt")
+    write_iterator_to_file(sorted(not_found), "entity_linking_could_not_disambiguate.txt")
     write_iterator_to_file(sorted(wrong), "entity_linking_wrong.txt")
 
 

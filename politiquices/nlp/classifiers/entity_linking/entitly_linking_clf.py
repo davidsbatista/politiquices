@@ -2,16 +2,27 @@ import re
 import difflib
 from functools import lru_cache
 
+import textdistance
 from elasticsearch import Elasticsearch
 from jsonlines import jsonlines
 
 
 class EntityLinking:
 
-    def __init__(self, ner, articles_db):
+    def __init__(self, ner, articles_db, mappings):
         self.elastic_search = self._setup_es()
         self.ner = ner
         self.articles_db = articles_db
+        self.mappings = mappings
+
+    @staticmethod
+    def log_results(candidates, entity, no_wiki, text_entities, url):
+        no_wiki.write({
+            "entity": entity,
+            "expanded": text_entities,
+            "candidates": candidates,
+            "url": url,
+        })
 
     @staticmethod
     def _setup_es():
@@ -73,36 +84,39 @@ class EntityLinking:
         # ToDo:
         # without dashes and ANSI version of a string
 
+    @staticmethod
+    def merge_substrings(entities):
+        """
+        This function eliminates entities which are already substrings of other entities.
+
+        e.g.:
+            input:['Ana Lourenço', 'Ana Dias Lourenço', 'Ana Afonso Dias Lourenço']
+            output: ['Ana Afonso Dias Lourenço']
+
+        Based on the principle that if a polysemous word appears two or more times in a
+        written discourse, it is extremely likely that they will all share the same sense.
+        (see: https://www.aclweb.org/anthology/H92-1045.pdf)
+        """
+
+        new_entities = []
+
+        # sort the locations by size
+        entities_sorted = sorted([EntityLinking.clean_entity(x) for x in entities], key=len)
+
+        # starting with the shortest one see if it's a substring of any of the longer ones
+        for idx, x in enumerate(entities_sorted):
+            found = False
+            for other in entities_sorted[idx + 1:]:
+                if x in other or textdistance.levenshtein(x, other) <= 3:
+                    found = True
+                    break
+            if not found and x not in new_entities:
+                new_entities.append(x)
+
+        return new_entities
+
     @lru_cache(maxsize=2000)
     def query_kb(self, entity, all_results=False):
-
-        mappings = {
-            "António Costa": "António Luís Santos da Costa",
-            "Carrilho": "Manuel Maria Carrilho",
-            "Cavaco Silva": "Aníbal Cavaco Silva",
-            "Cavaco": "Aníbal Cavaco Silva",
-            "Durão": "Durão Barroso",
-            "Ferreira de o Amaral": "Joaquim Ferreira do Amaral",
-            "Jerónimo": "Jerónimo de Sousa",
-            "José Pedro Aguiar-Branco": "José Pedro Aguiar Branco",
-            "Louçã": "Francisco Louçã",
-            "Louça": "Francisco Louçã",
-            "Marcelo": "Marcelo Rebelo de Sousa",
-            "Rebelo de Sousa": "Marcelo Rebelo de Sousa",
-            "Marques Mendes": "Luís Marques Mendes",
-            "Menezes": "Luís Filipe Menezes",
-            "Moura Guedes": "Manuela Moura Guedes",
-            "Nobre": "Fernando Nobre",
-            "Passos": "Pedro Passos Coelho",
-            "Portas": "Paulo Portas",
-            "Relvas": "Miguel Relvas",
-            "Santana": "Pedro Santana Lopes",
-            "Santos Silva": "Augusto Santos Silva",
-            "Soares": "Mário Soares",
-            "Sousa Tavares": "Miguel Sousa Tavares",
-            "Vieira da Silva": "José Vieira da Silva",
-            "Vitor Gaspar": "Vítor Gaspar",
-        }
 
         sanitized = ""
         for character in entity:
@@ -111,8 +125,11 @@ class EntityLinking:
             else:
                 sanitized += character
 
-        # entity_clean = mappings.get(sanitized, sanitized)
-        entity_clean = sanitized
+        if self.mappings:
+            entity_clean = self.mappings.get(sanitized, sanitized)
+        else:
+            entity_clean = sanitized
+
         entity_query = " AND ".join([token.strip() for token in entity_clean.split()])
         res = self.elastic_search.search(
             index="politicians",
@@ -129,7 +146,7 @@ class EntityLinking:
 
         return {}
 
-    def named_entities_from_text(self, entity, text):
+    def expand_ne(self, entity, text):
         """
         Try to expand the 'entity', get all the named entities in the text, and only keep those
         that overlap on some strings with 'entity'.
@@ -155,37 +172,6 @@ class EntityLinking:
                     if entity.lower() == alias.lower():
                         return [c]
         return matches
-
-    @staticmethod
-    def merge_substrings(entities):
-        """
-        This function eliminates entities which are already substrings of other entities.
-
-        e.g.:
-            input:['Ana Lourenço', 'Ana Dias Lourenço', 'Ana Afonso Dias Lourenço']
-            output: ['Ana Afonso Dias Lourenço']
-
-        Based on the principle that if a polysemous word appears two or more times in a
-        written discourse, it is extremely likely that they will all share the same sense.
-        (see: https://www.aclweb.org/anthology/H92-1045.pdf)
-        """
-
-        new_entities = []
-
-        # sort the locations by size
-        entities_sorted = sorted([EntityLinking.clean_entity(x) for x in entities], key=len)
-
-        # starting with the shortest one see if it's a substring of any of the longer ones
-        for idx, x in enumerate(entities_sorted):
-            found = False
-            for other in entities_sorted[idx + 1 :]:
-                if x in other:  # ToDo: use a more relaxed/fuzzy matching here
-                    found = True
-                    break
-            if not found and x not in new_entities:
-                new_entities.append(x)
-
-        return new_entities
 
     def disambiguate(self, expanded_entities, candidates):
 
@@ -255,22 +241,12 @@ class EntityLinking:
         return False
 
     def entity_linking(self, entity, url):
-        """
-        Get a list of candidates from the ES index:
-
-        0 return None
-        1 returns that one
-        >1 try to find a perfect match among the candidates with the entity:
-            if only 1 candidate has a perfect match -> return that one
-            else
-                try to expand named-entity based on article's complete text:
-        """
-
         candidates = self.query_kb(entity, all_results=True)
         no_wiki = jsonlines.open("no_wiki_id.jsonl", "a")
 
         # no candidates generated
         if len(candidates) == 0:
+            # print("No candidates from KB -> ", entity)
             no_wiki.write({"entity": entity, "expanded": "no_candidates", "url": url})
             return None
 
@@ -283,79 +259,72 @@ class EntityLinking:
             if len(full_match := self.exact_matches_only(entity.strip(), candidates)) == 1:
                 return full_match[0]
 
-        # try to expand the named-entity with occurrences in the article's text
+        # try to expand the named-entity based on the article's text
         text = self.articles_db.get_article_full_text(url)
-        text_entities = self.named_entities_from_text(entity, text)
+        text_entities = self.expand_ne(entity, text)
 
         # could not expand the named-entity
         if len(text_entities) == 0:
-            no_wiki.write(
-                {
-                    "entity": entity,
-                    "expanded": text_entities,
-                    "candidates": candidates,
-                    "url": url,
-                }
-            )
-            return None
+            self.log_results(candidates, entity, no_wiki, text_entities, url)
+            # print("case 2 -> ", entity, url, len(candidates), text_entities, len(text_entities))
+            """
+            for e in candidates:
+                print(e)
+            print()
+            """
 
         # expanding process just returned one candidate
         if len(text_entities) == 1:
-            # check if has an exact match with previous gathered candidates
-            if full_match_label := self.exact_matches_only(text_entities[0], candidates) == 1:
+            expanded_entity = text_entities[0]
+
+            # if it has an exact match with any previous gathered candidates
+            if full_match_label := self.exact_matches_only(expanded_entity, candidates) == 1:
                 return full_match_label[0]
 
-            # if not use the expanded entity to retrieve new candidates
+            # otherwise use the expanded entity to retrieve new candidates from the KB
             candidates = self.query_kb(text_entities[0], all_results=True)
 
+            # no new candidates retrieved
             if len(candidates) == 0:
-                no_wiki.write(
-                    {
-                        "entity": entity,
-                        "expanded": text_entities,
-                        "candidates": candidates,
-                        "url": url,
-                    }
-                )
+                self.log_results(candidates, entity, no_wiki, text_entities, url)
+                print("case 3 -> ", entity, url, text_entities, len(text_entities))
+                for e in candidates:
+                    print(e)
+                print()
                 return None
 
-            full_match_label = self.exact_matches_only(text_entities[0], candidates)
+            # if from all the newly retrieved candidates only one has an exact match with the
+            # expanded entity, return that one
+            full_match_label = self.exact_matches_only(expanded_entity, candidates)
             if len(full_match_label) == 1:
                 return full_match_label[0]
 
+            # if there's only one and soft string matching occurs return that one
             if len(candidates) == 1:
                 if self.fuzzy_match(text_entities[0], candidates[0]):
                     return candidates[0]
 
-            print("\n" + url)
-            print(entity)
-            print("case 2 -> ", text_entities)
+            self.log_results(candidates, entity, no_wiki, text_entities, url)
+            """
+            print("case 4 -> ", entity, text_entities, len(text_entities))
             for e in candidates:
                 print(e)
-            no_wiki.write(
-                {
-                    "entity": entity,
-                    "expanded": text_entities,
-                    "candidates": candidates,
-                    "url": url,
-                }
-            )
+            print()
+            """
             return None
 
+        # if there's more than one expanded entity
         if len(text_entities) > 1:
             matches = self.disambiguate(text_entities, candidates)
             if len(matches) == 1:
                 return matches[0]
+            """
             print("\n" + url)
             print(entity)
-            print("case 3 -> ", text_entities, len(text_entities))
+            print("case 5 -> ", entity, text_entities, len(text_entities))
             for e in candidates:
                 print(e)
-            no_wiki.write(
-                {
-                    "entity": entity,
-                    "expanded": text_entities,
-                    "candidates": candidates,
-                    "url": url,
-                }
-            )
+            print()
+            """
+            self.log_results(candidates, entity, no_wiki, text_entities, url)
+            return None
