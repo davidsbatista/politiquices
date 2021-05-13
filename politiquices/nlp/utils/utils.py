@@ -8,9 +8,10 @@ from time import sleep
 
 publico_urls = (
     "http://www.publico.pt",
-    "http://economia.publico.pt",
     "https://www.publico.pt",
     "http://publico.pt",
+    "https://publico.pt",
+    "http://economia.publico.pt",
     "http://ecosfera.publico.pt",
     "http://desporto.publico.pt",
 )
@@ -25,6 +26,8 @@ def minimize_publico_urls(url):
     if not re.match(r"^[0-9]+$", news_id):
         news_id_ = news_id.split("_")[-1]
         news_id = news_id_.replace(".1", "")
+    if not re.match(r"^[0-9]+$", news_id):
+        news_id = url.split("?id=")[-1]
     if not re.match(r"^[0-9]+$", news_id):
         raise ValueError("invalid publico.pt id: ", url, news_id)
     url = "https://publico.pt/" + news_id

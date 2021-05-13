@@ -22,61 +22,6 @@ class EntityLinking:
         except Exception as e:
             raise Exception(f"Could not connect to ElasticSearch: {e}")
 
-    @lru_cache(maxsize=2000)
-    def query_kb(self, entity, all_results=False):
-
-        mappings = {
-            "António Costa": "António Luís Santos da Costa",
-            "Carrilho": "Manuel Maria Carrilho",
-            "Cavaco Silva": "Aníbal Cavaco Silva",
-            "Cavaco": "Aníbal Cavaco Silva",
-            "Durão": "Durão Barroso",
-            "Ferreira de o Amaral": "Joaquim Ferreira do Amaral",
-            "Jerónimo": "Jerónimo de Sousa",
-            "José Pedro Aguiar-Branco": "José Pedro Aguiar Branco",
-            "Louçã": "Francisco Louçã",
-            "Louça": "Francisco Louçã",
-            "Marcelo": "Marcelo Rebelo de Sousa",
-            "Rebelo de Sousa": "Marcelo Rebelo de Sousa",
-            "Marques Mendes": "Luís Marques Mendes",
-            "Menezes": "Luís Filipe Menezes",
-            "Moura Guedes": "Manuela Moura Guedes",
-            "Nobre": "Fernando Nobre",
-            "Passos": "Pedro Passos Coelho",
-            "Portas": "Paulo Portas",
-            "Relvas": "Miguel Relvas",
-            "Santana": "Pedro Santana Lopes",
-            "Santos Silva": "Augusto Santos Silva",
-            "Soares": "Mário Soares",
-            "Sousa Tavares": "Miguel Sousa Tavares",
-            "Vieira da Silva": "José Vieira da Silva",
-            "Vitor Gaspar": "Vítor Gaspar",
-        }
-
-        sanitized = ""
-        for character in entity:
-            if self.needs_escaping(character):
-                sanitized += "\\%s" % character
-            else:
-                sanitized += character
-
-        entity_clean = mappings.get(sanitized, sanitized)
-        entity_query = " AND ".join([token.strip() for token in entity_clean.split()])
-        res = self.elastic_search.search(
-            index="politicians",
-            body={"query": {"query_string": {"query": entity_query}}}
-        )
-
-        if res["hits"]["hits"]:
-            if all_results:
-                return [r["_source"] for r in res["hits"]["hits"]]
-            return res["hits"]["hits"][0]["_source"]
-
-        if all_results:
-            return []
-
-        return {}
-
     @staticmethod
     def needs_escaping(char):
         escape_chars = {
@@ -128,28 +73,87 @@ class EntityLinking:
         # ToDo:
         # without dashes and ANSI version of a string
 
-    def expand_entities(self, entity, text):
-        if text:
-            persons = self.ner.tag(text)
-            expanded = [p for p in persons if entity in p and entity != p]
-            expanded_clean = [self.clean_entity(x) for x in expanded]
-            return self.merge_substrings(expanded_clean)
+    @lru_cache(maxsize=2000)
+    def query_kb(self, entity, all_results=False):
 
-        return []
+        mappings = {
+            "António Costa": "António Luís Santos da Costa",
+            "Carrilho": "Manuel Maria Carrilho",
+            "Cavaco Silva": "Aníbal Cavaco Silva",
+            "Cavaco": "Aníbal Cavaco Silva",
+            "Durão": "Durão Barroso",
+            "Ferreira de o Amaral": "Joaquim Ferreira do Amaral",
+            "Jerónimo": "Jerónimo de Sousa",
+            "José Pedro Aguiar-Branco": "José Pedro Aguiar Branco",
+            "Louçã": "Francisco Louçã",
+            "Louça": "Francisco Louçã",
+            "Marcelo": "Marcelo Rebelo de Sousa",
+            "Rebelo de Sousa": "Marcelo Rebelo de Sousa",
+            "Marques Mendes": "Luís Marques Mendes",
+            "Menezes": "Luís Filipe Menezes",
+            "Moura Guedes": "Manuela Moura Guedes",
+            "Nobre": "Fernando Nobre",
+            "Passos": "Pedro Passos Coelho",
+            "Portas": "Paulo Portas",
+            "Relvas": "Miguel Relvas",
+            "Santana": "Pedro Santana Lopes",
+            "Santos Silva": "Augusto Santos Silva",
+            "Soares": "Mário Soares",
+            "Sousa Tavares": "Miguel Sousa Tavares",
+            "Vieira da Silva": "José Vieira da Silva",
+            "Vitor Gaspar": "Vítor Gaspar",
+        }
+
+        sanitized = ""
+        for character in entity:
+            if self.needs_escaping(character):
+                sanitized += "\\%s" % character
+            else:
+                sanitized += character
+
+        # entity_clean = mappings.get(sanitized, sanitized)
+        entity_clean = sanitized
+        entity_query = " AND ".join([token.strip() for token in entity_clean.split()])
+        res = self.elastic_search.search(
+            index="politicians",
+            body={"query": {"query_string": {"query": entity_query}}}
+        )
+
+        if res["hits"]["hits"]:
+            if all_results:
+                return [r["_source"] for r in res["hits"]["hits"]]
+            return res["hits"]["hits"][0]["_source"]
+
+        if all_results:
+            return []
+
+        return {}
+
+    def named_entities_from_text(self, entity, text):
+        """
+        Try to expand the 'entity', get all the named entities in the text, and only keep those
+        that overlap on some strings with 'entity'.
+        """
+
+        if not text:
+            return []
+
+        persons = self.ner.tag(text)
+        expanded = [p for p in persons if entity in p and entity != p]
+        expanded_clean = [self.clean_entity(x) for x in expanded]
+        return self.merge_substrings(expanded_clean)
 
     @staticmethod
-    def find_perfect_match(entity, candidates):
-
-        # filter only for those whose label or aliases are a perfect match
+    def exact_matches_only(entity, candidates):
+        """Keep only candidates whose label or aliases has an exact match with the entity"""
         matches = []
         for c in candidates:
-            if entity == c["label"]:
-                return [c]
-            else:
-                if "aliases" in c and c["aliases"] is not None:
-                    for alias in c["aliases"]:
-                        if entity.lower() == alias.lower():
-                            return [c]
+            if entity.lower() == c["label"].lower():
+                matches.append(c)
+            elif "aliases" in c and c["aliases"] is not None:
+                for alias in c["aliases"]:
+                    if entity.lower() == alias.lower():
+                        return [c]
         return matches
 
     @staticmethod
@@ -227,7 +231,7 @@ class EntityLinking:
         def full_match_candidate(entities, candidate):
             matched = 0
             for ent in expanded_entities:
-                matched += len(self.find_perfect_match(ent, [candidate]))
+                matched += len(self.exact_matches_only(ent, [candidate]))
             return matched == len(entities)
 
         matching_candidates = [c for c in candidates if full_match_candidate(expanded_entities, c)]
@@ -265,95 +269,93 @@ class EntityLinking:
         candidates = self.query_kb(entity, all_results=True)
         no_wiki = jsonlines.open("no_wiki_id.jsonl", "a")
 
+        # no candidates generated
         if len(candidates) == 0:
             no_wiki.write({"entity": entity, "expanded": "no_candidates", "url": url})
             return None
 
+        # just one candidate
         if len(candidates) == 1:
             return candidates[0]
 
+        # more than one, filter for full string match, and return if only 1
         if len(candidates) > 1:
-            full_match_label = self.find_perfect_match(entity.strip(), candidates)
-            if len(full_match_label) == 1:
-                return full_match_label[0]
+            if len(full_match := self.exact_matches_only(entity.strip(), candidates)) == 1:
+                return full_match[0]
 
-        # try to expand named-entity based on article's complete text
+        # try to expand the named-entity with occurrences in the article's text
         text = self.articles_db.get_article_full_text(url)
-        expanded_entity = self.expand_entities(entity, text)
+        text_entities = self.named_entities_from_text(entity, text)
 
-        if len(expanded_entity) == 0:
+        # could not expand the named-entity
+        if len(text_entities) == 0:
             no_wiki.write(
                 {
                     "entity": entity,
-                    "expanded": expanded_entity,
+                    "expanded": text_entities,
                     "candidates": candidates,
                     "url": url,
                 }
             )
             return None
 
-        if len(expanded_entity) == 1:
-            full_match_label = self.find_perfect_match(expanded_entity[0], candidates)
-
-            if len(full_match_label) == 1:
+        # expanding process just returned one candidate
+        if len(text_entities) == 1:
+            # check if has an exact match with previous gathered candidates
+            if full_match_label := self.exact_matches_only(text_entities[0], candidates) == 1:
                 return full_match_label[0]
 
-            if len(candidates) == 1:
-                if self.fuzzy_match(expanded_entity[0], candidates[0]):
-                    return candidates[0]
-
-            # use expanded entity to issue a new query
-            candidates = self.query_kb(expanded_entity[0], all_results=True)
+            # if not use the expanded entity to retrieve new candidates
+            candidates = self.query_kb(text_entities[0], all_results=True)
 
             if len(candidates) == 0:
                 no_wiki.write(
                     {
                         "entity": entity,
-                        "expanded": expanded_entity,
+                        "expanded": text_entities,
                         "candidates": candidates,
                         "url": url,
                     }
                 )
                 return None
 
-            full_match_label = self.find_perfect_match(expanded_entity[0], candidates)
+            full_match_label = self.exact_matches_only(text_entities[0], candidates)
             if len(full_match_label) == 1:
                 return full_match_label[0]
 
             if len(candidates) == 1:
-                if self.fuzzy_match(expanded_entity[0], candidates[0]):
+                if self.fuzzy_match(text_entities[0], candidates[0]):
                     return candidates[0]
 
             print("\n" + url)
             print(entity)
-            print("case 2 -> ", expanded_entity)
+            print("case 2 -> ", text_entities)
             for e in candidates:
                 print(e)
             no_wiki.write(
                 {
                     "entity": entity,
-                    "expanded": expanded_entity,
+                    "expanded": text_entities,
                     "candidates": candidates,
                     "url": url,
                 }
             )
             return None
 
-        if len(expanded_entity) > 1:
-            matches = self.disambiguate(expanded_entity, candidates)
+        if len(text_entities) > 1:
+            matches = self.disambiguate(text_entities, candidates)
             if len(matches) == 1:
                 return matches[0]
             print("\n" + url)
             print(entity)
-            print("case 3 -> ", expanded_entity, len(expanded_entity))
+            print("case 3 -> ", text_entities, len(text_entities))
             for e in candidates:
                 print(e)
             no_wiki.write(
                 {
                     "entity": entity,
-                    "expanded": expanded_entity,
+                    "expanded": text_entities,
                     "candidates": candidates,
                     "url": url,
                 }
             )
-            return None

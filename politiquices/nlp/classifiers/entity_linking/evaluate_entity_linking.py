@@ -48,9 +48,8 @@ def main():
         print(k, '\t', freqs[k])
     """
 
-    print("# unique ids: ", len(freqs.keys()))
-    print("# named-entities (surface strings): ", len(ent_true))
-    print(accuracy_score(ent_true, ent_pred))
+    print("\n#unique ids: ", len(freqs.keys()))
+    print("#named-entities (surface strings): ", len(ent_true))
 
     not_found = []
     correct = []
@@ -69,7 +68,7 @@ def main():
     print("NOT FOUND: ", len(not_found))
     print("WRONG    : ", len(wrong))
     print()
-    print("accuracy: ", float(len(correct)) / len(ent_true))
+    print("accuracy: ", accuracy_score(ent_true, ent_pred))
 
     write_iterator_to_file(sorted(not_found), "entity_linking_not_found.txt")
     write_iterator_to_file(sorted(wrong), "entity_linking_wrong.txt")
