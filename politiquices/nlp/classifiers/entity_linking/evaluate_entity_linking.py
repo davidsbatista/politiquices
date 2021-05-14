@@ -9,6 +9,8 @@ from sklearn.metrics import accuracy_score
 
 mappings = {
     "Cavaco": "Aníbal Cavaco Silva",
+    "Sócrates": "José Sócrates",
+    "Marques Mendes": "Luís Marques Mendes",
     # "António Costa": "António Luís Santos da Costa",
     # "Carrilho": "Manuel Maria Carrilho",
     # "Durão": "Durão Barroso",

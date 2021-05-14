@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from newspaper import Article, ArticleException
-from politiquices.nlp.utils.utils import publico_urls, minimize_publico_urls
+from politiquices.nlp.utils.utils import publico_urls
 
 
 def get_caches_dir() -> str:
@@ -55,18 +55,18 @@ class ArticlesDB:
         # if not in cache download it from arquivo.pt
         url_no_frame = url.replace("/wayback/", "/noFrame/replay/")
         article = Article(url_no_frame)
+        print("downloading: ", url_no_frame)
         try:
-            print("downloading: ", url_no_frame)
             article.download()
             article.parse()
             entry = {"url": url, "text": article.text}
-            f_path = get_caches_dir()+"/full_text_cache/extracted_texts_newspaper.jsonl"
-            with open(f_path, 'a') as f_out:
-                f_out.write(json.dumps(entry) + "\n")
+            # only cache article's text if actually some text was extracted
+            if article.text:
+                f_path = get_caches_dir()+"/full_text_cache/extracted_texts_newspaper.jsonl"
+                with open(f_path, 'a') as f_out:
+                    f_out.write(json.dumps(entry) + "\n")
         except ArticleException as e:
-            print(e)
-            with open("download_error.txt", "a+") as f_out:
-                f_out.write(url_no_frame+"\n")
+            pass
 
         return article.text
 

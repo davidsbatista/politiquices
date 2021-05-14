@@ -174,44 +174,10 @@ class EntityLinking:
         return matches
 
     def disambiguate(self, expanded_entities, candidates):
-
         """
-        # ToDo:
         - several expanded entities
-        - if more than 'threshold' of expanded entities match full with a candiadate return that
+        - if more than 'threshold' of expanded entities match full with a candidate return that
           candidate
-
-        case 3 ->  ['Joe Berardo', 'José Berardo'] 2
-        {'wiki': 'Q3186200', 'label': 'José Manuel Rodrigues Berardo', 'aliases': ['Joe Berardo',
-        'Joe berardo', 'José berardo', 'José Berardo', 'José manuel rodrigues berardo',
-        'Colecção Berardo']}
-
-        case 3 ->  ['Joe Berardo', 'José Berardo', 'Coleção Berardo', 'Berardo um Acordo Quadro',
-        'José Manuel Rodrigues Berardo']
-
-        case 3 ->  ['Luis Filipe Menezes', 'Luís Filipe Menezes']
-        {'wiki': 'Q6706787', 'last_modified': '2020-12-01T22:53:40Z', 'label': 'Luís Filipe Menezes', 'aliases': ['Luís Filipe Meneses', 'Luis Filipe de Menezes', 'Luís Filipe de Menezes']}
-        {'wiki': 'Q10321558', 'last_modified': '2020-12-24T01:32:58Z', 'label': 'Luís Menezes', 'aliases': ['Luís de Menezes', 'Luís Filipe Valenzuela Tavares de Menezes Lopes']}
-
-        Nogueira Pinto
-        case 3 ->  ['Maria Nogueira Pinto', 'Maria José Nogueira Pinto'] 2
-        {'wiki': 'Q6123866', 'last_modified': '2020-12-19T15:30:57Z', 'label': 'Jaime Nogueira Pinto', 'aliases': ['Jaime nogueira pinto', 'Jaime Alexandre Nogueira Pinto']}
-        {'wiki': 'Q10325930', 'last_modified': '2020-12-24T02:17:41Z', 'label': 'Maria José Nogueira Pinto', 'aliases': ['Maria José Pinto da Cunha Avilez Nogueira Pinto']}
-
-        Gaspar
-        case 3 ->  ['Víto Gaspar', 'Vítor Gaspar'] 2
-        {'wiki': 'Q2118027', 'last_modified': '2020-12-26T03:22:53Z', 'label': 'Vítor Gaspar', 'aliases': ['Vitor Louçã Rabaça Gaspar', 'Vitor Gaspar']}
-        {'wiki': 'Q66984570', 'last_modified': '2020-06-10T10:01:41Z', 'label': 'Emanuel Gaspar', 'aliases': ['Emanuel Gaspar de Freitas']}
-        {'wiki': 'Q27093786', 'last_modified': '2020-12-24T07:28:37Z', 'label': 'Luís Gaspar da Silva', 'aliases': None}
-        {'wiki': 'Q24691796', 'last_modified': '2020-12-24T07:13:35Z', 'label': 'António Silva Henriques Gaspar', 'aliases': None}
-
-
-        - just one expanded entity but two candidates
-        case 2 ->  ['Filipe Menezes']
-        {'wiki': 'Q6706787', 'last_modified': '2020-12-01T22:53:40Z', 'label': 'Luís Filipe Menezes',
-        aliases': ['Luís Filipe Meneses', 'Luis Filipe de Menezes', 'Luís Filipe de Menezes']}
-        {'wiki': 'Q10321558', 'last_modified': '2020-02-05T21:22:25Z', 'label': 'Luís Menezes',
-        'aliases': ['Luís de Menezes', 'Luís Filipe Valenzuela Tavares de Menezes Lopes']}
         """
 
         def full_match_candidate(entities, candidate):
@@ -225,7 +191,7 @@ class EntityLinking:
         return matching_candidates
 
     @staticmethod
-    def fuzzy_match(entity, candidate, threshold=0.77):
+    def fuzzy_match(entity, candidate, threshold=0.8):
         def fuzzy_compare(a, b):
             seq = difflib.SequenceMatcher(None, a, b)
             return seq.ratio()
@@ -242,6 +208,7 @@ class EntityLinking:
 
     def entity_linking(self, entity, url):
         candidates = self.query_kb(entity, all_results=True)
+        entity = self.mappings.get(entity, entity)
         no_wiki = jsonlines.open("no_wiki_id.jsonl", "a")
 
         # no candidates generated
@@ -252,9 +219,10 @@ class EntityLinking:
 
         # just one candidate
         if len(candidates) == 1:
-            return candidates[0]
+            if self.fuzzy_match(entity, candidates[0]):
+                return candidates[0]
 
-        # more than one, filter for full string match, and return if only 1
+        # several candidates: filter exact string matches only, and if only 1, return that one;
         if len(candidates) > 1:
             if len(full_match := self.exact_matches_only(entity.strip(), candidates)) == 1:
                 return full_match[0]
@@ -266,65 +234,34 @@ class EntityLinking:
         # could not expand the named-entity
         if len(text_entities) == 0:
             self.log_results(candidates, entity, no_wiki, text_entities, url)
-            # print("case 2 -> ", entity, url, len(candidates), text_entities, len(text_entities))
-            """
-            for e in candidates:
-                print(e)
-            print()
-            """
 
         # expanding process just returned one candidate
         if len(text_entities) == 1:
-            expanded_entity = text_entities[0]
 
             # if it has an exact match with any previous gathered candidates
-            if full_match_label := self.exact_matches_only(expanded_entity, candidates) == 1:
+            expanded_entity = text_entities[0]
+            if len(full_match_label := self.exact_matches_only(expanded_entity, candidates)) == 1:
                 return full_match_label[0]
 
             # otherwise use the expanded entity to retrieve new candidates from the KB
             candidates = self.query_kb(text_entities[0], all_results=True)
 
-            # no new candidates retrieved
-            if len(candidates) == 0:
-                self.log_results(candidates, entity, no_wiki, text_entities, url)
-                print("case 3 -> ", entity, url, text_entities, len(text_entities))
-                for e in candidates:
-                    print(e)
-                print()
-                return None
-
             # if from all the newly retrieved candidates only one has an exact match with the
             # expanded entity, return that one
-            full_match_label = self.exact_matches_only(expanded_entity, candidates)
-            if len(full_match_label) == 1:
-                return full_match_label[0]
+            if len(full_match := self.exact_matches_only(expanded_entity, candidates)) == 1:
+                return full_match[0]
 
             # if there's only one and soft string matching occurs return that one
-            if len(candidates) == 1:
-                if self.fuzzy_match(text_entities[0], candidates[0]):
-                    return candidates[0]
+            if len(candidates) == 1 and self.fuzzy_match(text_entities[0], candidates[0]):
+                return candidates[0]
 
             self.log_results(candidates, entity, no_wiki, text_entities, url)
-            """
-            print("case 4 -> ", entity, text_entities, len(text_entities))
-            for e in candidates:
-                print(e)
-            print()
-            """
             return None
 
         # if there's more than one expanded entity
         if len(text_entities) > 1:
-            matches = self.disambiguate(text_entities, candidates)
-            if len(matches) == 1:
-                return matches[0]
-            """
-            print("\n" + url)
-            print(entity)
-            print("case 5 -> ", entity, text_entities, len(text_entities))
-            for e in candidates:
-                print(e)
-            print()
-            """
+            if len(full_matches := self.disambiguate(text_entities, candidates)) == 1:
+                return full_matches[0]
+
             self.log_results(candidates, entity, no_wiki, text_entities, url)
             return None
