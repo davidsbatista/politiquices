@@ -65,3 +65,4 @@ def test_merge_substrings():
 
     result = EntityLinking.merge_substrings(['Nicolas Maduro', 'Nicolás Maduro'])
     assert result == ['Nicolás Maduro']
+

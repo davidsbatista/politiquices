@@ -173,23 +173,6 @@ class EntityLinking:
                         return [c]
         return matches
 
-    def disambiguate(self, expanded_entities, candidates):
-        """
-        - several expanded entities
-        - if more than 'threshold' of expanded entities match full with a candidate return that
-          candidate
-        """
-
-        def full_match_candidate(entities, candidate):
-            matched = 0
-            for ent in expanded_entities:
-                matched += len(self.exact_matches_only(ent, [candidate]))
-            return matched == len(entities)
-
-        matching_candidates = [c for c in candidates if full_match_candidate(expanded_entities, c)]
-
-        return matching_candidates
-
     @staticmethod
     def fuzzy_match(entity, candidate, threshold=0.8):
         def fuzzy_compare(a, b):
@@ -229,22 +212,22 @@ class EntityLinking:
 
         # try to expand the named-entity based on the article's text
         text = self.articles_db.get_article_full_text(url)
-        text_entities = self.expand_ne(entity, text)
+        expanded_entities = self.expand_ne(entity, text)
 
         # could not expand the named-entity
-        if len(text_entities) == 0:
-            self.log_results(candidates, entity, no_wiki, text_entities, url)
+        if len(expanded_entities) == 0:
+            self.log_results(candidates, entity, no_wiki, expanded_entities, url)
 
         # expanding process just returned one candidate
-        if len(text_entities) == 1:
+        if len(expanded_entities) == 1:
 
             # if it has an exact match with any previous gathered candidates
-            expanded_entity = text_entities[0]
+            expanded_entity = expanded_entities[0]
             if len(full_match_label := self.exact_matches_only(expanded_entity, candidates)) == 1:
                 return full_match_label[0]
 
             # otherwise use the expanded entity to retrieve new candidates from the KB
-            candidates = self.query_kb(text_entities[0], all_results=True)
+            candidates = self.query_kb(expanded_entities[0], all_results=True)
 
             # if from all the newly retrieved candidates only one has an exact match with the
             # expanded entity, return that one
@@ -252,16 +235,20 @@ class EntityLinking:
                 return full_match[0]
 
             # if there's only one and soft string matching occurs return that one
-            if len(candidates) == 1 and self.fuzzy_match(text_entities[0], candidates[0]):
+            if len(candidates) == 1 and self.fuzzy_match(expanded_entities[0], candidates[0]):
                 return candidates[0]
 
-            self.log_results(candidates, entity, no_wiki, text_entities, url)
+            self.log_results(candidates, entity, no_wiki, expanded_entities, url)
             return None
 
         # if there's more than one expanded entity
-        if len(text_entities) > 1:
-            if len(full_matches := self.disambiguate(text_entities, candidates)) == 1:
-                return full_matches[0]
+        if len(expanded_entities) > 1:
+            exact_matches = []
+            for entity in expanded_entities:
+                exact_matches.extend(self.exact_matches_only(entity, candidates))
+            if len(exact_matches) == 1:
+                return exact_matches[0]
 
-            self.log_results(candidates, entity, no_wiki, text_entities, url)
+            self.log_results(candidates, entity, no_wiki, expanded_entities, url)
+
             return None

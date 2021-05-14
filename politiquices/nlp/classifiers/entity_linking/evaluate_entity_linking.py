@@ -11,29 +11,6 @@ mappings = {
     "Cavaco": "Aníbal Cavaco Silva",
     "Sócrates": "José Sócrates",
     "Marques Mendes": "Luís Marques Mendes",
-    # "António Costa": "António Luís Santos da Costa",
-    # "Carrilho": "Manuel Maria Carrilho",
-    # "Durão": "Durão Barroso",
-    # "Ferreira de o Amaral": "Joaquim Ferreira do Amaral",
-    # "Jerónimo": "Jerónimo de Sousa",
-    # "José Pedro Aguiar-Branco": "José Pedro Aguiar Branco",
-    # "Louçã": "Francisco Louçã",
-    # "Louça": "Francisco Louçã",
-    # "Marcelo": "Marcelo Rebelo de Sousa",
-    # "Rebelo de Sousa": "Marcelo Rebelo de Sousa",
-    # "Marques Mendes": "Luís Marques Mendes",
-    # "Menezes": "Luís Filipe Menezes",
-    # "Moura Guedes": "Manuela Moura Guedes",
-    # "Nobre": "Fernando Nobre",
-    # "Passos": "Pedro Passos Coelho",
-    # "Portas": "Paulo Portas",
-    # "Relvas": "Miguel Relvas",
-    # "Santana": "Pedro Santana Lopes",
-    # "Santos Silva": "Augusto Santos Silva",
-    # "Soares": "Mário Soares",
-    # "Sousa Tavares": "Miguel Sousa Tavares",
-    # "Vieira da Silva": "José Vieira da Silva",
-    # "Vitor Gaspar": "Vítor Gaspar",
 }
 
 articles_db = ArticlesDB()
@@ -70,12 +47,6 @@ def main():
             url = 'https://publico.pt/'+news_id
         evaluate_one(entity_one_str, entity_one_id, url)
         evaluate_one(entity_two_str, entity_two_id, url)
-
-    """
-    print("\n\n\n--------------------")
-    for k in sorted(freqs, key=lambda x: freqs[x], reverse=True):
-        print(k, '\t', freqs[k])
-    """
 
     print("\n#unique ids: ", len(freqs.keys()))
     print("#named-entities (surface strings): ", len(ent_true))
