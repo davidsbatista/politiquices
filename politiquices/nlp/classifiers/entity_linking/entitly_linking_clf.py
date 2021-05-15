@@ -80,9 +80,8 @@ class EntityLinking:
 
     @staticmethod
     def deburr_entity():
+        # ToDo: remove dashes and ANSI version of a string
         pass
-        # ToDo:
-        # without dashes and ANSI version of a string
 
     @staticmethod
     def merge_substrings(entities):
@@ -148,13 +147,11 @@ class EntityLinking:
 
     def expand_ne(self, entity, text):
         """
-        Try to expand the 'entity', get all the named entities in the text, and only keep those
-        that overlap on some strings with 'entity'.
+        Try to expand the 'entity', get all person named entities in the news text, and only keep
+        those that overlap on at least one token with 'entity'.
         """
-
         if not text:
             return []
-
         persons = self.ner.tag(text)
         expanded = [p for p in persons if entity in p and entity != p]
         expanded_clean = [self.clean_entity(x) for x in expanded]
@@ -174,17 +171,17 @@ class EntityLinking:
         return matches
 
     @staticmethod
-    def fuzzy_match(entity, candidate, threshold=0.8):
+    def fuzzy_match(entity, candidate, threshold=0.75):
         def fuzzy_compare(a, b):
             seq = difflib.SequenceMatcher(None, a, b)
             return seq.ratio()
 
-        if fuzzy_compare(entity, candidate["label"]) > threshold:
+        if fuzzy_compare(entity, candidate["label"]) >= threshold:
             return True
 
         if "aliases" in candidate and candidate["aliases"] is not None:
             for alias in candidate["aliases"]:
-                if fuzzy_compare(entity, alias) > threshold:
+                if fuzzy_compare(entity, alias) >= threshold:
                     return True
 
         return False
@@ -196,7 +193,6 @@ class EntityLinking:
 
         # no candidates generated
         if len(candidates) == 0:
-            # print("No candidates from KB -> ", entity)
             no_wiki.write({"entity": entity, "expanded": "no_candidates", "url": url})
             return None
 
