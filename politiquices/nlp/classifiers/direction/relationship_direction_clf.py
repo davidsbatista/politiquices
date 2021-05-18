@@ -94,10 +94,9 @@ class DirectionClassifier:
                 if elements[1][2].get("Mood") == ['Ind']:
                     return "ent2_rel_ent1", t.label(), bet, pos_tags
 
-        # <NOUN> <ADJ?> de <ent2>
+        # <ADJ>? <NOUN> <ADJ>? de <ent2> <EOS>
         valid_nouns = ["críticas", "acusações", "ataques", "ataque", "apoio", "convite"]
         valid_adp = ['de']
-        # <NOUN> <ADP> <ent2> <EOS>
         patterns_found = self.third_pattern.parse(bet)
         for t in patterns_found.subtrees():
             if t.label() == "ENT2_MENTIONED_AT_END_WITH_NOUN":

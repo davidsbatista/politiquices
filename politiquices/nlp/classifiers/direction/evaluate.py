@@ -48,14 +48,14 @@ def main():
             elif true == pred:
                 correct_patterns[pattern] += 1
                 """
-                if pattern == 'POTENTIALLY_PASSIVE_VOICE':
-                    if true == "ent2_rel_ent1":
-                        print("true: ", true)
-                        print("pred: ", pred)
-                        print(d["title"])
-                        print()
-                        print(context)
-                        print("\n-----------------------------")
+                if true == "ent2_rel_ent1":
+                    print("true: ", true)
+                    print("pred: ", pred)
+                    print(d["title"])
+                    print(pattern)
+                    print()
+                    print(context)
+                    print("\n-----------------------------")
                 """
 
     print(classification_report(true_direction, pred_direction))
