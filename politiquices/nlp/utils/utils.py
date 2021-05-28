@@ -62,7 +62,7 @@ def write_iterator_to_file(iter_struct, filename):
 
 def clean_title_quotes(title):
     cleaned_title = re.sub(r"[“”″]", '"', title)
-    return re.sub(r'"{2}', '"', cleaned_title)
+    return cleaned_title
 
 
 def clean_title_re(title):

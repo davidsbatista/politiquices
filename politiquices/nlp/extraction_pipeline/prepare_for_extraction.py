@@ -105,12 +105,12 @@ def main():
     too_short_log.close()
     other_topics_log.close()
 
-    print("\ntotal        : ", total)
-    print("failed to clean: ", cleaning)
-    print("duplicated     : ", nr_duplicates)
-    print("too_short      : ", too_short)
-    print("other_topics   : ", other_topics)
-    print("considered     : ", considered)
+    print("\ntotal           : ", total)
+    print("failed to clean : ", cleaning)
+    print("duplicated      : ", nr_duplicates)
+    print("too_short       : ", too_short)
+    print("other_topics    : ", other_topics)
+    print("considered      : ", considered)
 
 
 if __name__ == "__main__":
