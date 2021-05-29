@@ -33,7 +33,7 @@ class RelationshipClassifier:
     def get_model(self, embedding_layer):
         i = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
         x = embedding_layer(i)
-        lstm_out = Bidirectional(LSTM(256, dropout=0.3, recurrent_dropout=0.3))(x)
+        lstm_out = Bidirectional(LSTM(256, dropout=0.5, recurrent_dropout=0.5))(x)
         o = Dense(self.num_classes, activation="softmax", name="output")(lstm_out)
         model = Model(inputs=i, outputs=o)
         model.compile(
