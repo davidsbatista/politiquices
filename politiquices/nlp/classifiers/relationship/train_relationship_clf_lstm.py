@@ -60,25 +60,19 @@ def remap_y_target(y_labels):
 
 
 def main():
-    """
-    training_data = read_ground_truth("../politiquices_training_data.tsv")
-    training_data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.tsv")
-    all_data = training_data + training_data_webapp
-    titles, labels = pre_process_train_data(all_data)
-    """
     all_data = read_ground_truth("../politiquices_data_v1.0.csv")
-    labels = remap_y_target([s['label'] for s in all_data])
-
+    labels = [s['label'] for s in all_data]
     print("Loading embeddings...")
     word2embedding, word2index = get_embeddings()
 
     skf = StratifiedKFold(n_splits=4, random_state=42, shuffle=True)
     fold_n = 0
     for train_index, test_index in skf.split(all_data, labels):
-        x_train = [doc for idx, doc in enumerate(all_data) if idx in train_index]
-        x_test = [doc for idx, doc in enumerate(all_data) if idx in test_index]
+        x_train = [doc['title'] for idx, doc in enumerate(all_data) if idx in train_index]
+        x_test = [doc['title'] for idx, doc in enumerate(all_data) if idx in test_index]
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
+
         model = RelationshipClassifier(epochs=10)
         model.train(x_train, y_train, word2index, word2embedding, x_val_tks=x_test, y_val=y_test)
 
@@ -175,10 +169,12 @@ def main():
 
         fold_n += 1
 
+    """
     model = RelationshipClassifier(epochs=3)
     x_vec = tokenize(titles)
     model.train(x_vec, labels, word2index, word2embedding, x_val_tks=None, y_val=None)
     model.save()
+    """
 
 
 if __name__ == "__main__":
