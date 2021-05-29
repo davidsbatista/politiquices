@@ -133,7 +133,7 @@ class RelationshipClassifier:
             else:
                 correct.append([title, pred_y, true_y, score])
 
-        return report_str, misclassifications, correct
+        return report_str, misclassifications, correct, pred_labels
 
     def save(self):
         joblib.dump(self, f"trained_models/relationship_clf_{get_time_str()}.joblib")
