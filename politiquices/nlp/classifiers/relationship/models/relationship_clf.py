@@ -5,7 +5,7 @@ from keras import Input, Model
 from keras.utils import to_categorical
 from keras.layers import Bidirectional, Dense, LSTM
 from keras_preprocessing.sequence import pad_sequences
-from keras.backend import categorical_crossentropy
+from keras.backend import categorical_crossentropy, sparse_categorical_crossentropy
 
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
@@ -37,7 +37,7 @@ class RelationshipClassifier:
         o = Dense(self.num_classes, activation="softmax", name="output")(lstm_out)
         model = Model(inputs=i, outputs=o)
         model.compile(
-            loss={"output": categorical_crossentropy}, optimizer="adam", metrics=["accuracy"]
+            loss={"output": sparse_categorical_crossentropy}, optimizer="adam", metrics=["accuracy"]
         )
 
         return model
