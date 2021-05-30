@@ -31,6 +31,7 @@ class RelationshipClassifier:
         self.history = None  # ToDo: make function to plot loss graphs on train and test
 
     def get_model(self, embedding_layer):
+        """"
         i = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
         x = embedding_layer(i)
         lstm_out = Bidirectional(LSTM(256, dropout=0.5, recurrent_dropout=0.5))(x)
@@ -38,6 +39,18 @@ class RelationshipClassifier:
         model = Model(inputs=i, outputs=o)
         model.compile(
             loss={"output": sparse_categorical_crossentropy}, optimizer="adam", metrics=["accuracy"]
+        )
+        """
+        inp = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
+        emb = embedding_layer(inp)
+        lstm_out = Bidirectional(LSTM(256, dropout=0.5, recurrent_dropout=0.5))(emb)
+        x = Dense(128, activation='relu')(lstm_out)
+        out = Dense(self.num_classes, activation='softmax')(x)
+        model = Model(inp, out)
+        model.compile(
+            loss='sparse_categorical_crossentropy',
+            optimizer='adam',
+            metrics=['accuracy']
         )
 
         return model
@@ -60,17 +73,25 @@ class RelationshipClassifier:
         # Encode the labels, each must be a vector with dim = num. of possible labels
         le = LabelEncoder()
         y_train_encoded = le.fit_transform(y_train)
-        y_train_vec = to_categorical(y_train_encoded, num_classes=None)
+        y_train_vec = y_train_encoded
+
+        print(y_train_encoded)
+        print(type(y_train_encoded))
+        for val in y_train_encoded:
+            print(val, type(val))
+
+        # for 'categorical_crossentropy'
+        # y_train_vec = to_categorical(y_train_encoded, num_classes=5, dtype=int)
         if y_val:
             y_val_encoded = le.transform(y_val)
-            y_val_vec = to_categorical(y_val_encoded)
-
-        for y in y_train_vec:
-            print(y)
+            y_val_vec = y_val_encoded
+            # for 'categorical_crossentropy'
+            # y_val_vec = to_categorical(y_val_encoded)
 
         print("Shape of train data tensor:", x_train_vec_padded.shape)
         print("Shape of train label tensor:", y_train_vec.shape)
-        self.num_classes = y_train_vec.shape[1]
+        # self.num_classes = y_train_vec.shape[1]
+        self.num_classes = 5
         if x_val_tks and y_val:
             print("Shape of val data tensor:", x_val_vec_padded.shape)
             print("Shape of val label tensor:", y_val_vec.shape)
@@ -81,7 +102,6 @@ class RelationshipClassifier:
             embeddings_matrix, self.max_input_length, trainable=True
         )
         print("embeddings_matrix: ", embeddings_matrix.shape)
-
         model = self.get_model(embedding_layer)
         val_data = None
         if x_val_tks and y_val:
