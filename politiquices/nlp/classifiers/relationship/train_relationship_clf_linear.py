@@ -1,5 +1,6 @@
 import re
 
+import joblib
 import spacy
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression, SGDClassifier
@@ -188,6 +189,20 @@ def main():
     print("supports_missclassifed_as_other")
     print(len(supports_missclassifed_as_other))
     """
+
+    # y: labels
+    le = LabelEncoder()
+    y_train_encoded = le.fit_transform(labels)
+
+    # x: custom  tokenization
+    tfidf = TfidfVectorizer(tokenizer=dummy_fun,preprocessor=dummy_fun)
+    train_textual_context = get_text_tokens(all_data, tokenized=True)
+    tf_idf_weights = tfidf.fit_transform(train_textual_context)
+
+    clf = LinearSVC(class_weight='balanced', verbose=1)
+    clf.fit(tf_idf_weights, y_train_encoded)
+
+    joblib.dump(clf, filename='linear_svm.joblib')
 
 
 if __name__ == "__main__":

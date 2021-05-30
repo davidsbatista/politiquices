@@ -65,6 +65,9 @@ class RelationshipClassifier:
             y_val_encoded = le.transform(y_val)
             y_val_vec = to_categorical(y_val_encoded)
 
+        for y in y_train_vec:
+            print(y)
+
         print("Shape of train data tensor:", x_train_vec_padded.shape)
         print("Shape of train label tensor:", y_train_vec.shape)
         self.num_classes = y_train_vec.shape[1]
