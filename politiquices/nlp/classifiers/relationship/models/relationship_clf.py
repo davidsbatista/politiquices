@@ -86,7 +86,7 @@ class RelationshipClassifier:
         print("Shape of train data tensor:", x_train_vec_padded.shape)
         print("Shape of train label tensor:", y_train_vec.shape)
         # self.num_classes = y_train_vec.shape[1]
-        self.num_classes = 5
+        self.num_classes = 3
         if x_val_tks and y_val:
             print("Shape of val data tensor:", x_val_vec_padded.shape)
             print("Shape of val label tensor:", y_val_vec.shape)

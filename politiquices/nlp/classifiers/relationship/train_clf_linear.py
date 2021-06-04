@@ -152,24 +152,27 @@ def main():
 
         fold_n += 1
 
+        for sample in supports_missclassifed_as_other:
+            print(sample)
+            pos_tags = get_pos_tags(sample['title'])
+            between, after = get_context(pos_tags, sample['ent1'], sample['ent2'])
+            print("BET: ", between)
+            print("AFT: ", after)
+            print("\n\n--------------")
+
+        print("supports_misclassified_as_other")
+        print(len(supports_missclassifed_as_other))
+        print()
+        print("supports_misclassified_as_opposes")
+        print(len(supports_missclassifed_as_opposes))
+
     print("\n\nFINAL REPORT")
     print(classification_report(all_trues, all_preds, zero_division=0.00))
     cm = confusion_matrix(all_trues, all_preds, labels=['opposes', 'other', 'supports'])
     print_cm(cm, labels=['opposes', 'other', 'supports'])
     print()
 
-    """
-    for sample in supports_missclassifed_as_other:
-        print(sample)
-        pos_tags = get_pos_tags(sample['title'])
-        between, after = get_context(pos_tags, sample['ent1'], sample['ent2'])
-        print(between)
-        print(after)
-        print("\n\n--------------")
-
-    print("supports_missclassifed_as_other")
-    print(len(supports_missclassifed_as_other))
-    """
+    exit(-1)
 
     # y: labels
     le = LabelEncoder()
