@@ -13,9 +13,7 @@ from politiquices.nlp.classifiers.relationship.sentiment import WordSentiment
 from politiquices.nlp.classifiers.utils.ml_utils import print_cm
 from politiquices.nlp.utils.utils import (
     read_ground_truth,
-    find_sub_list,
-    clean_title_quotes,
-    clean_title_re,
+    find_sub_list
 )
 
 nlp = spacy.load(
@@ -24,19 +22,6 @@ nlp = spacy.load(
 )
 
 word_sentiment = WordSentiment()
-
-other_labels = [
-        "ent1_asks_support_ent2",
-        "ent2_asks_support_ent1",
-        "ent1_asks_action_ent2",
-        "ent1_replaces_ent2",
-        "ent2_replaces_ent1",
-        "mutual_disagreement",
-        "mutual_agreement",
-        "more_entities",
-        "meet_together",
-        "other",
-    ]
 
 
 def get_context(title_pos_tags, ent1, ent2):
@@ -93,10 +78,6 @@ def get_text_tokens(x_data, tokenized=True):
 
 def dummy_fun(doc):
     return doc
-
-
-def get_features(textual_context):
-    pass
 
 
 def main():

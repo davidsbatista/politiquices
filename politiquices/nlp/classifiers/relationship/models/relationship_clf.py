@@ -75,11 +75,6 @@ class RelationshipClassifier:
         y_train_encoded = le.fit_transform(y_train)
         y_train_vec = y_train_encoded
 
-        print(y_train_encoded)
-        print(type(y_train_encoded))
-        for val in y_train_encoded:
-            print(val, type(val))
-
         # for 'categorical_crossentropy'
         # y_train_vec = to_categorical(y_train_encoded, num_classes=5, dtype=int)
         if y_val:

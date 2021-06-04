@@ -62,12 +62,14 @@ def remap_y_target(y_labels):
 
 
 def main():
+
     all_data = read_ground_truth("../politiquices_data_v1.0.csv")
-    labels = [s['label'] for s in all_data]
+    labels = remap_y_target([s['label'] for s in all_data])
+    skf = StratifiedKFold(n_splits=4, random_state=42, shuffle=True)
+
     print("Loading embeddings...")
     word2embedding, word2index = get_embeddings()
 
-    skf = StratifiedKFold(n_splits=4, random_state=42, shuffle=True)
     all_data_shuffled = []
     all_preds = []
     all_trues = []
