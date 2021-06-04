@@ -152,8 +152,10 @@ def main():
 
         fold_n += 1
 
-        for sample in supports_missclassifed_as_other:
+        for sample in supports_missclassifed_as_opposes:
             print(sample)
+            print("true: supports")
+            print("pred: opposes")
             pos_tags = get_pos_tags(sample['title'])
             between, after = get_context(pos_tags, sample['ent1'], sample['ent2'])
             print("BET: ", between)

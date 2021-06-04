@@ -104,9 +104,18 @@ class RelationshipClassifier:
 
         # ToDo: plot loss graphs on train and test
         # ToDo: add callbacks
+
+        from sklearn.utils import class_weight
+
         if val_data:
+            class_weights = class_weight.compute_class_weight('balanced',
+                                                              np.unique(y_train),
+                                                              y_train)
+            print(class_weights)
             self.history = model.fit(
-                x_train_vec_padded, y_train_vec, validation_data=val_data, epochs=self.epochs)
+                x_train_vec_padded, y_train_vec, class_weight=class_weights,
+                validation_data=val_data, epochs=self.epochs
+            )
         else:
             self.history = model.fit(
                 x_train_vec_padded, y_train_vec, validation_split=0.1, epochs=self.epochs)
