@@ -1,7 +1,6 @@
 import re
-from collections import Counter
-
 import spacy
+
 from sklearn.metrics import confusion_matrix, classification_report
 from sklearn.model_selection import StratifiedKFold
 
@@ -9,47 +8,8 @@ from politiquices.nlp.classifiers.relationship.models.embeddings_utils import ge
 from politiquices.nlp.classifiers.relationship.models.relationship_clf import RelationshipClassifier
 from politiquices.nlp.classifiers.utils.ml_utils import print_cm
 from politiquices.nlp.utils.utils import read_ground_truth
-from politiquices.nlp.utils.utils import clean_title_re
-from politiquices.nlp.utils.utils import clean_title_quotes
 
 spacy_tokenizer = spacy.load("pt_core_news_lg", disable=['parser', 'tagger', 'ner'])
-
-
-def pre_process_train_data(data):
-    other = [
-        "ent1_asks_support_ent2",
-        "ent2_asks_support_ent1",
-        "ent1_asks_action_ent2",
-        "ent1_replaces_ent2",
-        "ent2_replaces_ent1",
-        "mutual_disagreement",
-        "mutual_agreement",
-        "more_entities",
-        "meet_together",
-        "other",
-    ]
-
-    titles = []
-    labels = []
-
-    for d in data:
-        titles.append((clean_title_quotes((clean_title_re(d["title"]))), d["ent1"], d["ent2"]))
-        if d["label"] not in other:
-            labels.append(d["label"])
-        else:
-            labels.append('other')
-
-    y_train = [re.sub(r"_?ent[1-2]_?", "", y_sample) for y_sample in labels]
-    print("\nSamples per class:")
-    for k, v in Counter(y_train).items():
-        print(k, "\t", v)
-    print("\nTotal nr. messages:\t", len(y_train))
-    print("\n")
-
-    # replace entity name by 'PER'
-    titles = [d[0].replace(d[1], "PER").replace(d[2], "PER") for d in titles]
-
-    return titles, y_train
 
 
 def tokenize(sentences):
@@ -81,7 +41,7 @@ def main():
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
 
-        model = RelationshipClassifier(epochs=20)
+        model = RelationshipClassifier(epochs=1)
         model.train(x_train, y_train, word2index, word2embedding, x_val_tks=x_test, y_val=y_test)
 
         report_str, misclassifications, correct, pred_labels = model.evaluate(x_test, y_test)
