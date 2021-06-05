@@ -63,14 +63,16 @@ def get_text_tokens(x_data, tokenized=True):
         context_text = ' '.join([t.text for t in between])
         if tokenized:
             # if 'diz que' get AFT context
-            if context_text == 'diz que':
+            if context_text in ['diz que', 'afirma que', ':']:
                 # context_text = [t.lemma_ for t in after if t.pos_ in filter_only_pos]
                 context_text = [t.lemma_ for t in after]
+                print(title)
+                print(context_text)
+                print("\n\n-------------")
             else:
                 # context_text = [t.lemma_ for t in between if t.pos_ in filter_only_pos]
                 context_text = [t.lemma_ for t in between]
         else:
-            print("HERE")
             context_text = ' '.join([t.text for t in between])
 
         textual_context.append(context_text)
@@ -118,7 +120,8 @@ def main():
         # no tokenization
         tfidf = TfidfVectorizer(
             tokenizer=dummy_fun,
-            preprocessor=dummy_fun
+            preprocessor=dummy_fun,
+            ngram_range=(1, 2)
         )
 
         # n-grams

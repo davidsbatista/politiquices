@@ -109,8 +109,8 @@ class RelationshipClassifier:
 
         if val_data:
             class_weights = class_weight.compute_class_weight('balanced',
-                                                              np.unique(y_train),
-                                                              y_train)
+                                                              classes=np.unique(y_train),
+                                                              y=y_train)
             print(class_weights)
             self.history = model.fit(
                 x_train_vec_padded, y_train_vec, class_weight=class_weights,
