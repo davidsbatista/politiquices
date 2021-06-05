@@ -296,7 +296,7 @@ def chave():
 def annotations():
     # data = read_ground_truth("../../../nlp/classifiers/politiquices_training_data.tsv")
     # data_webapp = read_ground_truth("../../../nlp/api_annotations/annotations_from_webapp.tsv")
-    all_data = read_ground_truth("../politiquices_data_v1.0.csv")
+    all_data = read_ground_truth("../../../nlp/classifiers/politiquices_data_v1.0.csv")
     training_data = [d['title'] for d in all_data]
     all_other = get_relationships_to_annotate()
     to_annotate = []
