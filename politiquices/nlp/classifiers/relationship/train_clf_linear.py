@@ -62,11 +62,14 @@ def get_text_tokens(x_data, tokenized=True):
         between, after = get_context(pos_tags, ent1, ent2)
         context_text = ' '.join([t.text for t in between])
         if tokenized:
-            if between[-1] == 'que':
+            """
+            if between and between[-1].text == 'que':
                 print(title)
-                print("\n\n-------------")
+                print(between)
+                print("\n\n\n-------------")
+            """
             # 'diz que' get AFT context
-            if context_text in ['diz que', 'afirma que', ':']:
+            if context_text in ['diz que', 'afirma que', 'espera que', ':']:
                 # context_text = [t.lemma_ for t in after if t.pos_ in filter_only_pos]
                 context_text = [t.lemma_ for t in after]
                 # print(title)
@@ -124,7 +127,6 @@ def main():
         tfidf = TfidfVectorizer(
             tokenizer=dummy_fun,
             preprocessor=dummy_fun,
-            ngram_range=(1, 2)
         )
 
         # n-grams
@@ -151,11 +153,13 @@ def main():
         all_preds.extend(y_pred)
 
         for pred, true, sample in zip(y_pred, y_test, x_test):
-            if pred == 'opposes' and true == 'supports':
+            if true == 'supports' and pred == 'opposes':
                 supports_missclassifed_as_opposes.append(sample)
-            if pred == 'supports' and true == 'opposes':
+
+            if true == 'opposes' and pred == 'supports':
                 opposes_missclassifed_as_supports.append(sample)
-            if pred == 'other' and true == 'supports':
+
+            if true == 'supports' and pred == 'other':
                 supports_missclassifed_as_other.append(sample)
 
         fold_n += 1
