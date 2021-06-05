@@ -41,7 +41,7 @@ def main():
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
 
-        model = RelationshipClassifier(epochs=25)
+        model = RelationshipClassifier(epochs=50)
         model.train(x_train, y_train, word2index, word2embedding, x_val_tks=x_test, y_val=y_test)
 
         report_str, misclassifications, correct, pred_labels = model.evaluate(x_test, y_test)
