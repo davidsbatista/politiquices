@@ -24,6 +24,11 @@ nlp = spacy.load(
 word_sentiment = WordSentiment()
 
 
+def remap_y_target(y_labels):
+    return [re.sub(r"_?ent[1-2]_?", "", y_sample) if y_sample != 'other' else 'other'
+            for y_sample in y_labels]
+
+
 def get_context(title_pos_tags, ent1, ent2):
     ent1_tokens = ent1.split()
     ent2_tokens = ent2.split()
@@ -44,11 +49,6 @@ def get_pos_tags(sentence):
     return [t for t in doc]
 
 
-def remap_y_target(y_labels):
-    return [re.sub(r"_?ent[1-2]_?", "", y_sample) if y_sample != 'other' else 'other'
-            for y_sample in y_labels]
-
-
 def get_text_tokens(x_data, tokenized=True):
     # select only, NOUN, VERB, ADJ
     filter_only_pos = ['ADV', 'NOUN', 'VERB', 'ADJ']
@@ -62,6 +62,7 @@ def get_text_tokens(x_data, tokenized=True):
         between, after = get_context(pos_tags, ent1, ent2)
         context_text = ' '.join([t.text for t in between])
         if tokenized:
+            # if 'diz que' get AFT context
             if context_text == 'diz que':
                 # context_text = [t.lemma_ for t in after if t.pos_ in filter_only_pos]
                 context_text = [t.lemma_ for t in after]
@@ -69,6 +70,7 @@ def get_text_tokens(x_data, tokenized=True):
                 # context_text = [t.lemma_ for t in between if t.pos_ in filter_only_pos]
                 context_text = [t.lemma_ for t in between]
         else:
+            print("HERE")
             context_text = ' '.join([t.text for t in between])
 
         textual_context.append(context_text)
