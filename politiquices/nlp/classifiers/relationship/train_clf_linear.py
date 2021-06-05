@@ -62,13 +62,16 @@ def get_text_tokens(x_data, tokenized=True):
         between, after = get_context(pos_tags, ent1, ent2)
         context_text = ' '.join([t.text for t in between])
         if tokenized:
-            # if 'diz que' get AFT context
+            if between[-1] == 'que':
+                print(title)
+                print("\n\n-------------")
+            # 'diz que' get AFT context
             if context_text in ['diz que', 'afirma que', ':']:
                 # context_text = [t.lemma_ for t in after if t.pos_ in filter_only_pos]
                 context_text = [t.lemma_ for t in after]
-                print(title)
-                print(context_text)
-                print("\n\n-------------")
+                # print(title)
+                # print(context_text)
+                # print("\n\n-------------")
             else:
                 # context_text = [t.lemma_ for t in between if t.pos_ in filter_only_pos]
                 context_text = [t.lemma_ for t in between]
