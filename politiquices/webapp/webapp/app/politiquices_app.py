@@ -298,6 +298,9 @@ def annotations():
     # data_webapp = read_ground_truth("../../../nlp/api_annotations/annotations_from_webapp.tsv")
     dataset = read_ground_truth("../../../nlp/classifiers/politiquices_data_v1.0.csv")
     webapp_data = read_ground_truth("../../../nlp/api_annotations/annotations_from_webapp.tsv")
+
+    print(webapp_data)
+
     training_data = [d['title'] for d in dataset + webapp_data]
     all_other = get_relationships_to_annotate()
     to_annotate = []
