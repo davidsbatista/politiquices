@@ -8,6 +8,7 @@ class WordSentiment:
                 word, pos, sentiment, annotation = line.split(",")
                 self.word_sentiment[word] = sentiment
 
+        """
         with open("../../../../resources/SentiLex-PT02/SentiLex-lem-PT02.txt") as f_in:
             for line in f_in.readlines():
                 # venerar.PoS=V;
@@ -23,6 +24,7 @@ class WordSentiment:
                 except ValueError:
                     pass
                     # print(line)
+        """
 
     def get_sentiment(self, word, pos=None):
         return self.word_sentiment.get(word, None)
