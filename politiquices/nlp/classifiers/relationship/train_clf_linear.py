@@ -150,13 +150,17 @@ def get_text_tokens(x_data, tokenized=True, filter_pos=False):
     #
     # Assunção Esteves demite assessor que dava apoio a candidatura autárquica de Almeida Henriques
 
-    # ToDo: how does the syntatic parse tree for sentences like these look like?
+    # ToDo: how does the syntactic parse tree for sentences like these look like?
     #
     # Passos defende estabilidade, Cavaco afirma isenção da sua candidatura
     #   2 pairs: nsubj, obj; nsubj, obj
     # 'Costa já promete ministérios. E tem o apoio do genro de Cavaco'
     # Jorge Coelho sai do secretariado nacional do PS e Ana Gomes chega à direcção do partido
     # Sócrates confiante em vitória “expressiva”, António Costa apela à mobilização
+
+    # ToDo: another common special case:
+    #   António Costa sobre Cavaco Silva: "É natural que tenha algumas saudades do palco"
+    #   Miguel Macedo: Reacções mostram que escolha de Fernando Nobre pelo PSD foi acertada
 
     if filter_pos:
         filter_only_pos = ['ADV', 'NOUN', 'VERB', 'ADJ']
@@ -198,6 +202,58 @@ def get_text_tokens(x_data, tokenized=True, filter_pos=False):
         textual_context.append(context_text)
 
     return textual_context
+
+
+def are_entities_related(doc, sample):
+    """
+    Check if the two entities are related.
+
+    If none of the tokens in a 'nsubj' dependency is part of any of the entities we assume
+    the entities in the sentence are not related
+
+    See:
+         https://universaldependencies.org/sv/dep/
+         https://universaldependencies.org/pt/dep/obj.html
+         https://universaldependencies.org/pt/dep/nsubj.html
+
+    Parameters
+    ----------
+    doc
+    sample
+
+    Returns
+    -------
+
+    """
+
+    tokens_in_nsubj = []
+    for token in doc:
+        if token.dep_ in ['nsubj']:
+            tokens_in_nsubj.append(token)
+    related_in_sentence = True
+    if all(token.text not in sample['ent1'] and token.text not in sample['ent2']
+           for token in tokens_in_nsubj):
+        related_in_sentence = False
+        print(sample['title'])
+        print("ent1: ", sample['ent1'])
+        print("ent2: ", sample['ent2'])
+        print("label: ", sample['label'])
+        """
+        for token in doc:
+            print(f"{token.text:<10} \t {token.dep_:>10} \t {list(token.children)}")
+        print()
+        """
+        print("\n\n----------------------------------------------")
+
+    return related_in_sentence
+
+
+def more_than_one_root(doc):
+    root = 0
+    for token in doc:
+        if token.dep_ in ['ROOT']:
+            root += 1
+    return root > 1
 
 
 def train_all_data(all_data, labels):
@@ -268,19 +324,44 @@ def main():
         predictions = clf.predict(test_tf_idf_weights)
         y_pred = [le.classes_[pred] for pred in predictions]
 
+        # overwrite prediction
+        """
+        new_y_pred = []
+        for sample, sample_pred in zip(x_test, y_pred):
+            doc = nlp(sample['title'])
+            if are_entities_related(doc, sample):
+                new_y_pred.append('other')
+            else:
+                new_y_pred.append(sample_pred)
+        y_pred = new_y_pred
+
+        for sample in x_test:
+            doc = nlp(sample['title'])
+            if more_than_one_root(doc):
+                print(sample['title'])
+                print(sample['label'])
+                for token in doc:
+                    print(f"{token.text:<10} \t {token.dep_:>10} \t {list(token.children)}")
+                print()
+                print("\n\n----")
+        """
+
         all_data_shuffled.extend(x_train)
         all_trues.extend(y_test)
         all_predictions.extend(y_pred)
         error_analysis(y_pred, y_test, all_data_test)
         fold_n += 1
 
-    # other classified as supports
-    for sample in other_classified_as_supports:
+    # other classified as supports and opposes
+    for sample in other_classified_as_opposes:
         print(sample['title'])
         print("ent1: ", sample['ent1'])
         print("ent2: ", sample['ent2'])
         print("true: other")
-        print("pred: supports")
+        if sample in other_classified_as_supports:
+            print("pred: supports")
+        elif sample in other_classified_as_opposes:
+            print("pred: opposes")
         doc = nlp(sample['title'])
         pos_tags = [t for t in doc]
         before, between, after = get_contexts(pos_tags, sample['ent1'], sample['ent2'])
@@ -288,17 +369,9 @@ def main():
         print("BET: ", between)
         print("AFT: ", after)
         print("features used: ", get_text_tokens([sample]))
-        print()
-        for token in doc:
-            if token.dep_ == 'nsubj':
-                print(token.text, list(token.children))
-                if not (token.text in sample['ent1'] or token.text in sample['ent2']):
-                    print("entities not related")
-        """
         for token in doc:
             print(f"{token.text:<10} \t {token.dep_:>10} \t {list(token.children)}")
-        """
-        # print("features tags: ", [(t.text, t.lemma_, t.pos_) for t in pos_tags])
+        print()
         print("\n\n\n--------------")
 
     # supports classified as opposes
@@ -335,6 +408,21 @@ def main():
         # print("features tags: ", [(t.text, t.lemma_, t.pos_) for t in pos_tags])
         print("\n\n--------------")
     """
+
+    # opposes classified as other
+    for sample in opposes_classified_as_other:
+        print(sample['title'])
+        print(sample['label'])
+        print("true: opposes")
+        print("pred: other")
+        doc = nlp(sample['title'])
+        pos_tags = [t for t in doc]
+        before, between, after = get_contexts(pos_tags, sample['ent1'], sample['ent2'])
+        print("BEF: ", before)
+        print("BET: ", between)
+        print("AFT: ", after)
+        print("features used: ", get_text_tokens([sample]))
+        print("\n\n--------------")
 
     # apply direction classifier to those that were correct
     """
