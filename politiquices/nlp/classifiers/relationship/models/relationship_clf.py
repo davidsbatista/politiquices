@@ -23,6 +23,7 @@ class RelationshipClassifier:
 
     def __init__(self, epochs=20):
         self.epochs = epochs
+        self.batch_size = 16
         self.max_input_length = None
         self.model = None
         self.word2index = None
@@ -56,6 +57,10 @@ class RelationshipClassifier:
         return model
 
     def train(self, x_train_tks, y_train, word2index, word2embedding, x_val_tks=None, y_val=None):
+
+        for x, y in zip(x_train_tks, y_train):
+            print(x, '\t->', y)
+
         x_train_vec = vectorize_titles(word2index, x_train_tks)
         x_val_vec = vectorize_titles(word2index, x_val_tks) if x_val_tks else None
 
@@ -111,10 +116,11 @@ class RelationshipClassifier:
             class_weights = class_weight.compute_class_weight('balanced',
                                                               classes=np.unique(y_train),
                                                               y=y_train)
-            print(class_weights)
+            print("classes: ", np.unique(y_train))
+            print("class_weights: ", class_weights)
             self.history = model.fit(
                 x_train_vec_padded, y_train_vec, class_weight=class_weights,
-                validation_data=val_data, epochs=self.epochs
+                validation_data=val_data, epochs=self.epochs, batch_size=self.batch_size
             )
         else:
             self.history = model.fit(

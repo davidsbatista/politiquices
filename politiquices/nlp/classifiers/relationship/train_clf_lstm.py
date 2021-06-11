@@ -6,6 +6,7 @@ from sklearn.model_selection import StratifiedKFold
 
 from politiquices.nlp.classifiers.relationship.models.embeddings_utils import get_embeddings
 from politiquices.nlp.classifiers.relationship.models.relationship_clf import RelationshipClassifier
+from politiquices.nlp.classifiers.relationship.train_clf_linear import get_text_tokens
 from politiquices.nlp.classifiers.utils.ml_utils import print_cm
 from politiquices.nlp.utils.utils import read_ground_truth
 
@@ -36,13 +37,20 @@ def main():
     fold_n = 0
 
     for train_index, test_index in skf.split(all_data, labels):
-        x_train = [doc['title'] for idx, doc in enumerate(all_data) if idx in train_index]
-        x_test = [doc['title'] for idx, doc in enumerate(all_data) if idx in test_index]
+        x_train = [doc for idx, doc in enumerate(all_data) if idx in train_index]
+        x_test = [doc for idx, doc in enumerate(all_data) if idx in test_index]
         y_train = [label for idx, label in enumerate(labels) if idx in train_index]
         y_test = [label for idx, label in enumerate(labels) if idx in test_index]
 
-        model = RelationshipClassifier(epochs=50)
-        model.train(x_train, y_train, word2index, word2embedding, x_val_tks=x_test, y_val=y_test)
+        # get textual contexts
+        train_textual_context = get_text_tokens(x_train, tokenized=True)
+        test_textual_context = get_text_tokens(x_test, tokenized=True)
+
+        model = RelationshipClassifier(epochs=10)
+        model.train(
+            train_textual_context, y_train, word2index, word2embedding,
+            x_val_tks=test_textual_context, y_val=y_test
+        )
 
         report_str, misclassifications, correct, pred_labels = model.evaluate(x_test, y_test)
 

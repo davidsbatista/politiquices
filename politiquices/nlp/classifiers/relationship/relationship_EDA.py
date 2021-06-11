@@ -3,60 +3,62 @@ from collections import Counter, defaultdict
 
 import nltk
 import spacy
-from sklearn.metrics import classification_report, confusion_matrix
-from sklearn.model_selection import StratifiedKFold
+from sklearn.metrics import classification_report
 
 from politiquices.nlp.classifiers.relationship.sentiment import WordSentiment
-from politiquices.nlp.classifiers.utils.ml_utils import print_cm
-from politiquices.nlp.utils.utils import (
-    read_ground_truth,
-    find_sub_list,
-    clean_title_quotes,
-    clean_title_re,
-)
+from politiquices.nlp.classifiers.relationship.train_clf_linear import remap_y_target, \
+    are_entities_related
+from politiquices.nlp.utils.utils import read_ground_truth
 
 nlp = spacy.load(
     "pt_core_news_lg",
-    disable=["tagger", "parser", "ner", "attribute_ruler"],
+    disable=["tagger", "ner", "attribute_ruler"],
 )
-
-other_labels = [
-        "ent1_asks_support_ent2",
-        "ent2_asks_support_ent1",
-        "ent1_asks_action_ent2",
-        "ent1_replaces_ent2",
-        "ent2_replaces_ent1",
-        "mutual_disagreement",
-        "mutual_agreement",
-        "more_entities",
-        "meet_together",
-        "other",
-    ]
-
-
-def get_context(title_pos_tags, ent1, ent2):
-    ent1_tokens = ent1.split()
-    ent2_tokens = ent2.split()
-    title_text = [t.text for t in title_pos_tags]
-    ent1_interval = find_sub_list(ent1_tokens, title_text)
-    if ent1_interval:
-        ent1_start, ent1_end = ent1_interval
-        ent2_interval = find_sub_list(ent2_tokens, title_text)
-        if ent2_interval:
-            ent2_start, ent2_end = ent2_interval
-            return title_pos_tags[ent1_end + 1: ent2_start]
-
-
-def get_pos_tags(sentence):
-    doc = nlp(sentence)
-    return [t for t in doc]
 
 
 def main():
-    training_data = read_ground_truth("../politiquices_training_data.tsv")
-    training_data_webapp = read_ground_truth("../../api_annotations/annotations_from_webapp.tsv")
-    all_data = training_data + training_data_webapp
+    all_data = read_ground_truth("../politiquices_data_v1.0.csv")
+    labels = remap_y_target([s['label'] for s in all_data])
+    relevant_labels = ['opposes', 'supports']
+    relevant = ['relevant' if label in relevant_labels else 'non-relevant'for label in labels]
 
+    predicted = []
+
+    relevant_not_related = 0
+    relevant_related = 0
+    other_related = 0
+    other_not_related = 0
+    for sample, label in zip(all_data, labels):
+        doc = nlp(sample["title"])
+        if label in ['opposes', 'supports']:
+            continue
+
+        if not are_entities_related(doc, sample):
+            other_not_related += 1
+            continue
+        other_related += 1
+        print(sample['title'])
+        print("ent1: ", sample['ent1'])
+        print("ent2: ", sample['ent2'])
+        print(label)
+        for token in doc:
+            print(
+                f"{token.text:<10} \t {token.pos_:>10} \t {token.dep_:>10} \t {list(token.children)}")
+        print()
+
+    # print("relevant_related: ", relevant_related)
+    # print("relevant_not_related: ", relevant_not_related)
+    # print()
+    print("other_related: ", other_related)
+    print("other_not_related: ", other_not_related)
+    print()
+    """
+    # total = relevant_not_related + relevant_not_related
+    # print(total-relevant_not_related/total)
+    # print(classification_report(relevant, predicted))
+    """
+
+    """
     verb = "<ADV>?<AUX|VERB><PART>?<ADV>?"
     word = "<NOUN|ADJ|ADV|DET|ADP>"
     preposition = "<ADP|ADJ>"
@@ -68,7 +70,9 @@ def main():
     contexts = defaultdict(lambda: defaultdict(list))
     verbs = defaultdict(int)
     verbs_lemma = defaultdict(int)
+    """
 
+    """
     for sample in all_data:
 
         title = sample["title"]
@@ -89,6 +93,7 @@ def main():
             label = re.sub(r"_?ent[1-2]_?", "", label)
 
         contexts['_'.join([t.pos_ for t in context])][label].append(' '.join([t.text for t in context]))
+    """
 
     """
     for x in sorted(verbs_lemma, key=lambda x: verbs_lemma[x], reverse=True):
@@ -96,6 +101,7 @@ def main():
     print(len(verbs_lemma))
     """
 
+    """
     for pos_tags in sorted(contexts, key=lambda x: len(contexts[x]), reverse=True):
         print(pos_tags, "labels->", len(set(contexts[pos_tags])))
         for label in contexts[pos_tags]:
@@ -107,6 +113,7 @@ def main():
         print("\n\n")
 
     print(len(contexts))
+    """
 
     """
         # Pattern I: PER <verbal expression w/ positive or negative aspect> PER:

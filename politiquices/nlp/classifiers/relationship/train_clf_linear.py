@@ -13,6 +13,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.svm import LinearSVC
 
 from politiquices.nlp.classifiers.direction.relationship_direction_clf import DirectionClassifier
+from politiquices.nlp.classifiers.relationship.parse_tree_utils import get_dependents
 from politiquices.nlp.classifiers.relationship.sentiment import WordSentiment
 from politiquices.nlp.classifiers.utils.ml_utils import print_cm
 from politiquices.nlp.utils.utils import (
@@ -211,6 +212,17 @@ def are_entities_related(doc, sample):
     If none of the tokens in a 'nsubj' dependency is part of any of the entities we assume
     the entities in the sentence are not related
 
+    other rules to explore:
+    - ent1 nsubj AND ent2 obj OR ent2 nsubj AND ent1 obj
+
+      + child from nsubj connected by 'flat:name, appos':
+        e.g.: 'Eurodeputado José Coelho acusa ...
+
+      + child from nsubj connected by 'cc'
+        e.g.: 'Rui Rio e Passos Coelho acusam ....'
+
+    - ent1 nsubj AND
+
     See:
          https://universaldependencies.org/sv/dep/
          https://universaldependencies.org/pt/dep/obj.html
@@ -226,24 +238,37 @@ def are_entities_related(doc, sample):
 
     """
 
+    # print(f"{token.text:<10} \t {token.pos_:>10} \t {token.dep_:>20} \t {list(token.children)}")
+
     tokens_in_nsubj = []
     for token in doc:
-        if token.dep_ in ['nsubj']:
+        if token.dep_ in ['nsubj', 'nsubj:pass']:
             tokens_in_nsubj.append(token)
-    related_in_sentence = True
-    if all(token.text not in sample['ent1'] and token.text not in sample['ent2']
-           for token in tokens_in_nsubj):
-        related_in_sentence = False
-        print(sample['title'])
-        print("ent1: ", sample['ent1'])
-        print("ent2: ", sample['ent2'])
-        print("label: ", sample['label'])
-        """
-        for token in doc:
-            print(f"{token.text:<10} \t {token.dep_:>10} \t {list(token.children)}")
-        print()
-        """
-        print("\n\n----------------------------------------------")
+
+    related_in_sentence = False
+
+    # check if ent1 or ent2 are the 'nsubj'
+    for token in tokens_in_nsubj:
+        if token.text in sample['ent1'] or token.text in sample['ent2']:
+            related_in_sentence = True
+
+    if not related_in_sentence:
+        for token in tokens_in_nsubj:
+            children = get_dependents(token, deps=['flat:name', 'appos', 'conj', 'nmod'])
+            for c in children:
+                if c.text in sample['ent1'] or c.text in sample['ent2']:
+                    related_in_sentence = True
+
+    """
+    print(sample['title'])
+    print("ent1: ", sample['ent1'])
+    print("ent2: ", sample['ent2'])
+    print("label: ", sample['label'])
+    for token in doc:
+        print(f"{token.text:<10} \t {token.dep_:>10} \t {list(token.children)}")
+    print()
+    """
+    # print("\n\n----------------------------------------------")
 
     return related_in_sentence
 
@@ -352,7 +377,32 @@ def main():
         error_analysis(y_pred, y_test, all_data_test)
         fold_n += 1
 
+    # correct and not 'other'
+    """
+    count = 0
+    for sample in supports_correct + opposes_correct:
+        doc = nlp(sample['title'])
+        related = are_entities_related(doc, sample)
+        if related:
+            continue
+        else:
+            count+=1
+            print(sample['title'])
+            print("ent1: ", sample['ent1'])
+            print("ent2: ", sample['ent2'])
+            if sample in supports_correct:
+                print("pred: supports")
+            elif sample in opposes_correct:
+                print("pred: opposes")
+            print("related: ", are_entities_related(doc, sample))
+            for token in doc:
+                print(f"{token.text:<10} \t {token.pos_:>10} \t {token.dep_:>20} \t {list(token.children)}")
+            print()
+    print(count)
+    """
+
     # other classified as supports and opposes
+    """
     for sample in other_classified_as_opposes:
         print(sample['title'])
         print("ent1: ", sample['ent1'])
@@ -373,6 +423,7 @@ def main():
             print(f"{token.text:<10} \t {token.dep_:>10} \t {list(token.children)}")
         print()
         print("\n\n\n--------------")
+    """
 
     # supports classified as opposes
     """
@@ -410,6 +461,7 @@ def main():
     """
 
     # opposes classified as other
+    """
     for sample in opposes_classified_as_other:
         print(sample['title'])
         print(sample['label'])
@@ -423,6 +475,7 @@ def main():
         print("AFT: ", after)
         print("features used: ", get_text_tokens([sample]))
         print("\n\n--------------")
+    """
 
     # apply direction classifier to those that were correct
     """
