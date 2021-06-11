@@ -26,7 +26,7 @@ nlp = spacy.load(
     disable=["tagger", "ner", "attribute_ruler"],
 )
 
-word_sentiment = WordSentiment()
+# word_sentiment = WordSentiment()
 
 direction_clf = DirectionClassifier()
 
