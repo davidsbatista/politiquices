@@ -172,7 +172,7 @@ def get_text_tokens(x_data, tokenized=True, filter_pos=False):
     cntxt_a_aft = ['diz a', 'responde a', 'sugere a', 'diz que atitude de']
     cntxt_b_aft = ['diz que', 'afirma que', 'espera que', 'defende que', 'considera que']
     cntxt_c_aft = ['considera']
-    cntxt_d_aft = [':', '.', ',', '. "']
+    cntxt_d_aft = [':', '.', ',', '. "', ': "']
     context_aft = cntxt_a_aft + cntxt_b_aft + cntxt_c_aft + cntxt_d_aft
 
     cntxt_a_bef = [', sugere']
@@ -348,6 +348,13 @@ def main():
         test_tf_idf_weights = tfidf.transform(test_textual_context)
         predictions = clf.predict(test_tf_idf_weights)
         y_pred = [le.classes_[pred] for pred in predictions]
+
+        for x, y, pred, sample in zip(test_textual_context, y_test, y_pred, x_test):
+            if len(x) <= 3:
+                print(sample['title'])
+                print("predicted: ", pred)
+                print("features:  ", x, '\t->', y)
+                print()
 
         # overwrite prediction
         """

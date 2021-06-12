@@ -32,7 +32,7 @@ class RelationshipClassifier:
         self.history = None  # ToDo: make function to plot loss graphs on train and test
 
     def get_model(self, embedding_layer):
-        """"
+
         i = Input(shape=(self.max_input_length,), dtype="int32", name="main_input")
         x = embedding_layer(i)
         lstm_out = Bidirectional(LSTM(256, dropout=0.5, recurrent_dropout=0.5))(x)
@@ -53,13 +53,16 @@ class RelationshipClassifier:
             optimizer='adam',
             metrics=['accuracy']
         )
+        """
 
         return model
 
     def train(self, x_train_tks, y_train, word2index, word2embedding, x_val_tks=None, y_val=None):
 
+        """
         for x, y in zip(x_train_tks, y_train):
             print(x, '\t->', y)
+        """
 
         x_train_vec = vectorize_titles(word2index, x_train_tks)
         x_val_vec = vectorize_titles(word2index, x_val_tks) if x_val_tks else None
