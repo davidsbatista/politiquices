@@ -109,6 +109,12 @@ def features_importance():
 
 
 def get_contexts(title_pos_tags, ent1, ent2):
+
+    print(title_pos_tags)
+    print(ent1)
+    print(ent2)
+    print("\n")
+
     ent1_tokens = ent1.split()
     ent2_tokens = ent2.split()
     title_text = [t.text for t in title_pos_tags]
