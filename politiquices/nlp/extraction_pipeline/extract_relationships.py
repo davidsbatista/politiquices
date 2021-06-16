@@ -37,6 +37,10 @@ def get_ner():
     return RuleBasedNer(names_token_patterns, names_phrase_patterns)
 
 
+def dummy_fun(doc):
+    return doc
+
+
 def main():
     args = parse_args()
 
@@ -51,7 +55,8 @@ def main():
 
     # load the relationships classification model
     print("Loading relationship classifier...")
-    relationship_clf = joblib.load(MODELS + "latest")
+    relationship_clf = joblib.load(MODELS + "SVC_2021_06_17_00_49.joblib")
+    tf_idf_vectorizer = joblib.load(MODELS + "tf_idf_weights_2021_06_17_00_49.joblib")
 
     print("Loading NER classifier")
     ner = get_ner()
@@ -59,12 +64,18 @@ def main():
     with open('../classifiers/ner/names_ignore.txt', 'rt') as f_in:
         ner_ignore = [line.strip() for line in f_in.readlines()]
 
-    # print("Loading relation direction classifier")
+    print("Loading relation direction classifier")
     direction_clf = DirectionClassifier()
 
     print("Loading Entity Linking")
     articles_db = ArticlesDB()
-    el = EntityLinking(ner, articles_db)
+
+    mappings = {
+        "Cavaco": "Aníbal Cavaco Silva",
+        "Marques Mendes": "Luís Marques Mendes",
+    }
+
+    el = EntityLinking(ner, articles_db, mappings)
 
     # log everything for error analysis
     ner_ignored = jsonlines.open("ner_ignored.jsonl", mode="w")
@@ -96,7 +107,7 @@ def main():
             if count % 1000 == 0:
                 print(count)
 
-            cleaned_title = clean_title_quotes(clean_title_re(title))
+            cleaned_title = clean_title_re(title)
 
             # named-entity recognition
             persons = ner.tag(cleaned_title)
@@ -119,31 +130,39 @@ def main():
             entity1_wiki = el.entity_linking(persons[0], url)
             entity2_wiki = el.entity_linking(persons[1], url)
 
-            # relationship extraction_pipeline
-            title_PER = cleaned_title.replace(persons[0], "PER").replace(persons[1], "PER")
+            # relationship extraction
+            labels = ['opposes', 'other', 'supports']
 
-            # detect relationship direction
-            pred, pattern = direction_clf.detect_direction(cleaned_title, persons[0], persons[1])
+            from politiquices.nlp.classifiers.relationship.train_clf_linear import get_text_tokens
 
-            predicted_probs = relationship_clf.tag([title_PER])
+            sample = {'title': cleaned_title, 'ent1': persons[0], 'ent2': persons[1]}
+            textual_context = get_text_tokens([sample], tokenized=True)
+            tf_idf_weights = tf_idf_vectorizer.transform(textual_context)
+            predicted_probs = relationship_clf.predict_proba(tf_idf_weights)
+            print(cleaned_title)
+            print(persons[0])
+            print(persons[1])
+            print(predicted_probs[0])
+
             rel_type_scores = {
                 label: float(pred)
-                for label, pred in zip(
-                    relationship_clf.label_encoder.classes_, predicted_probs[0]
-                )
+                for label, pred in zip(labels, predicted_probs[0])
             }
 
-            new_scores = dict()
-            for k, v in rel_type_scores.items():
-                predicted = pred.replace('rel', k)
-                new_scores[predicted] = v
+            print(rel_type_scores)
+
+            # detect relationship direction
+            pred, pattern, context, pos_tags = direction_clf.detect_direction(cleaned_title, persons[0], persons[1])
+
+            # ToDo: save the direction as an extra field
+            print(pred)
 
             result = {
                 "title": cleaned_title,
                 "entities": persons,
                 "ent_1": entity1_wiki,
                 "ent_2": entity2_wiki,
-                "scores": new_scores,
+                "scores": rel_type_scores,
                 "url": url,
                 "date": date,
             }

@@ -91,7 +91,7 @@ def clean_title_re(title):
 
 
 def get_time_str():
-    return datetime.strftime(datetime.now(), "%Y_%m_%d_%H_%M_%S")
+    return datetime.strftime(datetime.now(), "%Y_%m_%d_%H_%M")
 
 
 def read_ground_truth(filename, delimiter="\t"):

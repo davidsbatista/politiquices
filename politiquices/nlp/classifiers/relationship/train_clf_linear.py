@@ -1,16 +1,18 @@
 import re
 import json
+
 from sklearn.preprocessing import scale
 
 import numpy as np
 import joblib
 import spacy
+from sklearn.naive_bayes import MultinomialNB
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
-from sklearn.svm import LinearSVC
+from sklearn.svm import LinearSVC, SVC
 
 from politiquices.nlp.classifiers.direction.relationship_direction_clf import DirectionClassifier
 from politiquices.nlp.classifiers.relationship.parse_tree_utils import get_dependents
@@ -18,7 +20,7 @@ from politiquices.nlp.classifiers.relationship.sentiment import WordSentiment
 from politiquices.nlp.classifiers.utils.ml_utils import print_cm
 from politiquices.nlp.utils.utils import (
     read_ground_truth,
-    find_sub_list
+    find_sub_list, get_time_str
 )
 
 nlp = spacy.load(
@@ -42,35 +44,36 @@ opposes_correct = []
 other_correct = []
 
 
-def error_analysis(y_pred, y_test, all_data_test):
+def error_analysis(y_pred, y_predictions, y_pred_prob, y_test, all_data_test):
 
-    for pred, true, sample in zip(y_pred, y_test, all_data_test):
+    for pred, prediction, prob_pred, true, sample in zip(y_pred, y_predictions, y_pred_prob, y_test,
+                                                         all_data_test):
 
         # supports misclassified
         if true == 'supports' and pred == 'opposes':
-            supports_classified_as_opposes.append(sample)
+            supports_classified_as_opposes.append((sample, prob_pred))
         if true == 'supports' and pred == 'other':
-            supports_classified_as_other.append(sample)
+            supports_classified_as_other.append((sample, prob_pred))
 
         # opposes misclassified
         if true == 'opposes' and pred == 'supports':
-            opposes_classified_as_supports.append(sample)
+            opposes_classified_as_supports.append((sample, prob_pred))
         if true == 'opposes' and pred == 'other':
-            opposes_classified_as_other.append(sample)
+            opposes_classified_as_other.append((sample, prob_pred))
 
         # other misclassified
         if true == 'other' and pred == 'supports':
-            other_classified_as_supports.append(sample)
+            other_classified_as_supports.append((sample, prob_pred))
         if true == 'other' and pred == 'opposes':
-            other_classified_as_opposes.append(sample)
+            other_classified_as_opposes.append((sample, prob_pred))
 
         # correct
         if true == 'supports' and pred == 'supports':
-            supports_correct.append(sample)
+            supports_correct.append((sample, prob_pred))
         if true == 'opposes' and pred == 'opposes':
-            opposes_correct.append(sample)
+            opposes_correct.append((sample, prob_pred))
         if true == 'other' and pred == 'other':
-            other_correct.append(sample)
+            other_correct.append((sample, prob_pred))
 
 
 def remap_y_target(y_labels):
@@ -109,12 +112,6 @@ def features_importance():
 
 
 def get_contexts(title_pos_tags, ent1, ent2):
-
-    print(title_pos_tags)
-    print(ent1)
-    print(ent2)
-    print("\n")
-
     ent1_tokens = ent1.split()
     ent2_tokens = ent2.split()
     title_text = [t.text for t in title_pos_tags]
@@ -131,11 +128,20 @@ def get_contexts(title_pos_tags, ent1, ent2):
 
 
 def get_text_tokens(x_data, tokenized=True, filter_pos=False):
+
+    # treinar static embeddings nos titulos todos que não fazem parte dos dados de treino
+    # usar a bi-LSTM para classificar o contexto
+
     # ToDo: gather more of these contexts
     #
     #       'considera aprovação da moção de'
+    #       'considera eleição de'
+    #       'diz que eleição de'
     #       'acredita que detenção de'
     #       'diz que visitas de'
+    #       'quer saber se'
+    #       'diz que esperava que'
+    #       'diz que posição de'
 
     # ToDo: who is the subject/agent of the sentence ?
     #
@@ -177,9 +183,19 @@ def get_text_tokens(x_data, tokenized=True, filter_pos=False):
 
     cntxt_a_aft = ['diz a', 'responde a', 'sugere a', 'diz que atitude de']
     cntxt_b_aft = ['diz que', 'afirma que', 'espera que', 'defende que', 'considera que']
-    cntxt_c_aft = ['considera']
-    cntxt_d_aft = [':', '.', ',', '. "', ': "']
-    context_aft = cntxt_a_aft + cntxt_b_aft + cntxt_c_aft + cntxt_d_aft
+    cntxt_c_aft = ['considera', 'manda']
+    cntxt_d_aft = ['quer saber se']
+    cntxt_e_aft = [':', '.', ',', '. "', ': "']
+
+    #       'considera aprovação da moção de'
+    #       'considera eleição de'
+    #       'diz que eleição de'
+    #       'acredita que detenção de'
+    #       'diz que visitas de'
+    #       'diz que esperava que'
+    #
+
+    context_aft = cntxt_a_aft + cntxt_b_aft + cntxt_c_aft + cntxt_d_aft + cntxt_e_aft
 
     cntxt_a_bef = [', sugere']
 
@@ -296,13 +312,16 @@ def train_all_data(all_data, labels):
     tfidf = TfidfVectorizer(tokenizer=dummy_fun, preprocessor=dummy_fun)
     train_textual_context = get_text_tokens(all_data, tokenized=True)
     tf_idf_weights = tfidf.fit_transform(train_textual_context)
-    clf = LinearSVC(class_weight='balanced', verbose=1)
+
+    # clf = LinearSVC(class_weight='balanced', verbose=1)
+    clf = SVC(C=1.0, class_weight='balanced', decision_function_shape='ovo', probability=True)
     clf.fit(tf_idf_weights, y_train_encoded)
-    joblib.dump(clf, filename='linear_svm.joblib')
 
-
-def dummy_fun(doc):
-    return doc
+    clf_name = str(clf.__class__.__name__)
+    fname = f"trained_models/{clf_name}_{get_time_str()}.joblib"
+    joblib.dump(clf, filename=fname)
+    fname = f"trained_models/tf_idf_weights_{get_time_str()}.joblib"
+    joblib.dump(tfidf, filename=fname)
 
 
 def main():
@@ -339,7 +358,7 @@ def main():
         tfidf = TfidfVectorizer(
             tokenizer=dummy_fun,
             preprocessor=dummy_fun,
-            ngram_range=(1, 2)
+            # ngram_range=(1, 2)
         )
 
         # n-grams
@@ -348,46 +367,32 @@ def main():
 
         # clf = LogisticRegression(multi_class='multinomial', class_weight='balanced')
         # clf = SGDClassifier(max_iter=15000, class_weight='balanced')
-        clf = LinearSVC(class_weight='balanced', max_iter=2000)
+        # clf = LinearSVC(class_weight='balanced', max_iter=2000)
+        # clf = MultinomialNB(alpha=0.3, fit_prior=True, class_prior=None)
+        clf = SVC(C=1.0, class_weight='balanced', decision_function_shape='ovo', probability=True)
 
         clf.fit(tf_idf_weights, y_train_encoded)
         test_tf_idf_weights = tfidf.transform(test_textual_context)
-        predictions = clf.predict(test_tf_idf_weights)
-        y_pred = [le.classes_[pred] for pred in predictions]
+        predicted = clf.predict(test_tf_idf_weights)
+        prob_predictions = clf.predict_proba(test_tf_idf_weights)
+        y_pred_label = [le.classes_[pred] for pred in predicted]
 
-        for x, y, pred, sample in zip(test_textual_context, y_test, y_pred, x_test):
-            if len(x) <= 3:
-                print(sample['title'])
-                print("predicted: ", pred)
-                print("features:  ", x, '\t->', y)
-                print()
-
-        # overwrite prediction
+        # ToDo: imprimir isto para as classificações erradas
         """
-        new_y_pred = []
-        for sample, sample_pred in zip(x_test, y_pred):
-            doc = nlp(sample['title'])
-            if are_entities_related(doc, sample):
-                new_y_pred.append('other')
-            else:
-                new_y_pred.append(sample_pred)
-        y_pred = new_y_pred
-
-        for sample in x_test:
-            doc = nlp(sample['title'])
-            if more_than_one_root(doc):
-                print(sample['title'])
-                print(sample['label'])
-                for token in doc:
-                    print(f"{token.text:<10} \t {token.dep_:>10} \t {list(token.children)}")
-                print()
-                print("\n\n----")
+        for prob, pred, pred_label, contexts, label, sample in zip(
+                prob_predictions, predicted, y_pred_label, test_textual_context, y_train, x_test
+        ):
+            print(sample['title'])
+            print("prob : ", prob)
+            print("pred : ", pred)
+            print("class: ", pred_label)
+            print()
         """
 
         all_data_shuffled.extend(x_train)
         all_trues.extend(y_test)
-        all_predictions.extend(y_pred)
-        error_analysis(y_pred, y_test, all_data_test)
+        all_predictions.extend(y_pred_label)
+        error_analysis(y_pred_label, predicted, prob_predictions, y_test, all_data_test)
         fold_n += 1
 
     # correct and not 'other'
@@ -414,10 +419,10 @@ def main():
     print(count)
     """
 
-    # other classified as supports and opposes
+    # other classified as opposes
     """
-    for sample in other_classified_as_opposes:
-        print(sample['title'])
+    for sample in other_classified_as_opposes + other_classified_as_supports:
+        print("\n"+sample['title'])
         print("ent1: ", sample['ent1'])
         print("ent2: ", sample['ent2'])
         print("true: other")
@@ -425,6 +430,7 @@ def main():
             print("pred: supports")
         elif sample in other_classified_as_opposes:
             print("pred: opposes")
+        print()
         doc = nlp(sample['title'])
         pos_tags = [t for t in doc]
         before, between, after = get_contexts(pos_tags, sample['ent1'], sample['ent2'])
@@ -436,6 +442,7 @@ def main():
             print(f"{token.text:<10} \t {token.dep_:>10} \t {list(token.children)}")
         print()
         print("\n\n\n--------------")
+        print(
     """
 
     # supports classified as opposes
@@ -474,12 +481,12 @@ def main():
     """
 
     # opposes classified as other
-    """
-    for sample in opposes_classified_as_other:
+    for sample, prob_pred in opposes_classified_as_other:
         print(sample['title'])
-        print(sample['label'])
         print("true: opposes")
         print("pred: other")
+        print(prob_pred)
+        """
         doc = nlp(sample['title'])
         pos_tags = [t for t in doc]
         before, between, after = get_contexts(pos_tags, sample['ent1'], sample['ent2'])
@@ -487,8 +494,8 @@ def main():
         print("BET: ", between)
         print("AFT: ", after)
         print("features used: ", get_text_tokens([sample]))
+        """
         print("\n\n--------------")
-    """
 
     # apply direction classifier to those that were correct
     """
@@ -508,6 +515,8 @@ def main():
     cm = confusion_matrix(all_trues, all_predictions, labels=['opposes', 'other', 'supports'])
     print_cm(cm, labels=['opposes', 'other', 'supports'])
     print()
+
+    train_all_data(all_data, labels)
 
 
 if __name__ == "__main__":
