@@ -303,6 +303,10 @@ def more_than_one_root(doc):
     return root > 1
 
 
+def dummy_fun(doc):
+    return doc
+
+
 def train_all_data(all_data, labels):
     # y: labels
     le = LabelEncoder()
