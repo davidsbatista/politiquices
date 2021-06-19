@@ -81,9 +81,9 @@ def main():
     ner_ignored = jsonlines.open("ner_ignored.jsonl", mode="w")
     no_entities = jsonlines.open("titles_processed_no_entities.jsonl", mode="w")
     more_entities = jsonlines.open("titles_processed_more_entities.jsonl", mode="w")
-    no_wiki = jsonlines.open("titles_processed_no_wiki_id.jsonl", mode="w")
     processed = jsonlines.open("titles_processed.jsonl", mode="w")
     ner_linked = jsonlines.open("ner_linked.jsonl", mode="w")
+    processing_errors = jsonlines.open("processing_errors.jsonl", mode="w")
 
     count = 0
 
@@ -136,26 +136,28 @@ def main():
             from politiquices.nlp.classifiers.relationship.train_clf_linear import get_text_tokens
 
             sample = {'title': cleaned_title, 'ent1': persons[0], 'ent2': persons[1]}
-            textual_context = get_text_tokens([sample], tokenized=True)
+
+            try:
+                textual_context = get_text_tokens([sample], tokenized=True)
+            except TypeError:
+                processing_errors.write(sample)
+                continue
+
             tf_idf_weights = tf_idf_vectorizer.transform(textual_context)
             predicted_probs = relationship_clf.predict_proba(tf_idf_weights)
-            print(cleaned_title)
-            print(persons[0])
-            print(persons[1])
-            print(predicted_probs[0])
-
             rel_type_scores = {
                 label: float(pred)
                 for label, pred in zip(labels, predicted_probs[0])
             }
 
-            print(rel_type_scores)
+            pred_rel = max(rel_type_scores, key=rel_type_scores.get)
 
-            # detect relationship direction
-            pred, pattern, context, pos_tags = direction_clf.detect_direction(cleaned_title, persons[0], persons[1])
-
-            # ToDo: save the direction as an extra field
-            print(pred)
+            if pred_rel != 'other':
+                # detect relationship direction
+                pred, pattern, context, pos_tags = direction_clf.detect_direction(
+                    cleaned_title, persons[0], persons[1]
+                )
+                pred_rel = pred.replace("rel", pred_rel)
 
             result = {
                 "title": cleaned_title,
@@ -163,13 +165,12 @@ def main():
                 "ent_1": entity1_wiki,
                 "ent_2": entity2_wiki,
                 "scores": rel_type_scores,
+                "pred_rel": pred_rel,
                 "url": url,
                 "date": date,
             }
 
-            if entity1_wiki is None or entity2_wiki is None:
-                no_wiki.write(result)
-            else:
+            if entity1_wiki and entity2_wiki:
                 processed.write(result)
 
             ner_linked.write({"ner": persons[0], "wiki": result['ent_1'], "url": url})
