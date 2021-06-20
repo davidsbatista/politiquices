@@ -98,13 +98,7 @@ def main():
                 title = entry[2]
 
             elif args.arquivo or args.chave:
-
-                print(line)
-
                 entry = json.loads(line)
-
-                print(entry)
-
                 title = entry["title"]
                 url = entry["linkToArchive"]
                 date = entry["tstamp"]
@@ -116,8 +110,7 @@ def main():
             try:
                 cleaned_title = clean_title_re(title)
             except Exception as e:
-                print(e)
-                print(title)
+                print(e, title)
                 continue
 
             # named-entity recognition
