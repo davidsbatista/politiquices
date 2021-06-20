@@ -249,7 +249,7 @@ def is_discardable(title):
         return True
 
     # ignore titles where both entities are the same
-    if title["ent_1"]["wiki"] == title["ent_2"]["wiki"]:
+    if title["ent_1"]["wiki_id"] == title["ent_2"]["wiki_id"]:
         return True
 
 
@@ -368,11 +368,11 @@ def process_data(titles, persons, publico_urls_in_arquivo, gold_urls):
             print(e)
             continue
 
-        p1_id = title["ent_1"]["wiki"]
+        p1_id = title["ent_1"]["wiki_id"]
         p1_name = person_1
         build_person(p1_id, p1_name, persons)
 
-        p2_id = title["ent_2"]["wiki"]
+        p2_id = title["ent_2"]["wiki_id"]
         p2_name = person_2
         build_person(p2_id, p2_name, persons)
 
@@ -470,7 +470,7 @@ def populate_graph(articles, persons, relationships):
     """
     Adds triples to an RDF graph with the following structure:
 
-        Person triples, we store only the wikidata id and the surface string(s) by which is refered
+        Person triples, we store only the wikidata id and the surface string(s) by which is referred
         to in the news articles;
             <wiki_URI, SKOS.altLabel, name>
 
@@ -552,10 +552,8 @@ def main():
     gold_persons = None
 
     if args.annotations:
-        training_data = read_ground_truth("../classifiers/politiquices_training_data.tsv")
-        training_data_webapp = read_ground_truth("../api_annotations/annotations_from_webapp.tsv")
-        all_data = training_data + training_data_webapp
-        gold_articles, gold_persons, rels_gold, urls_to_ignore = process_gold(all_data)
+        training_data = read_ground_truth("../classifiers/politiquices_data_v1.0.csv")
+        gold_articles, gold_persons, rels_gold, urls_to_ignore = process_gold(training_data)
         print("ground truth : ", len(gold_articles))
         gold_urls = [article.url for article in gold_articles] + urls_to_ignore
 
