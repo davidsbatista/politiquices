@@ -89,8 +89,8 @@ def remove_duplicates_with_same_url(f_name):
 
 def remove_url_crawled_diff_dates_duplicates(unique_url):
     """
-    sort all arquivo.pt articles by original crawled URL and take the oldest version,
-    this is to avoid having duplicate titles in politiquices Sparql graph
+    Sort all arquivo.pt articles by original crawled URL and take the oldest version,
+    this is to avoid having duplicate titles in politiquices SPARQL graph
     """
     articles = []
     for entry in unique_url:
@@ -105,6 +105,7 @@ def remove_url_crawled_diff_dates_duplicates(unique_url):
                 entry["ent_1"],
                 entry["ent_2"],
                 entry["scores"],
+                entry["pred_rel"]
             )
         )
 
@@ -127,6 +128,7 @@ def remove_url_crawled_diff_dates_duplicates(unique_url):
                 "ent_1": earliest[5],
                 "ent_2": earliest[6],
                 "scores": earliest[7],
+                "pred_rel": earliest[8],
             }
         else:
             article = articles[0]
@@ -138,7 +140,9 @@ def remove_url_crawled_diff_dates_duplicates(unique_url):
                 "ent_1": article[5],
                 "ent_2": article[6],
                 "scores": article[7],
+                "pred_rel": article[8]
             }
+
         unique.append(result)
 
     # print(f"Removed {found_duplicate} same URL crawled different dates duplicates")
@@ -160,6 +164,7 @@ def remove_duplicates_same_domain(unique):
                 entry["ent_1"],
                 entry["ent_2"],
                 entry["scores"],
+                entry["pred_rel"],
             )
         )
 
@@ -179,6 +184,7 @@ def remove_duplicates_same_domain(unique):
             "ent_1": earliest[5],
             "ent_2": earliest[6],
             "scores": earliest[7],
+            "pred_rel": earliest[8]
         }
         articles_unique.append(result)
 
@@ -357,7 +363,9 @@ def process_data(titles, persons, publico_urls_in_arquivo, gold_urls):
 
         # select the highest scoring relationship
         scores = [(k, v) for k, v in title["scores"].items()]
-        rel_type = sorted(scores, key=lambda x: x[1], reverse=True)[0]
+        rel_score = sorted(scores, key=lambda x: x[1], reverse=True)[0]
+        # either set relationship as 'other' or set to the relationship prediction + direction
+        rel_type = 'other' if rel_score[0] == 'other' else title['pred_rel']
         person_1 = title["entities"][0]
         person_2 = title["entities"][1]
         news_title = title["title"].strip()
@@ -379,8 +387,8 @@ def process_data(titles, persons, publico_urls_in_arquivo, gold_urls):
         relationships.append(
             Relationship(
                 url=title["url"],
-                rel_type=rel_type[0],
-                rel_score=rel_type[1],
+                rel_type=rel_type,
+                rel_score=rel_score[1],
                 ent1=p1_id,
                 ent2=p2_id,
                 ent1_str=person_1,
