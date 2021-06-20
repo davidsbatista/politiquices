@@ -110,7 +110,8 @@ def main():
 
             try:
                 cleaned_title = clean_title_re(title)
-            except Exception:
+            except Exception as e:
+                print(e)
                 print(title)
                 continue
 
