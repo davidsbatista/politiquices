@@ -55,8 +55,8 @@ def main():
 
     # load the relationships classification model
     print("Loading relationship classifier...")
-    relationship_clf = joblib.load(MODELS + "SVC_2021_06_17_00_49.joblib")
-    tf_idf_vectorizer = joblib.load(MODELS + "tf_idf_weights_2021_06_17_00_49.joblib")
+    relationship_clf = joblib.load(MODELS + "SVC_2021_06_19_03_12.joblib")
+    tf_idf_vectorizer = joblib.load(MODELS + "tf_idf_weights_2021_06_19_03_12.joblib")
 
     print("Loading NER classifier")
     ner = get_ner()
@@ -108,7 +108,11 @@ def main():
             if count % 1000 == 0:
                 print(count)
 
-            cleaned_title = clean_title_re(title)
+            try:
+                cleaned_title = clean_title_re(title)
+            except Exception:
+                print(title)
+                continue
 
             # named-entity recognition
             persons = ner.tag(cleaned_title)
