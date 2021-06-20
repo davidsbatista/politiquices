@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 
 from newspaper import Article, ArticleException
-from politiquices.nlp.utils.utils import publico_urls
+from politiquices.nlp.utils.utils import publico_urls, minimize_publico_urls
 
 
 def get_caches_dir() -> str:
@@ -76,8 +76,9 @@ class ArticlesDB:
             return self.chave_texts[url]
 
         if url.startswith(publico_urls):
+            minimized_url = minimize_publico_urls(url)
             try:
-                return self.publico_texts[url]
+                return self.publico_texts[minimized_url]
             except KeyError:
                 print(f"Can't get text for {url}")
 
