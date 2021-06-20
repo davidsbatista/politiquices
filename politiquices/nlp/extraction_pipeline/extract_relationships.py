@@ -98,8 +98,13 @@ def main():
                 title = entry[2]
 
             elif args.arquivo or args.chave:
+
                 print(line)
+
                 entry = json.loads(line)
+
+                print(entry)
+
                 title = entry["title"]
                 url = entry["linkToArchive"]
                 date = entry["tstamp"]
